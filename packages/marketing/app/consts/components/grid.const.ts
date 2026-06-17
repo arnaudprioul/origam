@@ -235,20 +235,7 @@ export const GRID_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        {
-            label: '3 columns',
-            props: { columns: 3, gap: 'sm' }
-        },
-        {
-            label: '4 columns',
-            props: { columns: 4, gap: 'md' }
-        },
-        {
-            label: 'auto-fill',
-            props: { columns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: 'md' }
-        }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-grid',

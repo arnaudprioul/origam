@@ -391,13 +391,7 @@ export const DIALOG_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        {
-            label: 'default',
-            props: { color: 'primary', size: 'small' },
-            slotContent: 'Open dialog'
-        }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-dialog',

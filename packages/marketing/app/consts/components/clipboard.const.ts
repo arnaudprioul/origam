@@ -209,10 +209,7 @@ export const CLIPBOARD_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        { label: 'default', props: { value: 'npm install origam' }, slotContent: '' },
-        { label: 'disabled', props: { value: 'npm install origam', disabled: true }, slotContent: '' }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-clipboard',

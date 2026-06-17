@@ -302,12 +302,7 @@ const value = ref(3)
         }
     ],
 
-    previewVariants: [
-        { label: 'default (50)', props: { modelValue: 50, min: 0, max: 100 } },
-        { label: 'color primary', props: { modelValue: 60, min: 0, max: 100, color: 'primary' } },
-        { label: 'disabled', props: { modelValue: 40, min: 0, max: 100, disabled: true } },
-        { label: 'error', props: { modelValue: 30, min: 0, max: 100, error: true } }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-slider-field',

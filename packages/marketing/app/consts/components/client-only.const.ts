@@ -103,9 +103,7 @@ export const CLIENT_ONLY_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        { label: 'wrapper', props: {}, slotContent: 'Client content' }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-client-only',

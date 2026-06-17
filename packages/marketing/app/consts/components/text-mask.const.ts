@@ -183,38 +183,7 @@ export const TEXT_MASK_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        {
-            label: 'gradient pan',
-            props: {
-                background: 'linear-gradient(90deg, #7c3aed, #a855f7, #06b6d4)',
-                fontSize: 32,
-                fontWeight: 800,
-                text: 'Origam DS'
-            }
-        },
-        {
-            label: 'animated',
-            props: {
-                background: 'linear-gradient(90deg, #7c3aed, #a855f7, #06b6d4, #10b981)',
-                fontSize: 32,
-                fontWeight: 800,
-                animated: true,
-                animationType: 'pan',
-                text: 'Animated!'
-            }
-        },
-        {
-            label: 'center align',
-            props: {
-                background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
-                fontSize: 28,
-                fontWeight: 700,
-                align: 'center',
-                text: 'Center'
-            }
-        }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-text-mask',

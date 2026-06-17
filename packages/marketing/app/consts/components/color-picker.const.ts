@@ -297,11 +297,7 @@ const palette = [
         }
     ],
 
-    previewVariants: [
-        { label: 'default', props: { modelValue: '#7c3aed' }, slotContent: '' },
-        { label: 'no canvas', props: { modelValue: '#7c3aed', hideCanvas: true }, slotContent: '' },
-        { label: 'with swatches', props: { modelValue: '#7c3aed', showSwatches: true, hideCanvas: true }, slotContent: '' }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-color-picker',

@@ -318,13 +318,7 @@ const agreed = ref(false)
         }
     ],
 
-    previewVariants: [
-        { label: 'unchecked', props: { color: 'primary' }, slotContent: '' },
-        { label: 'checked', props: { color: 'primary', modelValue: true }, slotContent: '' },
-        { label: 'indeterminate', props: { color: 'primary', indeterminate: true }, slotContent: '' },
-        { label: 'disabled', props: { disabled: true }, slotContent: '' },
-        { label: 'error', props: { error: true }, slotContent: '' }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-checkbox',

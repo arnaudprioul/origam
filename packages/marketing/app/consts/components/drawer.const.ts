@@ -312,13 +312,7 @@ const open = ref(false)
         }
     ],
 
-    previewVariants: [
-        {
-            label: 'left (default)',
-            props: { location: 'left', permanent: true, width: 200 },
-            slotContent: 'Navigation'
-        }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-drawer',

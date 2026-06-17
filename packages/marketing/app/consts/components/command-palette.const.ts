@@ -242,9 +242,7 @@ export const COMMAND_PALETTE_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        { label: 'open', props: { modelValue: true, placeholder: 'Type a command…' } }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-command-palette',

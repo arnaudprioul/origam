@@ -197,12 +197,7 @@ export const COUNTER_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        { label: '12 / 50', props: { value: 12, max: 50, active: true } },
-        { label: '50 / 50', props: { value: 50, max: 50, active: true } },
-        { label: '52 / 50 (error)', props: { value: 52, max: 50, active: true } },
-        { label: 'no max', props: { value: 128, active: true } }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-counter',

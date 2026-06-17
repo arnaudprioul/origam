@@ -218,23 +218,7 @@ export const AVATAR_GROUP_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        {
-            label: 'default',
-            props: {},
-            ariaLabel: 'Avatar group default'
-        },
-        {
-            label: 'max=3',
-            props: { max: 3 },
-            ariaLabel: 'Avatar group max 3'
-        },
-        {
-            label: 'expand hover',
-            props: { max: 3, expandOnHover: true },
-            ariaLabel: 'Avatar group expand on hover'
-        }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-avatar-group',

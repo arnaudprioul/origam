@@ -214,20 +214,7 @@ const photos = [
         }
     ],
 
-    previewVariants: [
-        {
-            label: '3 columns',
-            props: { columns: 3, gap: 'md' }
-        },
-        {
-            label: '4 columns',
-            props: { columns: 4, gap: 'sm' }
-        },
-        {
-            label: '2 cols + animated',
-            props: { columns: 2, gap: 'lg', animated: true }
-        }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-masonry',

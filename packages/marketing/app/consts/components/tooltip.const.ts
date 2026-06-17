@@ -231,13 +231,7 @@ export const TOOLTIP_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        { label: 'top (default)', props: { text: 'Save document', location: 'top' } },
-        { label: 'bottom', props: { text: 'Bottom tip', location: 'bottom' } },
-        { label: 'start', props: { text: 'Start tip', location: 'start' } },
-        { label: 'end', props: { text: 'End tip', location: 'end' } },
-        { label: 'colored', props: { text: 'Primary tooltip', bgColor: 'primary' } }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-tooltip',

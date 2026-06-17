@@ -177,12 +177,7 @@ export const WATERMARK_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        { label: 'CONFIDENTIAL', props: { text: 'CONFIDENTIAL', opacity: 0.08, color: '#7c3aed', angle: -30 } },
-        { label: 'DRAFT', props: { text: 'DRAFT', opacity: 0.1, color: '#9333ea', angle: -30, gap: 80 } },
-        { label: 'large', props: { text: 'DO NOT COPY', opacity: 0.06, fontSize: 24, color: '#4c1d95', angle: -25 } },
-        { label: 'horizontal', props: { text: 'SAMPLE', opacity: 0.1, color: '#6d28d9', angle: 0, gap: 100 } }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-watermark',

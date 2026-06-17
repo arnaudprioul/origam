@@ -148,13 +148,7 @@ export const TITLE_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        { label: 'h1 default', props: { tag: 'h1', text: 'Page Title' } },
-        { label: 'h2 primary', props: { tag: 'h2', text: 'Section Title', color: 'primary' } },
-        { label: 'h3 compact', props: { tag: 'h3', text: 'Sub-section', density: 'compact' } },
-        { label: 'h2 comfortable', props: { tag: 'h2', text: 'Large heading', density: 'comfortable' } },
-        { label: 'h3 success', props: { tag: 'h3', text: 'Success', color: 'success' } }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-title',

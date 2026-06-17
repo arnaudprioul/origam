@@ -287,13 +287,7 @@ const rating = ref(4)
         }
     ],
 
-    previewVariants: [
-        { label: '3 stars', props: { modelValue: 3, length: 5 } },
-        { label: '4.5 stars', props: { modelValue: 4.5, halfIncrements: true, length: 5 } },
-        { label: 'readonly', props: { modelValue: 4, readonly: true, length: 5 } },
-        { label: 'hover', props: { modelValue: 2, hover: true, length: 5 } },
-        { label: 'disabled', props: { modelValue: 3, disabled: true, length: 5 }, ariaLabel: 'Disabled rating' }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-rating-field',

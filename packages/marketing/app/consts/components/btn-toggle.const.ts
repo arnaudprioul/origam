@@ -232,11 +232,7 @@ export const BTN_TOGGLE_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        { label: 'single-select', props: { border: true, color: 'primary' } },
-        { label: 'divided', props: { divided: true, border: true, color: 'primary' } },
-        { label: 'rounded', props: { rounded: 'pill', border: true } }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-btn-toggle',

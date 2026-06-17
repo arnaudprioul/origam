@@ -252,11 +252,7 @@ export const DATA_LIST_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        { label: 'avatar mode', props: { mode: 'avatar' } },
-        { label: 'kv mode', props: { mode: 'kv' } },
-        { label: 'bordered', props: { mode: 'kv', border: true, rounded: 'md' } }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-data-list',

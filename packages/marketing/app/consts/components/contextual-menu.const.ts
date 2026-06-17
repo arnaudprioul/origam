@@ -228,9 +228,7 @@ export const CONTEXTUAL_MENU_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        { label: 'default', props: { modelValue: true } }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-contextual-menu',

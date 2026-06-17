@@ -159,13 +159,7 @@ export const KBD_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        { label: 'outlined', props: { text: '⌘', variant: 'outlined' } },
-        { label: 'filled', props: { text: 'Ctrl', variant: 'filled' } },
-        { label: 'tonal', props: { text: 'Alt', variant: 'tonal' } },
-        { label: 'combination', props: { combination: ['Ctrl', 'S'] } },
-        { label: 'large', props: { text: 'Enter', size: 'large', variant: 'outlined' } }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-kbd',

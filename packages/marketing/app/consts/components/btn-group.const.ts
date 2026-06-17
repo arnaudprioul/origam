@@ -199,12 +199,7 @@ export const BTN_GROUP_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        { label: 'basic', props: { border: true } },
-        { label: 'divided', props: { divided: true, color: 'primary', border: true } },
-        { label: 'rounded', props: { rounded: 'pill', border: true, color: 'primary' } },
-        { label: 'elevated', props: { elevation: '2', rounded: 'sm' } }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-btn-group',

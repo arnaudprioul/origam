@@ -298,13 +298,7 @@ export const MENU_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        {
-            label: 'default',
-            props: { text: 'Open Menu', appendIcon: 'mdi-chevron-down', color: 'primary', variant: 'elevated' },
-            slotContent: 'Open Menu'
-        }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-menu',

@@ -133,12 +133,7 @@ export const DIVIDER_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        { label: 'default', props: {}, ariaLabel: 'Horizontal divider' },
-        { label: 'colored', props: { color: 'primary' }, ariaLabel: 'Primary colored divider' },
-        { label: 'thick', props: { thickness: 3, color: 'secondary' }, ariaLabel: 'Thick secondary divider' },
-        { label: 'inset', props: { inset: true }, ariaLabel: 'Inset divider' }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-divider',

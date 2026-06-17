@@ -305,20 +305,7 @@ export const EXPANSION_PANELS_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        {
-            label: 'default',
-            props: {}
-        },
-        {
-            label: 'accordion',
-            props: { accordion: true }
-        },
-        {
-            label: 'flat',
-            props: { flat: true }
-        }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-expansion-panels',

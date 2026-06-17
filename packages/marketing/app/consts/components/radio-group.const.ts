@@ -278,11 +278,7 @@ const choice = ref('')
         }
     ],
 
-    previewVariants: [
-        { label: 'default', props: { color: 'primary', label: 'RadioGroup', modelValue: 'b' } },
-        { label: 'inline', props: { color: 'primary', inline: true, label: 'Inline group' } },
-        { label: 'disabled', props: { color: 'primary', label: 'Disabled', disabled: true }, ariaLabel: 'Disabled radio group' }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-radio-group',

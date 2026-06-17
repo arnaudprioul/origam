@@ -275,13 +275,7 @@ const slide = ref(0)
         }
     ],
 
-    previewVariants: [
-        { label: 'with arrows', props: { showArrows: true } },
-        { label: 'vertical', props: { showArrows: true, direction: 'vertical' } },
-        { label: 'continuous', props: { showArrows: true, continuous: true } },
-        { label: 'hover arrows', props: { showArrows: 'hover' } },
-        { label: 'rounded', props: { showArrows: true, rounded: 'lg', elevation: '2' } }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-window',

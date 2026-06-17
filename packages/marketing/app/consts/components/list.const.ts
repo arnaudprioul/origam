@@ -377,13 +377,7 @@ const groupedItems = [
         }
     ],
 
-    previewVariants: [
-        {
-            label: 'default',
-            props: { color: 'primary', lines: 'one' },
-            slotContent: ''
-        }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-list',

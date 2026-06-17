@@ -193,11 +193,7 @@ export const MESSAGES_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        { label: 'error', props: { active: true, color: 'danger', messages: 'This field is required' } },
-        { label: 'hint', props: { active: true, color: 'info', messages: 'Must be at least 8 characters' } },
-        { label: 'success', props: { active: true, color: 'success', messages: 'Looks good!' } }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-messages',

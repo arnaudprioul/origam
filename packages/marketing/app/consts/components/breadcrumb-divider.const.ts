@@ -138,12 +138,7 @@ export const BREADCRUMB_DIVIDER_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        { label: 'text "/"', props: { divider: '/' } },
-        { label: 'text ">"', props: { divider: '>' } },
-        { label: 'icon chevron', props: { divider: 'mdi-chevron-right', color: 'primary' } },
-        { label: 'icon arrow', props: { divider: 'mdi-arrow-right' } }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-breadcrumb-divider',

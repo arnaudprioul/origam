@@ -378,11 +378,7 @@ export const CONFIRM_WRAPPER_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        { label: 'default', props: { label: 'Password', confirmLabel: 'Confirm password', variant: 'outlined' } },
-        { label: 'error', props: { label: 'Password', confirmLabel: 'Confirm', error: true, variant: 'outlined' } },
-        { label: 'disabled', props: { label: 'Password', disabled: true, variant: 'outlined' } }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-confirm-wrapper',

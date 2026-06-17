@@ -176,12 +176,7 @@ export const TRANSITION_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        { label: 'fade', props: { name: 'origam-transition--fade' } },
-        { label: 'slide-x', props: { name: 'origam-transition--slide-x' } },
-        { label: 'slide-y', props: { name: 'origam-transition--slide-y' } },
-        { label: 'scale-rotate', props: { name: 'origam-transition--scale-rotate' } }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-transition',

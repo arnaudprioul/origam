@@ -75,9 +75,7 @@ export const SECTION_DOC: IComponentDoc = {
         }
     ],
 
-    previewVariants: [
-        { label: 'default', props: {}, slotContent: 'Section content' }
-    ] satisfies IComponentPreviewVariant[],
+    previewVariants: [] satisfies IComponentPreviewVariant[],
 
     anatomy: {
         rootClass: 'origam-section',
