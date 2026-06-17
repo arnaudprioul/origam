@@ -4,6 +4,7 @@
   import type { LocaleObject } from '@nuxtjs/i18n'
   import { useTheme } from 'origam/composables'
   import { MDI_ICONS } from 'origam/enums'
+  import type { INavLink } from '~/interfaces/nav.interface'
 
   import { SKIP_LINK_HREF, SKIP_LINK_TARGET_ID } from '~/consts/a11y.const'
   import { FOOTER_COLUMNS, FOOTER_GRID_COLUMNS, NAV_SECTIONS, NAV_THEMING_LINK } from '~/consts/nav.const'
@@ -13,6 +14,7 @@
   import { useT } from '~/composables/useT'
   import { useVersion } from '~/composables/useVersion'
   import { useGithubStars } from '~/composables/useGithubStars'
+  import { useLinkAvailability } from '~/composables/useLinkAvailability'
 
   const { t } = useT()
   const { versionTag } = useVersion()
@@ -46,10 +48,45 @@
   const themingLabel = computed(() => t(NAV_THEMING_LINK.i18nKey, NAV_THEMING_LINK.i18nFallback))
   const sectionAriaLabel = (section: { titleKey: string; titleFallback: string }) =>
     t('nav.a11y.open_section', 'Open {section} menu', { section: t(section.titleKey, section.titleFallback) })
+
+  const allNavHrefs = [
+    ...NAV_SECTIONS.flatMap(s => s.items.map(i => i.href)),
+    NAV_THEMING_LINK.href,
+    ...FOOTER_COLUMNS.flatMap(col => col.links.filter(l => !l.external).map(l => l.href))
+  ]
+
+  const { availability, ready: navReady } = useLinkAvailability(allNavHrefs)
+
+  function isLinkVisible (link: INavLink): boolean {
+    if (link.external) return true
+    return availability[link.href] === true
+  }
+
+  const visibleNavSections = computed(() =>
+    NAV_SECTIONS.map(section => ({
+      ...section,
+      items: section.items.filter(item => isLinkVisible(item))
+    })).filter(section => section.items.length > 0)
+  )
+
+  const showThemingLink = computed(() => availability[NAV_THEMING_LINK.href] === true)
+
+  const visibleFooterColumns = computed(() =>
+    FOOTER_COLUMNS.map(col => ({
+      ...col,
+      links: col.links.filter(link => isLinkVisible(link))
+    }))
+  )
 </script>
 
 <template>
   <origam-app>
+    <span
+      class="nav-ready-signal"
+      aria-hidden="true"
+      :data-nav-ready="navReady ? 'true' : undefined"
+    />
+
     <a
       :href="SKIP_LINK_HREF"
       class="skip-link"
@@ -88,7 +125,7 @@
           :aria-label="primaryNavAriaLabel"
         >
           <origam-menu
-            v-for="section in NAV_SECTIONS"
+            v-for="section in visibleNavSections"
             :key="section.titleKey"
             class="appbar-menu appbar-menu--nav"
             location="bottom"
@@ -120,6 +157,7 @@
           </origam-menu>
 
           <origam-btn
+            v-if="showThemingLink"
             :href="NAV_THEMING_LINK.href"
             variant="text"
             class="primary-nav__link"
@@ -274,7 +312,7 @@
         </div>
 
         <nav
-          v-for="column in FOOTER_COLUMNS"
+          v-for="column in visibleFooterColumns"
           :key="column.titleKey"
           class="site-footer__column"
           :aria-label="t(column.titleKey, column.titleFallback)"
@@ -327,6 +365,10 @@
 </template>
 
 <style scoped lang="scss">
+  .nav-ready-signal {
+    display: none;
+  }
+
   .skip-link {
     position: absolute;
     inset-inline-start: var(--origam-space---2, 0.5rem);
