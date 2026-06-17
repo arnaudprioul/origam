@@ -260,7 +260,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
     </article>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .components-catalog {
     display: flex;
     flex-direction: column;
@@ -314,7 +314,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
     position: absolute;
     inset-inline: 0;
     inset-block-start: 0;
-    block-size: 260px;
+    block-size: 100%;
     background-image: var(--origam-gradient---hero-glow);
     pointer-events: none;
     z-index: 0;

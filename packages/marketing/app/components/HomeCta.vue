@@ -51,7 +51,7 @@ const { t } = useT()
     </section>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .home-cta {
     position: relative;
     padding-block: var(--origam-space---30, 7.5rem);

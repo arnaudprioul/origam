@@ -96,7 +96,7 @@
   </section>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
   .home-hero {
     position: relative;
     padding-block: var(--origam-space---16, 4rem) var(--origam-space---12, 3rem);

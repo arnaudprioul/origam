@@ -526,7 +526,7 @@ useSeoMeta({
     </article>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .type-detail {
     display: flex;
     flex-direction: column;

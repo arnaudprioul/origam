@@ -50,7 +50,7 @@ useSeoMeta({
     </article>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .home {
     display: flex;
     flex-direction: column;

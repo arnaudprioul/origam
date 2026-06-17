@@ -39,7 +39,7 @@ void store.setFiles({ 'App.vue': PLAYGROUND_REPL_SNIPPET }, 'App.vue').catch(() 
     />
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 /*
  * La hauteur 480px est définie dans HomePlayground.vue via :deep(.vue-repl).
  * Ce bloc scoped gère uniquement les overrides internes au REPL CodeMirror.

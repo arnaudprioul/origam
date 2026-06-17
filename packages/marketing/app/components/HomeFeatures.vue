@@ -84,7 +84,7 @@ const features = computed(() => FEATURES)
     </section>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .home-features {
     padding-block: var(--origam-space---24, 6rem);
     padding-inline: var(--origam-space---6, 1.5rem);

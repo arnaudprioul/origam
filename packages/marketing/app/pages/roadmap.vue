@@ -522,7 +522,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
     </article>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .roadmap {
     display: flex;
     flex-direction: column;

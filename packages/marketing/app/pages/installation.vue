@@ -527,7 +527,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
     </article>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .installation {
     display: flex;
     flex-direction: column;

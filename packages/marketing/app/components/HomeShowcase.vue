@@ -321,7 +321,7 @@ const STATUS_DOT_COLOR: Record<string, string> = {
     </section>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .home-showcase {
     padding-block: var(--origam-space---24, 6rem);
     padding-inline: var(--origam-space---14, 3.5rem);

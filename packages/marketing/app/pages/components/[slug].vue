@@ -1464,7 +1464,7 @@ useSeoMeta({
     </article>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 /* ── NOT FOUND ────────────────────────────────────────────── */
 .component-detail {
     display: flex;

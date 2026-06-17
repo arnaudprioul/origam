@@ -798,7 +798,7 @@ useSeoMeta({
     </article>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .wireframe-page {
     display: flex;
     flex-direction: column;

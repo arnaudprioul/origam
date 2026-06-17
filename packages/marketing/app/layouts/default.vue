@@ -326,7 +326,7 @@
   </origam-app>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
   .skip-link {
     position: absolute;
     inset-inline-start: var(--origam-space---2, 0.5rem);
@@ -518,7 +518,7 @@
   }
 </style>
 
-<style>
+<style lang="scss">
   .appbar-menu .origam-menu__content {
     min-width: 200px;
     width: 200px;

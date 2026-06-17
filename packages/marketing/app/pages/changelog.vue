@@ -313,7 +313,7 @@ const currentVersionLabel = computed(() =>
     </article>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .changelog {
     display: flex;
     flex-direction: column;

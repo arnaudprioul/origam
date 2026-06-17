@@ -163,7 +163,7 @@ const tileStyle = computed(() => (tile: typeof THEME_PREVIEW_TILES[number]) => {
     </section>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .home-themes {
     width: 100%;
     padding-block: var(--origam-space---24, 6rem);

@@ -52,7 +52,7 @@ const { t } = useT()
     </section>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .home-kpis {
     padding-block: var(--origam-space---10, 2.5rem);
     padding-inline: var(--origam-space---6, 1.5rem);

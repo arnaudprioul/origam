@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useT } from '~/composables/useT'
-import { TYPES_CATALOG, TYPES_CATEGORIES } from '~/consts/types-catalog.const'
+import type { ITypeDoc, ITypeEntry } from '~/interfaces/types-catalog.interface'
 
 const { t } = useT()
 
@@ -12,12 +12,37 @@ useSeoMeta({
     ogDescription: () => t('types.meta.description', 'TypeScript types and enums used across origam props.')
 })
 
+const allDocs = import.meta.glob('~/consts/types/*.const.ts', { eager: true }) as Record<string, Record<string, unknown>>
+
+const TYPES_CATALOG = computed<ITypeEntry[]>(() =>
+    Object.values(allDocs)
+        .map((mod) => {
+            const key = Object.keys(mod).find(k => k.endsWith('_DOC'))
+            return key ? (mod[key] as ITypeDoc) : null
+        })
+        .filter((d): d is ITypeDoc => !!d)
+        .map(d => ({
+            slug: d.slug,
+            name: d.name,
+            kind: d.kind,
+            category: d.category,
+            icon: d.kind === 'enum' ? 'mdi-format-list-numbered' : 'mdi-code-braces',
+            descriptionKey: d.descriptionKey,
+            descriptionFallback: d.descriptionFallback
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name))
+)
+
+const TYPES_CATEGORIES = computed(() =>
+    [...new Set(TYPES_CATALOG.value.map(e => e.category))].sort()
+)
+
 const searchQuery = ref('')
 
 const filteredEntries = computed(() => {
     const query = searchQuery.value.toLowerCase().trim()
-    if (!query) return TYPES_CATALOG
-    return TYPES_CATALOG.filter(entry => {
+    if (!query) return TYPES_CATALOG.value
+    return TYPES_CATALOG.value.filter(entry => {
         const nameMatch = entry.name.toLowerCase().includes(query)
         const categoryMatch = entry.category.toLowerCase().includes(query)
         const descMatch = entry.descriptionFallback.toLowerCase().includes(query)
@@ -27,13 +52,13 @@ const filteredEntries = computed(() => {
 })
 
 const groupedByCategory = computed(() =>
-    TYPES_CATEGORIES.map(category => ({
+    TYPES_CATEGORIES.value.map(category => ({
         category,
         entries: filteredEntries.value.filter(e => e.category === category)
     })).filter(group => group.entries.length > 0)
 )
 
-const totalCount = computed(() => TYPES_CATALOG.length)
+const totalCount = computed(() => TYPES_CATALOG.value.length)
 const filteredCount = computed(() => filteredEntries.value.length)
 const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 </script>
@@ -235,7 +260,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
     </article>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .types-catalog {
     display: flex;
     flex-direction: column;

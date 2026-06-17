@@ -2057,7 +2057,16 @@ export const COMPONENTS_CATALOG: IComponentEntry[] = [
     { slug: 'expand-y', name: 'ExpandY', icon: 'mdi-transition', category: 'Utilities & Providers', descriptionKey: 'components.catalog.expand_y.description', descriptionFallback: 'Vertical expand/collapse transition.', parentSlug: 'transition', family: [] },
     { slug: 'slide-x', name: 'SlideX', icon: 'mdi-transition', category: 'Utilities & Providers', descriptionKey: 'components.catalog.slide_x.description', descriptionFallback: 'Horizontal slide transition.', parentSlug: 'transition', family: [] },
     { slug: 'slide-y', name: 'SlideY', icon: 'mdi-transition', category: 'Utilities & Providers', descriptionKey: 'components.catalog.slide_y.description', descriptionFallback: 'Vertical slide transition.', parentSlug: 'transition', family: [] },
-    { slug: 'scale-rotate', name: 'ScaleRotate', icon: 'mdi-transition', category: 'Utilities & Providers', descriptionKey: 'components.catalog.scale_rotate.description', descriptionFallback: 'Scale + rotate entrance transition.', parentSlug: 'transition', family: [] }
+    { slug: 'scale-rotate', name: 'ScaleRotate', icon: 'mdi-transition', category: 'Utilities & Providers', descriptionKey: 'components.catalog.scale_rotate.description', descriptionFallback: 'Scale + rotate entrance transition.', parentSlug: 'transition', family: [] },
+    {
+        slug: 'client-only',
+        name: 'ClientOnly',
+        icon: 'mdi-monitor',
+        category: 'Utilities & Providers',
+        descriptionKey: 'components.catalog.client_only.description',
+        descriptionFallback: 'Wrapper that renders its slot only after hydration on the client, preventing SSR mismatches for browser-only content.',
+        family: []
+    }
 ]
 
 /** Lookup map: slug → IComponentEntry */

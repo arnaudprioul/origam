@@ -247,7 +247,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
     </article>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .composables-catalog {
     display: flex;
     flex-direction: column;

@@ -511,7 +511,7 @@ const comparisonItems = computed(() =>
     </article>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .why-origam {
     display: flex;
     flex-direction: column;
