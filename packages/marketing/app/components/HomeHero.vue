@@ -100,124 +100,116 @@
   .home-hero {
     position: relative;
     padding-block: var(--origam-space---16, 4rem) var(--origam-space---12, 3rem);
-  }
 
-  /* DS gap: no DS token paints a decorative grid. Consumes the marketing
-     display token --origam-gradient---hero-grid (64px theme-aware lines),
-     faded out toward the bottom via a mask. */
-  .home-hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: var(--origam-gradient---hero-grid);
-    background-size: 64px 64px;
-    background-position: center top;
-    -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 75%);
-    mask-image: linear-gradient(to bottom, #000 0%, transparent 75%);
-    pointer-events: none;
-    z-index: 0;
-  }
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: var(--origam-gradient---hero-grid);
+      background-size: 64px 64px;
+      background-position: center top;
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 75%);
+      mask-image: linear-gradient(to bottom, #000 0%, transparent 75%);
+      pointer-events: none;
+      z-index: 0;
+    }
 
-  /* DS gap: no DS token/prop paints a section-scoped decorative glow.
-     Consumes the marketing display token --origam-gradient---hero-glow. */
-  .home-hero::after {
-    content: '';
-    position: absolute;
-    inset-inline: 0;
-    inset-block-start: 0;
-    block-size: 320px;
-    background-image: var(--origam-gradient---hero-glow);
-    pointer-events: none;
-    z-index: 0;
-  }
+    &::after {
+      content: '';
+      position: absolute;
+      inset-inline: 0;
+      inset-block-start: 0;
+      block-size: 320px;
+      background-image: var(--origam-gradient---hero-glow);
+      pointer-events: none;
+      z-index: 0;
+    }
 
-  .home-hero__inner {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--origam-space---6, 1.5rem);
-    text-align: center;
-  }
+    &__inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--origam-space---6, 1.5rem);
+      text-align: center;
+    }
 
-  .home-hero__header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--origam-space---4, 1rem);
-  }
+    &__header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--origam-space---4, 1rem);
+    }
 
-  /* DS gap: hero display size/tracking/leading exceed OrigamTitle's token
-     scale (max 3xl). Consumes the marketing display tokens. */
-  .home-hero__title {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: var(--origam-font-size---hero, 5.25rem);
-    font-weight: var(--origam-font-weight---extrabold, 800);
-    line-height: var(--origam-line-height---hero, 0.95);
-    letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
-    padding-block-end: 0.12em;
-    color: var(--origam-color__text---ink, #0a0a0a);
-  }
+    &__title {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: var(--origam-font-size---hero, 5.25rem);
+      font-weight: var(--origam-font-weight---extrabold, 800);
+      line-height: var(--origam-line-height---hero, 0.95);
+      letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
+      padding-block-end: 0.12em;
+      color: var(--origam-color__text---ink, #0a0a0a);
+    }
 
-  .home-hero__title-line {
-    display: block;
-    white-space: nowrap;
-  }
+    &__title-line {
+      display: block;
+      white-space: nowrap;
+    }
 
-  .home-hero__subtitle {
-    margin: 0;
-    max-inline-size: 42.5rem;
-    font-size: var(--origam-font-size---lg, 1.125rem);
-    line-height: var(--origam-line-height---relaxed, 1.7);
-    color: var(--origam-color__text---secondary, #525252);
-  }
+    &__subtitle {
+      margin: 0;
+      max-inline-size: 42.5rem;
+      font-size: var(--origam-font-size---lg, 1.125rem);
+      line-height: var(--origam-line-height---relaxed, 1.7);
+      color: var(--origam-color__text---secondary, #525252);
+    }
 
-  .home-hero__ctas {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: var(--origam-space---3, 0.75rem);
-  }
+    &__ctas {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: var(--origam-space---3, 0.75rem);
+    }
 
-  /* Shared hero button sizing — theme-independent */
-  .home-hero__btn {
-    --origam-btn---height: 57.5px;
-    --origam-btn---density: 0px;
-    --origam-btn---density-padding-x: var(--origam-space---6, 1.5rem);
-    --origam-btn---font-size: 1rem;
-    --origam-btn---font-weight: 400;
-    --origam-btn---border-radius: var(--origam-radius---btn, 10px);
-  }
+    &__btn {
+      --origam-btn---height: 57.5px;
+      --origam-btn---density: 0px;
+      --origam-btn---density-padding-x: var(--origam-space---6, 1.5rem);
+      --origam-btn---font-size: 1rem;
+      --origam-btn---font-weight: 400;
+      --origam-btn---border-radius: var(--origam-radius---btn, 10px);
 
-  /* Primary CTA — gradient + glow driven by theme tokens */
-  .home-hero__btn.home-hero__btn--primary {
-    background-image: var(--origam-gradient---btn-primary);
-    background-color: var(--origam-color---btn-primary-bg, transparent);
-    box-shadow: var(--origam-shadow---btn-primary);
-    --origam-btn---color: var(--origam-color---btn-primary-text);
-  }
+      &--primary {
+        background-image: var(--origam-gradient---btn-primary);
+        background-color: var(--origam-color---btn-primary-bg, transparent);
+        box-shadow: var(--origam-shadow---btn-primary);
+        --origam-btn---color: var(--origam-color---btn-primary-text);
+      }
 
-  /* Secondary CTA — ghost/outline driven by theme tokens */
-  .home-hero__btn.home-hero__btn--secondary {
-    background-image: var(--origam-gradient---btn-secondary);
-    background-color: var(--origam-color---btn-secondary-bg);
-    box-shadow: var(--origam-shadow---btn-secondary);
-    border: 1px solid var(--origam-color---btn-secondary-border);
-    --origam-btn---color: var(--origam-color---btn-secondary-text);
+      &--secondary {
+        background-image: var(--origam-gradient---btn-secondary);
+        background-color: var(--origam-color---btn-secondary-bg);
+        box-shadow: var(--origam-shadow---btn-secondary);
+        border: 1px solid var(--origam-color---btn-secondary-border);
+        --origam-btn---color: var(--origam-color---btn-secondary-text);
+      }
+    }
   }
 
   @media (max-width: 1080px) {
-    .home-hero__title {
-      font-size: clamp(2.5rem, 9vw, 5.25rem);
-    }
+    .home-hero {
+      &__title {
+        font-size: clamp(2.5rem, 9vw, 5.25rem);
+      }
 
-    .home-hero__title-line {
-      white-space: normal;
+      &__title-line {
+        white-space: normal;
+      }
     }
   }
 </style>

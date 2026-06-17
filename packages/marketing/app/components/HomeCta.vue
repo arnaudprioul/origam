@@ -57,86 +57,78 @@ const { t } = useT()
     padding-block: var(--origam-space---30, 7.5rem);
     padding-inline: var(--origam-space---6, 1.5rem);
     overflow: hidden;
-}
 
-/* DS gap: no DS token/prop paints a section-scoped decorative glow.
-   Consumes the marketing display token --origam-gradient---cta-glow-top
-   (violet radial top-center, subtil). */
-.home-cta::before {
-    content: '';
-    position: absolute;
-    inset-inline: 0;
-    inset-block-start: 0;
-    block-size: 280px;
-    background-image: var(--origam-gradient---cta-glow-top);
-    pointer-events: none;
-    z-index: 0;
-}
+    &::before {
+        content: '';
+        position: absolute;
+        inset-inline: 0;
+        inset-block-start: 0;
+        block-size: 280px;
+        background-image: var(--origam-gradient---cta-glow-top);
+        pointer-events: none;
+        z-index: 0;
+    }
 
-.home-cta__inner {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--origam-space---6, 1.5rem);
-    max-width: 48rem;
-    margin-inline: auto;
-    text-align: center;
-}
+    &__inner {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--origam-space---6, 1.5rem);
+        max-width: 48rem;
+        margin-inline: auto;
+        text-align: center;
+    }
 
-/* DS gap: CTA display size/tracking/leading exceed OrigamTitle's token
-   scale (max 3xl). Consumes the marketing display tokens. */
-.home-cta__title {
-    margin: 0;
-    font-size: var(--origam-font-size---cta, 4rem);
-    font-weight: var(--origam-font-weight---extrabold, 800);
-    letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
-    line-height: var(--origam-line-height---hero, 0.95);
-    color: var(--origam-color__text---ink, #0a0a0a);
-}
+    &__title {
+        margin: 0;
+        font-size: var(--origam-font-size---cta, 4rem);
+        font-weight: var(--origam-font-weight---extrabold, 800);
+        letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
+        line-height: var(--origam-line-height---hero, 0.95);
+        color: var(--origam-color__text---ink, #0a0a0a);
+    }
 
-.home-cta__description {
-    margin: 0;
-    font-size: var(--origam-font-size---lg, 1.125rem);
-    color: var(--origam-color__text---secondary, #525252);
-    max-width: 36rem;
-}
+    &__description {
+        margin: 0;
+        font-size: var(--origam-font-size---lg, 1.125rem);
+        color: var(--origam-color__text---secondary, #525252);
+        max-width: 36rem;
+    }
 
-.home-cta__actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: var(--origam-space---3, 0.75rem);
-    margin-block-start: var(--origam-space---2, 0.5rem);
-}
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: var(--origam-space---3, 0.75rem);
+        margin-block-start: var(--origam-space---2, 0.5rem);
+    }
 
-/* Shared CTA button sizing — theme-independent */
-.home-cta__btn {
-    --origam-btn---height: 52px;
-    --origam-btn---density: 0px;
-    --origam-btn---density-padding-x: var(--origam-space---6, 1.5rem);
-    --origam-btn---font-size: 1rem;
-    --origam-btn---font-weight: 400;
-    --origam-btn---border-radius: var(--origam-radius---btn, 10px);
-}
+    &__btn {
+        --origam-btn---height: 52px;
+        --origam-btn---density: 0px;
+        --origam-btn---density-padding-x: var(--origam-space---6, 1.5rem);
+        --origam-btn---font-size: 1rem;
+        --origam-btn---font-weight: 400;
+        --origam-btn---border-radius: var(--origam-radius---btn, 10px);
 
-/* Primary CTA — gradient + glow driven by theme tokens */
-.home-cta__btn--start {
-    background-image: var(--origam-gradient---btn-primary);
-    background-color: var(--origam-color---btn-primary-bg, transparent);
-    box-shadow: var(--origam-shadow---btn-primary);
-    --origam-btn---color: var(--origam-color---btn-primary-text);
-}
+        &--start {
+            background-image: var(--origam-gradient---btn-primary);
+            background-color: var(--origam-color---btn-primary-bg, transparent);
+            box-shadow: var(--origam-shadow---btn-primary);
+            --origam-btn---color: var(--origam-color---btn-primary-text);
+        }
 
-/* Secondary CTA — ghost driven by theme tokens */
-.home-cta__btn--docs {
-    background-image: var(--origam-gradient---btn-secondary);
-    background-color: var(--origam-color---btn-secondary-bg);
-    box-shadow: var(--origam-shadow---btn-secondary);
-    border: 1px solid var(--origam-color---btn-secondary-border);
-    --origam-btn---color: var(--origam-color---btn-secondary-text);
-    --origam-btn---density-padding-x: var(--origam-space---4, 1rem);
+        &--docs {
+            background-image: var(--origam-gradient---btn-secondary);
+            background-color: var(--origam-color---btn-secondary-bg);
+            box-shadow: var(--origam-shadow---btn-secondary);
+            border: 1px solid var(--origam-color---btn-secondary-border);
+            --origam-btn---color: var(--origam-color---btn-secondary-text);
+            --origam-btn---density-padding-x: var(--origam-space---4, 1rem);
+        }
+    }
 }
 </style>

@@ -207,6 +207,94 @@ export const TYPES_CATALOG: ITypeEntry[] = [
     },
 
     // ─────────────────────────────────────────────
+    // Media
+    // ─────────────────────────────────────────────
+    {
+        slug: 'audio-controls',
+        name: 'TAudioControls',
+        icon: 'mdi-play-circle-outline',
+        kind: 'type',
+        category: 'Media',
+        descriptionKey: 'types.catalog.audio_controls.description',
+        descriptionFallback: 'Controls rendering strategy for OrigamAudio — custom Origam UI or native browser controls.',
+    },
+    {
+        slug: 'audio-loop-mode',
+        name: 'TAudioLoopMode',
+        icon: 'mdi-repeat',
+        kind: 'type',
+        category: 'Media',
+        descriptionKey: 'types.catalog.audio_loop_mode.description',
+        descriptionFallback: 'Tri-state loop strategy for OrigamAudio when a playlist is active.',
+    },
+    {
+        slug: 'audio-variant',
+        name: 'TAudioVariant',
+        icon: 'mdi-music-box-outline',
+        kind: 'type',
+        category: 'Media',
+        descriptionKey: 'types.catalog.audio_variant.description',
+        descriptionFallback: 'Visual variant of OrigamAudio — expanded studio strip or compact transport dock.',
+    },
+
+    // ─────────────────────────────────────────────
+    // Layout
+    // ─────────────────────────────────────────────
+    {
+        slug: 'block',
+        name: 'block',
+        icon: 'mdi-arrow-expand-horizontal',
+        kind: 'type',
+        category: 'Layout',
+        descriptionKey: 'types.catalog.block.description',
+        descriptionFallback: 'Boolean prop on OrigamBtn that makes the button stretch to fill 100% of its container width.',
+    },
+    {
+        slug: 'blockquote-align',
+        name: 'TBlockquoteAlign',
+        icon: 'mdi-format-align-left',
+        kind: 'type',
+        category: 'Layout',
+        descriptionKey: 'types.catalog.blockquote_align.description',
+        descriptionFallback: 'Horizontal alignment of the citation body in OrigamBlockquote.',
+    },
+
+    // ─────────────────────────────────────────────
+    // Misc
+    // ─────────────────────────────────────────────
+    {
+        slug: 'always',
+        name: 'TAlways',
+        icon: 'mdi-infinity',
+        kind: 'type',
+        category: 'Misc',
+        descriptionKey: 'types.catalog.always.description',
+        descriptionFallback: 'Tri-state boolean prop pattern — forces a value always on, always off, or defers to the component default.',
+    },
+    {
+        slug: 'blockquote-lang',
+        name: 'TBlockquoteLang',
+        icon: 'mdi-translate',
+        kind: 'type',
+        category: 'Misc',
+        descriptionKey: 'types.catalog.blockquote_lang.description',
+        descriptionFallback: 'Locale hint for OrigamBlockquote decorative quote marks — only active for variant="quoted".',
+    },
+
+    // ─────────────────────────────────────────────
+    // Shape & Appearance (suite)
+    // ─────────────────────────────────────────────
+    {
+        slug: 'blockquote-variant',
+        name: 'TBlockquoteVariant',
+        icon: 'mdi-format-quote-open',
+        kind: 'type',
+        category: 'Shape & Appearance',
+        descriptionKey: 'types.catalog.blockquote_variant.description',
+        descriptionFallback: 'Visual typographic variants for OrigamBlockquote — five self-contained treatments from neutral to editorial.',
+    },
+
+    // ─────────────────────────────────────────────
     // Enums
     // ─────────────────────────────────────────────
     {

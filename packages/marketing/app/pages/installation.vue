@@ -533,130 +533,134 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
     flex-direction: column;
 }
 
-.installation-section__eyebrow {
-    margin: 0 0 var(--origam-space---3, 0.75rem);
-    font-size: var(--origam-font-size---xs, 0.75rem);
-    font-weight: var(--origam-font__weight---semibold, 600);
-    color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-}
+.installation-section {
+    &__eyebrow {
+        margin: 0 0 var(--origam-space---3, 0.75rem);
+        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-weight: var(--origam-font__weight---semibold, 600);
+        color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
 
-.installation-section__title {
-    margin: 0 0 var(--origam-space---2, 0.5rem);
-    display: flex;
-    flex-direction: column;
-    font-size: var(--origam-font-size---section, 3rem);
-    font-weight: var(--origam-font__weight---bold, 700);
-    letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
-    line-height: 1.05;
-    color: var(--origam-color__text---primary, #0a0a0a);
-}
+    &__title {
+        margin: 0 0 var(--origam-space---2, 0.5rem);
+        display: flex;
+        flex-direction: column;
+        font-size: var(--origam-font-size---section, 3rem);
+        font-weight: var(--origam-font__weight---bold, 700);
+        letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
+        line-height: 1.05;
+        color: var(--origam-color__text---primary, #0a0a0a);
 
-.installation-section__title--single {
-    display: block;
-}
+        &--single {
+            display: block;
+        }
+    }
 
-.installation-section__title-line--muted {
-    color: var(--origam-color__text---secondary, #525252);
-}
+    &__title-line {
+        &--muted {
+            color: var(--origam-color__text---secondary, #525252);
+        }
+    }
 
-.installation-section__subtitle {
-    margin: var(--origam-space---4, 1rem) 0 0;
-    max-inline-size: 42rem;
-    font-size: var(--origam-font-size---lg, 1.125rem);
-    line-height: 1.65;
-    color: var(--origam-color__text---secondary, #525252);
+    &__subtitle {
+        margin: var(--origam-space---4, 1rem) 0 0;
+        max-inline-size: 42rem;
+        font-size: var(--origam-font-size---lg, 1.125rem);
+        line-height: 1.65;
+        color: var(--origam-color__text---secondary, #525252);
+    }
 }
 
 .installation-hero {
     position: relative;
     padding-block: var(--origam-space---20, 5rem) var(--origam-space---16, 4rem);
     overflow: hidden;
-}
 
-.installation-hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: var(--origam-gradient---hero-grid);
-    background-size: 64px 64px;
-    background-position: center top;
-    -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
-    mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
-    pointer-events: none;
-    z-index: 0;
-}
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: var(--origam-gradient---hero-grid);
+        background-size: 64px 64px;
+        background-position: center top;
+        -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
+        mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
+        pointer-events: none;
+        z-index: 0;
+    }
 
-.installation-hero::after {
-    content: '';
-    position: absolute;
-    inset-inline: 0;
-    inset-block-start: 0;
-    block-size: 260px;
-    background-image: var(--origam-gradient---hero-glow);
-    pointer-events: none;
-    z-index: 0;
-}
+    &::after {
+        content: '';
+        position: absolute;
+        inset-inline: 0;
+        inset-block-start: 0;
+        block-size: 260px;
+        background-image: var(--origam-gradient---hero-glow);
+        pointer-events: none;
+        z-index: 0;
+    }
 
-.installation-hero__inner {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--origam-space---6, 1.5rem);
-    text-align: center;
-}
+    &__inner {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--origam-space---6, 1.5rem);
+        text-align: center;
+    }
 
-.installation-hero__badge {
-    --origam-chip---background-color: transparent;
-}
+    &__badge {
+        --origam-chip---background-color: transparent;
+    }
 
-.installation-hero__title {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: var(--origam-font-size---hero, 5.25rem);
-    font-weight: var(--origam-font-weight---extrabold, 800);
-    line-height: var(--origam-line-height---hero, 0.95);
-    letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
-    padding-block-end: 0.1em;
-    color: var(--origam-color__text---ink, #0a0a0a);
-}
+    &__title {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: var(--origam-font-size---hero, 5.25rem);
+        font-weight: var(--origam-font-weight---extrabold, 800);
+        line-height: var(--origam-line-height---hero, 0.95);
+        letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
+        padding-block-end: 0.1em;
+        color: var(--origam-color__text---ink, #0a0a0a);
+    }
 
-.installation-hero__title-line {
-    display: block;
-}
+    &__title-line {
+        display: block;
 
-.installation-hero__title-line--accent {
-    color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-}
+        &--accent {
+            color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+        }
+    }
 
-.installation-hero__subtitle {
-    margin: 0;
-    max-inline-size: 40rem;
-    font-size: var(--origam-font-size---lg, 1.125rem);
-    line-height: var(--origam-line-height---relaxed, 1.7);
-    color: var(--origam-color__text---secondary, #525252);
+    &__subtitle {
+        margin: 0;
+        max-inline-size: 40rem;
+        font-size: var(--origam-font-size---lg, 1.125rem);
+        line-height: var(--origam-line-height---relaxed, 1.7);
+        color: var(--origam-color__text---secondary, #525252);
+    }
 }
 
 .installation-steps {
     padding-block: var(--origam-space---24, 6rem);
-}
 
-.installation-steps__header {
-    margin-block-end: var(--origam-space---12, 3rem);
-}
+    &__header {
+        margin-block-end: var(--origam-space---12, 3rem);
+    }
 
-.installation-steps__list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+    &__list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
 }
 
 .installation-step {
@@ -664,68 +668,92 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
     grid-template-columns: 4rem 1fr;
     gap: 0 var(--origam-space---6, 1.5rem);
     list-style: none;
-}
 
-.installation-step__meta {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0;
-}
+    &--last {
+        .installation-step__connector {
+            display: none;
+        }
 
-.installation-step__avatar {
-    flex-shrink: 0;
-    z-index: 1;
-}
+        .installation-step__content {
+            padding-block-end: 0;
+        }
+    }
 
-.installation-step__connector {
-    flex: 1;
-    inline-size: 2px;
-    background: var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-    margin-block: var(--origam-space---2, 0.5rem);
-    min-block-size: var(--origam-space---8, 2rem);
-}
+    &__meta {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+    }
 
-.installation-step--last .installation-step__connector {
-    display: none;
-}
+    &__avatar {
+        flex-shrink: 0;
+        z-index: 1;
+    }
 
-.installation-step__content {
-    padding-block-end: var(--origam-space---12, 3rem);
-    min-inline-size: 0;
-}
+    &__connector {
+        flex: 1;
+        inline-size: 2px;
+        background: var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+        margin-block: var(--origam-space---2, 0.5rem);
+        min-block-size: var(--origam-space---8, 2rem);
+    }
 
-.installation-step--last .installation-step__content {
-    padding-block-end: 0;
-}
+    &__content {
+        padding-block-end: var(--origam-space---12, 3rem);
+        min-inline-size: 0;
+    }
 
-.installation-step__title {
-    display: block;
-    font-size: var(--origam-font-size---xl, 1.25rem);
-    font-weight: var(--origam-font__weight---bold, 700);
-    color: var(--origam-color__text---primary, #0a0a0a);
-    margin-block-end: var(--origam-space---3, 0.75rem);
-    margin-block-start: var(--origam-space---2, 0.5rem);
-}
+    &__title {
+        display: block;
+        font-size: var(--origam-font-size---xl, 1.25rem);
+        font-weight: var(--origam-font__weight---bold, 700);
+        color: var(--origam-color__text---primary, #0a0a0a);
+        margin-block-end: var(--origam-space---3, 0.75rem);
+        margin-block-start: var(--origam-space---2, 0.5rem);
+    }
 
-.installation-step__desc {
-    margin: 0 0 var(--origam-space---4, 1rem);
-    font-size: var(--origam-font-size---base, 1rem);
-    line-height: 1.65;
-    color: var(--origam-color__text---secondary, #525252);
-    max-inline-size: 52rem;
-}
+    &__desc {
+        margin: 0 0 var(--origam-space---4, 1rem);
+        font-size: var(--origam-font-size---base, 1rem);
+        line-height: 1.65;
+        color: var(--origam-color__text---secondary, #525252);
+        max-inline-size: 52rem;
+    }
 
-.installation-step__sublabel {
-    margin: var(--origam-space---5, 1.25rem) 0 var(--origam-space---2, 0.5rem);
-    font-size: var(--origam-font-size---sm, 0.875rem);
-    font-weight: var(--origam-font__weight---semibold, 600);
-    color: var(--origam-color__text---primary, #0a0a0a);
-}
+    &__sublabel {
+        margin: var(--origam-space---5, 1.25rem) 0 var(--origam-space---2, 0.5rem);
+        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-weight: var(--origam-font__weight---semibold, 600);
+        color: var(--origam-color__text---primary, #0a0a0a);
+    }
 
-.installation-step__code {
-    max-inline-size: 52rem;
-    margin-block-end: var(--origam-space---3, 0.75rem);
+    &__code {
+        max-inline-size: 52rem;
+        margin-block-end: var(--origam-space---3, 0.75rem);
+    }
+
+    &__pm-tabs {
+        align-self: stretch;
+        --origam-tabs---border-width: 0;
+    }
+
+    &__code-copy {
+        flex-shrink: 0;
+        align-self: center;
+    }
+
+    &__note {
+        margin: var(--origam-space---3, 0.75rem) 0 0;
+        padding: var(--origam-space---3, 0.75rem) var(--origam-space---4, 1rem);
+        border-inline-start: 3px solid var(--origam-color__action--primary---bg, #7c3aed);
+        background: var(--origam-color__surface---sunken, #f5f5f5);
+        border-radius: 0 var(--origam-radius---sm, 4px) var(--origam-radius---sm, 4px) 0;
+        font-size: var(--origam-font-size---sm, 0.875rem);
+        line-height: 1.65;
+        color: var(--origam-color__text---secondary, #525252);
+        max-inline-size: 52rem;
+    }
 }
 
 :deep([data-cy="installation-code-install"] .origam-code__header) {
@@ -736,78 +764,56 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
     gap: var(--origam-space---4, 1rem);
 }
 
-.installation-step__pm-tabs {
-    align-self: stretch;
-    --origam-tabs---border-width: 0;
-}
-
-.installation-step__code-copy {
-    flex-shrink: 0;
-    align-self: center;
-}
-
-.installation-step__note {
-    margin: var(--origam-space---3, 0.75rem) 0 0;
-    padding: var(--origam-space---3, 0.75rem) var(--origam-space---4, 1rem);
-    border-inline-start: 3px solid var(--origam-color__action--primary---bg, #7c3aed);
-    background: var(--origam-color__surface---sunken, #f5f5f5);
-    border-radius: 0 var(--origam-radius---sm, 4px) var(--origam-radius---sm, 4px) 0;
-    font-size: var(--origam-font-size---sm, 0.875rem);
-    line-height: 1.65;
-    color: var(--origam-color__text---secondary, #525252);
-    max-inline-size: 52rem;
-}
-
 .installation-peer-deps {
     padding-block: var(--origam-space---24, 6rem);
     background: var(--origam-color__surface---sunken, #f5f5f5);
     border-block: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-}
 
-.installation-peer-deps__header {
-    margin-block-end: var(--origam-space---10, 2.5rem);
-}
+    &__header {
+        margin-block-end: var(--origam-space---10, 2.5rem);
+    }
 
-.installation-peer-deps__table {
-    inline-size: 100%;
-    max-inline-size: 48rem;
-}
+    &__table {
+        inline-size: 100%;
+        max-inline-size: 48rem;
+    }
 
-.installation-peer-deps__th {
-    text-align: left;
-    font-size: var(--origam-font-size---sm, 0.875rem);
-    font-weight: var(--origam-font__weight---semibold, 600);
-    color: var(--origam-color__text---primary, #0a0a0a);
-    padding-block: var(--origam-space---3, 0.75rem);
-    padding-inline: var(--origam-space---4, 1rem);
-}
+    &__th {
+        text-align: left;
+        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-weight: var(--origam-font__weight---semibold, 600);
+        color: var(--origam-color__text---primary, #0a0a0a);
+        padding-block: var(--origam-space---3, 0.75rem);
+        padding-inline: var(--origam-space---4, 1rem);
+    }
 
-.installation-peer-deps__td {
-    padding-block: var(--origam-space---3, 0.75rem);
-    padding-inline: var(--origam-space---4, 1rem);
-    font-size: var(--origam-font-size---sm, 0.875rem);
-    line-height: 1.6;
-    color: var(--origam-color__text---secondary, #525252);
-    vertical-align: middle;
-}
+    &__td {
+        padding-block: var(--origam-space---3, 0.75rem);
+        padding-inline: var(--origam-space---4, 1rem);
+        font-size: var(--origam-font-size---sm, 0.875rem);
+        line-height: 1.6;
+        color: var(--origam-color__text---secondary, #525252);
+        vertical-align: middle;
 
-.installation-peer-deps__td--pkg,
-.installation-peer-deps__td--version {
-    white-space: nowrap;
-    vertical-align: middle;
-}
+        &--pkg,
+        &--version {
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+    }
 
-.installation-peer-deps__pkg-code,
-.installation-peer-deps__version-code {
-    display: inline-flex;
-}
+    &__pkg-code,
+    &__version-code {
+        display: inline-flex;
+    }
 
-.installation-peer-deps__note {
-    margin-block-start: var(--origam-space---5, 1.25rem);
-    font-size: var(--origam-font-size---sm, 0.875rem);
-    color: var(--origam-color__text---tertiary, #737373);
-    font-style: italic;
-    max-inline-size: 48rem;
+    &__note {
+        margin-block-start: var(--origam-space---5, 1.25rem);
+        font-size: var(--origam-font-size---sm, 0.875rem);
+        color: var(--origam-color__text---tertiary, #737373);
+        font-style: italic;
+        max-inline-size: 48rem;
+    }
 }
 
 .installation-cta {
@@ -815,94 +821,100 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
     padding-block: var(--origam-space---30, 7.5rem);
     padding-inline: var(--origam-space---6, 1.5rem);
     overflow: hidden;
-}
 
-.installation-cta::before {
-    content: '';
-    position: absolute;
-    inset-inline: 0;
-    inset-block-start: 0;
-    block-size: 280px;
-    background-image: var(--origam-gradient---cta-glow-top);
-    pointer-events: none;
-    z-index: 0;
-}
+    &::before {
+        content: '';
+        position: absolute;
+        inset-inline: 0;
+        inset-block-start: 0;
+        block-size: 280px;
+        background-image: var(--origam-gradient---cta-glow-top);
+        pointer-events: none;
+        z-index: 0;
+    }
 
-.installation-cta__inner {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--origam-space---6, 1.5rem);
-    max-inline-size: 48rem;
-    margin-inline: auto;
-    text-align: center;
-}
+    &__inner {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--origam-space---6, 1.5rem);
+        max-inline-size: 48rem;
+        margin-inline: auto;
+        text-align: center;
+    }
 
-.installation-cta__title {
-    margin: 0;
-    font-size: var(--origam-font-size---cta, 4rem) !important;
-    font-weight: var(--origam-font-weight---extrabold, 800);
-    letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
-    line-height: var(--origam-line-height---hero, 0.95);
-    color: var(--origam-color__text---ink, #0a0a0a);
-}
+    &__title {
+        margin: 0;
+        font-size: var(--origam-font-size---cta, 4rem) !important;
+        font-weight: var(--origam-font-weight---extrabold, 800);
+        letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
+        line-height: var(--origam-line-height---hero, 0.95);
+        color: var(--origam-color__text---ink, #0a0a0a);
+    }
 
-.installation-cta__desc {
-    margin: 0;
-    font-size: var(--origam-font-size---lg, 1.125rem);
-    color: var(--origam-color__text---secondary, #525252);
-    max-inline-size: 36rem;
-}
+    &__desc {
+        margin: 0;
+        font-size: var(--origam-font-size---lg, 1.125rem);
+        color: var(--origam-color__text---secondary, #525252);
+        max-inline-size: 36rem;
+    }
 
-.installation-cta__actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: var(--origam-space---3, 0.75rem);
-    margin-block-start: var(--origam-space---2, 0.5rem);
-}
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: var(--origam-space---3, 0.75rem);
+        margin-block-start: var(--origam-space---2, 0.5rem);
+    }
 
-.installation-cta__btn {
-    --origam-btn---height: 52px;
-    --origam-btn---density: 0px;
-    --origam-btn---density-padding-x: var(--origam-space---6, 1.5rem);
-    --origam-btn---font-size: 1rem;
-    --origam-btn---font-weight: 400;
-    --origam-btn---border-radius: var(--origam-radius---btn, 10px);
-}
+    &__btn {
+        --origam-btn---height: 52px;
+        --origam-btn---density: 0px;
+        --origam-btn---density-padding-x: var(--origam-space---6, 1.5rem);
+        --origam-btn---font-size: 1rem;
+        --origam-btn---font-weight: 400;
+        --origam-btn---border-radius: var(--origam-radius---btn, 10px);
 
-.installation-cta__btn--primary {
-    background-image: var(--origam-gradient---btn-primary);
-    background-color: var(--origam-color---btn-primary-bg, transparent);
-    box-shadow: var(--origam-shadow---btn-primary);
-    --origam-btn---color: var(--origam-color---btn-primary-text);
-}
+        &--primary {
+            background-image: var(--origam-gradient---btn-primary);
+            background-color: var(--origam-color---btn-primary-bg, transparent);
+            box-shadow: var(--origam-shadow---btn-primary);
+            --origam-btn---color: var(--origam-color---btn-primary-text);
+        }
 
-.installation-cta__btn--secondary {
-    background-image: var(--origam-gradient---btn-secondary);
-    background-color: var(--origam-color---btn-secondary-bg);
-    box-shadow: var(--origam-shadow---btn-secondary);
-    border: 1px solid var(--origam-color---btn-secondary-border);
-    --origam-btn---color: var(--origam-color---btn-secondary-text);
-    --origam-btn---density-padding-x: var(--origam-space---4, 1rem);
+        &--secondary {
+            background-image: var(--origam-gradient---btn-secondary);
+            background-color: var(--origam-color---btn-secondary-bg);
+            box-shadow: var(--origam-shadow---btn-secondary);
+            border: 1px solid var(--origam-color---btn-secondary-border);
+            --origam-btn---color: var(--origam-color---btn-secondary-text);
+            --origam-btn---density-padding-x: var(--origam-space---4, 1rem);
+        }
+    }
 }
 
 @media (max-width: 1080px) {
-    .installation-hero__title {
-        font-size: clamp(2.5rem, 9vw, 5.25rem);
+    .installation-hero {
+        &__title {
+            font-size: clamp(2.5rem, 9vw, 5.25rem);
+        }
     }
 }
 
 @media (max-width: 768px) {
-    .installation-section__title {
-        font-size: clamp(1.75rem, 7vw, 3rem);
+    .installation-section {
+        &__title {
+            font-size: clamp(1.75rem, 7vw, 3rem);
+        }
     }
 
-    .installation-cta__title {
-        font-size: clamp(2rem, 8vw, 4rem) !important;
+    .installation-cta {
+        &__title {
+            font-size: clamp(2rem, 8vw, 4rem) !important;
+        }
     }
 
     .installation-step {
@@ -914,15 +926,15 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
 @media (max-width: 640px) {
     .installation-step {
         grid-template-columns: 1fr;
-    }
 
-    .installation-step__meta {
-        flex-direction: row;
-        margin-block-end: var(--origam-space---3, 0.75rem);
-    }
+        &__meta {
+            flex-direction: row;
+            margin-block-end: var(--origam-space---3, 0.75rem);
+        }
 
-    .installation-step__connector {
-        display: none;
+        &__connector {
+            display: none;
+        }
     }
 }
 </style>

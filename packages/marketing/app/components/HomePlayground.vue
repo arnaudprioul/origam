@@ -115,157 +115,141 @@ const { t } = useT()
     margin-inline: auto;
     width: 100%;
     box-sizing: border-box;
-}
 
-.home-playground__intro {
-    text-align: center;
-    margin-block-end: var(--origam-space---12, 3rem);
-}
+    &__intro {
+        text-align: center;
+        margin-block-end: var(--origam-space---12, 3rem);
+    }
 
-/* DS gap: no DS prop sets text-transform / wide tracking on a bare <p>.
-   Colour is the sobre action-primary fgSubtle token (purple), zero CSS. */
-.home-playground__eyebrow {
-    margin: 0 0 var(--origam-space---3, 0.75rem);
-    font-size: var(--origam-font-size---xs, 0.75rem);
-    font-weight: var(--origam-font__weight---semibold, 600);
-    color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+    &__eyebrow {
+        margin: 0 0 var(--origam-space---3, 0.75rem);
+        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-weight: var(--origam-font__weight---semibold, 600);
+        color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
 
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-}
+    &__title {
+        margin: 0;
+        font-size: var(--origam-font-size---section, 3rem);
+        font-weight: var(--origam-font__weight---bold, 700);
+        line-height: 1;
+        letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
+        color: var(--origam-color__text---primary, #0a0a0a);
+    }
 
-/* DS gap: section display size/tracking exceed OrigamTitle's token scale
-   (max 3xl). Consumes the marketing display tokens, like the Hero H1. */
-.home-playground__title {
-    margin: 0;
-    font-size: var(--origam-font-size---section, 3rem);
-    font-weight: var(--origam-font__weight---bold, 700);
-    line-height: 1;
-    letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
-    color: var(--origam-color__text---primary, #0a0a0a);
-}
+    &__window {
+        margin: 0;
+    }
 
-.home-playground__window {
-    margin: 0;
-}
+    &__frame {
+        overflow: hidden;
+    }
 
-/* DS gap: OrigamSheet defaults to display:block with no overflow clip; the
-   editor frame needs to clip the toolbar/REPL to the rounded corners. */
-.home-playground__frame {
-    overflow: hidden;
-}
+    &__toolbar {
+        display: flex;
+        align-items: center;
+        gap: var(--origam-space---3, 0.75rem);
+        padding: var(--origam-space---2, 0.5rem) var(--origam-space---4, 1rem);
+        background-color: var(--origam-color__surface---overlay, #f5f5f5);
+        border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+    }
 
-/* DS gap: no DS toolbar component — the chrome bar surface comes from the
-   sobre overlay token; the bottom rule from the sobre border token. */
-.home-playground__toolbar {
-    display: flex;
-    align-items: center;
-    gap: var(--origam-space---3, 0.75rem);
-    padding: var(--origam-space---2, 0.5rem) var(--origam-space---4, 1rem);
-    background-color: var(--origam-color__surface---overlay, #f5f5f5);
-    border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-}
+    &__traffic {
+        display: flex;
+        align-items: center;
+        gap: var(--origam-space---1, 0.25rem);
+        flex-shrink: 0;
+    }
 
-.home-playground__traffic {
-    display: flex;
-    align-items: center;
-    gap: var(--origam-space---1, 0.25rem);
-    flex-shrink: 0;
-}
+    &__dot {
+        display: block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
 
-/* Traffic-light dots: macOS SYSTEM colours (red/amber/green), intentionally
-   NOT tokenised — they are a brand-of-macOS decorative motif, not part of the
-   origam palette. Documented exception (REBUILD-PLAN §2.4). */
-.home-playground__dot {
-    display: block;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-}
+        &--red    { background-color: #FF5F57; }
+        &--yellow { background-color: #FFBC2E; }
+        &--green  { background-color: #28C840; }
+    }
 
-.home-playground__dot--red    { background-color: #FF5F57; }
-.home-playground__dot--yellow { background-color: #FFBC2E; }
-.home-playground__dot--green  { background-color: #28C840; }
+    &__tab {
+        flex: 1;
+        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-weight: var(--origam-font__weight---medium, 500);
+        color: var(--origam-color__text---secondary, #525252);
+        font-family: var(--origam-font__family---mono, ui-monospace, monospace);
+    }
 
-.home-playground__tab {
-    flex: 1;
-    font-size: var(--origam-font-size---sm, 0.875rem);
-    font-weight: var(--origam-font__weight---medium, 500);
-    color: var(--origam-color__text---secondary, #525252);
-    font-family: var(--origam-font__family---mono, ui-monospace, monospace);
-}
+    &__panes {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        min-block-size: 320px;
+    }
 
-/* Two-pane split: code (left) | live preview (right), like the maquette.
-   No DS prop lays out a split editor — CSS grid, divider is the sobre border. */
-.home-playground__panes {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    min-block-size: 320px;
-}
+    &__code {
+        --origam-code---border-radius: 0;
+        --origam-code---border-width: 0;
+        border-inline-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+        overflow: hidden;
+        font-size: var(--origam-font-size---sm, 0.875rem);
+    }
 
-/* OrigamCode fills the left pane flush (the frame owns the rounding/clip);
-   surface/colours come from the theme. */
-.home-playground__code {
-    --origam-code---border-radius: 0;
-    --origam-code---border-width: 0;
-    border-inline-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-    overflow: hidden;
-    font-size: var(--origam-font-size---sm, 0.875rem);
-}
+    &__preview {
+        display: grid;
+        place-items: center;
+        padding: var(--origam-space---8, 2.5rem);
+        background-color: var(--origam-color__surface---raised, #fafafa);
+        background-image: radial-gradient(var(--origam-color__border---default, rgba(0, 0, 0, 0.08)) 1.5px, transparent 1.5px);
+        background-size: 18px 18px;
+    }
 
-/* DS gap: no DS token paints a dotted-grid preview backdrop. 16px dot grid,
-   theme-aware via the sobre subtle-border token. */
-.home-playground__preview {
-    display: grid;
-    place-items: center;
-    padding: var(--origam-space---8, 2.5rem);
-    background-color: var(--origam-color__surface---raised, #fafafa);
-    background-image: radial-gradient(var(--origam-color__border---default, rgba(0, 0, 0, 0.08)) 1.5px, transparent 1.5px);
-    background-size: 18px 18px;
-}
+    &__preview-card {
+        display: flex;
+        flex-direction: column;
+        gap: var(--origam-space---3, 0.75rem);
+        align-items: flex-start;
+        max-inline-size: 22rem;
+        padding: var(--origam-space---6, 1.5rem);
+    }
 
-.home-playground__preview-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--origam-space---3, 0.75rem);
-    align-items: flex-start;
-    max-inline-size: 22rem;
-    padding: var(--origam-space---6, 1.5rem);
-}
+    &__preview-title {
+        --origam-title---font-size: var(--origam-font-size---xl, 1.25rem);
+        --origam-title---font-weight: 700;
+        margin: 0;
+    }
 
-.home-playground__preview-title {
-    --origam-title---font-size: var(--origam-font-size---xl, 1.25rem);
-    --origam-title---font-weight: 700;
-    margin: 0;
-}
+    &__preview-text {
+        margin: 0;
+        font-size: var(--origam-font-size---sm, 0.875rem);
+        line-height: 1.5;
+        color: var(--origam-color__text---secondary, #525252);
+    }
 
-.home-playground__preview-text {
-    margin: 0;
-    font-size: var(--origam-font-size---sm, 0.875rem);
-    line-height: 1.5;
-    color: var(--origam-color__text---secondary, #525252);
-}
+    &__preview-btn {
+        margin-block-start: var(--origam-space---2, 0.5rem);
+    }
 
-.home-playground__preview-btn {
-    margin-block-start: var(--origam-space---2, 0.5rem);
+    &__caption {
+        display: block;
+        margin-block-start: var(--origam-space---4, 1rem);
+        font-size: var(--origam-font-size---sm, 0.875rem);
+        color: var(--origam-color__text---secondary, #525252);
+        text-align: center;
+    }
 }
 
 @media (max-width: 800px) {
-    .home-playground__panes {
-        grid-template-columns: 1fr;
-    }
+    .home-playground {
+        &__panes {
+            grid-template-columns: 1fr;
+        }
 
-    .home-playground__code {
-        border-inline-end: 0;
-        border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+        &__code {
+            border-inline-end: 0;
+            border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+        }
     }
-}
-
-.home-playground__caption {
-    display: block;
-    margin-block-start: var(--origam-space---4, 1rem);
-    font-size: var(--origam-font-size---sm, 0.875rem);
-    color: var(--origam-color__text---secondary, #525252);
-    text-align: center;
 }
 </style>

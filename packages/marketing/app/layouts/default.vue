@@ -338,10 +338,10 @@
     border-radius: var(--origam-radius---md, 0.5rem);
     transform: translateY(-200%);
     transition: transform 0.2s ease;
-  }
 
-  .skip-link:focus {
-    transform: translateY(0);
+    &:focus {
+      transform: translateY(0);
+    }
   }
 
   .brand {
@@ -349,25 +349,25 @@
     align-items: center;
     gap: var(--origam-space---2, 0.5rem);
     font-weight: 700;
-  }
 
-  .brand__logo {
-    flex: none;
-    inline-size: 26px;
-    block-size: 26px;
-  }
+    &__logo {
+      flex: none;
+      inline-size: 26px;
+      block-size: 26px;
+    }
 
-  .brand__name {
-    font-size: var(--origam-font-size---lg, 1.125rem);
-  }
+    &__name {
+      font-size: var(--origam-font-size---lg, 1.125rem);
+    }
 
-  .brand__version {
-    font-size: var(--origam-font-size---xs, 0.75rem);
-    font-weight: 500;
-    color: var(--origam-color__text---secondary, #525252);
-    padding-inline: var(--origam-space---1, 0.25rem);
-    border-radius: var(--origam-radius---sm, 0.25rem);
-    background-color: var(--origam-color__surface---variant, rgba(0, 0, 0, 0.04));
+    &__version {
+      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-weight: 500;
+      color: var(--origam-color__text---secondary, #525252);
+      padding-inline: var(--origam-space---1, 0.25rem);
+      border-radius: var(--origam-radius---sm, 0.25rem);
+      background-color: var(--origam-color__surface---variant, rgba(0, 0, 0, 0.04));
+    }
   }
 
   .site-appbar {
@@ -382,44 +382,44 @@
     align-items: center;
     flex-wrap: nowrap;
     gap: var(--origam-space---1, 0.25rem);
-  }
 
-  .primary-nav__link {
-    --origam-btn---font-size: 13px;
-    --origam-btn---font-weight: 500;
-    --origam-btn---color: var(--origam-color__text---secondary, #525252);
-    --origam-btn---padding-inline: var(--origam-space---3, 0.75rem);
-    --origam-btn---height: 34px;
-    --origam-btn---min-height: 34px;
-    --origam-btn---background-color: transparent;
-    --origam-btn---overlay-opacity-hover: 0.06;
-  }
+    &__link {
+      --origam-btn---font-size: 13px;
+      --origam-btn---font-weight: 500;
+      --origam-btn---color: var(--origam-color__text---secondary, #525252);
+      --origam-btn---padding-inline: var(--origam-space---3, 0.75rem);
+      --origam-btn---height: 34px;
+      --origam-btn---min-height: 34px;
+      --origam-btn---background-color: transparent;
+      --origam-btn---overlay-opacity-hover: 0.06;
 
-  .primary-nav__link:hover {
-    --origam-btn---color: var(--origam-color__text---primary, #0a0a0a);
+      &:hover {
+        --origam-btn---color: var(--origam-color__text---primary, #0a0a0a);
+      }
+    }
   }
 
   .appbar-actions {
     display: flex;
     align-items: center;
     gap: var(--origam-space---2, 0.5rem);
-  }
 
-  .appbar-actions__btn {
-    --origam-btn---height: 38px;
-    --origam-btn---min-height: 38px;
-    --origam-btn---font-size: 13px;
-    --origam-btn---font-weight: 600;
-    --origam-btn---padding-inline: var(--origam-space---3, 0.75rem);
-    --origam-btn---border-radius: 10px;
-    --origam-btn---border-color: var(--origam-color__border---default, rgba(0, 0, 0, 0.12));
-    --origam-btn---color: var(--origam-color__text---primary, #0a0a0a);
-  }
+    &__btn {
+      --origam-btn---height: 38px;
+      --origam-btn---min-height: 38px;
+      --origam-btn---font-size: 13px;
+      --origam-btn---font-weight: 600;
+      --origam-btn---padding-inline: var(--origam-space---3, 0.75rem);
+      --origam-btn---border-radius: 10px;
+      --origam-btn---border-color: var(--origam-color__border---default, rgba(0, 0, 0, 0.12));
+      --origam-btn---color: var(--origam-color__text---primary, #0a0a0a);
 
-  .appbar-actions__btn--icon {
-    --origam-btn---padding-inline: 0;
-    inline-size: 38px;
-    --origam-btn---font-size: 18px;
+      &--icon {
+        --origam-btn---padding-inline: 0;
+        inline-size: 38px;
+        --origam-btn---font-size: 18px;
+      }
+    }
   }
 
   .search-field {
@@ -429,12 +429,14 @@
     --origam-field__input---font-size: 13px;
   }
 
-  .theme-switcher__swatch {
-    display: inline-block;
-    inline-size: 16px;
-    block-size: 16px;
-    border-radius: var(--origam-radius---sm, 4px);
-    background: linear-gradient(135deg, var(--origam-color__action--primary---bg, #7c3aed), var(--origam-color__text---ink, #0a0a0a));
+  .theme-switcher {
+    &__swatch {
+      display: inline-block;
+      inline-size: 16px;
+      block-size: 16px;
+      border-radius: var(--origam-radius---sm, 4px);
+      background: linear-gradient(135deg, var(--origam-color__action--primary---bg, #7c3aed), var(--origam-color__text---ink, #0a0a0a));
+    }
   }
 
   .site-footer {
@@ -444,77 +446,77 @@
     padding: var(--origam-space---10, 4rem) var(--origam-space---6, 1.5rem) var(--origam-space---6, 1.5rem);
     border-block-start: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
     color: var(--origam-color__text---secondary, #525252);
-  }
 
-  .site-footer__top {
-    align-items: start;
-  }
+    &__top {
+      align-items: start;
+    }
 
-  .site-footer__brand {
-    display: flex;
-    flex-direction: column;
-    gap: var(--origam-space---3, 0.75rem);
-    max-inline-size: 22rem;
-  }
+    &__brand {
+      display: flex;
+      flex-direction: column;
+      gap: var(--origam-space---3, 0.75rem);
+      max-inline-size: 22rem;
+    }
 
-  .site-footer__tagline {
-    margin: 0;
-    font-size: var(--origam-font-size---md, 1rem);
-    line-height: 1.5;
-    color: var(--origam-color__text---secondary, #525252);
-  }
+    &__tagline {
+      margin: 0;
+      font-size: var(--origam-font-size---md, 1rem);
+      line-height: 1.5;
+      color: var(--origam-color__text---secondary, #525252);
+    }
 
-  .site-footer__column {
-    display: flex;
-    flex-direction: column;
-    gap: var(--origam-space---2, 0.5rem);
-  }
+    &__column {
+      display: flex;
+      flex-direction: column;
+      gap: var(--origam-space---2, 0.5rem);
+    }
 
-  .site-footer__column-title {
-    --origam-title---font-size: var(--origam-font-size---xs, 0.75rem);
-    --origam-title---color: var(--origam-color__text---secondary, #525252);
-    --origam-title---font-weight: 600;
-    --origam-title---letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
+    &__column-title {
+      --origam-title---font-size: var(--origam-font-size---xs, 0.75rem);
+      --origam-title---color: var(--origam-color__text---secondary, #525252);
+      --origam-title---font-weight: 600;
+      --origam-title---letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
 
-  .site-footer__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--origam-space---2, 0.5rem);
-  }
+    &__list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--origam-space---2, 0.5rem);
+    }
 
-  .site-footer__link {
-    font-size: var(--origam-font-size---sm, 0.875rem);
-    color: var(--origam-color__text---secondary, #525252);
-    text-decoration: none;
-    transition: color 0.15s ease;
-  }
+    &__link {
+      font-size: var(--origam-font-size---sm, 0.875rem);
+      color: var(--origam-color__text---secondary, #525252);
+      text-decoration: none;
+      transition: color 0.15s ease;
 
-  .site-footer__link:hover,
-  .site-footer__link:focus-visible {
-    color: var(--origam-color__action--primary---bg, #7c3aed);
-  }
+      &:hover,
+      &:focus-visible {
+        color: var(--origam-color__action--primary---bg, #7c3aed);
+      }
+    }
 
-  .site-footer__rule {
-    --origam-divider---opacity: 1;
-    --origam-divider---border-top-width: 1px;
-    --origam-divider---color: var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-  }
+    &__rule {
+      --origam-divider---opacity: 1;
+      --origam-divider---border-top-width: 1px;
+      --origam-divider---color: var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+    }
 
-  .site-footer__bottom {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: var(--origam-space---2, 0.5rem);
-  }
+    &__bottom {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: var(--origam-space---2, 0.5rem);
+    }
 
-  .site-footer__line {
-    margin: 0;
-    font-size: var(--origam-font-size---sm, 0.875rem);
+    &__line {
+      margin: 0;
+      font-size: var(--origam-font-size---sm, 0.875rem);
+    }
   }
 </style>
 

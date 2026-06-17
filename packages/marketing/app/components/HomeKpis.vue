@@ -56,49 +56,42 @@ const { t } = useT()
 .home-kpis {
     padding-block: var(--origam-space---10, 2.5rem);
     padding-inline: var(--origam-space---6, 1.5rem);
-}
 
-.home-kpis__list {
-    margin: 0;
-    padding-block: var(--origam-space---10, 2.5rem);
-    padding-inline: 0;
-    text-align: center;
-}
+    &__list {
+        margin: 0;
+        padding-block: var(--origam-space---10, 2.5rem);
+        padding-inline: 0;
+        text-align: center;
+    }
 
-/* <dt> (label) precedes <dd> (value) in source for correct <dl> semantics;
-   column-reverse renders the big number on top per the maquette. */
-.home-kpis__item {
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: center;
-    gap: var(--origam-space---2, 0.5rem);
-}
+    &__item {
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        gap: var(--origam-space---2, 0.5rem);
+    }
 
-.home-kpis__value {
-    margin: 0;
-    background: var(--origam-gradient---kpi-value);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-    line-height: 1;
-    font-weight: var(--origam-font-weight---extrabold, 800);
-    letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
+    &__value {
+        margin: 0;
+        background: var(--origam-gradient---kpi-value);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+        line-height: 1;
+        font-weight: var(--origam-font-weight---extrabold, 800);
+        letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
+        font-size: 2.5rem;
+    }
 
-    /* DS gap: maquette KPI number is 40px; the DS font-size scale stops at
-       5xl (36px). No DS scalar token matches — literal dimension, no DS hook. */
-    font-size: 2.5rem;
-}
-
-.home-kpis__label {
-    margin: 0;
-    font-size: var(--origam-font-size---xs, 0.75rem);
-    font-weight: var(--origam-font__weight---medium, 500);
-    color: var(--origam-color__text---secondary, #525252);
-
-    /* DS gap: no DS prop sets text-transform / letter-spacing on bare text. */
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    &__label {
+        margin: 0;
+        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-weight: var(--origam-font__weight---medium, 500);
+        color: var(--origam-color__text---secondary, #525252);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
 }
 
 .sr-only {
