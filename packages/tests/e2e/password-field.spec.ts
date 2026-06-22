@@ -24,7 +24,7 @@ test.describe('OrigamPasswordField — 6 display modes (PDF-aligned)', () => {
 
         // 4 segments must be mounted regardless of value (always rendered
         // when `strengthBar=true`, just with different colours).
-        const segments = sandbox.locator('[data-cy="password-field-strength-bar"] ~ * .origam-password-field__strength-segment, [data-cy="password-field-strength-bar"] .origam-password-field__strength-segment')
+        const _segments = sandbox.locator('[data-cy="password-field-strength-bar"] ~ * .origam-password-field__strength-segment, [data-cy="password-field-strength-bar"] .origam-password-field__strength-segment')
         // The strength-segment is rendered inside the field's `#details`
         // slot, which is a sibling of the wrapper. Use the broader span
         // locator to target across both possible DOM ancestors.
@@ -112,7 +112,7 @@ test.describe('OrigamPasswordField — 6 display modes (PDF-aligned)', () => {
         await expect(wrapper).toBeVisible({ timeout: 5000 })
 
         // Strength-bar segments must NOT be in the DOM at all.
-        const segmentCount = await sandbox.locator('[data-cy="password-field-minimal"] ~ * .origam-password-field__strength-segment, [data-cy="password-field-minimal"] .origam-password-field__strength-segment').count()
+        const _segmentCount = await sandbox.locator('[data-cy="password-field-minimal"] ~ * .origam-password-field__strength-segment, [data-cy="password-field-minimal"] .origam-password-field__strength-segment').count()
         // Use a more direct scoped count: the panel only contains this
         // Variant, so a count across the sandbox is also valid.
         const totalSegments = await sandbox.locator('.origam-password-field__strength-segment').count()

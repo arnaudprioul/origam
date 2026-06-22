@@ -535,7 +535,7 @@ test.describe('OrigamBadge', () => {
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const badge = sandbox.locator('.origam-badge').first()
+        const _badge = sandbox.locator('.origam-badge').first()
         const chip = sandbox.locator('.origam-badge__badge').first()
         await expect(chip).toBeVisible({ timeout: 5000 })
 

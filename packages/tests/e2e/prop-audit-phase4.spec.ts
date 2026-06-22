@@ -90,7 +90,7 @@ test.describe('DOM audit — OrigamCard', () => {
 // Contract documented: SKIP reason logged, not a failure.
 
 test.describe('DOM audit — OrigamSheet', () => {
-    test('Color/primary — no dedicated story data-cy exists (best-effort SKIP)', async ({ page }) => {
+    test('Color/primary — no dedicated story data-cy exists (best-effort SKIP)', async () => {
         test.skip(true, [
             'OrigamSheet.story.vue has no static Color/primary variant with a data-cy.',
             'The playground uses HstSelect for bgColor — cannot drive programmatically.',
@@ -103,7 +103,7 @@ test.describe('DOM audit — OrigamSheet', () => {
 // Same situation as Sheet — no dedicated Color/primary variant.
 
 test.describe('DOM audit — OrigamDrawer', () => {
-    test('Color/primary — no dedicated story data-cy exists (best-effort SKIP)', async ({ page }) => {
+    test('Color/primary — no dedicated story data-cy exists (best-effort SKIP)', async () => {
         test.skip(true, [
             'OrigamDrawer.story.vue has no static Color/primary variant with a data-cy.',
             'Recommendation Phase 5: add a static Color variant with data-cy="drawer-color-primary".'
@@ -117,7 +117,7 @@ test.describe('DOM audit — OrigamDrawer', () => {
 // Contract: SKIP with recommendation.
 
 test.describe('DOM audit — OrigamMenu', () => {
-    test('Color/primary — no dedicated color story exists (best-effort SKIP)', async ({ page }) => {
+    test('Color/primary — no dedicated color story exists (best-effort SKIP)', async () => {
         test.skip(true, [
             'OrigamMenu.story.vue has no Color/primary variant.',
             'Menu renders in a Teleport; the __content BEM child must be queried',
@@ -153,7 +153,7 @@ test.describe('DOM audit — OrigamTooltip', () => {
         // Recommendation Phase 5: add a static Color variant in the story.
     })
 
-    test('Color/primary — no dedicated story data-cy exists (best-effort SKIP)', async ({ page }) => {
+    test('Color/primary — no dedicated story data-cy exists (best-effort SKIP)', async () => {
         test.skip(true, [
             'OrigamTooltip.story.vue has no Color/primary variant.',
             'Recommendation Phase 5: add a static Color variant with',
@@ -187,7 +187,7 @@ test.describe('DOM audit — OrigamSnackbar', () => {
         expect(classes).not.toMatch(/origam--bg-(?!undefined)/)
     })
 
-    test('Color/primary — no dedicated story data-cy exists (best-effort SKIP)', async ({ page }) => {
+    test('Color/primary — no dedicated story data-cy exists (best-effort SKIP)', async () => {
         test.skip(true, [
             'OrigamSnackbar.story.vue has no Color/primary variant.',
             'Recommendation Phase 5: add a static Color variant with',

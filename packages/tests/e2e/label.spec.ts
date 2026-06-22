@@ -39,7 +39,7 @@ test.describe('OrigamLabel', () => {
         await expect(label).toBeVisible({ timeout: 5000 })
 
         const { fsNormal, floatingTokenPx, normalTokenPx } = await label.evaluate((el) => {
-            const htmlEl = el as HTMLElement
+            const _htmlEl = el as HTMLElement
             const computed = getComputedStyle(el)
             const fsNormal = computed.fontSize
 
@@ -85,7 +85,7 @@ test.describe('OrigamLabel', () => {
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         // The story renders with required state — check the sup element
-        const sup = sandbox.locator('.origam-label sup')
+        const _sup = sandbox.locator('.origam-label sup')
         // sup is conditionally rendered only when required=true
         // Force it via evaluate to test the SCSS color token is applied
         const label = sandbox.locator('.origam-label').first()

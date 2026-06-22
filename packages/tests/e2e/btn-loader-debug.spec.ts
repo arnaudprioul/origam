@@ -14,7 +14,7 @@ test('DEBUG btn loader — inspect line / circular / skeleton DOM + styles', asy
         const btn = sandbox.locator(`[data-cy="${dataCy}"]`).first()
         await btn.scrollIntoViewIfNeeded()
         const report = await btn.evaluate((el) => {
-            const cs = getComputedStyle(el)
+            const _cs = getComputedStyle(el)
             const rect = el.getBoundingClientRect()
             const progress = el.querySelector('.origam-btn__progress')
             const progressCs = progress ? getComputedStyle(progress as Element) : null

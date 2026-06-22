@@ -105,7 +105,7 @@ describe('OrigamClipboard', () => {
 
     it('passes { copy, copied, error } to the default scoped slot', async () => {
         let slotProps: any = null
-        const wrapper = mountClipboard({
+        const _wrapper = mountClipboard({
             slots: {
                 default: (props: any) => {
                     slotProps = props

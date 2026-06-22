@@ -58,7 +58,7 @@ async function gotoVariant(page: Page, variantTitle: string): Promise<FrameLocat
 }
 
 /** True when a computed style value represents "nothing" (0, transparent, none). */
-function isEmptyValue(v: string): boolean {
+function _isEmptyValue(v: string): boolean {
     return (
         v === '' ||
         v === 'none' ||

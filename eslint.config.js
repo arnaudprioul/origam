@@ -95,7 +95,12 @@ export default typescriptEslint.config(
 	{
 		files: ['**/*.spec.ts', '**/*.spec.js', '**/*.cy.ts', '**/*.test.ts'],
 		rules: {
-			"@typescript-eslint/no-unused-vars": "warn"
+			"@typescript-eslint/no-unused-vars": "warn",
+			// Composable/SSR specs define throwaway harness components inline
+			// (multiple `defineComponent({...})` per file) to exercise a hook
+			// under different setups. The one-component-per-file rule targets
+			// authored SFCs, not test scaffolding — off for spec files.
+			"vue/one-component-per-file": "off"
 		}
 	},
 	{
@@ -107,6 +112,19 @@ export default typescriptEslint.config(
 		files: ['packages/marketing/app/pages/**/*.vue', 'packages/marketing/app/layouts/**/*.vue'],
 		rules: {
 			"vue/multi-word-component-names": "off"
+		}
+	},
+	{
+		// The component detail page renders anatomy markup via v-html. Every
+		// binding is safe: the SVG diagram is author-controlled static data
+		// from consts/components/*.const.ts, and the legend / figcaption HTML
+		// is run through `sanitizeAnatomyHtml()` before injection. Scoped to
+		// the components/ pages dir so the XSS guard stays on everywhere else.
+		// (Glob targets the dir, not `[slug].vue` literally — the brackets are
+		// a minimatch character class.)
+		files: ['packages/marketing/app/pages/components/*.vue'],
+		rules: {
+			"vue/no-v-html": "off"
 		}
 	},
 	{

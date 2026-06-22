@@ -186,7 +186,7 @@ test.describe('OrigamAlert — color', () => {
         // Alert uses useStyle which injects a <style> tag (not an inline style).
         // We verify the component is present and the id attribute is set
         // (useStyle assigns a unique id to the element for targeting via the injected rule).
-        const id = await alert.evaluate(el => (el as HTMLElement).id)
+        const _id = await alert.evaluate(el => (el as HTMLElement).id)
         // The id may or may not be set depending on the useStyle implementation;
         // what we assert is that the element is present and carries the base class.
         const cls = await alert.evaluate(el => el.className)
