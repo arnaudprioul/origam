@@ -181,6 +181,30 @@ ou pro) où origam est utilisée — un seul suffit à casser le "zéro référe
 
 ## 2.1 — Court terme (Q3 2026)
 
+### 🔴 SonarQube — quality gate « A » partout, zéro dette **(PRIORITÉ, M)**
+Le scan SonarQube est déjà branché (`build.yml` → `SonarSource/sonarqube-scan-action@v4`,
+`sonar-project.properties` avec `projectKey`/`sources`/`tests`) mais incomplet.
+À finir pour atteindre une note **A** sur les 4 axes (Reliability, Security,
+Security Review, Maintainability) et **0 dette technique** :
+
+- **Câbler la couverture des TU** : les tests Vitest émettent déjà du `lcov`
+  (`packages/tests/vitest.config.ts` → `reporter: ['text','lcov']`), mais
+  Sonar ne le lit pas. Générer le rapport en CI (`test:unit:run --coverage`)
+  et le déclarer via `sonar.javascript.lcov.reportPaths=…/coverage/lcov.info`
+  pour que la **couverture soit prise en compte** dans la quality gate.
+- **Activer la quality gate bloquante** : décommenter / ajouter
+  `SonarSource/sonarqube-quality-gate-action@v1` dans le workflow pour que le
+  build échoue si la gate n'est pas verte (sinon le scan est purement
+  informatif).
+- **Résorber toute la dette** : traiter les bugs, vulnérabilités, security
+  hotspots et code smells remontés jusqu'à **A** sur chaque axe et **0**
+  issue ouverte ; régler les éventuels doublons (`Duplications`) et la
+  couverture sous le seuil. Exclure proprement le code généré (tokens,
+  `.nuxt`, dist) de l'analyse pour ne pas polluer le ratio.
+- **Lier au CI principal** : faire tourner le scan sur PR (pas seulement sur
+  push `develop`) avec le bon `sonar.pullrequest.*`, et l'ajouter aux
+  pre-delivery checks.
+
 ### CI/CD GitHub Actions complète **(L)**
 - Workflow `ci.yml` (lint + `tokens:lint` + `test:unit` + `test:e2e` +
   `server:build`) sur PR/push, matrice Node 22 / 24.

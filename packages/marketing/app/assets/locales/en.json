@@ -311,6 +311,10 @@
         "bundle_size": {
           "title": "Bundle-size monitoring",
           "description": "size-limit on every sub-export. PR comments auto-generated. The 5.6 MB → 869 kB drop must stay an asset."
+        },
+        "sonarqube": {
+          "title": "SonarQube — A rating, zero debt",
+          "description": "The Sonar scan is already wired (build.yml + sonar-project.properties) but incomplete. Feed the Vitest lcov coverage into Sonar (sonar.javascript.lcov.reportPaths), enable a blocking quality gate, and clear every bug / vulnerability / security hotspot / code smell to reach an A rating on all axes with zero technical debt. Run on PRs and add it to the pre-delivery checks."
         }
       },
       "mid_term": {

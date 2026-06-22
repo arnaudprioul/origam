@@ -110,6 +110,12 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
         icon: 'mdi-rocket-launch-outline',
         items: [
             {
+                titleKey: 'roadmap.phases.short_term.sonarqube.title',
+                descriptionKey: 'roadmap.phases.short_term.sonarqube.description',
+                icon: 'mdi-shield-check-outline',
+                effortKey: 'roadmap.effort.medium'
+            },
+            {
                 titleKey: 'roadmap.phases.short_term.ci.title',
                 descriptionKey: 'roadmap.phases.short_term.ci.description',
                 icon: 'mdi-github',
