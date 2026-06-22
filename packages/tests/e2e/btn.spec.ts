@@ -6,7 +6,7 @@ import { expect, test } from '@playwright/test'
  * ## 1. URL de navigation
  *
  *   Navigation DIRECTE avec le variantId en query param :
- *     await page.goto(STORY_PATH + '?variantId=' + VARIANT_ID)
+ *     await page.goto(STORY_PATH (= '/stories/story/' + STORY_ID) + '?variantId=' + VARIANT_ID)
  *
  *   Le variantId suit le pattern `<storyId>-<index>` où l'index correspond
  *   à la position du <Variant> dans le fichier story (0-based).
@@ -77,7 +77,9 @@ import { expect, test } from '@playwright/test'
  */
 
 const STORY_ID   = 'components-stories-btn-origambtn-story-vue'
-const STORY_PATH = '/story/' + STORY_ID
+// Histoire serves under /stories/ (histoire.config.js base: '/stories/').
+// Use absolute path /stories/story/... which resolves against origin only.
+const STORY_PATH = '/stories/story/' + STORY_ID
 
 /** Raccourci : construit l'URL d'un Variant par son index. */
 const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`

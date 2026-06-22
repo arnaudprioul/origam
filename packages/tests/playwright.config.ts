@@ -40,6 +40,10 @@ export default defineConfig({
     ],
 
     use: {
+        // Histoire serves under /stories/ (vite.base = '/stories/' in histoire.config.js).
+        // Story URLs must include the full prefix: page.goto('/stories/story/STORY_ID...')
+        // Note: Playwright resolves absolute paths (starting with /) against the baseURL
+        // host only, NOT the full baseURL path. Keep baseURL at origin level.
         baseURL: 'http://localhost:6006',
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
@@ -63,7 +67,8 @@ export default defineConfig({
 
     webServer: {
         // Reuse Histoire's dev server — every component already has a story
-        // URL (`#/components/{Domain}/{Name}/{Variant}`) we can navigate to.
+        // URL (`/stories/story/...`) we can navigate to.
+        // Histoire is configured with base: '/stories/' in histoire.config.js.
         // Spawn pnpm from the repo root so the workspace filter resolves.
         command: 'pnpm -F @origam/stories dev',
         cwd: REPO_ROOT,
