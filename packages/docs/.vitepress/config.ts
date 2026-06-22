@@ -267,10 +267,9 @@ export default defineConfig({
         },
         resolve: {
             alias: {
-                // After the monorepo migration, docs sits at packages/docs/
-                // and the design-system source at packages/ds/src.
-                // From .vitepress/, ../.. is the packages/docs root, then
-                // ../ds/src reaches the lib.
+                // Docs track the live DS source. origam is kept out of the SSR
+                // bundle by the client-only dynamic import in theme/index.ts, so
+                // aliasing to src (not dist) no longer breaks the server render.
                 '@origam': resolve(__dirname, '../../ds/src')
             }
         },
@@ -278,7 +277,11 @@ export default defineConfig({
             include: ['@origam']
         },
         ssr: {
-            noExternal: ['@origam']
+            // Bundle origam + the @vueuse/* deps it (and VitePress' theme) pull
+            // in, so Node's native ESM loader never tries to resolve them from
+            // pnpm's nested node_modules at render time (which fails with
+            // "Cannot find package 'vue' imported from @vueuse/core").
+            noExternal: ['@origam', /@vueuse\//]
         }
     },
 
