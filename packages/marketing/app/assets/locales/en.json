@@ -347,6 +347,10 @@
         "textmask_stroke": {
           "title": "TextMask — colored stroke & fill",
           "description": "Extend OrigamTextMask with an outlined mode: transparent text with a colored per-letter stroke (-webkit-text-stroke) and/or a distinct fill, for outline-only and contrasted headline effects. Stays real, selectable text; CSS-first with a solid fallback."
+        },
+        "theming_completion": {
+          "title": "Complete the /theming builder",
+          "description": "The marketing theme builder shipped as a partial V1 (~14 core components, tokens capped, modals/slot-driven not previewable). Finish it: cover all editable components, handle overlay/slot-driven previews, lift the token cap, and rework the UI — the current ergonomics are clearly not good enough. Stays data-driven and DS-first."
         }
       },
       "long_term": {
@@ -363,6 +367,14 @@
         "theme_builder": {
           "title": "Theme Builder UI",
           "description": "Standalone app consuming origam itself: edit primitive tokens, preview components in real time, export brand JSON."
+        },
+        "marketing_db": {
+          "title": "Marketing — database + auto DS sync",
+          "description": "Persist the whole reference catalogue (components, composables, types, enums, interfaces, utils, consts) in a database (Nitro + Knex / PostgreSQL) instead of static glob files. A sync job reads the DS source and upserts the DB on every release, so the reference docs follow the design system automatically. Editorial content lives in the same tables with a DS-auto vs edited flag."
+        },
+        "marketing_cms": {
+          "title": "Marketing — admin backend (CMS)",
+          "description": "A back-office to manage all site content when auto-generation falls short: edit any page (reference + editorial), reorder, publish/hide, without touching code. Fully translatable (DB-driven i18n, per-locale completeness) and built with origam itself — a full-scale DS showcase. Auth + roles, change audit, pre-publish guardrail. Stack: Nitro + Knex/PostgreSQL + Redis."
         }
       }
     },

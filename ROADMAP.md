@@ -287,6 +287,19 @@ ou pro) où origam est utilisée — un seul suffit à casser le "zéro référe
   d'écran) — pas de SVG `<text>`, contrairement à la spec « SVG text masque »
   (cf. intent `ghost`, livrable A). Contraste à surveiller via `v-contrast`.
 
+### Compléter le Theme Builder `/theming` (marketing) **(L)**
+- La page `/theming` du site marketing (éditeur visuel → export `[name].ts`
+  avec `{ defaults, theme: { cssVars } }`) est livrée **en V1 partielle** :
+  ~14 composants du set core seulement, tokens plafonnés à 24/composant,
+  certains composants non prévisualisables (modals, `tabs` slot-driven).
+- **À finir** : couvrir **tous** les composants éditables (pas juste le core),
+  gérer les composants slot-driven / overlay (preview avec contenu de démo),
+  lever le cap de tokens, et **refondre l'UI** (l'ergonomie actuelle « n'est
+  clairement pas bonne » — navigation entre composants, regroupement des
+  contrôles, lisibilité de la preview vs panneau, aperçu du fichier généré).
+- Reste data-driven (dérivé des métadonnées de composants) pour scaler ;
+  DS-first ; i18n complet.
+
 ### Waves livrées ✅
 
 **Wave 1 — Nouveaux composants** (livrée — develop)
@@ -523,6 +536,36 @@ migrer le marketing d'`OrigamGrid tag="ul"` vers `OrigamList variant="unordered"
 - App standalone (`apps/theme-builder/`) consommant origam elle-même : édition
   tokens primitive → preview composants en temps réel, export
   `tokens/semantic/brand-{name}.json`.
+
+### Marketing — base de données + sync DS automatique **(XL)**
+- Aujourd'hui le site marketing dérive tout son contenu de fichiers statiques
+  (`consts/{components,composables,types,enums,interfaces,utils,consts}/*.ts`
+  via `import.meta.glob`). Cible : **persister ce référentiel en base de
+  données** (Nitro + Knex sur PostgreSQL, conformément au stack projet) pour le
+  rendre gérable, versionnable et requêtable.
+- **Alimentation automatique par l'évolution du DS** : un job de sync lit le
+  code source d'origam (composants, props, composables, types, enums,
+  interfaces, utils, consts) et **upsert** la BDD à chaque release / CI. La
+  doc référentielle ne se met plus à jour à la main — elle suit le DS.
+- Le contenu **éditorial** (pages, sections, textes marketing) vit dans les
+  mêmes tables et reste éditable (cf. backend ci-dessous), avec un flag
+  « source : DS auto » vs « édité » pour ne pas écraser les corrections
+  manuelles au prochain sync.
+
+### Marketing — backend d'administration (CMS) **(XL)**
+- Un **back-office** pour gérer tout le contenu du site quand l'auto-génération
+  est imparfaite : corriger une description, réordonner, masquer/publier,
+  éditer **toutes les pages** (référentiel ET pages éditoriales) sans toucher
+  au code.
+- **Entièrement traduisible** : chaque champ texte porte ses traductions
+  (i18n piloté depuis la BDD, plus seulement les fichiers `en.json`/`fr.json`),
+  édition par langue avec état de complétude par locale.
+- **Construit avec origam lui-même** — le back-office est une démo grandeur
+  nature du DS (tables, formulaires, éditeurs, OrigamDataTable, OrigamForm…),
+  cohérent avec le principe « le marketing est une vitrine du DS ».
+- Auth + rôles (admin / éditeur), audit des modifications, et garde-fou
+  pré-publication. Stack : Nitro (API) + Knex/PostgreSQL + Redis (sessions),
+  aligné sur le reste du projet.
 
 ### Server Components Vue **(M, dépend du compiler Vue)**
 - Aligner sur React Server Components quand l'écosystème Vue rattrapera.

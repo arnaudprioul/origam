@@ -185,6 +185,12 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
                 effortKey: 'roadmap.effort.medium'
             },
             {
+                titleKey: 'roadmap.phases.mid_term.theming_completion.title',
+                descriptionKey: 'roadmap.phases.mid_term.theming_completion.description',
+                icon: 'mdi-palette-swatch-outline',
+                effortKey: 'roadmap.effort.large'
+            },
+            {
                 titleKey: 'roadmap.phases.mid_term.vrt.title',
                 descriptionKey: 'roadmap.phases.mid_term.vrt.description',
                 icon: 'mdi-image-compare',
@@ -221,6 +227,18 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
                 titleKey: 'roadmap.phases.long_term.theme_builder.title',
                 descriptionKey: 'roadmap.phases.long_term.theme_builder.description',
                 icon: 'mdi-palette-swatch-outline',
+                effortKey: 'roadmap.effort.xlarge'
+            },
+            {
+                titleKey: 'roadmap.phases.long_term.marketing_db.title',
+                descriptionKey: 'roadmap.phases.long_term.marketing_db.description',
+                icon: 'mdi-database-sync-outline',
+                effortKey: 'roadmap.effort.xlarge'
+            },
+            {
+                titleKey: 'roadmap.phases.long_term.marketing_cms.title',
+                descriptionKey: 'roadmap.phases.long_term.marketing_cms.description',
+                icon: 'mdi-view-dashboard-edit-outline',
                 effortKey: 'roadmap.effort.xlarge'
             }
         ]
