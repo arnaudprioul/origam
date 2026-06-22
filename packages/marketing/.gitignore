@@ -6,3 +6,7 @@
 node_modules
 dist
 *.log
+
+# Built embeds (Histoire stories + VitePress docs) served at /stories and /docs
+public/stories
+public/docs

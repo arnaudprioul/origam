@@ -233,7 +233,11 @@ export default defineConfig({
     title: 'Origam UI',
     description: 'Documentation de la bibliothèque de composants Origam',
     lang: 'fr-FR',
-    base: '/',
+    // Served under /docs on the marketing origin: Nuxt serves the built static
+    // site from packages/marketing/public/docs (see outDir below). The base
+    // prefixes every asset/link URL so they resolve at /docs/**.
+    base: '/docs/',
+    outDir: '../marketing/public/docs',
 
     /*
      * Many component .md files have cross-links to siblings that
@@ -244,7 +248,23 @@ export default defineConfig({
      */
     ignoreDeadLinks: true,
 
+    // Internal engineering docs (ADRs, audits) are not part of the public
+    // component documentation and contain prose with unescaped angle-bracket
+    // placeholders (e.g. `<custom>`) that VitePress' Vue-SFC compiler rejects.
+    // They live in-repo for maintainers, not on the published /docs site.
+    srcExclude: ['internal/**', '**/README.md'],
+
     vite: {
+        // esbuild's default transpile target chokes on the wasm→JS shim shiki
+        // bundles (vscode-oniguruma) during the production build
+        // (`wasm.!~{001}~.js: Expected ":" but found "}"`). esnext lets the
+        // generated module through untouched.
+        build: {
+            target: 'esnext'
+        },
+        esbuild: {
+            target: 'esnext'
+        },
         resolve: {
             alias: {
                 // After the monorepo migration, docs sits at packages/docs/

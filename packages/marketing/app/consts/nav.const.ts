@@ -5,8 +5,8 @@ import { MARKETING_DEFAULTS } from './marketing.const'
 export const NAV_LINKS: INavLink[] = [
     { i18nKey: 'nav.components', i18nFallback: 'Components', href: '/components' },
     { i18nKey: 'nav.playground', i18nFallback: 'Playground', href: '/playground' },
-    { i18nKey: 'nav.docs', i18nFallback: 'Docs', href: '/docs' },
-    { i18nKey: 'nav.stories', i18nFallback: 'Stories', href: '/stories' },
+    { i18nKey: 'nav.docs', i18nFallback: 'Docs', href: '/docs/' },
+    { i18nKey: 'nav.stories', i18nFallback: 'Stories', href: '/stories/' },
     { i18nKey: 'nav.blog', i18nFallback: 'Blog', href: '/blog' },
     { i18nKey: 'nav.changelog', i18nFallback: 'Changelog', href: '/changelog' }
 ]
@@ -42,8 +42,8 @@ export const NAV_SECTIONS: INavSection[] = [
             { i18nKey: 'nav.interfaces', i18nFallback: 'Interfaces', href: '/interfaces' },
             { i18nKey: 'nav.utils', i18nFallback: 'Utils', href: '/utils' },
             { i18nKey: 'nav.consts', i18nFallback: 'Constants', href: '/consts' },
-            { i18nKey: 'nav.stories', i18nFallback: 'Stories', href: '/stories' },
-            { i18nKey: 'nav.docs', i18nFallback: 'Docs', href: '/docs' }
+            { i18nKey: 'nav.stories', i18nFallback: 'Stories', href: '/stories/' },
+            { i18nKey: 'nav.docs', i18nFallback: 'Docs', href: '/docs/' }
         ]
     }
 ]
