@@ -116,6 +116,12 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
                 effortKey: 'roadmap.effort.medium'
             },
             {
+                titleKey: 'roadmap.phases.short_term.ci_e2e.title',
+                descriptionKey: 'roadmap.phases.short_term.ci_e2e.description',
+                icon: 'mdi-alert-octagon-outline',
+                effortKey: 'roadmap.effort.medium'
+            },
+            {
                 titleKey: 'roadmap.phases.short_term.ci.title',
                 descriptionKey: 'roadmap.phases.short_term.ci.description',
                 icon: 'mdi-github',

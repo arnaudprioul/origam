@@ -205,6 +205,27 @@ Security Review, Maintainability) et **0 dette technique** :
   push `develop`) avec le bon `sonar.pullrequest.*`, et l'ajouter aux
   pre-delivery checks.
 
+### 🔴 CI E2E — job annulé en boucle (timeout 30 min) **(PRIORITÉ, M)**
+Le job `E2E tests (Playwright / Chromium)` de `ci.yml` est **cancelled à
+chaque run** (les 5 autres jobs passent). Il dépasse systématiquement son
+`timeout-minutes: 30`, même réduit au sous-ensemble vert (`E2E_GREEN_ONLY`).
+- **Cause** : le `webServer` Playwright lance `pnpm -F @origam/stories dev`
+  (Histoire en mode Vite **dev**). Vite **compile chaque story à la demande**
+  au premier accès → cold-start mesuré à **19-30 s par story** en local, encore
+  pire sur un runner GitHub froid. Cumulé sur les specs, le job explose les
+  30 min. Ce n'est pas un bug GitHub mais une incompatibilité dev-server/CI.
+- **Décision à trancher** :
+  - **Corriger (recommandé)** : faire pointer le `webServer` e2e sur le
+    **build statique** de Histoire (déjà produit par `build:embeds` →
+    `packages/marketing/public/stories`, servi via un `http-server`/`serve`).
+    Plus de cold-start Vite → e2e rapide et déterministe en CI. Réutilise
+    l'artefact `marketing-embeds` du job `build-embeds`.
+  - **OU retirer/dé-bloquer** : sortir e2e de la CI bloquante (job
+    `continue-on-error` ou workflow manuel/nightly séparé) tant que le point
+    précédent n'est pas fait, pour ne pas laisser la CI rouge en permanence.
+- Lié à la réparation en cours de la suite e2e (migration vers le format de
+  story unifié, sous-ensemble vert qui grandit vague par vague).
+
 ### CI/CD GitHub Actions complète **(L)**
 - Workflow `ci.yml` (lint + `tokens:lint` + `test:unit` + `test:e2e` +
   `server:build`) sur PR/push, matrice Node 22 / 24.

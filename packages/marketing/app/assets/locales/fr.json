@@ -315,6 +315,10 @@
         "sonarqube": {
           "title": "SonarQube — note A, zéro dette",
           "description": "Le scan Sonar est déjà branché (build.yml + sonar-project.properties) mais incomplet. Câbler la couverture lcov des TU Vitest dans Sonar (sonar.javascript.lcov.reportPaths), activer une quality gate bloquante, et résorber chaque bug / vulnérabilité / security hotspot / code smell pour atteindre la note A sur tous les axes avec zéro dette technique. Le faire tourner sur les PR et l'ajouter aux checks pre-delivery."
+        },
+        "ci_e2e": {
+          "title": "CI E2E — job annulé à chaque run",
+          "description": "Le job E2E Playwright est annulé à chaque run CI (les 5 autres jobs passent) : il dépasse son timeout de 30 min même sur le sous-ensemble vert. Cause : le webServer Playwright lance Histoire en mode Vite DEV, qui compile chaque story au premier accès (cold-start de 19-30 s par story) — trop lent sur un runner froid. À trancher : corriger en pointant le webServer e2e sur le build statique de Histoire déjà produit par build:embeds (public/stories, servi via http-server — sans cold-start Vite), ou rendre le job e2e non-bloquant / le déplacer dans un workflow nightly séparé en attendant."
         }
       },
       "mid_term": {
