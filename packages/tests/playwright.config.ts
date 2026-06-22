@@ -20,7 +20,17 @@ const GREEN_SPECS = [
     'badge.spec.ts',
     'checkbox.spec.ts',
     'switch.spec.ts',
-    'tooltip.spec.ts'
+    'tooltip.spec.ts',
+    // wave 2
+    'divider.spec.ts',
+    'kbd.spec.ts',
+    'title.spec.ts',
+    'breadcrumb.spec.ts',
+    'text-field.spec.ts',
+    'radio.spec.ts',
+    'slider-field.spec.ts',
+    'tabs.spec.ts',
+    'label.spec.ts'
 ]
 
 /**

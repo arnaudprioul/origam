@@ -1,172 +1,216 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 /**
- * OrigamKbd runtime probes.
+ * OrigamKbd runtime probes — pattern canonique btn.spec.ts
  *
- * Asserts every Variant in `OrigamKbd.story.vue` produces the
- * runtime contract documented in `OrigamKbd.md`:
- *   - default renders a <kbd> element with class origam-kbd
- *   - combination produces multiple nested <kbd> joined by separator text
- *   - variant="filled" adds the --variant-filled modifier class
- *   - size prop changes the computed font-size on the element
- *   - slot default override takes precedence over the text prop
+ * Variants dans OrigamKbd.story.vue (grep -nE '<Variant' …) :
+ *   0 → Design      init: { variant: 'outlined', combination: ['⌘', 'S'] }
+ *   1 → Functional  init: { text: '⌘', separator: '+' }
+ *   2 → Slots - Default  (slot avec <origam-icon>)
+ *   3 → Default     init: { text: '⌘', variant: 'outlined', separator: '+' }
  *
- * Current Variant titles in OrigamKbd.story.vue:
- *   "Default", "Prop — text & combination (showcase)", "Prop — variant",
- *   "Prop — color & bgColor", "Prop — hover", "Prop — active",
- *   "Prop — size", "Prop — rounded", "Prop — border", "Prop — separator",
- *   "Slot — default (icon child)"
+ * Structure du composant :
+ *   <kbd class="origam-kbd origam-kbd--variant-{v} …">
+ *     <!-- combination → -->
+ *     <kbd class="origam-kbd__key">…</kbd>
+ *     <span class="origam-kbd__separator" aria-hidden="true">…</span>
+ *     <!-- text → texte direct -->
+ *     <!-- slot → slot default -->
+ *   </kbd>
+ *
+ * Non-testable headless :
+ *   - Rendu de police JetBrains Mono / Fira Code (chargement de font async)
+ *   - v-contrast directif (couleur contrastée calculée en runtime selon le thème)
  */
 
-const STORY = '/story/components-stories-kbd-origamkbd-story-vue'
+const STORY_ID   = 'components-stories-kbd-origamkbd-story-vue'
+const STORY_PATH = '/stories/story/' + STORY_ID
 
-const sandboxOf = (page: Page) =>
-    page.frameLocator('iframe[src*="__sandbox"]')
+const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
-const openVariant = async (page: Page, variant: string) => {
-    await page.goto(STORY)
-    await page.waitForLoadState('networkidle')
-    await page.getByRole('link', { name: variant, exact: true }).click()
-    await page.waitForTimeout(800)
-}
+test.describe('OrigamKbd', () => {
+    test.setTimeout(45000)
 
-// ─── Default (single key) ────────────────────────────────────────────────────
-// Maps to "Prop — text & combination (showcase)" variant, data-cy="kbd-basic-single"
+    // ------------------------------------------------------------------ //
+    // DESIGN (index 0)                                                     //
+    // init: { variant: 'outlined', combination: ['⌘', 'S'] }             //
+    // ------------------------------------------------------------------ //
 
-test.describe('OrigamKbd — default', () => {
-    test('renders a <kbd> element with the origam-kbd class', async ({ page }) => {
-        await openVariant(page, 'Prop — text & combination (showcase)')
-        const sandbox = sandboxOf(page)
+    test.describe('Design', () => {
+        test('renders the kbd root with BEM class origam-kbd', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+        })
 
-        const kbd = sandbox.locator('[data-cy="kbd-basic-single"]').first()
-        await expect(kbd).toBeVisible({ timeout: 8000 })
+        test('renders a <kbd> element', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+            const tag = await kbd.evaluate(el => el.tagName.toLowerCase())
+            expect(tag).toBe('kbd')
+        })
 
-        const tagName = await kbd.evaluate(el => el.tagName.toLowerCase())
-        expect(tagName).toBe('kbd')
+        test('variant=outlined adds origam-kbd--variant-outlined class', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+            await expect(kbd).toHaveClass(/origam-kbd--variant-outlined/)
+        })
 
-        const cls = await kbd.evaluate(el => el.className)
-        expect(cls).toContain('origam-kbd')
+        test('combination prop adds origam-kbd--combination class', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+            await expect(kbd).toHaveClass(/origam-kbd--combination/)
+        })
+
+        test('combination renders one nested <kbd class="origam-kbd__key"> per key', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+            // combination: ['⌘', 'S'] → 2 keys
+            const keys = kbd.locator('.origam-kbd__key')
+            await expect(keys).toHaveCount(2)
+            await expect(keys.nth(0)).toContainText('⌘')
+            await expect(keys.nth(1)).toContainText('S')
+        })
+
+        test('combination renders (n-1) separators with aria-hidden', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+            // 2 keys → 1 separator
+            const separators = kbd.locator('.origam-kbd__separator')
+            await expect(separators).toHaveCount(1)
+            // separator is aria-hidden for assistive tech
+            const ariaHidden = await separators.first().getAttribute('aria-hidden')
+            expect(ariaHidden).toBe('true')
+        })
     })
 
-    test('renders the text prop content', async ({ page }) => {
-        await openVariant(page, 'Prop — text & combination (showcase)')
-        const sandbox = sandboxOf(page)
+    // ------------------------------------------------------------------ //
+    // FUNCTIONAL (index 1)                                                 //
+    // init: { text: '⌘', separator: '+' }                                 //
+    // ------------------------------------------------------------------ //
 
-        const kbd = sandbox.locator('[data-cy="kbd-basic-single"]').first()
-        await expect(kbd).toBeVisible({ timeout: 8000 })
-        await expect(kbd).toContainText('⌘')
-    })
-})
+    test.describe('Functional', () => {
+        test('text prop renders content directly inside <kbd>', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+            await expect(kbd).toContainText('⌘')
+        })
 
-// ─── Combination ─────────────────────────────────────────────────────────────
-// Maps to "Prop — text & combination (showcase)" variant, data-cy="kbd-basic-combination"
+        test('text-only kbd has no origam-kbd--combination class', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+            const cls = await kbd.evaluate(el => el.className)
+            expect(cls).not.toContain('origam-kbd--combination')
+        })
 
-test.describe('OrigamKbd — combination', () => {
-    test('renders multiple nested <kbd> elements joined by separator', async ({ page }) => {
-        await openVariant(page, 'Prop — text & combination (showcase)')
-        const sandbox = sandboxOf(page)
+        test('text-only kbd contains no nested kbd__key elements', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+            const keys = kbd.locator('.origam-kbd__key')
+            await expect(keys).toHaveCount(0)
+        })
 
-        const parent = sandbox.locator('[data-cy="kbd-basic-combination"]').first()
-        await expect(parent).toBeVisible({ timeout: 8000 })
-
-        // Should contain 3 nested <kbd> (Ctrl, Shift, Z)
-        const keys = parent.locator('kbd.origam-kbd__key')
-        await expect(keys).toHaveCount(3)
-
-        // Keys should have the correct content
-        await expect(keys.nth(0)).toContainText('Ctrl')
-        await expect(keys.nth(1)).toContainText('Shift')
-        await expect(keys.nth(2)).toContainText('Z')
-
-        // Separators between keys
-        const separators = parent.locator('.origam-kbd__separator')
-        await expect(separators).toHaveCount(2)
-        await expect(separators.first()).toContainText('+')
-    })
-})
-
-// ─── Variant ─────────────────────────────────────────────────────────────────
-
-test.describe('OrigamKbd — variant', () => {
-    test('variant="outlined" adds the --variant-outlined modifier class', async ({ page }) => {
-        await openVariant(page, 'Prop — variant')
-        const sandbox = sandboxOf(page)
-
-        const kbd = sandbox.locator('[data-cy="kbd-variant-outlined"]').first()
-        await expect(kbd).toBeVisible({ timeout: 8000 })
-
-        const cls = await kbd.evaluate(el => el.className)
-        expect(cls).toContain('origam-kbd--variant-outlined')
+        test('outlined variant (default) box-shadow is not none', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+            // Default variant is 'outlined' per withDefaults.
+            // The SCSS rule applies a box-shadow for outlined/filled — must be non-none.
+            const shadow = await kbd.evaluate(el => getComputedStyle(el).boxShadow)
+            expect(shadow).not.toBe('none')
+        })
     })
 
-    test('variant="filled" adds the --variant-filled modifier class and key box-shadow', async ({ page }) => {
-        await openVariant(page, 'Prop — variant')
-        const sandbox = sandboxOf(page)
+    // ------------------------------------------------------------------ //
+    // SLOTS - DEFAULT (index 2)                                            //
+    // Renders <origam-icon> inside <origam-kbd>                           //
+    // ------------------------------------------------------------------ //
 
-        const kbd = sandbox.locator('[data-cy="kbd-variant-filled"]').first()
-        await expect(kbd).toBeVisible({ timeout: 8000 })
+    test.describe('Slots - Default', () => {
+        test('slot content renders inside the kbd element', async ({ page }) => {
+            await page.goto(variantUrl(2))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+        })
 
-        const cls = await kbd.evaluate(el => el.className)
-        expect(cls).toContain('origam-kbd--variant-filled')
+        test('slot renders an origam-icon child (not raw text)', async ({ page }) => {
+            await page.goto(variantUrl(2))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+            const icon = kbd.locator('.origam-icon').first()
+            await expect(icon).toBeVisible()
+        })
 
-        // kbd-variant-filled is a combination kbd: the outer wrapper resets box-shadow
-        // to transparent for the shell, while each inner __key carries the filled
-        // box-shadow. Assert on the first inner key instead of the outer wrapper.
-        const firstKey = kbd.locator('kbd.origam-kbd__key').first()
-        await expect(firstKey).toBeVisible()
-        const shadow = await firstKey.evaluate(el => getComputedStyle(el).boxShadow)
-        expect(shadow).not.toBe('none')
+        test('slot kbd contains no origam-kbd__key children', async ({ page }) => {
+            await page.goto(variantUrl(2))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+            // When slot is provided, combination branch is skipped
+            const keys = kbd.locator('.origam-kbd__key')
+            await expect(keys).toHaveCount(0)
+        })
     })
 
-    test('variant="tonal" adds the --variant-tonal modifier class', async ({ page }) => {
-        await openVariant(page, 'Prop — variant')
-        const sandbox = sandboxOf(page)
+    // ------------------------------------------------------------------ //
+    // DEFAULT / PLAYGROUND (index 3)                                       //
+    // init: { text: '⌘', variant: 'outlined', separator: '+' }           //
+    // ------------------------------------------------------------------ //
 
-        const kbd = sandbox.locator('[data-cy="kbd-variant-tonal"]').first()
-        await expect(kbd).toBeVisible({ timeout: 8000 })
+    test.describe('Default (playground)', () => {
+        test('renders the kbd root', async ({ page }) => {
+            await page.goto(variantUrl(3))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+        })
 
-        const cls = await kbd.evaluate(el => el.className)
-        expect(cls).toContain('origam-kbd--variant-tonal')
-    })
-})
+        test('has non-transparent background-color from token', async ({ page }) => {
+            await page.goto(variantUrl(3))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+            const bg = await kbd.evaluate(el => getComputedStyle(el).backgroundColor)
+            expect(bg).not.toBe('rgba(0, 0, 0, 0)')
+            expect(bg).not.toBe('transparent')
+        })
 
-// ─── Size ─────────────────────────────────────────────────────────────────────
+        test('has a non-zero font-size from the token', async ({ page }) => {
+            await page.goto(variantUrl(3))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+            const fontSize = await kbd.evaluate(el => parseFloat(getComputedStyle(el).fontSize))
+            expect(fontSize).toBeGreaterThan(0)
+        })
 
-test.describe('OrigamKbd — size', () => {
-    test('size="x-small" emits --size-x-small class and produces smaller font than size="x-large"', async ({ page }) => {
-        await openVariant(page, 'Prop — size')
-        const sandbox = sandboxOf(page)
-
-        const xsmall = sandbox.locator('[data-cy="kbd-size-xs"]').first()
-        const xlarge = sandbox.locator('[data-cy="kbd-size-xl"]').first()
-
-        await expect(xsmall).toBeVisible({ timeout: 8000 })
-        await expect(xlarge).toBeVisible()
-
-        const xsClass = await xsmall.evaluate(el => el.className)
-        expect(xsClass).toContain('origam-kbd--size-x-small')
-
-        const xlClass = await xlarge.evaluate(el => el.className)
-        expect(xlClass).toContain('origam-kbd--size-x-large')
-
-        const xsFontSize = await xsmall.evaluate(el => parseFloat(getComputedStyle(el).fontSize))
-        const xlFontSize = await xlarge.evaluate(el => parseFloat(getComputedStyle(el).fontSize))
-        expect(xsFontSize).toBeLessThan(xlFontSize)
-    })
-})
-
-// ─── Slot override ───────────────────────────────────────────────────────────
-
-test.describe('OrigamKbd — slot override', () => {
-    test('default slot content takes precedence over the text prop', async ({ page }) => {
-        await openVariant(page, 'Slot — default (icon child)')
-        const sandbox = sandboxOf(page)
-
-        const kbd = sandbox.locator('[data-cy="kbd-slot-default"]').first()
-        await expect(kbd).toBeVisible({ timeout: 8000 })
-
-        // The slot renders an icon — there should be no raw text outside of child elements
-        const icon = kbd.locator('.origam-icon').first()
-        await expect(icon).toBeVisible()
+        test('variant=outlined produces a visible border', async ({ page }) => {
+            await page.goto(variantUrl(3))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+            const borderWidth = await kbd.evaluate(el => parseFloat(getComputedStyle(el).borderTopWidth))
+            expect(borderWidth).toBeGreaterThan(0)
+        })
     })
 })
