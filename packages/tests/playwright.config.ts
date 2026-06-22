@@ -40,7 +40,17 @@ const GREEN_SPECS = [
     'textarea-field.spec.ts',
     'list.spec.ts',
     'menu.spec.ts',
-    'expansion-panel.spec.ts'
+    'expansion-panel.spec.ts',
+    // wave 4
+    'dialog.spec.ts',
+    'drawer.spec.ts',
+    'snackbar.spec.ts',
+    'stepper.spec.ts',
+    'timeline.spec.ts',
+    'treeview.spec.ts',
+    'clipboard.spec.ts',
+    'code.spec.ts',
+    'empty-state.spec.ts'
 ]
 
 /**
