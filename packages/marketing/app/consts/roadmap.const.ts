@@ -173,6 +173,18 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
                 effortKey: 'roadmap.effort.medium'
             },
             {
+                titleKey: 'roadmap.phases.mid_term.background_directive.title',
+                descriptionKey: 'roadmap.phases.mid_term.background_directive.description',
+                icon: 'mdi-image-multiple-outline',
+                effortKey: 'roadmap.effort.large'
+            },
+            {
+                titleKey: 'roadmap.phases.mid_term.textmask_stroke.title',
+                descriptionKey: 'roadmap.phases.mid_term.textmask_stroke.description',
+                icon: 'mdi-format-color-text',
+                effortKey: 'roadmap.effort.medium'
+            },
+            {
                 titleKey: 'roadmap.phases.mid_term.vrt.title',
                 descriptionKey: 'roadmap.phases.mid_term.vrt.description',
                 icon: 'mdi-image-compare',

@@ -256,6 +256,37 @@ ou pro) où origam est utilisée — un seul suffit à casser le "zéro référe
 - `useTransition` retravaillé : tokens + `document.startViewTransition` si
   `css.value.viewTransitions === true`.
 
+### Directive `v-background` — fonds composables **(L)**
+- Directive pour poser facilement un (ou plusieurs) **fond** sur n'importe quel
+  élément : image (`url(...)`) **ou** dégradé de couleur (réutilise le gradient
+  support de Wave 4 : intents tokenisés + valeurs custom).
+- Contrôles par couche : **position** (`center`, `top left`, `x% y%`…),
+  **taille** (`cover`, `contain`, `auto`, dimensions explicites), **répétition**,
+  **attachment**, et un **masque** simple (`mask-image` / `-webkit-mask` :
+  fondu, forme, gradient de masque) pour révéler/atténuer le fond sans CSS manuel.
+- **Multi-fonds** : accepter un tableau de couches. Chaque couche se matérialise
+  soit en **pseudo-élément** (`::before` / `::after`, défaut — zéro nœud DOM en
+  plus), soit en **`<div>` injectée** (quand `::before`/`::after` sont déjà pris,
+  ou qu'on veut un fond animable/interactif indépendant). Le mode est un réglage
+  de la config de la directive (ex. `v-background="{ layers: [...], as: 'pseudo' | 'element' }"`).
+- CSS-first (empilement de `background-image` + `mask`), JS uniquement pour
+  l'injection de div et l'ordre des couches. SSR-safe. Pense a11y :
+  fonds purement décoratifs → `aria-hidden` sur les nœuds injectés.
+
+### TextMask — contour (stroke) et fill colorés **(M)**
+- Étendre `OrigamTextMask` (aujourd'hui : texte transparent révélant un fond,
+  cf. Wave 4 « Text-mask transparent reveal ») avec un mode **texte ajouré** :
+  `color: transparent` + **contour de chaque lettre** coloré via
+  `-webkit-text-stroke` (width + color), et/ou un **fill** distinct.
+- Permet les effets de titraille « outline only », « fill + stroke contrastés »,
+  « stroke dégradé » (combiné au gradient support). Props envisagées :
+  `stroke` (largeur), `strokeColor` (intent tokenisé ou custom), `fill`
+  (intent / `transparent`). Fallback : si `-webkit-text-stroke` non supporté
+  (`useCssSupport`), rendu plein classique.
+- A11y : le texte reste du **vrai texte** (sélectionnable, lisible lecteur
+  d'écran) — pas de SVG `<text>`, contrairement à la spec « SVG text masque »
+  (cf. intent `ghost`, livrable A). Contraste à surveiller via `v-contrast`.
+
 ### Waves livrées ✅
 
 **Wave 1 — Nouveaux composants** (livrée — develop)

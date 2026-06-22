@@ -339,6 +339,14 @@
         "turborepo": {
           "title": "Turborepo build cache",
           "description": "Replace raw pnpm -r scripts with Turborepo pipelines. Remote cache drastically cuts CI rebuild time."
+        },
+        "background_directive": {
+          "title": "v-background directive",
+          "description": "Compose one or several backgrounds on any element — image or color gradient (tokenised intents + custom). Per-layer position, size, repeat and a simple mask. Each layer renders as a pseudo-element (default, zero extra DOM) or an injected div, switchable in the directive config."
+        },
+        "textmask_stroke": {
+          "title": "TextMask — colored stroke & fill",
+          "description": "Extend OrigamTextMask with an outlined mode: transparent text with a colored per-letter stroke (-webkit-text-stroke) and/or a distinct fill, for outline-only and contrasted headline effects. Stays real, selectable text; CSS-first with a solid fallback."
         }
       },
       "long_term": {
