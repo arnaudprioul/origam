@@ -1,198 +1,339 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 /**
- * OrigamMasonry — runtime probes for each variant exposed by the story.
+ * OrigamMasonry — runtime behaviour specs.
  *
- * The component picks between two implementations at mount time:
- *   - CSS path: `display: grid` + `grid-template-rows: masonry`. Children
- *     stay in their original DOM order; the browser handles the rest.
- *   - JS path: bucket-fill + `ResizeObserver`. Each child is wrapped in
- *     a `<div class="origam-masonry__item">` with `position: absolute`,
- *     `left` / `top` / `width` set inline.
+ * ## Variants (index → title)
+ *   0 → Design         init: { columns: 3, gap: 'md' }, 9 preview cards
+ *   1 → Functional     init: { columns: 3, gap: 'md', animated: true, align: 'top' }, 16 shufflable cards
+ *   2 → Slots - Default  9 preview cards, no state
+ *   3 → Default (playground) init: { columns: 3, gap: 'md', animated: true, align: 'top' }, 16 shufflable cards
  *
- * Histoire runs on a Chromium build that does NOT enable masonry
- * (experimental flag), so the JS path is what the e2e suite actually
- * tests. The CSS path is exercised through the unit test on the pure
- * helpers (`pickColumnsForWidth`, `bucketFill`).
+ * ## BEM root + JS path classes (Chromium headless has NO masonry CSS support)
+ *   .origam-masonry              — root element (role="list")
+ *   .origam-masonry--js          — always present in headless Chromium
+ *   .origam-masonry--animated    — when animated=true
+ *   .origam-masonry__item        — JS-path wrapper around each slot child
+ *                                  (role="listitem", position: absolute)
+ *
+ * ## Cold-start note
+ *   Histoire compiles components on demand via Vite. The Masonry story
+ *   cold-start (ResizeObserver + rAF chain) can take 20-30 s on first
+ *   navigation. A warmup pass in beforeAll primes the Vite transform cache
+ *   so subsequent navigations complete in < 5 s. Test timeout is 60 s.
+ *
+ * ## Non-testable headless
+ *   - CSS masonry path (.origam-masonry--css): requires the experimental
+ *     grid-template-rows:masonry flag that Chromium headless does not enable.
+ *     Documented with test.fixme() below.
+ *   - animation: transition fires in browser after a layout pass — only the
+ *     CSS transition declaration is asserted (not the runtime motion).
  */
 
-const sandboxOf = (page: Page) =>
-    page.frameLocator('iframe[src*="__sandbox"]')
+const STORY_ID   = 'components-stories-masonry-origammasonry-story-vue'
+const STORY_PATH = '/stories/story/' + STORY_ID
 
-const openVariant = async (page: Page, storyPath: string, variant: string) => {
-    await page.goto(storyPath)
-    await page.waitForLoadState('networkidle')
-    await page.getByText(variant, { exact: true }).first().click()
-    await page.waitForTimeout(500)
-}
+const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
-const STORY = '/story/components-stories-masonry-origammasonry-story-vue'
+/**
+ * The first load of any story triggers Vite on-demand transform of all
+ * transitive imports. For Masonry this includes useMasonry (ResizeObserver)
+ * and related composables — the chain can take 20-30 s on a cold server.
+ * We warm the cache once in beforeAll so every subsequent test navigates
+ * to an already-compiled story and resolves in < 5 s.
+ */
+const WARM_TIMEOUT = 40000
 
-test.describe('OrigamMasonry — Default (smoke + ARIA)', () => {
-    test('mounts the masonry root with role="list"', async ({ page }) => {
-        await openVariant(page, STORY, 'Default')
-        const sandbox = sandboxOf(page)
+test.describe('OrigamMasonry', () => {
+    test.setTimeout(60000)
 
-        const host = sandbox.locator('[data-cy="masonry-playground-host"]').first()
-        await expect(host).toBeVisible({ timeout: 8000 })
-
-        const role = await host.evaluate((el) => el.getAttribute('role'))
-        expect(role).toBe('list')
+    // Prewarm: navigate to variant 0 and wait for the masonry root to appear.
+    // This primes the Vite transform cache for the whole story file.
+    test.beforeAll(async ({ browser }) => {
+        const ctx = await browser.newContext()
+        const page = await ctx.newPage()
+        await page.goto(variantUrl(0))
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        await sandbox.locator('.origam-masonry').first().waitFor({ state: 'visible', timeout: WARM_TIMEOUT })
+        await ctx.close()
     })
 
-    test('renders 16 playground cards as masonry items', async ({ page }) => {
-        await openVariant(page, STORY, 'Default')
-        const sandbox = sandboxOf(page)
+    // ------------------------------------------------------------------ //
+    // DESIGN (index 0)                                                     //
+    // init: columns=3, gap='md', 9 preview cards                          //
+    // ------------------------------------------------------------------ //
 
-        const cards = sandbox.locator('[data-cy="masonry-playground-card"]')
-        await expect(cards).toHaveCount(16, { timeout: 8000 })
-    })
-})
+    test.describe('Design', () => {
+        test('renders the masonry root with BEM class', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-masonry').first()
+            await expect(root).toBeVisible({ timeout: 30000 })
+        })
 
-test.describe('OrigamMasonry — Prop columns', () => {
-    /**
-     * Cluster items by their painted `left` pixel — distinct left values
-     * = distinct columns. With 16 items and N columns, we expect exactly
-     * N distinct clusters (allowing ±2 px for rounding).
-     */
-    const distinctColumnCount = async (page: Page, selector: string) => {
-        const sandbox = sandboxOf(page)
-        const lefts: number[] = await sandbox
-            .locator(`${selector} > *`)
-            .evaluateAll((els) =>
-                els
-                    .map((el) => (el as HTMLElement).getBoundingClientRect().left)
-                    .filter((n) => Number.isFinite(n))
+        test('root carries role="list" (a11y)', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-masonry').first()
+            await expect(root).toBeVisible({ timeout: 30000 })
+            await expect(root).toHaveAttribute('role', 'list')
+        })
+
+        test('Chromium headless uses the JS path (.origam-masonry--js)', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-masonry').first()
+            await expect(root).toBeVisible({ timeout: 30000 })
+            await expect(root).toHaveClass(/origam-masonry--js/)
+        })
+
+        test('JS path: 9 preview cards are wrapped in .origam-masonry__item', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
+            const items = sandbox.locator('.origam-masonry__item')
+            await expect(items).toHaveCount(9, { timeout: 8000 })
+        })
+
+        test('each .origam-masonry__item carries role="listitem"', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
+            const firstItem = sandbox.locator('.origam-masonry__item').first()
+            await expect(firstItem).toHaveAttribute('role', 'listitem')
+        })
+
+        test('JS path: items are positioned absolutely (bucket-fill layout)', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
+            // Allow one rAF for the first relayout to fire
+            await page.waitForTimeout(200)
+            const position = await sandbox.locator('.origam-masonry__item').first().evaluate(
+                (el) => getComputedStyle(el).position
             )
+            expect(position).toBe('absolute')
+        })
 
-        // Bucket lefts: anything within 4 px is the same column.
-        const sorted = [...lefts].sort((a, b) => a - b)
-        const clusters: number[] = []
-        for (const l of sorted) {
-            if (clusters.length === 0 || Math.abs(l - clusters[clusters.length - 1]) > 4) {
-                clusters.push(l)
-            }
-        }
-        return clusters.length
-    }
+        test('columns=3: items distribute into 3 distinct horizontal positions', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
+            await page.waitForTimeout(300)
 
-    test('columns = 3 → items align into 3 visual columns', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — columns')
-        const count = await distinctColumnCount(page, '[data-cy="masonry-columns-3"]')
-        expect(count).toBe(3)
-    })
-
-    test('columns = 5 → items align into 5 visual columns', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — columns')
-        const count = await distinctColumnCount(page, '[data-cy="masonry-columns-5"]')
-        expect(count).toBe(5)
-    })
-})
-
-test.describe('OrigamMasonry — Prop columnBreakpoints', () => {
-    test('column count adapts to container width via ResizeObserver', async ({ page }) => {
-        await page.setViewportSize({ width: 1280, height: 800 })
-        await openVariant(page, STORY, 'Prop — columnBreakpoints')
-
-        const sandbox = sandboxOf(page)
-        const host = sandbox.locator('[data-cy="masonry-breakpoints-host"]').first()
-        await expect(host).toBeVisible({ timeout: 8000 })
-
-        // Settle one layout pass after navigation.
-        await page.waitForTimeout(400)
-
-        const lefts: number[] = await host
-            .locator('> *')
-            .evaluateAll((els) =>
+            const lefts: number[] = await sandbox.locator('.origam-masonry__item').evaluateAll((els) =>
                 els.map((el) => Math.round((el as HTMLElement).getBoundingClientRect().left))
             )
-        const distinct = new Set(lefts)
-        // Wide viewport (1280) → ≥ 3 distinct columns (at least one
-        // breakpoint matched). Exact value depends on Histoire's
-        // sandbox width but we expect more than 1 column.
-        expect(distinct.size).toBeGreaterThan(1)
-    })
-})
+            // Bucket left values: within 4 px → same column
+            const sorted = [...lefts].sort((a, b) => a - b)
+            const clusters: number[] = []
+            for (const l of sorted) {
+                if (clusters.length === 0 || Math.abs(l - clusters[clusters.length - 1]) > 4) {
+                    clusters.push(l)
+                }
+            }
+            expect(clusters.length).toBe(3)
+        })
 
-test.describe('OrigamMasonry — Prop gap', () => {
-    test('gap = xs and gap = xl produce distinct resolved pixel values', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — gap')
-        const sandbox = sandboxOf(page)
+        test('--origam-masonry---resolved-gap is set on the root (token bridge)', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-masonry').first()
+            await expect(root).toBeVisible({ timeout: 30000 })
+            const gap = await root.evaluate(
+                (el) => getComputedStyle(el).getPropertyValue('--origam-masonry---resolved-gap').trim()
+            )
+            expect(gap).not.toBe('')
+        })
 
-        const xsHost = sandbox.locator('[data-cy="masonry-gap-xs"]').first()
-        const xlHost = sandbox.locator('[data-cy="masonry-gap-xl"]').first()
-        await expect(xsHost).toBeVisible({ timeout: 8000 })
-        await expect(xlHost).toBeVisible({ timeout: 8000 })
-
-        const readGap = (el: Element) =>
-            getComputedStyle(el).getPropertyValue('--origam-masonry---resolved-gap').trim()
-
-        const xs = await xsHost.evaluate(readGap)
-        const xl = await xlHost.evaluate(readGap)
-
-        expect(xs).not.toBe('')
-        expect(xl).not.toBe('')
-        expect(xs).not.toBe(xl)
-    })
-})
-
-test.describe('OrigamMasonry — Prop animated', () => {
-    test('animated=true emits a non-empty transition on items', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — animated')
-        const sandbox = sandboxOf(page)
-
-        const host = sandbox.locator('[data-cy="masonry-animated-true"]').first()
-        await expect(host).toBeVisible({ timeout: 8000 })
-
-        // JS path: first child is an internal wrapper carrying the transition.
-        const firstItem = host.locator('> *').first()
-        const transition = await firstItem.evaluate((el) => getComputedStyle(el).transition)
-        // The transition shorthand contains the keyword "transform" or
-        // "all" depending on the browser's reporting style.
-        expect(transition).not.toBe('')
-        expect(transition).not.toMatch(/^all 0s/)
+        test('Design variant uses component default animated=true (.origam-masonry--animated present)', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-masonry').first()
+            await expect(root).toBeVisible({ timeout: 30000 })
+            // The Design variant passes no animated prop → component default is true → class IS present
+            await expect(root).toHaveClass(/origam-masonry--animated/)
+        })
     })
 
-    test('animated=false produces no transition on items', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — animated')
-        const sandbox = sandboxOf(page)
+    // ------------------------------------------------------------------ //
+    // FUNCTIONAL (index 1)                                                 //
+    // init: { columns: 3, gap: 'md', animated: true, align: 'top' }       //
+    // 16 shufflable cards                                                  //
+    // ------------------------------------------------------------------ //
 
-        const host = sandbox.locator('[data-cy="masonry-animated-false"]').first()
-        await expect(host).toBeVisible({ timeout: 8000 })
+    test.describe('Functional', () => {
+        test('renders 16 cards as masonry items', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
+            await expect(sandbox.locator('.origam-masonry__item')).toHaveCount(16, { timeout: 8000 })
+        })
 
-        const firstItem = host.locator('> *').first()
-        const duration = await firstItem.evaluate((el) =>
-            getComputedStyle(el).transitionDuration
-        )
-        // Browsers normalise "0s" or "0s, 0s, 0s, 0s" depending on the
-        // property count — accept any of those.
-        expect(duration.replace(/[\s,]/g, '')).toMatch(/^0?s?(0s)*$/)
+        test('animated=true: .origam-masonry--animated class is present', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-masonry').first()
+            await expect(root).toBeVisible({ timeout: 30000 })
+            await expect(root).toHaveClass(/origam-masonry--animated/)
+        })
+
+        test('animated=true: items carry a non-zero transition declaration', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
+            await page.waitForTimeout(200)
+            const firstItem = sandbox.locator('.origam-masonry__item').first()
+            const transition = await firstItem.evaluate((el) => getComputedStyle(el).transition)
+            // Animated JS items declare top/left/width/transform transitions
+            expect(transition).not.toBe('')
+            // Must NOT be "all 0s ease 0s" (no-op)
+            expect(transition).not.toMatch(/^all 0s/)
+        })
+
+        test('columns=3: 16 items distributed into 3 horizontal columns', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
+            await page.waitForTimeout(300)
+
+            const lefts: number[] = await sandbox.locator('.origam-masonry__item').evaluateAll((els) =>
+                els.map((el) => Math.round((el as HTMLElement).getBoundingClientRect().left))
+            )
+            const sorted = [...lefts].sort((a, b) => a - b)
+            const clusters: number[] = []
+            for (const l of sorted) {
+                if (clusters.length === 0 || Math.abs(l - clusters[clusters.length - 1]) > 4) {
+                    clusters.push(l)
+                }
+            }
+            expect(clusters.length).toBe(3)
+        })
+
+        test('JS layout: container height CSS var is set and > 0', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-masonry').first()
+            await expect(root).toBeVisible({ timeout: 30000 })
+            await page.waitForTimeout(300)
+            const h = await root.evaluate(
+                (el) => getComputedStyle(el).getPropertyValue('--origam-masonry---container-height').trim()
+            )
+            expect(h).not.toBe('')
+            const numeric = parseFloat(h)
+            expect(numeric).toBeGreaterThan(0)
+        })
+
+        test('shuffle button reorders items in the DOM', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
+            await page.waitForTimeout(300)
+
+            const before: string[] = await sandbox.locator('.origam-masonry__item').evaluateAll((els) =>
+                els.map((el) => (el as HTMLElement).textContent?.trim() ?? '')
+            )
+
+            await sandbox.locator('button.story-btn').click()
+            await page.waitForTimeout(400)
+
+            const after: string[] = await sandbox.locator('.origam-masonry__item').evaluateAll((els) =>
+                els.map((el) => (el as HTMLElement).textContent?.trim() ?? '')
+            )
+
+            // With 16 items the probability of an identical random shuffle is 1/16! ≈ 0
+            expect(after).not.toEqual(before)
+        })
     })
 
-    test('shuffle button reorders items in the DOM', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — animated')
-        const sandbox = sandboxOf(page)
+    // ------------------------------------------------------------------ //
+    // SLOTS - DEFAULT (index 2)                                            //
+    // 9 preview cards, no state, slot default                             //
+    // ------------------------------------------------------------------ //
 
-        const host = sandbox.locator('[data-cy="masonry-animated-true"]').first()
-        await expect(host).toBeVisible({ timeout: 8000 })
+    test.describe('Slots - Default', () => {
+        test('slot renders 9 cards as masonry items', async ({ page }) => {
+            await page.goto(variantUrl(2))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
+            await expect(sandbox.locator('.origam-masonry__item')).toHaveCount(9, { timeout: 8000 })
+        })
 
-        const initialOrder = await host
-            .locator('> *')
-            .evaluateAll((els) => els.map((el) => (el as HTMLElement).textContent?.trim() ?? ''))
-
-        // Click shuffle and wait for the next paint.
-        await page.frameLocator('iframe[src*="__sandbox"]')
-            .locator('[data-cy="masonry-animated-shuffle"]')
-            .click()
-        await page.waitForTimeout(400)
-
-        const newOrder = await host
-            .locator('> *')
-            .evaluateAll((els) => els.map((el) => (el as HTMLElement).textContent?.trim() ?? ''))
-
-        // With 16 items the probability of an identical shuffle is
-        // effectively zero (1 / 16!). If this flakes, deterministic
-        // shuffle is the fix — for now we trust randomness.
-        expect(newOrder).not.toEqual(initialOrder)
+        test('slot content is rendered inside each item wrapper', async ({ page }) => {
+            await page.goto(variantUrl(2))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
+            // Each item wraps a .card div from the slot
+            const cardInItem = sandbox.locator('.origam-masonry__item .card').first()
+            await expect(cardInItem).toBeVisible({ timeout: 8000 })
+        })
     })
+
+    // ------------------------------------------------------------------ //
+    // DEFAULT / PLAYGROUND (index 3)                                       //
+    // init: { columns: 3, gap: 'md', animated: true, align: 'top' }       //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Default (playground)', () => {
+        test('playground renders the masonry root', async ({ page }) => {
+            await page.goto(variantUrl(3))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-masonry').first()
+            await expect(root).toBeVisible({ timeout: 30000 })
+        })
+
+        test('playground: 16 items are rendered', async ({ page }) => {
+            await page.goto(variantUrl(3))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
+            await expect(sandbox.locator('.origam-masonry__item')).toHaveCount(16, { timeout: 8000 })
+        })
+
+        test('playground: gap token resolves to a non-empty CSS value', async ({ page }) => {
+            await page.goto(variantUrl(3))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-masonry').first()
+            await expect(root).toBeVisible({ timeout: 30000 })
+            const gap = await root.evaluate(
+                (el) => getComputedStyle(el).getPropertyValue('--origam-masonry---resolved-gap').trim()
+            )
+            expect(gap).not.toBe('')
+        })
+
+        test('playground shuffle button reorders items', async ({ page }) => {
+            await page.goto(variantUrl(3))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
+            await page.waitForTimeout(300)
+
+            const before: string[] = await sandbox.locator('.origam-masonry__item').evaluateAll((els) =>
+                els.map((el) => (el as HTMLElement).textContent?.trim() ?? '')
+            )
+
+            await sandbox.locator('button.story-btn').click()
+            await page.waitForTimeout(400)
+
+            const after: string[] = await sandbox.locator('.origam-masonry__item').evaluateAll((els) =>
+                els.map((el) => (el as HTMLElement).textContent?.trim() ?? '')
+            )
+            expect(after).not.toEqual(before)
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // CSS MASONRY PATH — non-testable in headless Chromium                 //
+    // ------------------------------------------------------------------ //
+
+    test.fixme(
+        'CSS path (.origam-masonry--css): grid-template-rows:masonry requires the experimental flag',
+        async () => {
+            // grid-template-rows: masonry is behind chrome://flags/#enable-experimental-web-platform-features.
+            // Headless Chromium does not enable it. The CSS path is therefore
+            // never activated in this suite. Unit tests cover the pure helpers
+            // (pickColumnsForWidth, bucketFill) in packages/tests/TU/.
+            // To test the CSS path manually: launch Chrome with
+            //   --enable-experimental-web-platform-features
+            // and navigate to http://localhost:6006/stories/story/<STORY_ID>.
+        }
+    )
 })

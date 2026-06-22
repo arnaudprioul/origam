@@ -50,7 +50,17 @@ const GREEN_SPECS = [
     'treeview.spec.ts',
     'clipboard.spec.ts',
     'code.spec.ts',
-    'empty-state.spec.ts'
+    'empty-state.spec.ts',
+    // wave 5
+    'blockquote.spec.ts',
+    'skeleton.spec.ts',
+    'qr-code.spec.ts',
+    'watermark.spec.ts',
+    'masonry.spec.ts',
+    'grid.spec.ts',
+    'progress.spec.ts',
+    'carousel.spec.ts',
+    'counter.spec.ts'
 ]
 
 /**
