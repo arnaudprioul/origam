@@ -30,7 +30,17 @@ const GREEN_SPECS = [
     'radio.spec.ts',
     'slider-field.spec.ts',
     'tabs.spec.ts',
-    'label.spec.ts'
+    'label.spec.ts',
+    // wave 3
+    'select.spec.ts',
+    'number-field.spec.ts',
+    'password-field.spec.ts',
+    'rating-field.spec.ts',
+    'otp-input-field.spec.ts',
+    'textarea-field.spec.ts',
+    'list.spec.ts',
+    'menu.spec.ts',
+    'expansion-panel.spec.ts'
 ]
 
 /**
