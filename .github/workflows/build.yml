@@ -2,26 +2,61 @@ name: Build
 
 on:
   push:
-    branches:
-      - develop
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
 
+permissions:
+  contents: read
 
 jobs:
-  build:
-    name: Build and analyze
-    runs-on: macos-latest
-
+  sonar:
+    name: Coverage + SonarQube analysis
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          # Full history so SonarQube can attribute blame / new-code period.
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build tokens (prereq for component specs)
+        run: pnpm -F origam tokens:build
+
+      - name: Unit tests with coverage
+        # Emits coverage/lcov.info at the repo root with SF: paths relative to
+        # the repo root (see packages/tests/vitest.config.ts) — exactly what
+        # sonar.javascript.lcov.reportPaths expects.
+        run: pnpm -F @origam/tests run test:coverage
+
+      - name: Assert coverage report exists
+        run: |
+          test -s coverage/lcov.info \
+            || { echo "::error::coverage/lcov.info missing or empty — Sonar would report 0% coverage"; exit 1; }
+
       - uses: SonarSource/sonarqube-scan-action@v4
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      # If you wish to fail your job when the Quality Gate is red, uncomment the
-      # following lines. This would typically be used to fail a deployment.
-      # - uses: SonarSource/sonarqube-quality-gate-action@v1
-      #   timeout-minutes: 5
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      # Quality gate enforcement. Disabled by default until the first
+      # diagnostic scan establishes the baseline (ratings + debt); enabling it
+      # blind would red the pipeline before we know what needs remediation.
+      # Flip ENFORCE_QUALITY_GATE to 'true' (repo variable) once the gate is
+      # green to make a red gate fail the build.
+      - name: Quality gate
+        if: ${{ vars.ENFORCE_QUALITY_GATE == 'true' }}
+        uses: SonarSource/sonarqube-quality-gate-action@v1
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
