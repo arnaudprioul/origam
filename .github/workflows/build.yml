@@ -1,10 +1,13 @@
 name: Build
 
 on:
+  # SonarQube Community Edition analyses a SINGLE branch (no PR / multi-branch
+  # analysis). We scan only `develop` — the integration branch — so it becomes
+  # that one analysed branch. PR triggers are removed because CE rejects
+  # pull-request analysis; re-add them (and `main`) if the project moves to
+  # Developer Edition.
   push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
+    branches: [develop]
 
 permissions:
   contents: read
