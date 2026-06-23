@@ -92,8 +92,10 @@ export default defineConfig({
     // never retry locally so the dev sees the failure as it happened.
     retries: process.env.CI ? 1 : 0,
 
-    // Conservative worker count in CI; let Playwright pick locally.
-    workers: process.env.CI ? 1 : undefined,
+    // CI serves the prebuilt static Histoire (E2E_STATIC), so there is no
+    // per-story Vite cold-compile contention — run parallel to fit the time
+    // budget. Single worker only when CI hits the live dev server.
+    workers: process.env.CI ? (process.env.E2E_STATIC === '1' ? '100%' : 1) : undefined,
 
     reporter: [
         ['html', { outputFolder: 'e2e/.report', open: 'never' }],
@@ -127,13 +129,16 @@ export default defineConfig({
     ],
 
     webServer: {
-        // Reuse Histoire's dev server — every component already has a story
-        // URL (`/stories/story/...`) we can navigate to.
-        // Histoire is configured with base: '/stories/' in histoire.config.js.
-        // Spawn pnpm from the repo root so the workspace filter resolves.
-        command: 'pnpm -F @origam/stories dev',
+        // E2E_STATIC=1 (CI): serve the PREBUILT static Histoire via
+        // `histoire preview` (the job runs `build:stories` first). No per-story
+        // Vite cold-compile → fast + deterministic, which is what lets the job
+        // fit its timeout and run parallel workers. Same /stories/story/... URLs.
+        // Default (local): the live `histoire dev` server, reused if running.
+        command: process.env.E2E_STATIC === '1'
+            ? 'pnpm -F @origam/stories exec histoire preview -p 6006'
+            : 'pnpm -F @origam/stories dev',
         cwd: REPO_ROOT,
-        url: 'http://localhost:6006',
+        url: 'http://localhost:6006/stories/',
         reuseExistingServer: !process.env.CI,
         timeout: 120_000
     }
