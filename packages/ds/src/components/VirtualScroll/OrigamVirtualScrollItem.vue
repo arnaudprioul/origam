@@ -103,10 +103,3 @@
 	})
 </script>
 
-<style
-		lang="scss"
-		scoped
->
-	.origam-virtual-scroll-item {
-	}
-</style>

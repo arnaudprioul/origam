@@ -256,8 +256,3 @@
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

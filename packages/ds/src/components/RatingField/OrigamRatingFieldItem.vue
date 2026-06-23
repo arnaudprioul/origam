@@ -193,10 +193,6 @@
 			width: 0;
 		}
 
-		&--full {
-
-		}
-
 		&--half {
 			overflow: hidden;
 			position: absolute;
@@ -213,6 +209,3 @@
 	}
 </style>
 
-<style>
-
-</style>

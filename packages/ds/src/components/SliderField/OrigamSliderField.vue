@@ -777,11 +777,7 @@
 		const v = roundValue(target.value)
 		model.value = v
 	}
-	const handleSingleChange = (e: Event) => {
-		const target = e.target as HTMLInputElement
-		const v = roundValue(target.value)
-		model.value = v
-	}
+	const handleSingleChange = handleSingleInput
 
 	const handleRangeStartInput = (e: Event) => {
 		const target = e.target as HTMLInputElement

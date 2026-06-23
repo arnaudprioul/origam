@@ -121,9 +121,9 @@ export function useElevation (
         }
 
         const numeric = typeof elevation === 'string' ? parseInt(elevation, 10) : elevation
-        if (Number.isNaN(numeric as number)) return styles
+        if (Number.isNaN(numeric)) return styles
 
-        const tokenName = elevationToToken(numeric as number)
+        const tokenName = elevationToToken(numeric)
         styles.push(`box-shadow: var(--origam-shadow---${tokenName})`)
 
         return styles

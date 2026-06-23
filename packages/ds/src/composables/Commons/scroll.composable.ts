@@ -49,7 +49,7 @@ export function useScroll (
         if (!targetEl || (canScroll && !canScroll.value)) return
 
         previousScroll = currentScroll.value
-        currentScroll.value = ('window' in targetEl) ? targetEl.pageYOffset : targetEl.scrollTop
+        currentScroll.value = ('window' in targetEl) ? targetEl.scrollY : targetEl.scrollTop
 
         isScrollingUp.value = currentScroll.value < previousScroll
         currentThreshold.value = Math.abs(currentScroll.value - scrollThreshold.value)

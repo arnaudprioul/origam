@@ -29,6 +29,11 @@ export function useDragResizer (el: HTMLElement | undefined, value: Ref<number>,
 
     // TODO - Rework for both axis
 
+    const onDragEnd = () => {
+        removeListeners.forEach((fn) => fn())
+        resizing.value = false
+    }
+
     const onMouseDown = (e: MouseEvent) => {
         e.preventDefault()
         e.stopPropagation()
@@ -44,11 +49,7 @@ export function useDragResizer (el: HTMLElement | undefined, value: Ref<number>,
 
             value.value = clamp(initialStart + delta, min, max)
         }
-        const onMouseUp = () => {
-            removeListeners.forEach((fn) => fn())
-
-            resizing.value = false
-        }
+        const onMouseUp = onDragEnd
 
         removeListeners.push(...[
             addWindowListener('mousemove', onMouseMove as (e: Event) => void, onUnmountedCleanupFns),
@@ -70,11 +71,7 @@ export function useDragResizer (el: HTMLElement | undefined, value: Ref<number>,
 
             value.value = Math.max(min, Math.min(max, initialStart + delta))
         }
-        const onTouchEnd = () => {
-            removeListeners.forEach((fn) => fn())
-
-            resizing.value = false
-        }
+        const onTouchEnd = onDragEnd
 
         removeListeners.push(...[
             addWindowListener('touchmove', onTouchMove as (e: Event) => void, onUnmountedCleanupFns),

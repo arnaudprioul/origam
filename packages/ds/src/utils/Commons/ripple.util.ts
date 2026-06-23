@@ -1,4 +1,4 @@
-import { DELAY_RIPPLE, KEYCODES, ORIGAM_RIPPLE_STOP_KEY, RIPPLES } from '../../consts'
+import { DELAY_RIPPLE, ORIGAM_RIPPLE_STOP_KEY, RIPPLES } from '../../consts'
 
 import type { IRippleDirectiveBinding, IRippleHtmlElement, IRippleOptions } from '../../interfaces'
 
@@ -262,7 +262,6 @@ export function rippleRemoveListeners (el: IRippleHtmlElement) {
  */
 export function rippleTransform (el: IRippleHtmlElement, value: string) {
     el.style.transform = value
-    el.style.webkitTransform = value
 }
 
 let keyboardRipple = false
@@ -273,7 +272,7 @@ let keyboardRipple = false
  * @param e …
  */
 export function keyboardRippleShow (e: KeyboardEvent) {
-    if (!keyboardRipple && ((e.keyCode === KEYCODES.enter || e.keyCode === KEYCODES.space) || (e.code === KEYCODES.enter.toString() || e.code === KEYCODES.space.toString()))) {
+    if (!keyboardRipple && (e.key === 'Enter' || e.key === ' ')) {
         keyboardRipple = true
         rippleShow(e)
     }

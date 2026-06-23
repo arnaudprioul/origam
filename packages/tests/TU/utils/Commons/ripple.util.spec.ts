@@ -221,10 +221,9 @@ describe('rippleRemoveListeners', () => {
 })
 
 describe('rippleTransform', () => {
-    it('sets both transform and webkitTransform on the element', () => {
+    it('sets transform on the element', () => {
         const el = makeRippleEl()
         rippleTransform(el, 'translate(10px, 20px) scale3d(0.3, 0.3, 0.3)')
         expect(el.style.transform).toBe('translate(10px, 20px) scale3d(0.3, 0.3, 0.3)')
-        expect(el.style.webkitTransform).toBe('translate(10px, 20px) scale3d(0.3, 0.3, 0.3)')
     })
 })
