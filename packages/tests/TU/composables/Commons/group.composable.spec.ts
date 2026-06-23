@@ -5,9 +5,9 @@
 // skip note: `useGroupItem` throws when called outside a setup function
 // (getCurrentInstance check). This is tested with a try/catch instead of .skip.
 
-import { defineComponent, h, InjectionKey, reactive } from 'vue'
+import { defineComponent, h, InjectionKey } from 'vue'
 import { mount } from '@vue/test-utils'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 import type { IGroupProps, IGroupItemProps, IGroupProvide } from '@origam/interfaces'
 

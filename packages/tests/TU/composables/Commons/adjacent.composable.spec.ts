@@ -5,9 +5,9 @@
 // click:prepend / click:append emit events cannot be tested headlessly without
 // a real DOM interaction — those are covered by a skip with justification.
 
-import { defineComponent, h, reactive } from 'vue'
+import { defineComponent, h } from 'vue'
 import { mount } from '@vue/test-utils'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 import type { IAdjacentProps, IAdjacentInnerProps } from '@origam/interfaces'
 

@@ -100,7 +100,12 @@ export default typescriptEslint.config(
 			// (multiple `defineComponent({...})` per file) to exercise a hook
 			// under different setups. The one-component-per-file rule targets
 			// authored SFCs, not test scaffolding — off for spec files.
-			"vue/one-component-per-file": "off"
+			"vue/one-component-per-file": "off",
+			// Inline harness components often declare props as a bare string
+			// array (`props: ['color']`) just to forward a value into a hook —
+			// runtime prop typing adds noise with no value in throwaway test
+			// scaffolding. Off for spec files.
+			"vue/require-prop-types": "off"
 		}
 	},
 	{
