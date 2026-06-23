@@ -121,7 +121,7 @@
 	const handleMouseLeave = (e: MouseEvent) => {
 		emits('mouseleave', e)
 	}
-	const handleClick = (e: Event) => {
+	const handleClick = (e: MouseEvent) => {
 		emits('click', e)
 	}
 

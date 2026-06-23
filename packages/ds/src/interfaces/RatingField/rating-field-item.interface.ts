@@ -20,6 +20,7 @@ export interface IRatingFieldItemProps extends ICommonsComponentProps, ITagProps
     index?: number
     value: number
     label?: string
+    itemAriaLabel?: string
     showStar?: boolean
     isFilled?: boolean
     isHovered?: boolean
@@ -30,7 +31,7 @@ export interface IRatingFieldItemProps extends ICommonsComponentProps, ITagProps
     emptyIcon?: TIcon
     halfIncrements?: boolean
     checked?: boolean
-    length?: number
+    length?: number | string
 }
 
 /** Emits fired by `<OrigamRatingFieldItem>` — click + hover surface

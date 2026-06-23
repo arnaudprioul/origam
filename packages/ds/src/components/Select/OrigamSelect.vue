@@ -149,13 +149,13 @@
 													</template>
 													<template v-else>
                           <span class="origam-select__unmask">
-                            {{ item.title.substr(0, getMatches(item)?.title) }}
+                            {{ item.title.substr(0, getMatchStart(item)) }}
                           </span>
 														<span class="origam-select__mask">
-                            {{ item.title.substr(getMatches(item)?.title, search.length) }}
+                            {{ item.title.substr(getMatchStart(item), getSearchLength()) }}
                           </span>
 														<span class="origam-select__unmask">
-                            {{ item.title.substr(getMatches(item)?.title + search.length) }}
+                            {{ item.title.substr(getMatchStart(item) + getSearchLength()) }}
                           </span>
 													</template>
 												</template>
@@ -555,11 +555,11 @@
 		}
 	})
 
-	const menuListItemProps = (item: IInternalListItem, itemRef: VNodeRef, index: number) => {
+	const menuListItemProps = (item: IInternalListItem, itemRef: VNodeRef | HTMLElement | null | undefined, index: number) => {
 		const isKeyboardHighlighted = highlightIndex.value === index
 		const isItemSelected = isSelected(item)
 		return mergeProps(item.props ?? {}, {
-			ref: itemRef,
+			ref: itemRef as VNodeRef,
 			key: index,
 			id: optionId(index),
 			role: 'option',
@@ -571,6 +571,16 @@
 	const isSelected = (item: IInternalListItem) => {
 		return selectedValues.value.includes(item.value)
 	}
+
+	// Type-narrow helpers used in the template to avoid TS18048 / TS2365.
+	// `getMatches(item)?.title` is `TFilterMatch | undefined` (union of
+	// boolean | number | tuples) — coerce to number before arithmetic.
+	// `search` is `string | undefined` from the VLS context — fallback to 0
+	// for the length so substr stays well-typed.
+	const getMatchStart = (item: IInternalListItem): number =>
+		Number(getMatches(item)?.title ?? 0)
+	const getSearchLength = (): number =>
+		(search.value ?? '').length
 
 	const {
 		onListScroll: handleListScroll,
@@ -751,7 +761,7 @@
 			if (!props.multiple) return
 
 			if (e.key === KEYBOARD_VALUES.LEFT) {
-				if (selectionIndex.value < 0 && selectionStart > 0) return
+				if (selectionIndex.value < 0 && (selectionStart ?? 0) > 0) return
 
 				const prev = selectionIndex.value > -1
 						? selectionIndex.value - 1
@@ -761,7 +771,7 @@
 					selectionIndex.value = prev
 				} else {
 					selectionIndex.value = -1
-					origamTextFieldRef.value?.setSelectionRange(search.value?.length, search.value?.length)
+					origamTextFieldRef.value?.setSelectionRange(search.value?.length ?? null, search.value?.length ?? null)
 				}
 			}
 
@@ -870,7 +880,10 @@
 		return props.chips || slots.chip
 	})
 
-	const chipSlotProps = (item: IInternalListItem) => {
+	// Return typed as Record<string, unknown> so vue-tsc does not try to
+	// validate the event-handler keys ('onClick:close', 'onKeydown', …)
+	// against IChipProps when the object is spread via v-bind on <origam-chip>.
+	const chipSlotProps = (item: IInternalListItem): Record<string, unknown> => {
 		return {
 			closable: props.closableChips,
 			disabled: item.props?.disabled,
