@@ -159,7 +159,6 @@
                   type="button"
                   class="origam-calendar__event"
                   :style="eventStyle(event)"
-                  role="button"
                   :aria-label="ariaEventLabel(event)"
                   :data-cy="`origam-calendar-event-${event.id}`"
                   @click.stop="onEventClick(event, $event)"

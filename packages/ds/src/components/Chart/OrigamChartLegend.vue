@@ -2,7 +2,6 @@
 	<ul
 			class="origam-chart__legend"
 			:class="legendClasses"
-			role="list"
 			data-cy="origam-chart-legend"
 	>
 		<li

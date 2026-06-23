@@ -98,8 +98,6 @@
 								:cy="path.circle!.cy"
 								:r="path.circle!.r"
 								:fill="path.color"
-								tabindex="0"
-								role="button"
 								:aria-label="pointAriaLabel(path)"
 								:data-cy="`origam-chart-point-${ path.seriesIndex }-${ path.dataIndex }`"
 						/>

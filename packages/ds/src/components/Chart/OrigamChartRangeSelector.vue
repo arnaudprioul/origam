@@ -6,7 +6,6 @@
 	>
 		<ul
 				class="origam-chart-range-selector__list"
-				role="list"
 		>
 			<li
 					v-for="(btn, i) in buttons"

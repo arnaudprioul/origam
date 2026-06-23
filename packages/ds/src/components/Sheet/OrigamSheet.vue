@@ -16,6 +16,8 @@
 				tabindex="0"
 				aria-label="Drag handle"
 				data-cy="sheet-bottom-handle"
+				@keydown.enter.prevent="onActive"
+				@keydown.space.prevent="onActive"
 		>
 			<span class="origam-sheet__handle-pill"/>
 		</div>

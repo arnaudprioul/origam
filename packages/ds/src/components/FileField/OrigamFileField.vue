@@ -105,7 +105,6 @@
           <ul
               v-if="multiple && hasFiles"
               class="origam-file-field__list"
-              role="list"
           >
             <template v-for="(item, idx) in fileList" :key="idx">
               <slot
@@ -290,7 +289,6 @@
           <ul
               v-if="multiple && hasFiles && !hasChips && displayMode === 'list'"
               class="origam-file-field__list"
-              role="list"
           >
             <template v-for="(item, idx) in fileList" :key="idx">
               <slot
