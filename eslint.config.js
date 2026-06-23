@@ -118,7 +118,13 @@ export default typescriptEslint.config(
 			// Specs occasionally re-`require()` a module mid-test to reset its
 			// internal singleton state between cases — a legitimate test-only
 			// pattern. Off for spec files.
-			"@typescript-eslint/no-require-imports": "off"
+			"@typescript-eslint/no-require-imports": "off",
+			// Inline stub components (mounting a child of the unit-under-test)
+			// declare props without defaults / in test-convenient casing / order
+			// — authored-SFC hygiene rules don't apply to throwaway test stubs.
+			"vue/require-default-prop": "off",
+			"vue/prop-name-casing": "off",
+			"vue/order-in-components": "off"
 		}
 	},
 	{
