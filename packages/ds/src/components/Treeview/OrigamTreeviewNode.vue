@@ -313,7 +313,6 @@
 		&__guide {
 			display: inline-block;
 			flex-shrink: 0;
-			width: 1px;
 			align-self: stretch;
 			background-color: var(--origam-treeview---guide-color, var(--origam-color__border---subtle));
 			width: var(--origam-treeview---guide-thickness, 1px);

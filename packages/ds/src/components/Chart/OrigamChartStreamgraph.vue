@@ -646,7 +646,7 @@
 	const svgTitle = computed(() => props.title ?? 'streamgraph chart')
 	const svgDesc = computed(() => {
 		const n = visibleRibbons.value.length
-		return `Streamgraph with ${ n } ${ n === 1 ? 'series' : 'series' } and ${ columnCount.value } time points.`
+		return `Streamgraph with ${ n } series and ${ columnCount.value } time points.`
 	})
 
 	const ribbonAriaLabel = (ribbon: IChartStreamgraphRibbon): string =>

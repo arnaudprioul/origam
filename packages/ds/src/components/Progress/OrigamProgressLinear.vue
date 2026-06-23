@@ -257,7 +257,6 @@
 				opacity: var(--origam-progress-linear__background---opacity, 0.5);
 				position: absolute;
 				top: 0;
-				transition-property: width, left, right;
 				transition: inherit;
 			}
 
@@ -286,7 +285,6 @@
 				left: 0;
 				position: absolute;
 				transition: inherit;
-				transition-property: width, left, right;
 			}
 
 			&#{$this}--indeterminate {
@@ -318,7 +316,6 @@
 				pointer-events: none;
 				position: absolute;
 				transition: inherit;
-				transition-property: width, left, right;
 			}
 
 			&#{$this}--reverse {

@@ -32,6 +32,7 @@
 		<tr class="origam-data-table-headers origam-data-table-headers--progress">
 			<th
 					:colspan="columns.length"
+					scope="col"
 					class="origam-data-table-headers__progress-cell"
 			>
 				<slot name="loader">

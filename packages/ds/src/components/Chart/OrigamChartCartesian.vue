@@ -1207,7 +1207,7 @@
 		if (!seriesCount) return 'No data'
 		const range = yRange.value
 		const points = slotCount.value
-		return `${ props.type } chart with ${ seriesCount } ${ seriesCount === 1 ? 'series' : 'series' } and ${ points } ${ points === 1 ? 'point' : 'points' }, values ranging from ${ range.min } to ${ range.max }.`
+		return `${ props.type } chart with ${ seriesCount } series and ${ points } ${ points === 1 ? 'point' : 'points' }, values ranging from ${ range.min } to ${ range.max }.`
 	})
 
 	const pointAriaLabel = (path: IChartPath) => {
