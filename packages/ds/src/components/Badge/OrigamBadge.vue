@@ -177,7 +177,7 @@
 		return `${props.max}+`
 	})
 
-	const badgeAttrs = computed(() => {
+	const badgeAttrs = computed<Record<string, unknown>>(() => {
 		return pick(attrs as Record<string, any>, [
 			'aria-atomic',
 			'aria-label',
