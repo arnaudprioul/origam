@@ -2,6 +2,7 @@
 	<component
 			:is="link.tag"
 			v-ripple="isClickable && ripple"
+			v-contrast
 			:class="cardClasses"
 			:href="link.href"
 			:style="cardStyles"
@@ -120,6 +121,7 @@
 						<slot name="text">
 							<origam-card-text
 									key="text"
+									:density="density"
 									:text="text"
 									class="origam-card__text"
 							/>
@@ -158,7 +160,7 @@
 		useStyle
 } from '../../composables'
 
-	import { vRipple } from '../../directives'
+	import { vContrast, vRipple } from '../../directives'
 
 	import { DENSITY, PROGRESS_TYPE } from '../../enums'
 
@@ -418,6 +420,8 @@
 		cursor: var(--origam-card---cursor);
 
 		background-color: var(--origam-card---background);
+		backdrop-filter: var(--origam-card---backdrop-filter, none);
+		-webkit-backdrop-filter: var(--origam-card---backdrop-filter, none);
 		box-shadow: var(--origam-card---box-shadow);
 		color: var(--origam-card---color);
 
@@ -548,6 +552,19 @@
 			}
 		}
 
+		&--loading &__loader:has(.origam-card__progress--circular) {
+			position: absolute;
+			inset: 0;
+			z-index: var(--origam-card__loader---z-index, 3);
+			min-height: 0;
+			border-radius: inherit;
+			background-color: var(--origam-card__loader---overlay-background, color-mix(in srgb, var(--origam-card---background) 62%, transparent));
+
+			:deep(.origam-progress--circular) {
+				margin: 0;
+			}
+		}
+
 		&--rounded-shaped {
 			border-start-start-radius: var(--origam-card---border-radius-rounded, 16px);
 			border-start-end-radius: 0;
@@ -576,6 +593,10 @@
 
 		&--density-compact {
 			--origam-card---density: -8px;
+		}
+
+		&--density-comfortable {
+			--origam-card---density: 8px;
 		}
 
 		&:hover,

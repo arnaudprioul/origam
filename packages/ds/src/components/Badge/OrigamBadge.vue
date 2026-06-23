@@ -14,6 +14,7 @@
         <span
 		        v-show="modelValue"
 		        :id="id"
+		        v-contrast
 		        :aria-label="t(label, content)"
 		        :class="badgeContentClasses"
 		        aria-atomic="true"
@@ -79,6 +80,8 @@
 
 	import type { IBadgeProps } from '../../interfaces'
 	import type { TTransitionProps } from "../../types"
+
+	import { vContrast } from '../../directives'
 
 	import { omit, pick } from '../../utils'
 

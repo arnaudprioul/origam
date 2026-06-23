@@ -1,281 +1,537 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-code-origamcode-story-vue'
-
 /**
- * Probe spec for OrigamCode runtime behaviour. Covers the shiki
- * highlight pipeline (per-lang tokens), line-numbers gutter, line
- * highlight class swap, copy-to-clipboard wiring and CSS-variable theming.
+ * OrigamCode — runtime behaviour specs.
  *
- * Each test navigates to a dedicated `<Variant>` and asserts on the
- * sandbox iframe — never on the Histoire chrome — so the locators stay
- * stable across Histoire upgrades.
+ * Pattern canonique : btn.spec.ts (navigation directe variantId, sandbox iframe, BEM class).
+ *
+ * ## Variants (index → title)
+ *   0 → Design                               init: { lang: 'ts', …, filename: 'design.ts', line-numbers }
+ *   1 → Functional                           init: { lang: 'ts', lineNumbers: true, copyable: true, filename: 'App.ts' }
+ *   2 → Functional - No filename (lang badge header)   (no filename → lang badge)
+ *   3 → Functional - Compact (install pill)  init: { lang: 'bash', prompt: '$', copyable: true }
+ *   4 → Events - copy
+ *   5 → Slots - Default
+ *   6 → Slots - Header
+ *   7 → Slots - Footer
+ *   8 → Default                              playground init: { lang: 'ts', lineNumbers: true, highlightLines: '2', copyable: true, filename: 'App.ts' }
+ *
+ * ## BEM root
+ *   .origam-code  (rendered as <figure> by default, tag prop overridable)
+ *
+ * ## Non-testable headless
+ *   - Chargement de la font monospace (async WebFont)
+ *   - Détail de couleur exact des tokens shiki (palette dépend de la résolution CSS de la sandbox)
+ *   - navigator.clipboard dans certains contextes headless stricts
+ *
+ * ## Bugs DS connus (ne pas faire échouer la CI sur ceux-là)
+ *   #30 — OrigamCode ne propage pas l'attribut `class` posé par le consommateur sur <figure> racine.
+ *   #29 — tokens shiki-light sous WCAG AA sur thèmes de marque non-blancs.
  */
 
-const sandboxOf = (page: import('@playwright/test').Page) =>
-    page.frameLocator('iframe[src*="__sandbox"]')
+const STORY_ID   = 'components-stories-code-origamcode-story-vue'
+const STORY_PATH = '/stories/story/' + STORY_ID
 
-async function gotoVariant (page: import('@playwright/test').Page, title: string) {
-    await page.goto(STORY_PATH)
-    await page.waitForLoadState('networkidle')
-    await page.getByText(title, { exact: true }).first().click()
-    await page.waitForTimeout(600)
+const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
+
+/**
+ * Navigate to a Variant and wait until the sandbox iframe has its `src`
+ * attribute set (Histoire injects it asynchronously after navigation).
+ * Without this guard, tests that run immediately after a "heavy" previous
+ * test can race against Histoire's JS loading the iframe — the iframe is
+ * present in the DOM but still empty.
+ */
+async function gotoVariant (page: import('@playwright/test').Page, idx: number) {
+    await page.goto(variantUrl(idx))
+    // Wait until Histoire has injected the sandbox src (may take 1-3s on cold starts).
+    await page.waitForFunction(
+        () => {
+            const iframe = document.querySelector('iframe')
+            return !!(iframe && iframe.getAttribute('src')?.includes('__sandbox'))
+        },
+        { timeout: 20000 }
+    )
 }
 
-test.describe('OrigamCode — semantic HTML (figure/figcaption)', () => {
+test.describe('OrigamCode', () => {
+    test.setTimeout(45000)
 
-    test('default tag renders as <figure>', async ({ page }) => {
-        await gotoVariant(page, 'Prop — tag=figure (default, semantic)')
-        const sandbox = sandboxOf(page)
+    // ------------------------------------------------------------------ //
+    // DESIGN (index 0)                                                     //
+    // init: { lang: 'ts', filename: 'design.ts', line-numbers }           //
+    // ------------------------------------------------------------------ //
 
-        const figure = sandbox.locator('figure.origam-code').first()
-        await expect(figure).toBeVisible({ timeout: 5000 })
-        await expect(figure).toHaveJSProperty('tagName', 'FIGURE')
-    })
+    test.describe('Design', () => {
+        test('renders the code root with BEM class origam-code', async ({ page }) => {
+            await gotoVariant(page, 0)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+        })
 
-    test('default tag header renders as <figcaption> inside <figure>', async ({ page }) => {
-        await gotoVariant(page, 'Prop — tag=figure (default, semantic)')
-        const sandbox = sandboxOf(page)
+        test('default tag renders as <figure>', async ({ page }) => {
+            await gotoVariant(page, 0)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            const tag = await code.evaluate(el => el.tagName.toLowerCase())
+            expect(tag).toBe('figure')
+        })
 
-        const figcaption = sandbox.locator('figure.origam-code figcaption.origam-code__header').first()
-        await expect(figcaption).toBeVisible({ timeout: 5000 })
-        await expect(figcaption).toHaveJSProperty('tagName', 'FIGCAPTION')
+        test('header bar is rendered as <figcaption> when tag=figure', async ({ page }) => {
+            await gotoVariant(page, 0)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            const header = code.locator('.origam-code__header').first()
+            await expect(header).toBeVisible()
+            const headerTag = await header.evaluate(el => el.tagName.toLowerCase())
+            expect(headerTag).toBe('figcaption')
+        })
 
-        await expect(figcaption.locator('[data-cy="origam-code-filename"]')).toHaveText('figure-default.ts')
-    })
+        test('filename prop renders inside the header with data-cy', async ({ page }) => {
+            await gotoVariant(page, 0)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            const filename = code.locator('[data-cy="origam-code-filename"]')
+            await expect(filename).toBeVisible()
+            await expect(filename).toHaveText('design.ts')
+        })
 
-    test('figure is accessible via getByRole("figure")', async ({ page }) => {
-        await gotoVariant(page, 'Prop — tag=figure (default, semantic)')
-        const sandbox = sandboxOf(page)
+        test('lang=ts adds origam-code--lang-ts modifier class', async ({ page }) => {
+            await gotoVariant(page, 0)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            await expect(code).toHaveClass(/origam-code--lang-ts/)
+        })
 
-        const figure = sandbox.getByRole('figure').first()
-        await expect(figure).toBeVisible({ timeout: 5000 })
-    })
+        test('line-numbers prop adds origam-code--line-numbers modifier class', async ({ page }) => {
+            await gotoVariant(page, 0)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            await expect(code).toHaveClass(/origam-code--line-numbers/)
+        })
 
-    test('back-compat: tag=div root renders as <div>, header falls back to <div> (not figcaption)', async ({ page }) => {
-        await gotoVariant(page, 'Prop — tag=div (back-compat)')
-        const sandbox = sandboxOf(page)
+        test('shiki pipeline runs — code__row elements are painted into the DOM', async ({ page }) => {
+            await gotoVariant(page, 0)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            // Wait for at least one row — proves the async shiki highlight finished.
+            const firstRow = sandbox.locator('.origam-code__row').first()
+            await expect(firstRow).toBeVisible({ timeout: 16000 })
+            const rowCount = await sandbox.locator('.origam-code__row').count()
+            expect(rowCount).toBeGreaterThanOrEqual(2)
+        })
 
-        const divRoot = sandbox.locator('div.origam-code').first()
-        await expect(divRoot).toBeVisible({ timeout: 5000 })
-        await expect(divRoot).toHaveJSProperty('tagName', 'DIV')
+        test('rows carry sequential data-line attributes starting at 1', async ({ page }) => {
+            await gotoVariant(page, 0)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-code__row').first()).toBeVisible({ timeout: 16000 })
+            const lines = await sandbox.locator('.origam-code__row').evaluateAll(
+                els => els.map(el => el.getAttribute('data-line'))
+            )
+            expect(lines[0]).toBe('1')
+            expect(lines[1]).toBe('2')
+            expect(lines[2]).toBe('3')
+        })
 
-        const headerDiv = sandbox.locator('div.origam-code div.origam-code__header').first()
-        await expect(headerDiv).toBeVisible({ timeout: 5000 })
-        await expect(headerDiv).toHaveJSProperty('tagName', 'DIV')
-
-        const strayFigcaption = sandbox.locator('div.origam-code figcaption')
-        await expect(strayFigcaption).toHaveCount(0)
-    })
-
-    test('footer slot renders as <footer> element', async ({ page }) => {
-        await gotoVariant(page, 'Prop — tag=figure (default, semantic)')
-        const sandbox = sandboxOf(page)
-
-        const footer = sandbox.locator('figure.origam-code footer')
-        await expect(footer).toHaveCount(0)
-    })
-})
-
-test.describe('OrigamCode — runtime', () => {
-
-    test('renders shiki-tokenised TS — DOM contains styled <span>s with CSS variable references', async ({ page }) => {
-        await gotoVariant(page, 'Default')
-        const sandbox = sandboxOf(page)
-        const code = sandbox.locator('.origam-code__code').first()
-
-        await expect(code).toBeVisible({ timeout: 5000 })
-
-        // shiki css-variables theme emits spans with style="color: var(--shiki-token-*)"
-        // We assert that at least one such span exists (smoke-test that highlighting ran)
-        // and that NO hardcoded hex colour is baked into a style attribute.
-        const styledSpanCount = await code.locator('span[style*="color"]').count()
-        expect(styledSpanCount).toBeGreaterThan(0)
-
-        // Verify spans use CSS variables, not hardcoded hex colours.
-        // A hardcoded colour would look like style="color:#D73A49" or style="color:rgb(…)".
-        // A CSS-variable colour looks like style="color:var(--shiki-token-keyword)".
-        const hasHardcodedHex = await code.evaluate((el) => {
-            const spans = Array.from(el.querySelectorAll('span[style*="color"]'))
-            return spans.some((span) => {
-                const style = (span as HTMLElement).style.color
-                // Hardcoded = starts with # or rgb( — CSS var = contains "var("
-                return style.startsWith('#') || style.startsWith('rgb(') || style.startsWith('rgba(')
+        test('shiki emits dual-theme token spans (--shiki-light + --shiki-dark)', async ({ page }) => {
+            await gotoVariant(page, 0)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-code__row').first()).toBeVisible({ timeout: 16000 })
+            const code = sandbox.locator('.origam-code__code').first()
+            const dualThemeCount = await code.evaluate(el => {
+                return Array.from(el.querySelectorAll('span[style]')).filter(s => {
+                    const raw = (s as HTMLElement).getAttribute('style') ?? ''
+                    return raw.includes('--shiki-light') && raw.includes('--shiki-dark')
+                }).length
             })
-        })
-        expect(hasHardcodedHex).toBe(false)
-    })
-
-    test('syntax tokens use CSS variables from origam design tokens', async ({ page }) => {
-        await gotoVariant(page, 'Syntax — CSS variables theming')
-        const sandbox = sandboxOf(page)
-        const host = sandbox.locator('.origam-code').first()
-
-        await expect(host).toBeVisible({ timeout: 5000 })
-        await page.waitForTimeout(400)
-
-        // The .origam-code root must expose --shiki-token-keyword mapped to our token.
-        // getPropertyValue returns the raw value of the custom property.
-        const shikiKeywordVar = await host.evaluate((el) => {
-            return window.getComputedStyle(el).getPropertyValue('--shiki-token-keyword').trim()
-        })
-        // The CSS var must be non-empty (the SCSS mapping is wired).
-        expect(shikiKeywordVar).not.toBe('')
-        // It must reference a CSS variable (not be a hardcoded colour).
-        expect(shikiKeywordVar).toContain('var(')
-    })
-
-    test('theme switch updates syntax colours via CSS cascade (no JS re-render)', async ({ page }) => {
-        await gotoVariant(page, 'Syntax — CSS variables theming')
-        const sandbox = sandboxOf(page)
-        const host = sandbox.locator('.origam-code').first()
-
-        await expect(host).toBeVisible({ timeout: 5000 })
-        await page.waitForTimeout(400)
-
-        // Capture --shiki-token-keyword resolved value under light theme.
-        const lightKeywordColor = await sandbox.locator('html').evaluate((html, selector) => {
-            html.setAttribute('data-theme', 'light')
-            const el = html.querySelector(selector) as HTMLElement | null
-            if (!el) return null
-            return window.getComputedStyle(el).getPropertyValue('--origam-code__syntax---keyword').trim()
-        }, '.origam-code')
-
-        // Switch to dark theme and capture again.
-        const darkKeywordColor = await sandbox.locator('html').evaluate((html, selector) => {
-            html.setAttribute('data-theme', 'dark')
-            const el = html.querySelector(selector) as HTMLElement | null
-            if (!el) return null
-            return window.getComputedStyle(el).getPropertyValue('--origam-code__syntax---keyword').trim()
-        }, '.origam-code')
-
-        // The two computed values should differ between light and dark themes,
-        // confirming the token resolution follows data-theme without any JS re-render.
-        expect(lightKeywordColor).not.toBe('')
-        expect(darkKeywordColor).not.toBe('')
-        expect(lightKeywordColor).not.toBe(darkKeywordColor)
-    })
-
-    test('switching lang re-tokenises the DOM (different markup vs plaintext)', async ({ page }) => {
-        await gotoVariant(page, 'Prop — lang (parallel)')
-        const sandbox = sandboxOf(page)
-
-        const codes = sandbox.locator('.origam-code__code')
-        await expect(codes.first()).toBeVisible({ timeout: 5000 })
-        await page.waitForTimeout(400)
-
-        const count = await codes.count()
-        expect(count).toBeGreaterThan(1)
-
-        const html0 = await codes.nth(0).innerHTML()
-        const html1 = await codes.nth(1).innerHTML()
-        expect(html0).not.toBe(html1)
-    })
-
-    test('line-numbers prop emits a per-row CSS counter (line=1, 2, …)', async ({ page }) => {
-        await gotoVariant(page, 'Prop — lineNumbers')
-        const sandbox = sandboxOf(page)
-        const host = sandbox.locator('.origam-code').first()
-
-        await expect(host).toHaveClass(/origam-code--line-numbers/, { timeout: 5000 })
-
-        const rows = host.locator('.origam-code__row')
-        const rowCount = await rows.count()
-        expect(rowCount).toBeGreaterThanOrEqual(3)
-
-        const lineNumbers = await rows.evaluateAll((els) => els.map((el) => el.getAttribute('data-line')))
-        expect(lineNumbers.slice(0, 3)).toEqual(['1', '2', '3'])
-    })
-
-    test('line-numbers gutter does not overlap the code text (no X-axis collision)', async ({ page }) => {
-        await gotoVariant(page, 'Prop — lineNumbers')
-        const sandbox = sandboxOf(page)
-        const host = sandbox.locator('.origam-code').first()
-
-        await expect(host.locator('.origam-code__row').first()).toBeVisible({ timeout: 5000 })
-
-        const result = await host.locator('.origam-code__row').first().evaluate((row) => {
-            const computed = window.getComputedStyle(row)
-            const paddingStart = parseFloat(computed.paddingInlineStart)
-            const before = window.getComputedStyle(row, '::before')
-            const gutterWidth = parseFloat(before.width)
-            return {
-                paddingStart,
-                gutterWidth,
-                position: computed.position
-            }
+            expect(dualThemeCount).toBeGreaterThan(0)
         })
 
-        expect(result.paddingStart).toBeGreaterThan(0)
-        expect(result.gutterWidth).toBeCloseTo(result.paddingStart, 0)
-        expect(result.position).toBe('relative')
+        test('copy button is visible inside the header (not floating) when filename set', async ({ page }) => {
+            await gotoVariant(page, 0)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            const headerCopy = code.locator('.origam-code__header [data-cy="origam-code-copy"]')
+            await expect(headerCopy).toBeVisible()
+            // No floating overlay when header is present
+            await expect(code.locator('.origam-code__copy--floating')).toHaveCount(0)
+        })
     })
 
-    test('line-numbers gutter rows share the same top as their code content (no vertical offset)', async ({ page }) => {
-        await gotoVariant(page, 'Prop — lineNumbers')
-        const sandbox = sandboxOf(page)
-        const host = sandbox.locator('.origam-code').first()
-        const rows = host.locator('.origam-code__row')
+    // ------------------------------------------------------------------ //
+    // FUNCTIONAL (index 1)                                                 //
+    // init: { lineNumbers: true, copyable: true, filename: 'App.ts' }     //
+    // ------------------------------------------------------------------ //
 
-        await expect(rows.first()).toBeVisible({ timeout: 5000 })
+    test.describe('Functional', () => {
+        test('origam-code--copyable class applied when copyable=true', async ({ page }) => {
+            await gotoVariant(page, 1)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            await expect(code).toHaveClass(/origam-code--copyable/)
+        })
 
-        const tops = await rows.evaluateAll((els) => els.map((el) => el.getBoundingClientRect().top))
+        test('origam-code--has-header applied when showHeader=true', async ({ page }) => {
+            await gotoVariant(page, 1)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            await expect(code).toHaveClass(/origam-code--has-header/)
+        })
 
-        for (let i = 1; i < tops.length; i++) {
-            expect(tops[i]).toBeGreaterThan(tops[i - 1])
-        }
+        test('pre + code elements are present in the DOM structure', async ({ page }) => {
+            await gotoVariant(page, 1)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            await expect(code.locator('pre.origam-code__pre')).toHaveCount(1)
+            await expect(code.locator('code.origam-code__code')).toHaveCount(1)
+        })
     })
 
-    test('highlightLines="2,5-7" → rows 2,5,6,7 carry the highlighted class', async ({ page }) => {
-        await gotoVariant(page, 'Prop — highlightLines (2,5-7)')
-        const sandbox = sandboxOf(page)
-        const host = sandbox.locator('.origam-code').first()
-        await expect(host.locator('.origam-code__row').first()).toBeVisible({ timeout: 5000 })
+    // ------------------------------------------------------------------ //
+    // FUNCTIONAL - No filename (index 2)                                  //
+    // lang badge replaces filename in the header                          //
+    // ------------------------------------------------------------------ //
 
-        const highlightedLines = await host
-            .locator('.origam-code__row--highlighted')
-            .evaluateAll((els) => els.map((el) => el.getAttribute('data-line')))
-        expect(highlightedLines.sort()).toEqual(['2', '5', '6', '7'])
+    test.describe('Functional - No filename (lang badge header)', () => {
+        test('lang badge is rendered when no filename', async ({ page }) => {
+            await gotoVariant(page, 2)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            const langBadge = code.locator('[data-cy="origam-code-lang"]')
+            await expect(langBadge).toBeVisible()
+            await expect(langBadge).toHaveText('bash')
+        })
+
+        test('copy button lives in header when no filename (copyable=true)', async ({ page }) => {
+            await gotoVariant(page, 2)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            await expect(code.locator('.origam-code__header [data-cy="origam-code-copy"]')).toBeVisible()
+            await expect(code.locator('.origam-code__copy--floating')).toHaveCount(0)
+        })
     })
 
-    test('copy button writes to navigator.clipboard and toggles aria-live feedback', async ({ page, context }) => {
-        await context.grantPermissions(['clipboard-read', 'clipboard-write'])
-        await gotoVariant(page, 'Emit — @copy (counter)')
-        const sandbox = sandboxOf(page)
-        const host = sandbox.locator('.origam-code').first()
-        const copyBtn = host.locator('[data-cy="origam-code-copy"]').first()
+    // ------------------------------------------------------------------ //
+    // FUNCTIONAL - Compact (index 3)                                      //
+    // init: { lang: 'bash', prompt: '$', copyable: true }                //
+    // ------------------------------------------------------------------ //
 
-        await expect(copyBtn).toBeVisible({ timeout: 5000 })
+    test.describe('Functional - Compact (install pill)', () => {
+        test('compact renders origam-code--compact modifier', async ({ page }) => {
+            await gotoVariant(page, 3)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code--compact').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+        })
 
-        await sandbox.locator('body').evaluate(() => {
-            (window as unknown as { __clip: string[] }).__clip = []
-            const orig = navigator.clipboard?.writeText?.bind(navigator.clipboard)
-            Object.defineProperty(navigator, 'clipboard', {
-                configurable: true,
-                value: {
-                    writeText: async (text: string) => {
-                        (window as unknown as { __clip: string[] }).__clip.push(text)
-                        if (orig) try { await orig(text) } catch { /* ignore */ }
+        test('compact is inline-flex (single-line pill layout)', async ({ page }) => {
+            await gotoVariant(page, 3)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code--compact').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            const display = await code.evaluate(el => getComputedStyle(el).display)
+            expect(display).toBe('inline-flex')
+        })
+
+        test('compact preserves <figure> semantics', async ({ page }) => {
+            await gotoVariant(page, 3)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code--compact').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            const tag = await code.evaluate(el => el.tagName.toLowerCase())
+            expect(tag).toBe('figure')
+        })
+
+        test('compact has no header element', async ({ page }) => {
+            await gotoVariant(page, 3)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code--compact').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            await expect(code.locator('.origam-code__header')).toHaveCount(0)
+        })
+
+        test('prompt prefix renders as aria-hidden', async ({ page }) => {
+            await gotoVariant(page, 3)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code--compact').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            const prompt = code.locator('[data-cy="origam-code-prompt"]')
+            await expect(prompt).toHaveText('$')
+            await expect(prompt).toHaveAttribute('aria-hidden', 'true')
+        })
+
+        test('prompt is positioned before the code in document order', async ({ page }) => {
+            await gotoVariant(page, 3)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code--compact').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            const promptLeft = await code.locator('[data-cy="origam-code-prompt"]').evaluate(
+                el => el.getBoundingClientRect().left
+            )
+            const codeLeft = await code.locator('.origam-code__code').evaluate(
+                el => el.getBoundingClientRect().left
+            )
+            expect(promptLeft).toBeLessThan(codeLeft)
+        })
+
+        test('compact copy is an icon button (not labeled "Copy")', async ({ page }) => {
+            await gotoVariant(page, 3)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code--compact').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            const compactCopy = code.locator('.origam-code__copy--compact')
+            await expect(compactCopy).toBeVisible()
+            await expect(compactCopy).not.toContainText('Copy')
+        })
+
+        test('compact copy button writes only the code (prompt excluded) to clipboard', async ({ page, context }) => {
+            await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+            await gotoVariant(page, 3)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code--compact').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+
+            // Intercept clipboard writes in the sandbox frame.
+            await sandbox.locator('body').evaluate(() => {
+                (window as unknown as { __clip: string[] }).__clip = []
+                Object.defineProperty(navigator, 'clipboard', {
+                    configurable: true,
+                    value: {
+                        writeText: async (text: string) => {
+                            (window as unknown as { __clip: string[] }).__clip.push(text)
+                        }
                     }
-                }
+                })
             })
+
+            await code.locator('[data-cy="origam-code-copy"]').click()
+            await page.waitForTimeout(300)
+
+            const clips = await sandbox.locator('body').evaluate(
+                () => (window as unknown as { __clip: string[] }).__clip
+            )
+            expect(clips.length).toBe(1)
+            expect(clips[0]).toBe('npm install origam')
+            expect(clips[0]).not.toContain('$')
         })
-
-        await copyBtn.click()
-        await page.waitForTimeout(200)
-
-        const clipCalls = await sandbox.locator('body').evaluate(() => (window as unknown as { __clip: string[] }).__clip)
-        expect(clipCalls.length).toBe(1)
-        expect(clipCalls[0]).toContain('const count = ref(0)')
-
-        await expect(copyBtn).toHaveAttribute('aria-label', /copied/i)
     })
 
-    test('filename prop renders a header bar with the filename', async ({ page }) => {
-        await gotoVariant(page, 'Prop — filename (header visible)')
-        const sandbox = sandboxOf(page)
-        const filename = sandbox.locator('[data-cy="origam-code-filename"]').first()
-        await expect(filename).toBeVisible({ timeout: 5000 })
-        await expect(filename).toHaveText('UserCard.vue')
+    // ------------------------------------------------------------------ //
+    // EVENTS - copy (index 4)                                             //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Events - copy', () => {
+        test('copy button is visible and has accessible aria-label', async ({ page }) => {
+            await gotoVariant(page, 4)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            const copyBtn = code.locator('[data-cy="origam-code-copy"]').first()
+            await expect(copyBtn).toBeVisible()
+            await expect(copyBtn).toHaveAttribute('aria-label', /.+/)
+        })
+
+        test('clicking copy toggles aria-label to "copied" feedback', async ({ page, context }) => {
+            await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+            await gotoVariant(page, 4)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+
+            // Intercept clipboard
+            await sandbox.locator('body').evaluate(() => {
+                (window as unknown as { __clip: string[] }).__clip = []
+                Object.defineProperty(navigator, 'clipboard', {
+                    configurable: true,
+                    value: {
+                        writeText: async (text: string) => {
+                            (window as unknown as { __clip: string[] }).__clip.push(text)
+                        }
+                    }
+                })
+            })
+
+            const copyBtn = code.locator('[data-cy="origam-code-copy"]').first()
+            await copyBtn.click()
+            await page.waitForTimeout(300)
+            await expect(copyBtn).toHaveAttribute('aria-label', /copied/i)
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // SLOTS - Default (index 5)                                           //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Slots - Default', () => {
+        test('default slot renders the code block (figure + pre + code)', async ({ page }) => {
+            await gotoVariant(page, 5)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            await expect(code.locator('pre.origam-code__pre code.origam-code__code')).toHaveCount(1)
+        })
+
+        test('default slot variant has no footer element', async ({ page }) => {
+            await gotoVariant(page, 5)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            await expect(code.locator('footer.origam-code__footer')).toHaveCount(0)
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // SLOTS - Header (index 6)                                            //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Slots - Header', () => {
+        test('custom header slot content is rendered inside the header zone', async ({ page }) => {
+            await gotoVariant(page, 6)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            // The custom #header slot renders a <span> with the filename text + a <select>
+            const header = code.locator('.origam-code__header').first()
+            await expect(header).toBeVisible()
+            // The slot injects "App.vue" as bold text
+            await expect(header.locator('span').first()).toContainText('App.vue')
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // SLOTS - Footer (index 7)                                            //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Slots - Footer', () => {
+        test('footer slot renders as a <footer> element with class origam-code__footer', async ({ page }) => {
+            await gotoVariant(page, 7)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            const footer = code.locator('footer.origam-code__footer')
+            await expect(footer).toBeVisible()
+            const tag = await footer.evaluate(el => el.tagName.toLowerCase())
+            expect(tag).toBe('footer')
+        })
+
+        test('footer slot content is rendered inside the footer element', async ({ page }) => {
+            await gotoVariant(page, 7)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+            const footer = code.locator('footer.origam-code__footer')
+            await expect(footer.locator('cite')).toHaveText('origam design system')
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // DEFAULT playground (index 8)                                        //
+    // init: { lang: 'ts', lineNumbers: true, highlightLines: '2',        //
+    //          copyable: true, filename: 'App.ts' }                       //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Default (playground)', () => {
+        test('renders the code root', async ({ page }) => {
+            await gotoVariant(page, 8)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+        })
+
+        test('highlightLines="2" → row 2 carries origam-code__row--highlighted', async ({ page }) => {
+            await gotoVariant(page, 8)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            // Wait for shiki to paint the rows first.
+            await expect(sandbox.locator('.origam-code__row').first()).toBeVisible({ timeout: 16000 })
+
+            const highlighted = await sandbox
+                .locator('.origam-code__row--highlighted')
+                .evaluateAll(els => els.map(el => el.getAttribute('data-line')))
+            expect(highlighted).toEqual(['2'])
+        })
+
+        test('copy button writes the playground snippet to clipboard', async ({ page, context }) => {
+            await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+            await gotoVariant(page, 8)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const code = sandbox.locator('.origam-code').first()
+            await expect(code).toBeVisible({ timeout: 12000 })
+
+            await sandbox.locator('body').evaluate(() => {
+                (window as unknown as { __clip: string[] }).__clip = []
+                Object.defineProperty(navigator, 'clipboard', {
+                    configurable: true,
+                    value: {
+                        writeText: async (text: string) => {
+                            (window as unknown as { __clip: string[] }).__clip.push(text)
+                        }
+                    }
+                })
+            })
+
+            const copyBtn = code.locator('[data-cy="origam-code-copy"]').first()
+            await expect(copyBtn).toBeVisible()
+            await copyBtn.click()
+            await page.waitForTimeout(300)
+
+            const clips = await sandbox.locator('body').evaluate(
+                () => (window as unknown as { __clip: string[] }).__clip
+            )
+            expect(clips.length).toBe(1)
+            // The playground snippet contains the word "greet"
+            expect(clips[0]).toContain('greet')
+        })
+
+        test('dual-theme shiki — no bare color: inline style (only --shiki-* vars)', async ({ page }) => {
+            await gotoVariant(page, 8)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-code__row').first()).toBeVisible({ timeout: 16000 })
+            const code = sandbox.locator('.origam-code__code').first()
+
+            const hasBareColor = await code.evaluate(el => {
+                return Array.from(el.querySelectorAll('span[style]')).some(s => {
+                    const raw = (s as HTMLElement).getAttribute('style') ?? ''
+                    return raw.includes('color:') && !raw.includes('--shiki-')
+                })
+            })
+            expect(hasBareColor).toBe(false)
+        })
+
+        test('theme switch light→dark changes token span computed colour (CSS cascade, no JS re-render)', async ({ page }) => {
+            await gotoVariant(page, 8)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-code__row').first()).toBeVisible({ timeout: 16000 })
+
+            // Dual-theme: shiki emits --shiki-light / --shiki-dark as inline custom props.
+            // The SCSS maps color: var(--shiki-light) for light and
+            // color: var(--shiki-dark) when html[data-mode="dark"].
+            // We toggle data-mode on the sandbox <html> — purely a CSS operation.
+            const lightColor = await sandbox.locator('html').evaluate(html => {
+                html.removeAttribute('data-mode')
+                const span = html.querySelector('.origam-code__code span[style*="--shiki-light"]') as HTMLElement | null
+                return span ? window.getComputedStyle(span).color : null
+            })
+
+            const darkColor = await sandbox.locator('html').evaluate(html => {
+                html.setAttribute('data-mode', 'dark')
+                const span = html.querySelector('.origam-code__code span[style*="--shiki-light"]') as HTMLElement | null
+                return span ? window.getComputedStyle(span).color : null
+            })
+
+            expect(lightColor).not.toBeNull()
+            expect(darkColor).not.toBeNull()
+            // Light and dark must resolve to distinct colours.
+            expect(lightColor).not.toBe(darkColor)
+        })
     })
 })

@@ -1,5 +1,6 @@
 <template>
 	<dl
+			v-contrast
 			:class="dataListClasses"
 			:style="dataListStyles"
 	>
@@ -198,6 +199,7 @@
 	// belongs in `src/utils/`, not `src/interfaces/`, per the global
 	// CLAUDE.md rule that interface directories must contain interface
 	// declarations only.
+	import { vContrast } from "../../directives"
 	import { isDataListKVItemValueComponent } from "../../utils"
 
 	import { isEmpty, toKebabCase } from "../../utils"

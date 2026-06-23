@@ -3,27 +3,33 @@
 			group="components"
 			title="Watermark/OrigamWatermark"
 	>
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IWatermarkProps>({
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IWatermarkProps>>({
 					text: 'CONFIDENTIAL',
 					opacity: 0.1,
 					angle: -30,
 					gap: 120,
 					fontSize: 16,
 					color: '#111111',
-					antiTamper: false
+					fontFamily: 'inherit',
+					fontWeight: 400
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="watermark-playground"
-				>
+				<div class="story-shell">
 					<origam-watermark
-							v-bind="state"
+							:text="state.text"
+							:image="state.image"
+							:color="state.color"
+							:opacity="state.opacity"
+							:font-size="state.fontSize"
+							:font-family="state.fontFamily"
+							:font-weight="state.fontWeight"
+							:angle="state.angle"
+							:gap="state.gap"
 							class="story-watermark"
-							data-cy="watermark-playground-host"
 					>
 						<div class="story-doc">
 							<h3>Q1 2026 — Internal financial report</h3>
@@ -34,225 +40,82 @@
 							<p>
 								This block represents a confidential document
 								preview. The diagonal overlay is repeated across
-								the entire surface and stays out of the way of
-								interactive content.
+								the entire surface.
 							</p>
-							<button
-									type="button"
-									data-cy="watermark-playground-button"
-							>I am still clickable</button>
 						</div>
 					</origam-watermark>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstText
-						v-model="state.text"
-						title="text"
-				/>
-				<HstNumber
-						v-model="state.opacity"
-						title="opacity (0..1)"
-				/>
-				<HstNumber
-						v-model="state.angle"
-						title="angle (deg)"
-				/>
-				<HstNumber
-						v-model="state.gap"
-						title="gap (px)"
-				/>
-				<HstNumber
-						v-model="state.fontSize"
-						title="fontSize (px)"
-				/>
-				<HstText
-						v-model="state.color"
-						title="color"
-				/>
-				<HstCheckbox
-						v-model="state.antiTamper"
-						title="antiTamper"
-				/>
+				<StoryGroup title="Content">
+					<HstText v-model="state.text"  title="Text"/>
+					<HstText v-model="state.image" title="Image URL"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstText v-model="state.color" title="Color"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstNumber v-model="state.fontSize"   title="Font Size (px)"  :min="8"  :max="128" :step="1"/>
+					<HstText   v-model="state.fontFamily" title="Font Family"/>
+					<HstNumber v-model="state.fontWeight" title="Font Weight"     :min="100" :max="900" :step="100"/>
+				</StoryGroup>
+				<StoryGroup title="Opacity">
+					<HstNumber v-model="state.opacity" title="Opacity (0..1)" :min="0" :max="1" :step="0.01"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstNumber v-model="state.angle" title="Angle (deg)" :min="-180" :max="180" :step="1"/>
+					<HstNumber v-model="state.gap"   title="Gap (px)"    :min="20"   :max="400" :step="10"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — text vs image">
-			<div
-					class="story-shell"
-					data-cy="watermark-text-vs-image"
-			>
-				<p class="hint">
-					`text` paints the glyph as `&lt;text&gt;` inside the SVG;
-					`image` paints it as `&lt;image href&gt;`. When both are
-					passed, `image` wins.
-				</p>
-				<div class="story-grid">
-					<div class="story-col">
-						<strong>text = "CONFIDENTIAL"</strong>
-						<origam-watermark
-								text="CONFIDENTIAL"
-								:opacity="0.12"
-								class="story-watermark"
-								data-cy="watermark-mode-text"
-						>
-							<div class="story-doc">Document preview</div>
-						</origam-watermark>
-					</div>
-					<div class="story-col">
-						<strong>image = origam logo</strong>
-						<origam-watermark
-								:image="LOGO_SRC"
-								:opacity="0.08"
-								:font-size="32"
-								:gap="160"
-								class="story-watermark"
-								data-cy="watermark-mode-image"
-						>
-							<div class="story-doc">Document preview</div>
-						</origam-watermark>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — opacity (0.05 / 0.1 / 0.2)">
-			<div
-					class="story-shell"
-					data-cy="watermark-opacity"
-			>
-				<p class="hint">
-					Opacity is applied at the SVG glyph level, so the wrapped
-					content stays at full opacity beneath.
-				</p>
-				<div class="story-grid">
-					<div
-							v-for="value in opacityValues"
-							:key="value"
-							class="story-col"
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IWatermarkProps>>({
+					antiTamper: false,
+					pointerEvents: 'none',
+					zIndex: 1,
+					tag: 'div',
+					text: 'CONFIDENTIAL',
+					opacity: 0.1
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<origam-watermark
+							:text="state.text"
+							:anti-tamper="state.antiTamper"
+							:pointer-events="state.pointerEvents"
+							:z-index="state.zIndex"
+							:tag="state.tag"
+							:opacity="state.opacity"
+							class="story-watermark"
 					>
-						<strong>opacity = {{ value }}</strong>
-						<origam-watermark
-								text="DRAFT"
-								:opacity="value"
-								class="story-watermark"
-								:data-cy="`watermark-opacity-${value}`"
-						>
-							<div class="story-doc">Draft content</div>
-						</origam-watermark>
-					</div>
+						<div class="story-doc">
+							<p>Content beneath the watermark.</p>
+							<button type="button">I am still clickable</button>
+						</div>
+					</origam-watermark>
 				</div>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Anti-Tamper">
+					<HstCheckbox v-model="state.antiTamper" title="Anti-Tamper"/>
+				</StoryGroup>
+				<StoryGroup title="Pointer Events">
+					<HstSelect v-model="state.pointerEvents" title="Pointer Events" :options="POINTER_EVENTS_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Layer">
+					<HstNumber v-model="state.zIndex" title="Z-Index" :min="0" :max="100" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<Variant title="Prop — angle (-45 / -30 / 0 / 30 / 45 / 90)">
-			<div
-					class="story-shell"
-					data-cy="watermark-angle"
-			>
-				<p class="hint">
-					Rotation of the glyph in degrees. Negative = counter-clockwise.
-				</p>
-				<div class="story-grid">
-					<div
-							v-for="value in angleValues"
-							:key="value"
-							class="story-col"
-					>
-						<strong>angle = {{ value }}°</strong>
-						<origam-watermark
-								text="ORIGAM"
-								:angle="value"
-								:opacity="0.18"
-								class="story-watermark"
-								:data-cy="`watermark-angle-${value}`"
-						>
-							<div class="story-doc">Sample preview</div>
-						</origam-watermark>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — gap (60 / 120 / 200)">
-			<div
-					class="story-shell"
-					data-cy="watermark-gap"
-			>
-				<p class="hint">
-					Distance between two adjacent tiles. Smaller = tighter
-					pattern = denser watermark.
-				</p>
-				<div class="story-grid">
-					<div
-							v-for="value in gapValues"
-							:key="value"
-							class="story-col"
-					>
-						<strong>gap = {{ value }}px</strong>
-						<origam-watermark
-								text="ORIGAM"
-								:gap="value"
-								:opacity="0.18"
-								class="story-watermark"
-								:data-cy="`watermark-gap-${value}`"
-						>
-							<div class="story-doc">Sample preview</div>
-						</origam-watermark>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — antiTamper (try removing in DevTools)">
-			<div
-					class="story-shell"
-					data-cy="watermark-anti-tamper"
-			>
-				<p class="hint">
-					When `antiTamper` is true, a MutationObserver re-injects
-					the layer if it is removed from the DOM. Try deleting
-					`.origam-watermark__layer` in DevTools — it comes back
-					(dissuasion only, not a security feature).
-				</p>
-				<div class="story-grid">
-					<div class="story-col">
-						<strong>antiTamper = false</strong>
-						<origam-watermark
-								text="REMOVE ME"
-								:opacity="0.2"
-								:anti-tamper="false"
-								class="story-watermark"
-								data-cy="watermark-anti-tamper-off"
-						>
-							<div class="story-doc">Without anti-tamper</div>
-						</origam-watermark>
-					</div>
-					<div class="story-col">
-						<strong>antiTamper = true</strong>
-						<origam-watermark
-								text="RE-INJECTED"
-								:opacity="0.2"
-								:anti-tamper="true"
-								class="story-watermark"
-								data-cy="watermark-anti-tamper-on"
-						>
-							<div class="story-doc">With anti-tamper</div>
-						</origam-watermark>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — default (PDF preview mock)">
-			<div
-					class="story-shell"
-					data-cy="watermark-pdf-preview"
-			>
-				<p class="hint">
-					Realistic use case — wrapping a PDF preview / sensitive
-					screenshot with a per-recipient watermark.
-				</p>
+		<Variant title="Slots - Default">
+			<div class="story-shell">
 				<origam-watermark
 						text="CONFIDENTIAL — j.doe@example.com — 2026-05-15"
 						:opacity="0.08"
@@ -260,7 +123,6 @@
 						:gap="140"
 						color="#dc2626"
 						class="story-watermark story-watermark--pdf"
-						data-cy="watermark-pdf-host"
 				>
 					<article class="story-pdf">
 						<header class="story-pdf__header">
@@ -285,6 +147,67 @@
 				</origam-watermark>
 			</div>
 		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IWatermarkProps>({
+					text: 'CONFIDENTIAL',
+					opacity: 0.1,
+					angle: -30,
+					gap: 120,
+					fontSize: 16,
+					color: '#111111',
+					antiTamper: false,
+					pointerEvents: 'none',
+					zIndex: 1,
+					tag: 'div'
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<origam-watermark
+							v-bind="state"
+							class="story-watermark"
+					>
+						<div class="story-doc">
+							<h3>Q1 2026 — Internal financial report</h3>
+							<p>
+								Revenue: <strong>€ 4.32 M</strong> (+18% YoY).
+								Headcount: 42. Runway: 19 months.
+							</p>
+							<p>
+								This block represents a confidential document
+								preview. The diagonal overlay is repeated across
+								the entire surface and stays out of the way of
+								interactive content.
+							</p>
+							<button type="button">I am still clickable</button>
+						</div>
+					</origam-watermark>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.text"  title="Text"/>
+					<HstText v-model="state.image" title="Image URL"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstText   v-model="state.color"      title="Color"/>
+					<HstNumber v-model="state.opacity"    title="Opacity (0..1)"  :min="0"   :max="1"   :step="0.01"/>
+					<HstNumber v-model="state.angle"      title="Angle (deg)"     :min="-180" :max="180" :step="1"/>
+					<HstNumber v-model="state.gap"        title="Gap (px)"        :min="20"  :max="400" :step="10"/>
+					<HstNumber v-model="state.fontSize"   title="Font Size (px)"  :min="8"   :max="128" :step="1"/>
+					<HstText   v-model="state.fontFamily" title="Font Family"/>
+					<HstNumber v-model="state.fontWeight" title="Font Weight"     :min="100" :max="900" :step="100"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.antiTamper"   title="Anti-Tamper"/>
+					<HstSelect   v-model="state.pointerEvents" title="Pointer Events" :options="POINTER_EVENTS_OPTIONS"/>
+					<HstNumber   v-model="state.zIndex"        title="Z-Index"        :min="0" :max="100" :step="1"/>
+					<HstSelect   v-model="state.tag"           title="Tag"            :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
 	</Story>
 </template>
 
@@ -293,16 +216,16 @@
 		setup
 >
 	import { OrigamWatermark } from '@origam/components'
-
 	import type { IWatermarkProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import { TAG_OPTIONS } from '@stories/const'
 
-	const LOGO_SRC = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="%23111827"/><text x="12" y="16" text-anchor="middle" fill="%23ffffff" font-size="10" font-family="Helvetica" font-weight="700">O</text></svg>'
-
-	const opacityValues = [0.05, 0.1, 0.2]
-	const angleValues = [-45, -30, 0, 30, 45, 90]
-	const gapValues = [60, 120, 200]
+	const POINTER_EVENTS_OPTIONS = [
+		{ label: 'none (pass-through)', value: 'none' },
+		{ label: 'auto (blocking)', value: 'auto' }
+	]
 </script>
 
 <style scoped>
@@ -312,29 +235,6 @@
 		gap: 16px;
 		padding: 16px;
 		max-width: 960px;
-	}
-
-	.hint {
-		margin: 0;
-		font: 0.875rem/1.4 system-ui, sans-serif;
-		color: var(--origam-color__text---secondary, #555);
-	}
-
-	.story-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-		gap: 16px;
-	}
-
-	.story-col {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-	}
-
-	.story-col strong {
-		font: 600 0.75rem/1.2 ui-monospace, monospace;
-		color: var(--origam-color__text---primary, #171717);
 	}
 
 	.story-watermark {

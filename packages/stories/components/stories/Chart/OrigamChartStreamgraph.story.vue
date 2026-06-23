@@ -3,231 +3,140 @@
 			group="components"
 			title="Chart/OrigamChartStreamgraph"
 	>
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<Record<string, unknown>>({
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IChartStreamgraphProps>>({
 					offsetMode: 'wiggle',
 					smoothing: 'curve',
-					height: 400,
-					animated: true,
-					showLegend: true,
-					showTooltip: true,
+					colorScheme: [],
+					legendPosition: 'bottom',
 					showAxis: true,
 					showGrid: false,
-					legendPosition: 'bottom'
+					animated: true,
+					animationDuration: 600,
+					aspectRatio: undefined,
+					height: 400
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="streamgraph-playground"
-				>
+				<div class="story-shell">
 					<origam-chart-streamgraph
 							:series="FIXTURE_MUSIC"
 							:categories="FIXTURE_MUSIC_CATEGORIES"
 							:offset-mode="state.offsetMode"
 							:smoothing="state.smoothing"
-							:height="Number(state.height)"
-							:animated="Boolean(state.animated)"
-							:show-legend="Boolean(state.showLegend)"
-							:show-tooltip="Boolean(state.showTooltip)"
-							:show-axis="Boolean(state.showAxis)"
-							:show-grid="Boolean(state.showGrid)"
+							:color-scheme="state.colorScheme && state.colorScheme.length ? state.colorScheme : undefined"
 							:legend-position="state.legendPosition"
+							:show-axis="state.showAxis"
+							:show-grid="state.showGrid"
+							:animated="state.animated"
+							:animation-duration="state.animationDuration"
+							:aspect-ratio="state.aspectRatio || undefined"
+							:height="state.height"
 							title="Music Genre Listens"
 							subtitle="12 months, 5 genres"
-							data-cy="streamgraph-playground-chart"
-							@point-click="onPointClick"
-							@legend-click="onLegendClick"
-							@series-toggle="onSeriesToggle"
 					/>
-					<pre
-							class="story-log"
-							data-cy="streamgraph-playground-log"
-					>{{ logLines.join('\n') }}</pre>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.offsetMode"
-						title="offsetMode"
-						:options="OFFSET_MODE_OPTIONS"
-				/>
-				<HstSelect
-						v-model="state.smoothing"
-						title="smoothing"
-						:options="SMOOTHING_OPTIONS"
-				/>
-				<HstNumber
-						v-model="state.height"
-						title="height (px)"
-				/>
-				<HstSelect
-						v-model="state.legendPosition"
-						title="legendPosition"
-						:options="LEGEND_POSITION_OPTIONS"
-				/>
-				<HstCheckbox
-						v-model="state.animated"
-						title="animated"
-				/>
-				<HstCheckbox
-						v-model="state.showLegend"
-						title="showLegend"
-				/>
-				<HstCheckbox
-						v-model="state.showTooltip"
-						title="showTooltip"
-				/>
-				<HstCheckbox
-						v-model="state.showAxis"
-						title="showAxis"
-				/>
-				<HstCheckbox
-						v-model="state.showGrid"
-						title="showGrid"
-				/>
+				<StoryGroup title="Layout">
+					<HstSelect v-model="state.offsetMode"    title="Offset Mode"        :options="OFFSET_MODE_OPTIONS"/>
+					<HstSelect v-model="state.smoothing"     title="Smoothing"          :options="SMOOTHING_OPTIONS"/>
+					<HstSelect v-model="state.legendPosition" title="Legend Position"   :options="LEGEND_POSITION_OPTIONS"/>
+					<HstText   v-model="state.aspectRatio"   title="Aspect Ratio"/>
+				</StoryGroup>
+				<StoryGroup title="Visibility">
+					<HstCheckbox v-model="state.showAxis"  title="Show Axis"/>
+					<HstCheckbox v-model="state.showGrid"  title="Show Grid"/>
+				</StoryGroup>
+				<StoryGroup title="Animation">
+					<HstCheckbox v-model="state.animated"          title="Animated"/>
+					<HstNumber   v-model="state.animationDuration" title="Animation Duration (ms)" :min="0" :max="2000" :step="50"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstNumber v-model="state.height" title="Height (px)" :min="100" :max="800" :step="10"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — offsetMode (wiggle / silhouette / expand / zero)">
-			<div
-					class="story-shell"
-					data-cy="streamgraph-offset-mode"
-			>
-				<div class="story-grid story-grid--4">
-					<div class="story-col">
-						<strong>wiggle (canonical)</strong>
-						<origam-chart-streamgraph
-								:series="FIXTURE_MUSIC"
-								:categories="FIXTURE_MUSIC_CATEGORIES"
-								offset-mode="wiggle"
-								:height="300"
-								title="Wiggle"
-								data-cy="streamgraph-offset-wiggle"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>silhouette (centered)</strong>
-						<origam-chart-streamgraph
-								:series="FIXTURE_MUSIC"
-								:categories="FIXTURE_MUSIC_CATEGORIES"
-								offset-mode="silhouette"
-								:height="300"
-								title="Silhouette"
-								data-cy="streamgraph-offset-silhouette"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>expand (100% normalised)</strong>
-						<origam-chart-streamgraph
-								:series="FIXTURE_MUSIC"
-								:categories="FIXTURE_MUSIC_CATEGORIES"
-								offset-mode="expand"
-								:height="300"
-								title="Expand"
-								data-cy="streamgraph-offset-expand"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>zero (stacked area)</strong>
-						<origam-chart-streamgraph
-								:series="FIXTURE_MUSIC"
-								:categories="FIXTURE_MUSIC_CATEGORIES"
-								offset-mode="zero"
-								:height="300"
-								title="Zero"
-								data-cy="streamgraph-offset-zero"
-						/>
-					</div>
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IChartStreamgraphProps>>({
+					showLegend: true,
+					showTooltip: true,
+					title: 'Music Genre Listens',
+					subtitle: '12 months, 5 genres'
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<origam-chart-streamgraph
+							:series="FIXTURE_MUSIC"
+							:categories="FIXTURE_MUSIC_CATEGORIES"
+							:show-legend="state.showLegend"
+							:show-tooltip="state.showTooltip"
+							:title="state.title"
+							:subtitle="state.subtitle"
+							:height="360"
+					/>
 				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Display">
+					<HstCheckbox v-model="state.showLegend"  title="Show Legend"/>
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+				</StoryGroup>
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Events - point-click">
+			<div class="story-shell">
+				<origam-chart-streamgraph
+						:series="FIXTURE_TECH"
+						:categories="FIXTURE_TECH_CATEGORIES"
+						:height="340"
+						title="Click a ribbon"
+						@point-click="logEvent('point-click', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — smoothing (none vs curve)">
-			<div
-					class="story-shell"
-					data-cy="streamgraph-smoothing"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>none (linear segments)</strong>
-						<origam-chart-streamgraph
-								:series="FIXTURE_TECH"
-								:categories="FIXTURE_TECH_CATEGORIES"
-								offset-mode="wiggle"
-								smoothing="none"
-								:height="340"
-								title="No smoothing"
-								data-cy="streamgraph-smoothing-none"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>curve (Catmull-Rom)</strong>
-						<origam-chart-streamgraph
-								:series="FIXTURE_TECH"
-								:categories="FIXTURE_TECH_CATEGORIES"
-								offset-mode="wiggle"
-								smoothing="curve"
-								:height="340"
-								title="Catmull-Rom curve"
-								data-cy="streamgraph-smoothing-curve"
-						/>
-					</div>
-				</div>
+		<Variant title="Events - legend-click">
+			<div class="story-shell">
+				<origam-chart-streamgraph
+						:series="FIXTURE_MUSIC"
+						:categories="FIXTURE_MUSIC_CATEGORIES"
+						:height="340"
+						title="Click a legend entry"
+						@legend-click="logEvent('legend-click', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — colorScheme">
-			<div
-					class="story-shell"
-					data-cy="streamgraph-color-scheme"
-			>
-				<div class="story-grid story-grid--3">
-					<div class="story-col">
-						<strong>default palette (intent cycle)</strong>
-						<origam-chart-streamgraph
-								:series="FIXTURE_MUSIC_NO_COLOR"
-								:categories="FIXTURE_MUSIC_CATEGORIES"
-								:height="280"
-								data-cy="streamgraph-color-default"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>warm custom CSS colors</strong>
-						<origam-chart-streamgraph
-								:series="FIXTURE_MUSIC_NO_COLOR"
-								:categories="FIXTURE_MUSIC_CATEGORIES"
-								:color-scheme="['#f97316','#fb923c','#fbbf24','#a78bfa','#c084fc']"
-								:height="280"
-								data-cy="streamgraph-color-warm"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>cool intent names</strong>
-						<origam-chart-streamgraph
-								:series="FIXTURE_MUSIC_NO_COLOR"
-								:categories="FIXTURE_MUSIC_CATEGORIES"
-								:color-scheme="['info','primary','success','warning','danger']"
-								:height="280"
-								data-cy="streamgraph-color-intent"
-						/>
-					</div>
-				</div>
+		<Variant title="Events - series-toggle">
+			<div class="story-shell">
+				<origam-chart-streamgraph
+						:series="FIXTURE_MUSIC"
+						:categories="FIXTURE_MUSIC_CATEGORIES"
+						:height="340"
+						title="Toggle a series via the legend"
+						@series-toggle="logEvent('series-toggle', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Slot — tooltip">
-			<div
-					class="story-shell"
-					data-cy="streamgraph-slot-tooltip"
-			>
+		<Variant title="Slots - Tooltip">
+			<div class="story-shell">
 				<origam-chart-streamgraph
 						:series="FIXTURE_MUSIC"
 						:categories="FIXTURE_MUSIC_CATEGORIES"
 						:height="380"
 						title="Custom multi-series tooltip"
-						data-cy="streamgraph-slot-tooltip-chart"
 				>
 					<template #tooltip="{ category, allPoints }">
 						<div class="custom-tooltip">
@@ -252,17 +161,44 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — empty">
-			<div
-					class="story-shell"
-					data-cy="streamgraph-slot-empty"
-			>
+		<Variant title="Slots - Legend-Item">
+			<div class="story-shell">
+				<origam-chart-streamgraph
+						:series="FIXTURE_MUSIC"
+						:categories="FIXTURE_MUSIC_CATEGORIES"
+						:height="360"
+						title="Custom legend items"
+				>
+					<template #legend-item="{ series, visible }">
+						<span :style="{ opacity: visible ? 1 : 0.4, fontStyle: 'italic' }">
+							{{ series.name }}
+						</span>
+					</template>
+				</origam-chart-streamgraph>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Title">
+			<div class="story-shell">
+				<origam-chart-streamgraph
+						:series="FIXTURE_MUSIC"
+						:categories="FIXTURE_MUSIC_CATEGORIES"
+						:height="360"
+				>
+					<template #title>
+						<strong>Custom Title Block</strong>
+					</template>
+				</origam-chart-streamgraph>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Empty">
+			<div class="story-shell">
 				<origam-chart-streamgraph
 						:series="[]"
 						:categories="[]"
 						:height="320"
 						title="Empty state"
-						data-cy="streamgraph-slot-empty-chart"
 				>
 					<template #empty>
 						<div class="custom-empty">
@@ -273,27 +209,63 @@
 			</div>
 		</Variant>
 
-		<Variant title="Emit — point-click on ribbon">
-			<div
-					class="story-shell"
-					data-cy="streamgraph-emit"
-			>
-				<origam-chart-streamgraph
-						:series="FIXTURE_TECH"
-						:categories="FIXTURE_TECH_CATEGORIES"
-						:height="360"
-						title="Click a ribbon (or press Enter / Space)"
-						subtitle="Tech stack adoption over 8 quarters"
-						data-cy="streamgraph-emit-chart"
-						@point-click="onPointClick"
-						@legend-click="onLegendClick"
-						@series-toggle="onSeriesToggle"
-				/>
-				<pre
-						class="story-log"
-						data-cy="streamgraph-emit-log"
-				>{{ logLines.join('\n') }}</pre>
-			</div>
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IChartStreamgraphProps>>({
+					offsetMode: 'wiggle',
+					smoothing: 'curve',
+					height: 400,
+					animated: true,
+					showLegend: true,
+					showTooltip: true,
+					showAxis: true,
+					showGrid: false,
+					legendPosition: 'bottom',
+					title: 'Music Genre Listens',
+					subtitle: '12 months, 5 genres'
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<origam-chart-streamgraph
+							:series="FIXTURE_MUSIC"
+							:categories="FIXTURE_MUSIC_CATEGORIES"
+							:offset-mode="state.offsetMode"
+							:smoothing="state.smoothing"
+							:height="state.height"
+							:animated="state.animated"
+							:show-legend="state.showLegend"
+							:show-tooltip="state.showTooltip"
+							:show-axis="state.showAxis"
+							:show-grid="state.showGrid"
+							:legend-position="state.legendPosition"
+							:title="state.title"
+							:subtitle="state.subtitle"
+							@point-click="logEvent('point-click', $event)"
+							@legend-click="logEvent('legend-click', $event)"
+							@series-toggle="logEvent('series-toggle', $event)"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.offsetMode"     title="Offset Mode"      :options="OFFSET_MODE_OPTIONS"/>
+					<HstSelect v-model="state.smoothing"      title="Smoothing"        :options="SMOOTHING_OPTIONS"/>
+					<HstSelect v-model="state.legendPosition" title="Legend Position"  :options="LEGEND_POSITION_OPTIONS"/>
+					<HstNumber v-model="state.height"         title="Height (px)"      :min="100" :max="800" :step="10"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.showLegend"  title="Show Legend"/>
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+					<HstCheckbox v-model="state.showAxis"    title="Show Axis"/>
+					<HstCheckbox v-model="state.showGrid"    title="Show Grid"/>
+					<HstCheckbox v-model="state.animated"    title="Animated"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -302,34 +274,35 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamChartStreamgraph } from '@origam/components'
+	import type { IChartSeries, IChartStreamgraphProps } from '@origam/interfaces'
+	import type { IOptions } from '@origam/interfaces'
+	import type { TChartStreamgraphOffset, TChartLegendPosition } from '@origam/types'
 
-	import type { IChartPoint, IChartSeries } from '@origam/interfaces'
-
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 
-	const OFFSET_MODE_OPTIONS = [
-		{ value: 'wiggle', label: 'wiggle' },
-		{ value: 'silhouette', label: 'silhouette' },
-		{ value: 'expand', label: 'expand' },
-		{ value: 'zero', label: 'zero' }
+	const OFFSET_MODE_OPTIONS: Array<IOptions<TChartStreamgraphOffset>> = [
+		{ label: 'wiggle (canonical)', value: 'wiggle' },
+		{ label: 'silhouette (centered)', value: 'silhouette' },
+		{ label: 'expand (100% normalised)', value: 'expand' },
+		{ label: 'zero (stacked area)', value: 'zero' }
 	]
 
-	const SMOOTHING_OPTIONS = [
-		{ value: 'curve', label: 'curve (Catmull-Rom)' },
-		{ value: 'none', label: 'none (linear)' }
+	const SMOOTHING_OPTIONS: Array<IOptions<'curve' | 'none'>> = [
+		{ label: 'curve (Catmull-Rom)', value: 'curve' },
+		{ label: 'none (linear)', value: 'none' }
 	]
 
-	const LEGEND_POSITION_OPTIONS = [
-		{ value: 'top', label: 'top' },
-		{ value: 'bottom', label: 'bottom' },
-		{ value: 'left', label: 'left' },
-		{ value: 'right', label: 'right' }
+	const LEGEND_POSITION_OPTIONS: Array<IOptions<TChartLegendPosition>> = [
+		{ label: 'bottom', value: 'bottom' },
+		{ label: 'top', value: 'top' },
+		{ label: 'left', value: 'left' },
+		{ label: 'right', value: 'right' }
 	]
 
-	// Music genre listens over 12 months — 5 genres with realistic ebb/flow
 	const FIXTURE_MUSIC_CATEGORIES = [
 		'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
 		'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
@@ -363,9 +336,6 @@
 		}
 	]
 
-	const FIXTURE_MUSIC_NO_COLOR: Array<IChartSeries> = FIXTURE_MUSIC.map(({ name, data }) => ({ name, data }))
-
-	// Tech stack adoption over 8 quarters — growth/decline patterns
 	const FIXTURE_TECH_CATEGORIES = ['Q1 24', 'Q2 24', 'Q3 24', 'Q4 24', 'Q1 25', 'Q2 25', 'Q3 25', 'Q4 25']
 
 	const FIXTURE_TECH: Array<IChartSeries> = [
@@ -390,24 +360,6 @@
 			color: 'danger'
 		}
 	]
-
-	const logLines = ref<Array<string>>([])
-
-	const appendLog = (line: string) => {
-		logLines.value = [line, ...logLines.value].slice(0, 8)
-	}
-
-	const onPointClick = (point: IChartPoint) => {
-		appendLog(`point-click → series="${ point.seriesName }" x="${ point.x }" y=${ point.y }`)
-	}
-
-	const onLegendClick = (series: IChartSeries, index: number) => {
-		appendLog(`legend-click → ${ series.name } (index ${ index })`)
-	}
-
-	const onSeriesToggle = (series: IChartSeries, visible: boolean) => {
-		appendLog(`series-toggle → ${ series.name } now ${ visible ? 'visible' : 'hidden' }`)
-	}
 </script>
 
 <style scoped>
@@ -416,45 +368,6 @@
 		flex-direction: column;
 		gap: 12px;
 		padding: 16px;
-	}
-
-	.story-log {
-		font-size: 0.75rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-		min-height: 80px;
-		border: 1px solid var(--origam-color-border-subtle, #e5e7eb);
-		border-radius: 4px;
-		padding: 8px;
-		white-space: pre-wrap;
-	}
-
-	.story-grid {
-		display: grid;
-		gap: 16px;
-	}
-
-	.story-grid--2 {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	.story-grid--3 {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
-
-	.story-grid--4 {
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-	}
-
-	.story-col {
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-		min-width: 0;
-	}
-
-	.story-col strong {
-		font-size: 0.8125rem;
-		color: var(--origam-color-text-secondary, #6b7280);
 	}
 
 	.custom-tooltip {
@@ -508,3 +421,8 @@
 		font-style: italic;
 	}
 </style>
+
+<docs
+		lang="md"
+		src="@docs/components/Chart/OrigamChartStreamgraph.md"
+/>

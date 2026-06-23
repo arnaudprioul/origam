@@ -1,13 +1,13 @@
 import { test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-filefield-origamfilefield-story-vue'
+const STORY_PATH = '/story/components-stories-filefield-origamfilefield-story-vue'
 
 test.setTimeout(180_000)
 
 test('DEBUG filefield — locate the label border bug', async ({ page }) => {
     await page.goto(STORY_PATH)
     await page.waitForLoadState('networkidle')
-    await page.getByText('Single + paperclip', { exact: true }).last().click({ timeout: 10_000 })
+    await page.getByText('Prop — single + paperclip', { exact: true }).last().click({ timeout: 10_000 })
     await page.waitForTimeout(1500)
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

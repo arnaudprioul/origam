@@ -95,6 +95,7 @@
 		setup
 >
 	import { computed, inject, useSlots } from 'vue'
+	import type { StyleValue } from 'vue'
 
 	import { ORIGAM_TREEVIEW_KEY } from '../../consts'
 	import {
@@ -234,9 +235,11 @@
 
 	const rowStyles = computed(() => {
 		const d = props.depth ?? 0
-		return {
-			paddingInlineStart: `calc(var(--origam-treeview---indent-size, 16px) * ${d} + var(--origam-treeview---row-padding-inline, 8px))`
-		}
+		return [
+			{
+				paddingInlineStart: `calc(var(--origam-treeview---indent-size, 16px) * ${d} + var(--origam-treeview---row-padding-inline, 8px))`
+			}
+		] as StyleValue
 	})
 	const {id, css, load, isLoaded, unload} = useStyle(rowStyles)
 

@@ -122,6 +122,7 @@
 		useActive,
 		useBothColor,
 		useDensity,
+		useElevation,
 		useGroup,
 		useHover,
 		useLoader,

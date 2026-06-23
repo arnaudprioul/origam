@@ -1,6 +1,6 @@
 import { test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-timeline-origamtimeline-story-vue'
+const STORY_PATH = '/story/components-stories-timeline-origamtimeline-story-vue'
 
 test.setTimeout(180_000)
 
@@ -48,7 +48,7 @@ test('DEBUG timeline — size cascade + horizontal orientation', async ({ page }
     }
 
     // ── Horizontal variant ──────────────────────────────────────────
-    await page.getByText('Orientation — horizontal (scroll-snap slider)', { exact: true }).last().click({ timeout: 5000 })
+    await page.getByText('Prop — orientation (horizontal, scroll-snap slider)', { exact: true }).last().click({ timeout: 5000 })
     await page.waitForTimeout(1000)
 
     const h = await sandbox.locator('[data-cy="timeline-horizontal"]').first().evaluate((el) => {

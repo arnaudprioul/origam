@@ -22,6 +22,35 @@
 </template>
 ```
 
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `color` | `TColor` | — | Default text colour of the application. Forwarded to the layout root and inherited by descendants through normal CSS inheritance. |
+| `bgColor` | `TColor` | — | Background colour painted on the application surface. |
+| `fullHeight` | `boolean` | `true` | Stretch the layout to the full viewport (`100vw` / `100vh`). |
+| `overlaps` | `string[]` | — | IDs of layout items allowed to overlap each other (forwarded to the layout). |
+
+`<OrigamApp>` is a thin shell over `<OrigamLayout>` and deliberately exposes
+**only** the surface-colour props — an application root has no business
+carrying a border, corner radius, shadow, dimension or spacing. Those design
+props remain available directly on `<OrigamLayout>` for embedded / sized
+layouts.
+
+## Surface color
+
+`bgColor` paints the application background; `color` sets the root text colour
+which cascades to descendants via CSS inheritance — a lightweight way to set an
+app-wide default without per-component overrides.
+
+```vue
+<template>
+    <OrigamApp bg-color="surface" color="on-surface">
+        <OrigamMain>…</OrigamMain>
+    </OrigamApp>
+</template>
+```
+
 ## Full height
 
 `fullHeight` defaults to `true`. The root element fills the viewport vertically.

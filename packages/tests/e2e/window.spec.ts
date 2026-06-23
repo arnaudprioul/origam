@@ -30,7 +30,7 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.waitForTimeout(900)
 }
 
-const WINDOW_PATH = '/story/stories-components-stories-window-origamwindow-story-vue'
+const WINDOW_PATH = '/story/components-stories-window-origamwindow-story-vue'
 
 // ─── Slide sizing ──────────────────────────────────────────────────────────
 

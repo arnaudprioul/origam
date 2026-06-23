@@ -3,206 +3,250 @@
 			group="components"
 			title="DataTable/OrigamDataTable"
 	>
-		<!--
-			Playground — first by convention. All main props wired via
-			sidebar controls.
-		-->
-		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<{
-					showSelect?: boolean
-					multiSort?: boolean
-					mustSort?: boolean
-					itemsPerPage?: number
-					loading?: boolean
-					hideDefaultHeader?: boolean
-					hideDefaultFooter?: boolean
-				}>({
-					showSelect: false,
-					multiSort: false,
-					mustSort: false,
-					itemsPerPage: 5,
-					loading: false,
-					hideDefaultHeader: false,
-					hideDefaultFooter: false
-				})"
-		>
-			<template #default="{ state }">
-				<origam-data-table
-						v-model="selected"
-						:headers="sortableHeaders"
-						:items="manyItems"
-						v-bind="state"
-						item-value="id"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.showSelect"        title="showSelect"/>
-				<HstCheckbox v-model="state.multiSort"         title="multiSort"/>
-				<HstCheckbox v-model="state.mustSort"          title="mustSort"/>
-				<HstNumber   v-model="state.itemsPerPage"      title="itemsPerPage" :min="1"/>
-				<HstCheckbox v-model="state.loading"           title="loading"/>
-				<HstCheckbox v-model="state.hideDefaultHeader" title="hideDefaultHeader"/>
-				<HstCheckbox v-model="state.hideDefaultFooter" title="hideDefaultFooter"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — headers & items (basic dataset)">
-			<origam-data-table
-					:headers="headers"
-					:items="items"
-			/>
-		</Variant>
 
 		<Variant
-				title="Prop — multiSort & mustSort"
-				:init-state="() => useStoryInitState<{ multiSort?: boolean; mustSort?: boolean }>({ multiSort: false, mustSort: false })"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({ color: undefined, bgColor: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-data-table
 						:headers="sortableHeaders"
 						:items="items"
-						:multi-sort="state.multiSort"
-						:must-sort="state.mustSort"
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:density="state.density"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
+						:width="state.width"
+						:height="state.height"
+						:fixed-header="state.fixedHeader"
+						:fixed-footer="state.fixedFooter"
+						:caption="state.caption || undefined"
+						:caption-visible="state.captionVisible"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.multiSort" title="multiSort"/>
-				<HstCheckbox v-model="state.mustSort"  title="mustSort"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Caption">
+					<HstText     v-model="state.caption"        title="Caption"/>
+					<HstCheckbox v-model="state.captionVisible" title="Caption Visible"/>
+				</StoryGroup>
+				<StoryGroup title="Fixed">
+					<HstCheckbox v-model="state.fixedHeader" title="Fixed Header"/>
+					<HstCheckbox v-model="state.fixedFooter" title="Fixed Footer"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
 		<Variant
-				title="Prop — itemsPerPage (pagination)"
-				:init-state="() => useStoryInitState<{ itemsPerPage?: number }>({ itemsPerPage: 5 })"
+				title="State"
+				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({ color: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-data-table
-						:headers="headers"
-						:items="manyItems"
-						:items-per-page="state.itemsPerPage"
+						:headers="sortableHeaders"
+						:items="items"
+						:color="state.color"
+						:hover="resolveHoverState(state.hover)"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstNumber v-model="state.itemsPerPage" title="itemsPerPage" :min="1" :max="20"/>
+				<StoryGroup title="Surface">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Interaction">
+					<HstSelect v-model="state.hover" title="Hover" :options="HOVER_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — showSelect">
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IDataTableProps> & ILoadingState>({
+					showSelect: false,
+					showExpand: false,
+					expandOnClick: false,
+					multiSort: false,
+					mustSort: false,
+					hideDefaultHeader: false,
+					hideDefaultFooter: false,
+					hideDefaultBody: false,
+					itemsPerPage: 5,
+					search: '',
+					enabled: false,
+					kind: 'bool',
+					progress: 42,
+					circularSize: 24
+				})"
+		>
+			<template #default="{ state }">
+				<div>
+					<origam-text-field
+							v-model="state.search"
+							label="Search"
+							clearable
+							style="max-width: 320px; margin-bottom: 12px;"
+					/>
+					<origam-data-table
+							v-model="selected"
+							:headers="sortableHeaders"
+							:items="manyItems"
+							:show-select="state.showSelect"
+							:show-expand="state.showExpand"
+							:expand-on-click="state.expandOnClick"
+							:multi-sort="state.multiSort"
+							:must-sort="state.mustSort"
+							:hide-default-header="state.hideDefaultHeader"
+							:hide-default-footer="state.hideDefaultFooter"
+							:hide-default-body="state.hideDefaultBody"
+							:items-per-page="state.itemsPerPage"
+							:search="state.search || undefined"
+							:loading="resolveLoading(state)"
+							item-value="id"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Selection">
+					<HstCheckbox v-model="state.showSelect" title="Show Select"/>
+				</StoryGroup>
+				<StoryGroup title="Expand">
+					<HstCheckbox v-model="state.showExpand"     title="Show Expand"/>
+					<HstCheckbox v-model="state.expandOnClick"  title="Expand on Click"/>
+				</StoryGroup>
+				<StoryGroup title="Sort">
+					<HstCheckbox v-model="state.multiSort" title="Multi Sort"/>
+					<HstCheckbox v-model="state.mustSort"  title="Must Sort"/>
+				</StoryGroup>
+				<StoryGroup title="Visibility">
+					<HstCheckbox v-model="state.hideDefaultHeader" title="Hide Header"/>
+					<HstCheckbox v-model="state.hideDefaultFooter" title="Hide Footer"/>
+					<HstCheckbox v-model="state.hideDefaultBody"   title="Hide Body"/>
+				</StoryGroup>
+				<StoryGroup title="Pagination">
+					<HstNumber v-model="state.itemsPerPage" title="Items Per Page" :min="1" :max="25" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Search">
+					<HstText v-model="state.search" title="Search"/>
+				</StoryGroup>
+				<StoryGroup title="Loading">
+					<HstCheckbox v-model="state.enabled"      title="Loading"/>
+					<HstSelect   v-model="state.kind"         title="Loading Kind" :options="LOADING_KIND_OPTIONS"/>
+					<HstNumber   v-model="state.progress"     title="Progress (number)"  :min="0"  :max="100" :step="1"/>
+					<HstNumber   v-model="state.circularSize" title="Size (circular)"    :min="12" :max="64"  :step="2"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Events - update:currentItems">
+			<origam-data-table
+					:headers="headers"
+					:items="items"
+					@update:current-items="logEvent('update:currentItems', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - update:expanded">
+			<origam-data-table
+					:headers="headers"
+					:items="items"
+					show-expand
+					@update:expanded="logEvent('update:expanded', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - update:groupBy">
+			<origam-data-table
+					:headers="headers"
+					:items="items"
+					@update:group-by="logEvent('update:groupBy', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - update:itemsPerPage">
+			<origam-data-table
+					:headers="headers"
+					:items="manyItems"
+					:items-per-page="5"
+					@update:items-per-page="logEvent('update:itemsPerPage', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - update:modelValue">
 			<origam-data-table
 					v-model="selected"
 					:headers="headers"
 					:items="items"
 					show-select
 					item-value="id"
+					@update:model-value="logEvent('update:modelValue', $event)"
 			/>
-			<div style="margin-top: 8px; font-size: 0.75rem;">
-				Selected IDs: {{ selected.join(', ') || 'none' }}
-			</div>
 		</Variant>
 
-		<Variant title="Prop — search">
-			<origam-text-field
-					v-model="search"
-					label="Search"
-					clearable
-					style="max-width: 320px; margin-bottom: 12px;"
+		<Variant title="Events - update:options">
+			<origam-data-table
+					:headers="sortableHeaders"
+					:items="items"
+					@update:options="logEvent('update:options', $event)"
 			/>
+		</Variant>
+
+		<Variant title="Events - update:page">
 			<origam-data-table
 					:headers="headers"
-					:items="items"
-					:search="search"
+					:items="manyItems"
+					:items-per-page="5"
+					@update:page="logEvent('update:page', $event)"
 			/>
 		</Variant>
 
-		<Variant
-				title="Prop — loading"
-				:init-state="() => useStoryInitState<{ loading?: boolean }>({ loading: true })"
-		>
-			<template #default="{ state }">
-				<origam-data-table
-						:headers="headers"
-						:items="items"
-						:loading="state.loading"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.loading" title="loading"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — loading (all shapes)"
-				:init-state="() => useStoryInitState({
-					enabled: true,
-					kind: 'line',
-					progress: 42,
-					circularSize: 24
-				})"
-		>
-			<template #default="{ state }">
-				<div style="padding: 16px; max-width: 480px;">
-					<origam-data-table
-							:headers="headers"
-							:items="items"
-							:loading="resolveDtLoading(state)"
-							data-cy="data-table-loading-interactive"
-					/>
-					<pre style="margin-top: 16px; padding: 12px; background: var(--origam-color__surface---overlay); border-radius: 8px; font-size: 12px;">loading = {{ describeDtLoading(state) }}</pre>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.enabled" title="enabled (loading)"/>
-				<HstSelect
-						v-model="state.kind"
-						title="kind"
-						:options="[
-							{ label: 'true (default)', value: 'bool' },
-							{ label: 'number', value: 'number' },
-							{ label: '{ type: line }', value: 'line' },
-							{ label: '{ type: circular }', value: 'circular' },
-							{ label: '{ type: skeleton }', value: 'skeleton' }
-						]"
-				/>
-				<HstNumber v-model="state.progress" title="progress (when kind=number)" :min="0" :max="100" :step="1"/>
-				<HstNumber v-model="state.circularSize" title="circular size (when kind=circular)" :min="12" :max="64" :step="2"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — color"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<origam-data-table
-						:headers="sortableHeaders"
-						:items="items"
-						v-bind="state"
-						data-cy="data-table-color"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
-				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — top">
+		<Variant title="Events - update:sortBy">
 			<origam-data-table
-					:headers="headers"
+					:headers="sortableHeaders"
 					:items="items"
-			>
+					@update:sort-by="logEvent('update:sortBy', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Slots - Top">
+			<origam-data-table :headers="headers" :items="items">
 				<template #top>
 					<div style="padding: 12px; font-weight: bold;">User list</div>
 				</template>
 			</origam-data-table>
 		</Variant>
 
-		<Variant title="Slot — append">
+		<Variant title="Slots - Prepend">
+			<origam-data-table :headers="headers" :items="items">
+				<template #prepend>
+					<origam-icon :icon="MDI_ICONS.HEART"/>
+				</template>
+			</origam-data-table>
+		</Variant>
+
+		<Variant title="Slots - Append">
 			<origam-data-table :headers="headers" :items="items">
 				<template #append>
 					<div style="padding: 12px; font-size: 0.75rem; opacity: 0.7;">Append area below table body</div>
@@ -210,17 +254,17 @@
 			</origam-data-table>
 		</Variant>
 
-		<Variant title="Slot — body">
+		<Variant title="Slots - Body">
 			<origam-data-table :headers="headers" :items="items">
 				<template #body>
 					<tr>
-						<td colspan="4" style="padding: 16px; text-align: center; font-style: italic;">Custom slot content</td>
+						<td colspan="4" style="padding: 16px; text-align: center; font-style: italic;">Custom body slot content</td>
 					</tr>
 				</template>
 			</origam-data-table>
 		</Variant>
 
-		<Variant title="Slot — bottom">
+		<Variant title="Slots - Bottom">
 			<origam-data-table :headers="headers" :items="items">
 				<template #bottom>
 					<div style="padding: 12px; display: flex; justify-content: flex-end;">
@@ -230,7 +274,7 @@
 			</origam-data-table>
 		</Variant>
 
-		<Variant title="Slot — colgroup">
+		<Variant title="Slots - Colgroup">
 			<origam-data-table :headers="headers" :items="items">
 				<template #colgroup>
 					<colgroup>
@@ -243,15 +287,15 @@
 			</origam-data-table>
 		</Variant>
 
-		<Variant title="Slot — default">
+		<Variant title="Slots - Default">
 			<origam-data-table :headers="headers" :items="items">
 				<template #default>
-					<span>Custom slot content</span>
+					<span>Custom default slot content</span>
 				</template>
 			</origam-data-table>
 		</Variant>
 
-		<Variant title="Slot — header">
+		<Variant title="Slots - Header">
 			<origam-data-table :headers="headers" :items="items">
 				<template #header>
 					<div style="padding: 12px; background: var(--origam-color__surface---overlay); font-weight: 700;">Custom header slot</div>
@@ -259,15 +303,15 @@
 			</origam-data-table>
 		</Variant>
 
-		<Variant title="Slot — header.loader">
+		<Variant title="Slots - Header.loader">
 			<origam-data-table :headers="headers" :items="items" loading>
 				<template #header.loader>
-					<span>Loading…</span>
+					<span>Loading...</span>
 				</template>
 			</origam-data-table>
 		</Variant>
 
-		<Variant title="Slot — header.mobile">
+		<Variant title="Slots - Header.mobile">
 			<origam-data-table :headers="headers" :items="items">
 				<template #header.mobile>
 					<div style="padding: 8px; font-size: 0.875rem; font-weight: 600;">Mobile header slot</div>
@@ -275,15 +319,7 @@
 			</origam-data-table>
 		</Variant>
 
-		<Variant title="Slot — prepend">
-			<origam-data-table :headers="headers" :items="items">
-				<template #prepend>
-					<origam-icon :icon="MDI_ICONS.HEART"/>
-				</template>
-			</origam-data-table>
-		</Variant>
-
-		<Variant title="Slot — thead">
+		<Variant title="Slots - Thead">
 			<origam-data-table :headers="headers" :items="items">
 				<template #thead>
 					<tr>
@@ -293,74 +329,45 @@
 			</origam-data-table>
 		</Variant>
 
-		<!-- ── Emits ────────────────────────────────────────────────── -->
-
-		<Variant title="Emit — update:currentItems">
-			<origam-data-table
-					:headers="headers"
-					:items="items"
-					@update:current-items="logEvent('update:currentItems', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Emit — update:expanded">
-			<origam-data-table
-					:headers="headers"
-					:items="items"
-					@update:expanded="logEvent('update:expanded', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Emit — update:groupBy">
-			<origam-data-table
-					:headers="headers"
-					:items="items"
-					@update:group-by="logEvent('update:groupBy', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Emit — update:itemsPerPage">
-			<origam-data-table
-					:headers="headers"
-					:items="items"
-					@update:items-per-page="logEvent('update:itemsPerPage', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Emit — update:modelValue">
-			<origam-data-table
-					v-model="selected"
-					:headers="headers"
-					:items="items"
-					show-select
-					item-value="id"
-					@update:model-value="logEvent('update:modelValue', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Emit — update:options">
-			<origam-data-table
-					:headers="sortableHeaders"
-					:items="items"
-					@update:options="logEvent('update:options', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Emit — update:page">
-			<origam-data-table
-					:headers="headers"
-					:items="manyItems"
-					:items-per-page="5"
-					@update:page="logEvent('update:page', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Emit — update:sortBy">
-			<origam-data-table
-					:headers="sortableHeaders"
-					:items="items"
-					@update:sort-by="logEvent('update:sortBy', $event)"
-			/>
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({
+					itemsPerPage: 5,
+					showSelect: false,
+					multiSort: false,
+					mustSort: false,
+					loading: false,
+					hideDefaultHeader: false,
+					hideDefaultFooter: false
+				})"
+		>
+			<template #default="{ state }">
+				<origam-data-table
+						v-model="selected"
+						:headers="sortableHeaders"
+						:items="manyItems"
+						item-value="id"
+						v-bind="state"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.showSelect"        title="Show Select"/>
+					<HstCheckbox v-model="state.multiSort"         title="Multi Sort"/>
+					<HstCheckbox v-model="state.mustSort"          title="Must Sort"/>
+					<HstNumber   v-model="state.itemsPerPage"      title="Items Per Page" :min="1" :max="25"/>
+					<HstCheckbox v-model="state.loading"           title="Loading"/>
+					<HstCheckbox v-model="state.hideDefaultHeader" title="Hide Header"/>
+					<HstCheckbox v-model="state.hideDefaultFooter" title="Hide Footer"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -374,11 +381,21 @@
 
 	import { OrigamDataTable, OrigamIcon, OrigamTextField } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
-	import type { IColorProps } from '@origam/interfaces'
+	import type { IDataTableProps } from '@origam/interfaces'
 	import type { TLoadingValue } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { intentList } from '@stories/const'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
+		HOVER_OPTIONS,
+		resolveHoverState,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
 
 	interface ILoadingState {
 		enabled: boolean
@@ -387,39 +404,41 @@
 		circularSize: number
 	}
 
-	const resolveDtLoading = (state: ILoadingState): TLoadingValue => {
+	const LOADING_KIND_OPTIONS = [
+		{ label: 'true (default)', value: 'bool' },
+		{ label: 'number', value: 'number' },
+		{ label: '{ type: line }', value: 'line' },
+		{ label: '{ type: circular }', value: 'circular' },
+		{ label: '{ type: skeleton }', value: 'skeleton' }
+	]
+
+	const resolveLoading = (state: ILoadingState): TLoadingValue => {
 		if (!state.enabled) return false
-		if (state.kind === 'bool') return true
 		if (state.kind === 'number') return state.progress
 		if (state.kind === 'line') return { type: 'line' }
 		if (state.kind === 'circular') return { type: 'circular', size: state.circularSize }
 		if (state.kind === 'skeleton') return { type: 'skeleton' }
-		return false
-	}
 
-	const describeDtLoading = (state: ILoadingState): string => {
-		const v = resolveDtLoading(state)
-		return JSON.stringify(v, null, 2)
+		return true
 	}
 
 	const selected = ref([])
-	const search = ref('')
 
 	const headers = [
 		{ title: 'ID',         key: 'id' },
 		{ title: 'First name', key: 'firstName' },
 		{ title: 'Last name',  key: 'lastName' },
-		{ title: 'Age',        key: 'age' },
+		{ title: 'Age',        key: 'age' }
 	]
 
 	const sortableHeaders = headers.map(h => ({ ...h, sortable: true }))
 
 	const items = [
-		{ id: 1, firstName: 'Alice',   lastName: 'Dupont',  age: 30 },
-		{ id: 2, firstName: 'Bob',     lastName: 'Martin',  age: 25 },
-		{ id: 3, firstName: 'Claire',  lastName: 'Bernard', age: 35 },
-		{ id: 4, firstName: 'David',   lastName: 'Leroy',   age: 28 },
-		{ id: 5, firstName: 'Eve',     lastName: 'Moreau',  age: 22 },
+		{ id: 1, firstName: 'Alice',  lastName: 'Dupont',  age: 30 },
+		{ id: 2, firstName: 'Bob',    lastName: 'Martin',  age: 25 },
+		{ id: 3, firstName: 'Claire', lastName: 'Bernard', age: 35 },
+		{ id: 4, firstName: 'David',  lastName: 'Leroy',   age: 28 },
+		{ id: 5, firstName: 'Eve',    lastName: 'Moreau',  age: 22 }
 	]
 
 	const manyItems = Array.from({ length: 25 }, (_, i) => ({

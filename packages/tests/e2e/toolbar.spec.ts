@@ -1,12 +1,12 @@
 import { expect, FrameLocator, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-toolbar-origamtoolbar-story-vue'
+const STORY_PATH = '/story/components-stories-toolbar-origamtoolbar-story-vue'
 
 test.describe('OrigamToolbar', () => {
 	test('Basic — toolbar renders with title', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Basic', { exact: true }).first().click()
+		await page.getByText('Default', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -18,7 +18,7 @@ test.describe('OrigamToolbar', () => {
 	test('Color — toolbar renders with color controls', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Color', { exact: true }).first().click()
+		await page.getByText('Prop — color & bgColor', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -29,7 +29,7 @@ test.describe('OrigamToolbar', () => {
 	test('Elevation — toolbar renders with elevation control', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Elevation', { exact: true }).first().click()
+		await page.getByText('Prop — elevation', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -40,7 +40,7 @@ test.describe('OrigamToolbar', () => {
 	test('Rounded — toolbar renders with rounded control', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Rounded', { exact: true }).first().click()
+		await page.getByText('Prop — rounded', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -51,7 +51,7 @@ test.describe('OrigamToolbar', () => {
 	test('Density — toolbar renders with density control', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Density', { exact: true }).first().click()
+		await page.getByText('Prop — density', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -62,7 +62,7 @@ test.describe('OrigamToolbar', () => {
 	test('Modifiers — collapse modifier adds collapse class', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Modifiers', { exact: true }).first().click()
+		await page.getByText('Prop — collapse, flat & floating', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -156,7 +156,7 @@ test.describe('OrigamToolbar', () => {
 	test('Border showcase — default toolbar is borderless on all four sides', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Border', { exact: true }).first().click()
+		await page.getByText('Prop — border', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -169,7 +169,7 @@ test.describe('OrigamToolbar', () => {
 	test('Border showcase — border={true} produces a thin border on all four sides', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Border', { exact: true }).first().click()
+		await page.getByText('Prop — border', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -188,7 +188,7 @@ test.describe('OrigamToolbar', () => {
 	test('Border showcase — border="bottom" emits 1px ONLY on bottom', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Border', { exact: true }).first().click()
+		await page.getByText('Prop — border', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -199,7 +199,7 @@ test.describe('OrigamToolbar', () => {
 	test('Border showcase — border="top" emits 1px ONLY on top', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Border', { exact: true }).first().click()
+		await page.getByText('Prop — border', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -210,7 +210,7 @@ test.describe('OrigamToolbar', () => {
 	test('Border showcase — border="right" emits 1px ONLY on right', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Border', { exact: true }).first().click()
+		await page.getByText('Prop — border', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -221,7 +221,7 @@ test.describe('OrigamToolbar', () => {
 	test('Border showcase — border="left" emits 1px ONLY on left', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Border', { exact: true }).first().click()
+		await page.getByText('Prop — border', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

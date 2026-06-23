@@ -107,7 +107,7 @@
 	useStyle
 } from '../../composables'
 
-	import { SUPPORTS_INTERSECTION } from '../../consts'
+	import { IN_BROWSER, SUPPORTS_INTERSECTION } from '../../consts'
 
 	import { vIntersect } from '../../directives'
 
@@ -306,12 +306,21 @@
 	let stop: (() => void) | null = null
 	const markBooted = (val: number | null | undefined) => {
 		if (val) {
-			// Doesn't work with nextTick, idk why
-			requestAnimationFrame(() => {
+			// `requestAnimationFrame` is browser-only. When `aspectRatio` is
+			// already truthy at setup (consumer passed an explicit
+			// `aspect-ratio`, e.g. a fixed logo), this runs during SSR and
+			// crashes Node with "requestAnimationFrame is not defined". Guard
+			// it: on the server `isBooted` stays false (the `--booting` class
+			// is rendered), which matches the client's initial hydration
+			// render — the rAF then flips it post-hydration with no mismatch.
+			if (IN_BROWSER) {
+				// Doesn't work with nextTick, idk why
 				requestAnimationFrame(() => {
-					isBooted.value = true
+					requestAnimationFrame(() => {
+						isBooted.value = true
+					})
 				})
-			})
+			}
 			stop?.()
 		}
 	}

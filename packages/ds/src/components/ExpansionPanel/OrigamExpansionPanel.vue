@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			v-contrast
 			:class="expansionPanelClasses"
 			:style="expansionPanelStyles"
 	>
@@ -116,6 +117,8 @@
 		useStateEffect,
 		useStyle
 } from '../../composables'
+
+	import { vContrast } from '../../directives'
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
 

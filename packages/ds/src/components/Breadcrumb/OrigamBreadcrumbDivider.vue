@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			v-contrast
 			:class="breadcrumbDividerClasses"
 			:style="breadcrumbDividerStyles"
 	>
@@ -22,6 +23,8 @@
 	import { OrigamIcon } from '../../components'
 
 	import { useBothColor, useDensity, useMargin, usePadding, useProps, useSize, useStyle } from '../../composables'
+
+	import { vContrast } from '../../directives'
 
 	import { MDI_ICONS } from '../../enums'
 

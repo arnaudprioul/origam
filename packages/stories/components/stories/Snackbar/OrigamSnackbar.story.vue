@@ -3,9 +3,199 @@
 			group="components"
 			title="Snackbar/OrigamSnackbar"
 	>
-		<!--
-			Playground — first by convention. Exposes every ISnackbarProps knob.
-		-->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<ISnackbarProps>>({
+					text: 'Snackbar message',
+					bgColor: 'primary',
+					color: 'white',
+					timeout: -1
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 16px; position: relative; min-height: 120px;">
+					<origam-btn text="Show" @click="designOpen = true"/>
+					<origam-snackbar
+							v-model="designOpen"
+							:color="state.color"
+							:padding="state.padding"
+							:margin="state.margin"
+							:bg-color="state.bgColor"
+							:status="state.status"
+							:status-icon-position="state.statusIconPosition"
+							:rounded="state.rounded"
+							:elevation="state.elevation"
+							:border="state.border"
+							:border-color="state.borderColor"
+							:border-style="state.borderStyle"
+							:location="state.location"
+							:position="state.position"
+							:timeout="state.timeout"
+							:text="state.text"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Status">
+					<HstSelect v-model="state.status"             title="Status"          :options="STATUS_OPTIONS"/>
+					<HstSelect v-model="state.statusIconPosition" title="Status Position" :options="STATUS_POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Location">
+					<HstSelect v-model="state.location" title="Location" :options="LOCATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Position">
+					<HstSelect v-model="state.position" title="Position" :options="POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Content">
+					<HstText v-model="state.text" title="Text"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="State"
+				:init-state="() => useStoryInitState<IHoverProps & IBgColorProps>({ bgColor: 'primary' })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 16px; position: relative; min-height: 120px;">
+					<origam-btn text="Show" @click="stateOpen = true"/>
+					<origam-snackbar
+							v-model="stateOpen"
+							:bg-color="state.bgColor"
+							:hover="resolveHoverState(state.hover)"
+							:timeout="-1"
+							text="State demo"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Surface">
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Interaction">
+					<HstSelect v-model="state.hover" title="Hover" :options="HOVER_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<ISnackbarProps>>({
+					text: 'Functional snackbar',
+					timeout: 5000,
+					multiLine: false,
+					vertical: false,
+					timer: false
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 16px; position: relative; min-height: 120px;">
+					<origam-btn text="Show" @click="functionalOpen = true"/>
+					<origam-snackbar
+							v-model="functionalOpen"
+							:text="state.text"
+							:timeout="state.timeout"
+							:multi-line="state.multiLine"
+							:vertical="state.vertical"
+							:timer="state.timer"
+							:tag="state.tag"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.text" title="Text"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.multiLine" title="Multi Line"/>
+					<HstCheckbox v-model="state.vertical"  title="Vertical"/>
+				</StoryGroup>
+				<StoryGroup title="Timer">
+					<HstCheckbox v-model="state.timer"   title="Timer"/>
+					<HstNumber   v-model="state.timeout" title="Timeout (ms)" :min="-1" :max="30000" :step="500"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Events - update:modelValue">
+			<div style="padding: 16px; position: relative; min-height: 120px;">
+				<origam-btn text="Show (watch Events)" @click="emitOpen = true"/>
+				<origam-snackbar
+						v-model="emitOpen"
+						text="Watch the Events tab."
+						:timeout="-1"
+						@update:model-value="logEvent('update:modelValue', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Default">
+			<div style="padding: 16px; position: relative; min-height: 120px;">
+				<origam-btn text="Show" @click="defaultSlotOpen = true"/>
+				<origam-snackbar v-model="defaultSlotOpen" :timeout="-1">
+					<span><strong>Custom</strong> default slot content</span>
+				</origam-snackbar>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Prepend">
+			<div style="padding: 16px; position: relative; min-height: 120px;">
+				<origam-btn text="Show with prepend" @click="prependSlotOpen = true"/>
+				<origam-snackbar v-model="prependSlotOpen" text="With prepend icon." :timeout="-1">
+					<template #prepend>
+						<origam-icon :icon="MDI_ICONS.HEART"/>
+					</template>
+				</origam-snackbar>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Text">
+			<div style="padding: 16px; position: relative; min-height: 120px;">
+				<origam-btn text="Show custom text" @click="textSlotOpen = true"/>
+				<origam-snackbar v-model="textSlotOpen" :timeout="-1">
+					<template #text>
+						<strong>Custom</strong> text slot content.
+					</template>
+				</origam-snackbar>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Action">
+			<div style="padding: 16px; position: relative; min-height: 120px;">
+				<origam-btn text="Show with action" @click="actionSlotOpen = true"/>
+				<origam-snackbar v-model="actionSlotOpen" text="Item deleted." :timeout="-1">
+					<template #action="{ isActive }">
+						<origam-btn
+								text="Undo"
+								color="primary"
+								@click="isActive.value = false"
+						/>
+					</template>
+				</origam-snackbar>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ISnackbarProps>({
@@ -17,188 +207,34 @@
 				})"
 		>
 			<template #default="{ state }">
-				<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-playground-host">
-					<origam-btn text="Show" data-cy="snackbar-playground-trigger" @click="playgroundOpen = true"/>
-					<origam-snackbar v-model="playgroundOpen" v-bind="state" data-cy="snackbar-playground"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstText     v-model="state.text"      title="text"/>
-				<HstNumber   v-model="state.timeout"   title="timeout (ms)"/>
-				<HstCheckbox v-model="state.multiLine" title="multiLine"/>
-				<HstCheckbox v-model="state.vertical"  title="vertical"/>
-				<HstCheckbox v-model="state.timer"     title="timer"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — location"
-				:init-state="() => useStoryInitState<{ location: string }>({ location: 'bottom' })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-location-host">
-					<origam-btn
-							text="Show snackbar"
-							data-cy="snackbar-location-trigger"
-							@click="locationOpen = true"
-					/>
+				<div style="padding: 16px; position: relative; min-height: 120px;">
+					<origam-btn text="Show" @click="playgroundOpen = true"/>
 					<origam-snackbar
-							v-model="locationOpen"
-							:location="state.location"
-							text="Location snackbar."
-							data-cy="snackbar-location"
+							v-model="playgroundOpen"
+							v-bind="state"
+							@update:model-value="logEvent('update:modelValue', $event)"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.location"
-						title="location"
-						:options="[
-							{ label: 'bottom', value: 'bottom' },
-							{ label: 'top', value: 'top' },
-							{ label: 'top right', value: 'top right' },
-							{ label: 'bottom right', value: 'bottom right' },
-							{ label: 'bottom left', value: 'bottom left' },
-							{ label: 'top left', value: 'top left' }
-						]"
-				/>
+				<StoryGroup title="Content">
+					<HstText v-model="state.text" title="Text"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"    title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"  title="Bg Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.status"   title="Status"   :options="STATUS_OPTIONS"/>
+					<HstSelect v-model="state.rounded"  title="Rounded"  :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.location" title="Location" :options="LOCATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.multiLine" title="Multi Line"/>
+					<HstCheckbox v-model="state.vertical"  title="Vertical"/>
+					<HstCheckbox v-model="state.timer"     title="Timer"/>
+					<HstNumber   v-model="state.timeout"   title="Timeout (ms)" :min="-1" :max="30000" :step="500"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — timeout"
-				:init-state="() => useStoryInitState<{ timeout: number }>({ timeout: 3000 })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-timeout-host">
-					<origam-btn text="Show" data-cy="snackbar-timeout-trigger" @click="timeoutOpen = true"/>
-					<origam-snackbar
-							v-model="timeoutOpen"
-							:timeout="state.timeout"
-							text="Auto-dismisses."
-							data-cy="snackbar-timeout"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.timeout" title="timeout (ms)"/>
-			</template>
-		</Variant>
-
-		<Variant title="Prop — timer">
-			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-timer-host">
-				<origam-btn text="Show with timer" data-cy="snackbar-timer-trigger" @click="timerOpen = true"/>
-				<origam-snackbar v-model="timerOpen" timer text="Watch the countdown bar." data-cy="snackbar-timer"/>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — multiLine">
-			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-multiline-host">
-				<origam-btn text="Show multi-line" data-cy="snackbar-multiline-trigger" @click="multilineOpen = true"/>
-				<origam-snackbar
-						v-model="multilineOpen"
-						multi-line
-						text="This is a longer snackbar message that wraps onto multiple lines for better readability."
-						data-cy="snackbar-multiline"
-				/>
-			</div>
-		</Variant>
-
-		<Variant
-				title="Prop — status"
-				:init-state="() => useStoryInitState<{ status?: string }>({ status: 'success' })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-status-host">
-					<origam-btn text="Show status" data-cy="snackbar-status-trigger" @click="statusOpen = true"/>
-					<origam-snackbar
-							v-model="statusOpen"
-							:status="state.status as any"
-							text="Status message."
-							data-cy="snackbar-status"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.status"
-						title="status"
-						:options="[
-							{ label: '(none)', value: undefined },
-							{ label: 'success', value: 'success' },
-							{ label: 'warning', value: 'warning' },
-							{ label: 'danger', value: 'danger' },
-							{ label: 'info', value: 'info' }
-						]"
-				/>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-default-slot-host">
-				<origam-btn text="Show" data-cy="snackbar-default-slot-trigger" @click="defaultSlotOpen = true"/>
-				<origam-snackbar v-model="defaultSlotOpen" data-cy="snackbar-default-slot">
-					<span>Custom slot content</span>
-				</origam-snackbar>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — prepend">
-			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-prepend-slot-host">
-				<origam-btn text="Show with prepend" data-cy="snackbar-prepend-slot-trigger" @click="prependSlotOpen = true"/>
-				<origam-snackbar v-model="prependSlotOpen" text="With prepend icon." data-cy="snackbar-prepend-slot">
-					<template #prepend>
-						<origam-icon :icon="MDI_ICONS.HEART"/>
-					</template>
-				</origam-snackbar>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — action">
-			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-action-host">
-				<origam-btn text="Show with action" data-cy="snackbar-action-trigger" @click="actionOpen = true"/>
-				<origam-snackbar v-model="actionOpen" text="Item deleted." data-cy="snackbar-action">
-					<template #action="{ isActive }">
-						<origam-btn
-								text="Undo"
-								color="primary"
-								data-cy="snackbar-action-btn"
-								@click="isActive.value = false"
-						/>
-					</template>
-				</origam-snackbar>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — text">
-			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-text-host">
-				<origam-btn text="Show custom text" data-cy="snackbar-text-trigger" @click="textSlotOpen = true"/>
-				<origam-snackbar v-model="textSlotOpen" data-cy="snackbar-text-slot">
-					<template #text>
-						<strong>Custom</strong> text slot content.
-					</template>
-				</origam-snackbar>
-			</div>
-		</Variant>
-
-		<!-- ── Emits ────────────────────────────────────────────────── -->
-
-		<Variant title="Emit — update:modelValue">
-			<div style="padding: 16px; position: relative; min-height: 120px;" data-cy="snackbar-emit-host">
-				<origam-btn text="Show snackbar (watch Events)" data-cy="snackbar-emit-trigger" @click="emitOpen = true"/>
-				<origam-snackbar
-						v-model="emitOpen"
-						text="Watch the Events tab."
-						data-cy="snackbar-emit"
-						@update:model-value="logEvent('update:modelValue', $event)"
-				/>
-				<span data-cy="snackbar-emit-state">open={{ emitOpen }}</span>
-			</div>
 		</Variant>
 	</Story>
 </template>
@@ -212,20 +248,52 @@
 
 	import { OrigamBtn, OrigamIcon, OrigamSnackbar } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
-	import type { ISnackbarProps } from '@origam/interfaces'
+	import type {
+		IBgColorProps,
+		IHoverProps,
+		ISnackbarProps
+	} from '@origam/interfaces'
+	import type { TAnchor } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		HOVER_OPTIONS,
+		resolveHoverState,
+		POSITION_OPTIONS,
+		ROUNDED_OPTIONS,
+		STATUS_OPTIONS,
+		STATUS_POSITION_OPTIONS,
+		TAG_OPTIONS
+	} from '@stories/const'
 
-	const locationOpen = ref(false)
-	const timeoutOpen = ref(false)
-	const timerOpen = ref(false)
-	const multilineOpen = ref(false)
-	const statusOpen = ref(false)
-	const actionOpen = ref(false)
-	const textSlotOpen = ref(false)
+	const LOCATION_OPTIONS: Array<{ label: string; value: TAnchor | undefined }> = [
+		{ label: '(none)', value: undefined },
+		{ label: 'bottom', value: 'bottom' },
+		{ label: 'top', value: 'top' },
+		{ label: 'top start', value: 'top start' },
+		{ label: 'top end', value: 'top end' },
+		{ label: 'top left', value: 'top left' },
+		{ label: 'top right', value: 'top right' },
+		{ label: 'bottom start', value: 'bottom start' },
+		{ label: 'bottom end', value: 'bottom end' },
+		{ label: 'bottom left', value: 'bottom left' },
+		{ label: 'bottom right', value: 'bottom right' },
+		{ label: 'center', value: 'center' }
+	]
+
+	const designOpen = ref(false)
+	const stateOpen = ref(false)
+	const functionalOpen = ref(false)
 	const emitOpen = ref(false)
 	const defaultSlotOpen = ref(false)
 	const prependSlotOpen = ref(false)
+	const textSlotOpen = ref(false)
+	const actionSlotOpen = ref(false)
 	const playgroundOpen = ref(false)
 </script>
 

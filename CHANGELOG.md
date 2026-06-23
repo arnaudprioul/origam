@@ -15,162 +15,412 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added
 
-- `OrigamTextMask` — text reveals an animated background via
-  `background-clip: text`. Accepts gradient (raw / `IGradient` /
-  preset name) or image / video URL as `background`. 4 animation
-  types (`pan` / `rotate` / `pulse` / `zoom`) with respect to
-  `prefers-reduced-motion`. Default slot supports rich markup
-  (multi-line headlines, nested elements). Zero JS animation
-  (pure CSS keyframes). SSR-safe. Baseline 2024 browser support
-  documented.
-- Gradient support for `color` / `bgColor` / `textColor` props across
-  the DS. Three input formats: raw CSS gradient string
-  (`color="linear-gradient(...)"`), structured `IGradient` object
-  (`{ from, to, via?, direction?, type? }` or `{ stops: [...] }`), and
-  preset names (`color="gradient-sunset"` resolves to
-  `var(--origam-gradient---sunset)`). 5 built-in semantic presets
-  (`sunset`, `ocean`, `forest`, `fire`, `midnight`) with light + dark
-  variants. Text gradient via `background-clip: text` when applied to
-  `color` (not `bgColor`). 100 % backward compatible.
-- `OrigamChart` + `useChart` — in-house chart component. 8 types
+- `OrigamCode` — `compact` and `prompt` display modes (commit `5ebc6702`).
+  Compact mode collapses the component to a single line (no gutter, no
+  filename bar); `prompt` mode renders a shell-style `$` prefix. Two-axis
+  theming support: the component now tracks both `data-theme` and
+  `data-mode` on the host `<html>` element so it correctly switches in
+  dark/light sub-trees (`fix(ds): OrigamCode two-axis theming` — commit
+  `e2e716f2`). Scroller fill repaired in the same pass.
+- `backdrop-filter` glassmorphism tokens on `Card` / `Sheet` / `Toolbar` /
+  `Menu` — new token group `component.{card,sheet,toolbar,menu}.backdrop-filter`
+  emitted as `--origam-{cmp}---backdrop-filter` CSS vars. Allows consumers
+  to build frosted-glass surfaces without overrides (commit `71647594`).
+
+### Changed
+
+- Brand themes removed from the DS (ADR-004) — the `origam` package now
+  ships only the `light` and `dark` base token sets. Consumer themes
+  (`sobre`, `geek`, `glass`, `cartoon`, `apple`, `ecom`, `editorial`,
+  `material`) are now authored in semantic JSON and installed via
+  `createOrigam({ themes: [...] })` rather than bundled into the lib.
+  The DS stays unopinionated; themes travel with the consumer
+  (commits `fbea1e3f`, `5f1bf51c`, `e0a47050`, `edc30e80`, `f7c56f06`,
+  `3b9f8510`).
+
+### Fixed
+
+- `OrigamImg` — `markBooted` `requestAnimationFrame` callback was called
+  during SSR, crashing server-render (`fix(ds): guard OrigamImg markBooted
+  rAF behind IN_BROWSER` — commit `6b09c5df`).
+- Six SSR/theming gaps surfaced by the marketing site refactor: theme cookie
+  injection race, `data-mode` missing on first SSR render, component-level
+  token var scope, active-theme guard in `useTheme`, Menu/Tooltip token
+  resolution under sub-tree providers, Nuxt hydration mismatch on theme
+  toggle (commit `b9fe3219`).
+
+---
+
+## [2.6.0] — 2026-06-11
+
+> **The bracket + a11y + theming release.** `OrigamBracket` ships as a
+> production-ready e-sport tournament component (double-elimination, Grand
+> Final, statuses, full cross-cutting prop surface). `v-contrast` becomes
+> the DS-wide WCAG text-legibility guard applied to every colour-bearing
+> component. A two-axis theming engine (`data-theme` × `data-mode`) replaces
+> the previous single-axis approach and enables brand themes to be installed
+> at runtime via `createOrigam()`. Multiple composables and layout components
+> also land fixes. 170 commits total in this range (DS-relevant subset
+> documented below).
+
+### Added
+
+- `v-contrast` directive — runtime WCAG 2.1 AA text-legibility guard
+  (`feat(ds): v-contrast directive` — commit `8a80787a`). Applied
+  automatically to every colour-bearing component in the same cycle
+  (`feat(ds/a11y): apply v-contrast to all colour-bearing components` —
+  commit `4a4d4473`). Two correctness fixes landed before release: correct
+  WCAG luminance maths for composite translucent backgrounds (commit
+  `96ff45c4`), and `color(srgb …)` token format support + guard against
+  clobbering an explicit `color` prop (commits `34786ed5`, `12a3e378`).
+- `OrigamBracket` — **major enrichment** on top of the 2.3.0 initial
+  component. Full double-elimination layout with two independent trees +
+  a Grand Final match (`feat(ds/bracket): real two-tree double-elimination
+  layout` — commit `dee1c23d`; Grand Final — commit `560eaf5b`).
+  Full cross-cutting prop surface on both `OrigamBracketMatch`
+  (`rounded` / `elevation` / `border` / `color` / `bgColor` — commit
+  `8998f0e3`) and `OrigamBracketCompetitor` (commit `3088ad31`).
+  Distinct status indicators (live, forfeit) + live-link prop (commit
+  `4d38c65c`). Connector trait inherits match `border-width` / `style` /
+  `color` (commit `94242ab3`). State variant (hover / active) wired
+  (commits `0f4d5924`, `5edeca52`, `92edcd1b`). Auto-contrast on match
+  text and seed numbers via `v-contrast` (commit `4cd5bc44`).
+  `OrigamDivider` used internally for the match divider (commit `c472bb71`).
+- `OrigamBlockquote` — **major enrichment** from the initial Wave 4 stub.
+  Two-axis colour model: `color` (foreground / accent) and `bgColor`
+  (surface / left-bar background) applied on all 5 variants
+  (`feat(ds/blockquote): two-axis colour model` — commit `ccfe8c82`).
+  `bgColor` accent on every variant including `elegant` and `minimal`
+  (commit `b2f5c1f3`). `color` also drives the source label (commit
+  `d80e88ca`). Accent pseudo-element decoupled from the `border` prop
+  (commit `c5843ee1`, revert + re-land in same release).
+- `OrigamBottomNav` — three additions: dimension props (`width`, `height`,
+  etc.) now apply (fix — commit `21d44f63`); `position` prop
+  (`start | center | end`) controls item distribution (commit `395a797e`);
+  `active` state exposed and diffused to the child buttons (commit
+  `5bdb3e85`).
+- `OrigamAvatarGroup` — three additions: `rounded`, `elevation`, `border`
+  propagated to all child avatars (commit `725303bd`); `hover` / `active`
+  state fan-out made reactive (commit `e163cfba`); click-outside collapses
+  an expanded group (commit `c364aae3`).
+- `OrigamAppbar` — `scroll-behavior="active"` engages the active surface
+  state on scroll (commit `07feb981`). `hide` and `inverted` scroll
+  behaviours repaired; `scrollBehavior` now accepts combined tokens
+  (commits `01912f4c`, `b625ea1e`). Removed dead props: `absolute`
+  (commit `50c5ea32`), `floating` (commit `3d707ef5`), `width` /
+  `minWidth` / `maxWidth` (commit `c5e7a6b9` — layout owns the
+  cross-axis).
+- Two-axis theming engine — `data-theme` (brand identity) × `data-mode`
+  (light/dark) replace the previous single `data-theme` approach. Shadow
+  tokens gain per-theme variants (commit `f7c56f06`). `createOrigam()`
+  gains a `theme` option to install one or multiple presets at init time,
+  SSR no-flash (commits `edc30e80`, `5f1bf51c`, `3b9f8510`). Token
+  authoring via semantic JSON (colors, radius, typography, shadow, spacing,
+  animation groups) — `feat(ds): semantic JSON theme authoring` (commit
+  `e0a47050`).
+- Field validation surface extended to 5 additional field components
+  (`InlineEdit`, `OtpInputField`, `Clipboard`, `NumberField`,
+  `SliderField`) via unified `useValidation` wiring (commit `27977831`).
+- `OrigamStatus` — forces its intent onto `color` / `bgColor` (non-
+  overridable) so status badges are always correctly painted regardless of
+  surrounding theme (commit `8a72740a`).
+
+### Changed
+
+- `OrigamAudio` — dimension props (`width`, `height`) now apply (commit
+  `adaf4395`); content fills the available height with controls pushed
+  to the bottom (commit `97207e26`); progress row grows when the bar is
+  taller (commit `8f8f1c1f`); `rounded="none"` and shaped variants added
+  (commit `073d0513`). Compact disc rendering fixed — oversized with
+  floating grooves (commit `bef36e20`). Reactive `autoplay` (commit
+  `0dc90fea`). Play-button focus tint lingering + playlist active item
+  blinking fixed (commit `6e6042bb`).
+- `OrigamToolbar` — `hover` / `active` now drive the surface colour
+  (state-aware) (commit `c966e9c6`).
+- `OrigamAlert` — removed redundant `prominent` prop (commit `f32af0a8`).
+- `OrigamAvatar` — `color` prop now applies; `v-contrast` was previously
+  overriding an explicit `color` (commit `369e0afa`). Dead `start` / `end`
+  props removed (commit `84f324fe`).
+- `OrigamApp` — now exposes only `color` / `bgColor` and forwards them to
+  the layout (commit `111f6596`).
+- DS-wide: `useStateEffect` repaired — runtime prop changes for
+  `color` / `bgColor` and similar were silently ignored after initial
+  mount (commit `a1a66120`). Reactive-update loops in `AvatarGroup` and
+  `RadioGroup` killed (commit `4c5eb18d`).
+- Monorepo migration — `packages/ds`, `packages/marketing`,
+  `packages/stories`, `packages/docs`, `packages/tests`,
+  `packages/figma-plugin` are now first-class pnpm workspace packages
+  (commits `4d53558b`, `70f1819f`, `fa0ed997`).
+
+### Fixed
+
+- `OrigamBtn` — `border-color` and `border-style` are now customisable
+  props (commit `b44add69`).
+- `OrigamField` — themed `border-radius` now resolves via the real
+  component token (commit `851b2a2f`).
+- `OrigamExpansionPanels` — `useElevation` import missing, causing
+  `ReferenceError` at mount (commit `2eef9288`).
+- `OrigamDatePicker` — crash guard for empty `daysInMonth` when reading
+  `date` prop (commit `896b9eec`).
+- `OrigamBorder` — numeric `border-width` values were invisible (missing
+  `border-style` and `border-color` defaults) (commit `e9a151ec`).
+- `rounded="none"` — did not actually remove the border radius; affected
+  `OrigamAudio` and other consumers (commit `073d0513`).
+- `fix(ds): /* @vite-ignore */ on shiki dynamic import` — defensive guard
+  to silence the Vite bundler warning on the `OrigamCode` lazy highlighter
+  import (commit `f6bbc494`).
+- DS/marketing integration — MDI class prefix resolution, search hotkey
+  double-fire, Menu anchor positioning (commit `d113a245`); lib dist
+  missing CSS in first production deploy (commit `62667fbc`).
+
+---
+
+## [2.5.1] — 2026-05-27
+
+> **Patch.** Two housekeeping commits with no public API impact.
+
+### Changed
+
+- Repository structure cleaned up: unit specs moved to `tests/TU/`,
+  the dev playground dropped (commit `52f7dc70`).
+- `.gitignore` updated to exclude `tests/a11y/.report` and
+  `tests/a11y/.results` artefacts (commit `6c2ef153`).
+
+---
+
+## [2.5.0] — 2026-05-24
+
+> **The accessibility release.** WCAG 2.1 AA pass across the entire
+> component catalogue, critical backlog items (Select combobox pattern,
+> DataTable caption, ColorPicker keyboard), and a VitePress sidebar
+> reorganised by UI taxonomy.
+
+### Fixed
+
+- WCAG 2.1 AA pass — 35 targeted fixes across 36 components covering:
+  missing `aria-label` on icon-only buttons, incorrect `role` assignments,
+  focus management gaps, colour-contrast warnings on default token values,
+  and keyboard-navigation holes in Slider / Rating / Switch / Radio
+  (commit `1ad0aeaf`).
+- Critical a11y backlog:
+  - `OrigamSelect` — full combobox ARIA pattern (`role="combobox"` +
+    `aria-expanded` + `aria-activedescendant` + `aria-autocomplete`).
+  - `OrigamDataTable` — `<caption>` element added so screen readers
+    announce the table purpose.
+  - `OrigamColorPicker` — keyboard navigation restored; tab order and
+    focus ring corrected.
+  - A11y test infrastructure wired (commit `b3dd8552`).
+- VitePress docs — SSR crash in the build resolved; chart legend guard
+  against undefined series data (commit `6cfb0029`).
+
+### Changed
+
+- VitePress component sidebar reorganised by UI taxonomy (layout /
+  navigation / data-display / forms / feedback / utility) instead of
+  flat alphabetical order (commit `0bd5e2f2`).
+
+---
+
+## [2.4.0] — 2026-05-23
+
+> **The chart engine + media kit + Wave 4 release.** In-house chart
+> engine (27 primitives, 19 families, pure SVG, zero external dep),
+> atomic media kit (`OrigamAudio` with waveform / vinyl / stem-tracks /
+> playlist, `OrigamVideo` YouTube-style player, `OrigamMediaScrubber`
+> and `OrigamMediaController` primitives), native `SliderField`, six
+> utility / content components (`OrigamGrid`, `OrigamMasonry`,
+> `OrigamEmptyState`, `OrigamClipboard`, `OrigamInlineEdit`,
+> `OrigamNumberFormat`), `OrigamWatermark`, `OrigamQRCode`,
+> `OrigamCalendar`, `OrigamTextMask`, gradient support on color props,
+> and a DS-wide reuse-interfaces audit. 149 commits.
+
+### Added
+
+#### Chart engine
+
+- `OrigamChart` + `useChart` — in-house chart component. 8 base types
   (`line` / `area` / `bar` / `column` / `pie` / `donut` / `scatter` /
-  `radar`). Pure SVG rendering (no canvas, no `d3`, no `chart.js`,
-  no `echarts`). Tooltip rendered inline (positioned via mouse move),
-  legend as a `<ul role="list">` with click-to-toggle series
-  visibility. Animated entrance with `prefers-reduced-motion` respect.
-  Custom slots for `tooltip` / `legend-item` / `title` / `empty`.
-  ARIA `role="img"` with `<title>` + `<desc>` for screen readers,
-  every data point is `tabindex="0"` + `role="button"` with a
-  descriptive `aria-label`. Pure-function SVG path utilities
-  (`linePath`, `smoothPath`, `areaPath`, `arcPath`, `polygonPath`,
-  `polarToCartesian`, `pathLength`) — SSR-safe. Scales / ticks /
-  paths produced by the `useChart` composable; reusable on its own
-  outside the component template. New `tokens/component/chart.json`
-  (title, subtitle, axis, grid, tooltip, legend, point, bar, pie,
-  radar, animation groups).
-- `OrigamCalendar` + `useCalendar` — full calendar component. 4 views
-  (month/week/day/agenda), navigation, events with
-  start/end/color/category, range select with drag-to-create, recurring
-  events (RRULE subset: `FREQ=DAILY|WEEKLY|MONTHLY` + `INTERVAL` +
-  `COUNT` + `UNTIL` + `BYDAY`). Built-in toolbar with view switcher.
-  Locale-aware via `Intl.DateTimeFormat`. Custom slots for header,
-  event card, day cell, empty state. Zero external dep — no FullCalendar
-  / Vue-Cal / event-source. Pure date helpers in
-  `src/utils/Calendar/`. ARIA `application/gridcell/toolbar` pattern +
-  keyboard navigation (arrow keys, Page Up / Page Down). SSR-safe (no
-  `window` / `document` at setup).
-- `OrigamSound` + `useAudioPlayer` + `useWaveform` composables —
-  in-house audio player. Wraps native `<audio>` with custom UI
-  (play/pause, scrubber, volume, optional waveform via
-  `OfflineAudioContext`). Media Session API integration for
-  lock-screen controls + metadata (title/artist/album/artwork).
-  Cover image. 3 controls modes (custom/native/none). Respects
-  `prefers-reduced-motion`. Zero external dep — no wavesurfer.js /
-  howler. ARIA: dynamic aria-labels, `role="slider"` on scrubber,
-  `role="img"` on waveform canvas. SSR-safe (Web Audio guarded).
-  New `tokens/component/sound.json` (background, cover, metadata,
-  controls, btn, time, scrubber, volume, waveform groups; aligned
-  with light/dark themes).
-- `OrigamVideo` + `useVideoPlayer` composable — in-house video player.
-  Wraps native `<video>` with custom UI (play/pause, scrubber, volume,
-  fullscreen, PIP, captions). 3 controls modes (custom/native/none).
-  Captions/subtitles via WebVTT tracks with language switcher. Aspect-
-  ratio prop preset (`16/9`, `4/3`, `1/1`, `21/9`, `9/16`, raw values).
-  Respects `prefers-reduced-motion` (auto-disables autoplay + console
-  warn). Zero external dep — no plyr / video.js / hls.js (HLS/DASH
-  stays peer dep optional if needed later). ARIA: dynamic aria-labels
-  on controls, `role="slider"` on scrubber, `role="status"` on
-  loading, `role="alert"` on error. SSR-friendly (composable defers
-  every DOM access to `onMounted`). New `tokens/component/video.json`
-  (background, controls, btn, time, scrubber, volume, loading, error
-  groups; aligned with light/dark themes).
-- `OrigamWatermark` + `useWatermark` composable — diagonal repeating
-  overlay for confidential previews / draft markers / sensitive
-  screenshots. SVG data-URL pattern (no canvas, no images required
-  for text mode). Configurable text or image, opacity, angle, gap,
-  font. Anti-tamper option via MutationObserver (dissuasive, not a
-  security feature). `pointer-events: none` so the wrapped content
-  stays interactive. New `tokens/component/watermark.json`
-  (color, opacity presets low/medium/high, gap presets
-  tight/medium/loose, font-size presets sm/md/lg, z-index).
-  `aria-hidden="true"` on the overlay so screen readers ignore the
-  watermark. SSR-safe (pure-string SVG construction). Programmatic
-  `install(target?)` / `uninstall()` helpers exposed by the
-  composable for non-component use cases.
-- `OrigamQRCode` + `useQRCode` composable — SVG QR code rendering.
-  Powered by `qrcode-generator` (~5 kB, pure JS, no canvas dep). 4
-  error correction levels (L/M/Q/H). Optional logo overlay
-  (auto-padded white background, ~20 % max recommended size).
-  Rounded modules option. SSR-safe (pure JS encoding). ARIA
-  `role="img"` + `aria-label` (defaults to `"QR code for {value}"`,
-  overridable via prop). Module-level LRU cache (16 entries, keyed on
-  value + ECC) so re-renders with the same payload reuse the matrix.
-- `OrigamNumberFormat` + `useNumberFormat` composable — i18n number
-  formatting via `Intl.NumberFormat` (no external dep). 7 formats
-  (`decimal` / `currency` / `percent` / `unit` / `compact` /
-  `scientific` / `engineering`), full locale support with auto
-  resolution chain (`<html lang>` → `navigator.language` → `'en-US'`),
-  currency / unit / sign / notation controls. LRU-cached `Intl`
-  instances (16-entry capacity, keyed on serialised options). Scoped
-  `#default` slot exposes `{ formatted, parts, value }` for custom
-  rendering (e.g. highlight currency symbol). ARIA `aria-label`
-  expansion for compact notation (`1.2M` visible → `"1.2 million"` for
-  screen readers).
-- `OrigamInlineEdit` + `useInlineEdit` composable — edit-in-place
-  pattern. Click the display affordance → an input appears prefilled
-  with the current value → `Enter` confirms / `Escape` cancels. v-model
-  binds to the value, sync or async `validate` callback returns
-  `true | string | Promise<true | string>` and keeps the editor open
-  on error (`role="alert"` for screen readers). Multiline mode renders
-  a `<textarea>` (Cmd/Ctrl+Enter to confirm). Custom slots for
-  `#display` / `#edit` / `#actions`. Loading state during async
-  validation via `aria-busy` + optional CSS hook. New
-  `tokens/component/inline-edit.json` (display + editor + error
-  padding / border / color / focus ring). ARIA `aria-label` on the
-  display button, `aria-invalid` + `aria-describedby` on the input.
-- `OrigamClipboard` + `useClipboard` composable — copy-to-clipboard
-  helper. Wraps any trigger with `navigator.clipboard.writeText` +
-  `execCommand` fallback. Scoped `#default` slot exposes
-  `{ copy, copied, error }`. Auto-resetting feedback state after
-  configurable duration. ARIA `aria-live="polite"` on the feedback
-  overlay. SSR-safe (guards on `typeof navigator` /
-  `typeof document`). New `tokens/component/clipboard.json` (feedback
-  pill color, background, padding, border-radius, transition
-  duration).
-- `OrigamEmptyState` — placeholder for absent data. 5 visual presets
-  (`no-data` / `no-results` / `error` / `offline` / `locked`) with
-  auto icon + intent mapping via `EMPTY_STATE_PRESET_CONFIG`. Slots
-  for `icon` / `title` / `description` / `actions` / `default` (full
-  layout override). Three sizes (`sm` / `md` / `lg`) and two
-  alignments (`center` / `left`). ARIA `role="status"` +
-  `aria-live="polite"` for dynamic empty transitions. New
-  `tokens/component/empty-state.json` (per-size padding / gap /
-  font-size, per-preset intent color).
-- `OrigamBlockquote` — typography component for long citations. 5
-  variants (default / elegant / quoted / minimal / pull). Author +
-  source + cite attribute support. Locale-aware decorative quote
-  marks (fr / en / es / de). Slots for custom author / source
-  rendering. ARIA via native blockquote semantics.
-- `OrigamMasonry` — Pinterest-style masonry layout. CSS-first via
-  `grid-template-rows: masonry` when supported (detected via
-  `useCssSupport` — new `masonry` feature flag in the registry). JS
-  fallback bucket-fill algorithm with `ResizeObserver` (no external
-  dep). Responsive columns via container-query breakpoints
-  (`columnBreakpoints`). Optional `transform` transition on item
-  reposition (`animated`, default `true`). Vertical alignment via
-  `align: 'top' | 'center'` (JS path only). New `useMasonry`
-  composable exporting `pickColumnsForWidth` and `bucketFill` pure
-  helpers; new `tokens/component/masonry.json`
-  (`animation-duration`, `animation-easing`).
+  `radar`). Pure SVG rendering (no canvas, no `d3`, no `chart.js`, no
+  `echarts`). Tooltip inline-positioned via mouse move; legend as
+  `<ul role="list">` with click-to-toggle series visibility. Animated
+  entrance with `prefers-reduced-motion` respect. Custom slots for
+  `tooltip` / `legend-item` / `title` / `empty`. ARIA `role="img"` with
+  `<title>` + `<desc>`; every data point is `tabindex="0"` +
+  `role="button"` with a descriptive `aria-label`. Pure-function SVG
+  path utilities — SSR-safe. `tokens/component/chart.json` (title,
+  subtitle, axis, grid, tooltip, legend, point, bar, pie, radar,
+  animation groups). (commit `b46541ce`)
+- Family split into 9 per-type components (`OrigamChartCartesian`,
+  `OrigamChartPolar`, `OrigamChartRadar`, `OrigamChartGauge`, …) sharing
+  the engine via `OrigamChartAxis` and `OrigamChartLegend` sub-components
+  (commits `4da143c9`, `c950c364`, `ef4ab360`).
+- 15 additional chart families extending the base engine:
+  - **Honeycomb / Treemap / Sankey / Word-cloud** (commit `94902edc`)
+  - **Heatmap / Sunburst / Box-plot / Pictorial** (commit `c1e69d60`)
+  - **Candlestick / Streamgraph** (commit `c5edc9b0`)
+  - **Pyramid / Funnel** family with outside labels + leader lines on
+    narrow bands (commits `445acb05`, `f4af7a27`, `293905bc`)
+  - **Polar-bar / Variwide** (commit `26380205`)
+  - **Pareto / Bullet** (commit `39f141a3`)
+  - **Combination chart** (line + column / area + line) (commit
+    `4406e92d` area, `10d012ad` bar-axis swap)
+  - **Map / Choropleth / Flight-routes / Plot bands** (commit `c728bd94`,
+    `6e72e7f4`)
+  - **Stacked percent / Multi-axis Y** (commit `6e72e7f4`)
+  - **Drilldown** (commit `8f827e7d`)
+  - **Sparkline / Zoom-pan / RangeSelector** (commit `23d97e29`)
+  - **Annotations** (arrows, label callouts, circle highlights, brackets)
+    (commit `e1e41b89`)
+- Chart composables wired to full DS cross-cutting prop surface
+  (`IDimensionProps` via `useDimension`, `margin`, `padding`, `rounded`,
+  `elevation`, `bgColor`) (commits `7179cd6c`, `e16742e0`).
+- Scatter chart: `z` dimension drives bubble radius (commit `2eb6c868`).
+- Pie / donut: multi-series concentric rings; per-slice legend toggle
+  (commit `ba51275b`).
+- DS intent colours and custom CSS colours resolve to the correct token
+  namespace in charts (commit `8166cd1e`).
+- 7 canonical transverse emit interfaces (`IChartEmits`, etc.) added
+  (commit `e1c7b890`).
+- DS-wide typed `defineEmits` migration — 7 batches covering 54+
+  components (commits `01381e41`, `a03627a8`, `ce40e686`, `2ce1ccd2`,
+  `3347bc58`, `279fb2f0`, `e91c9518`).
+
+#### Media kit
+
+- `OrigamAudio` + `useAudioPlayer` + `useWaveform` — in-house audio
+  player. Custom UI (play/pause, scrubber, volume, waveform via
+  `OfflineAudioContext`). Media Session API for lock-screen controls +
+  metadata. Cover image. 3 controls modes. Vinyl disc animation. Stem-
+  tracks (multi-channel mute/solo). Playlist with tri-state loop and
+  random shuffle. Zero external dep. ARIA: dynamic `aria-label`,
+  `role="slider"` on scrubber, `role="img"` on waveform. SSR-safe.
+  `tokens/component/sound.json` (commits `293efc06`, `d3781288`,
+  `9c12e283`, `f3d3c797`). Waveform + album ported from `OrigamSound`
+  (commit `d5a0246b`). `useWaveform` moved to Audio namespace (commit
+  `d4822f26`). `<OrigamSound>` namespace retired — superseded by
+  `<OrigamAudio>` (commit `a77911bc`).
+- `OrigamVideo` + `useVideoPlayer` — in-house video player. YouTube-style
+  restructure: custom UI (play/pause, scrubber, volume, fullscreen, PIP,
+  captions), 3 controls modes, WebVTT captions with language switcher,
+  `aspect-ratio` preset, download prop + quality switcher in cog menu,
+  YouTube-style skip ripple (half-disk + chevrons stagger). Zero external
+  dep. ARIA: `role="slider"` on scrubber, `role="status"` / `role="alert"`
+  on state overlays. SSR-safe. `tokens/component/video.json` (commits
+  `8a37102e`, `97420a99`, `31dcfdae`, `f50ccbdb`, `dcccb4dd`, `0208b2f3`,
+  `9bbbea96`, `75b0779f`, `80e2a9c0`).
+- `OrigamMediaScrubber` — reusable horizontal + vertical media scrubber
+  primitive (thin track, buffer indicator, hover thumb + tooltip). Used
+  by both `OrigamAudio` and `OrigamVideo` for their respective scrubber
+  and volume controls (commits `9f87c917`, `9e050390`, `15d53094`).
+- `OrigamMediaController` — shared media-control shell extracted from
+  `useVideoPlayer` (commit `2cbb9618`). `useMediaPlayer` base composable
+  split out (commit `c2a9f282`).
+
+#### New utility / content components
+
 - `OrigamGrid` + `OrigamGridItem` — declarative CSS Grid wrapper. Props
   for `columns` / `rows` / `areas` / `gap` (token or raw CSS) /
-  `autoFlow` / `align*` / `justify*` and the matching item-level
-  `column` / `row` / `area` / `*Self` shorthands. `GridItem` accepts
-  both object syntax (`{ start: 1, end: 5 }`, `{ start: 1, span: 4 }`)
-  and raw CSS strings (`'1 / 5'`, `'span 2'`) for fine-grained column /
-  row span control. New tokens `--origam-grid---gap-{xs,sm,md,lg,xl}`
-  resolved against `space.*` primitives. CSS Grid is stable since 2017
-  — no fallback needed.
+  `autoFlow` / `align*` / `justify*` and item-level `column` / `row` /
+  `area` / `*Self` shorthands. Object syntax (`{ start, end }`) or raw
+  CSS strings (`'1 / 5'`, `'span 2'`) for span control. Token group
+  `--origam-grid---gap-{xs,sm,md,lg,xl}` (commit `0ebb1cd4`).
+- `OrigamMasonry` + `useMasonry` — Pinterest-style masonry layout.
+  CSS-first via `grid-template-rows: masonry` (detected via `useCssSupport`
+  — new `masonry` flag). JS bucket-fill fallback with `ResizeObserver`.
+  Responsive columns via container-query breakpoints. `animated` prop.
+  `tokens/component/masonry.json` (`animation-duration`,
+  `animation-easing`) (commit `2691c4e5`).
+- `OrigamEmptyState` — placeholder for absent data. 5 presets
+  (`no-data` / `no-results` / `error` / `offline` / `locked`) with auto
+  icon + intent mapping. Three sizes, two alignments. ARIA `role="status"`
+  + `aria-live="polite"`. `tokens/component/empty-state.json` (commit
+  `abaca302`).
+- `OrigamClipboard` + `useClipboard` — copy-to-clipboard helper.
+  `navigator.clipboard.writeText` + `execCommand` fallback. Scoped
+  `#default` slot exposes `{ copy, copied, error }`. Auto-resetting
+  feedback state. ARIA `aria-live="polite"`. SSR-safe.
+  `tokens/component/clipboard.json` (commit `d93c2957`).
+- `OrigamInlineEdit` + `useInlineEdit` — edit-in-place pattern. Click
+  display → input prefilled → Enter confirms / Escape cancels. Async
+  `validate` callback. Multiline textarea mode. Custom slots
+  `#display` / `#edit` / `#actions`. ARIA `aria-invalid` +
+  `aria-describedby`. `tokens/component/inline-edit.json` (commit
+  `d4a95557`).
+- `OrigamNumberFormat` + `useNumberFormat` — i18n number formatting via
+  `Intl.NumberFormat`. 7 formats, full locale support with auto-resolution
+  chain, LRU-cached `Intl` instances. Scoped `#default` slot exposes
+  `{ formatted, parts, value }`. ARIA `aria-label` expansion for compact
+  notation (commit `dd8bfe3c`).
+- `OrigamWatermark` + `useWatermark` — diagonal repeating overlay. SVG
+  data-URL (no canvas). Text or image mode. Anti-tamper MutationObserver.
+  `pointer-events: none`. `tokens/component/watermark.json`. SSR-safe
+  (commit `cc715c38`).
+- `OrigamQRCode` + `useQRCode` — SVG QR code rendering via
+  `qrcode-generator` (~5 kB). 4 ECC levels. Optional logo overlay.
+  Rounded modules. LRU cache. ARIA `role="img"`. Renamed from
+  `OrigamQRCode` → `OrigamQrCode` (Vue style guide — commits `9f5a4eea`,
+  `eabb92a3`, `1ee2acf6`, `da34f20d`, multiple QrCode fixes).
+- `OrigamCalendar` + `useCalendar` — full calendar. 4 views
+  (month / week / day / agenda), navigation, events with
+  start / end / color / category, range select with drag-to-create,
+  RRULE recurring events (`DAILY | WEEKLY | MONTHLY` + `INTERVAL` /
+  `COUNT` / `UNTIL` / `BYDAY`). Toolbar with view switcher. Locale-aware
+  via `Intl.DateTimeFormat`. Zero external dep. ARIA
+  `application / gridcell / toolbar` + keyboard navigation. SSR-safe
+  (commit `8b5d7f0a`).
+- `OrigamTextMask` + gradient color props — text reveals an animated
+  background via `background-clip: text`. 4 animation types
+  (`pan` / `rotate` / `pulse` / `zoom`) with `prefers-reduced-motion`.
+  Zero JS (pure CSS keyframes). SSR-safe (commit `31f67d37`).
+- Gradient support for `color` / `bgColor` / `textColor` props. Three
+  input formats: raw CSS gradient string, `IGradient` structured object
+  (`{ from, to, via?, direction?, type? }` or `{ stops: [...] }`), or
+  preset name (`color="gradient-sunset"`). 5 built-in semantic presets
+  (`sunset`, `ocean`, `forest`, `fire`, `midnight`) with light + dark
+  variants. 100 % backward-compatible (commit `c922fbff`).
+- `SliderField` — native HTML `<input type="range">` implementation
+  (commit `d3781288`).
+
+### Changed
+
+- DS-wide reuse-interfaces audit — 9 batches (commits `d0afd731`,
+  `2c6e3aab`, `325c4df1`, `5f1abaf8`, and earlier in the cycle).
+  Every component that declared `height` / `width` / `margin` / etc.
+  inline now `extends IDimensionProps` / `IMarginProps` / etc. and
+  consumes the matching composable. Eliminates half-implemented
+  surfaces and drift from the standard `convertToUnit` helper.
+- All ~28 inline composable constants extracted to `src/consts/`
+  (commits `7cd6ff81`, `de48f7da`).
+- Story Playground variants universally renamed to `Default` across all
+  177 stories (commits `cfeaa682`, `ace53342`, `f2e89284`).
+
+### Fixed
+
+- `OrigamChart` — area fill previously overridden by the SCSS
+  `fill: none` cascade (commit `ed1c4610`); scatter points overflowing
+  the plot zone (commit `ba51275b`); horizontal bar — category/value
+  axis swapped (commit `f8ec65db`); legend click filtered wrong series
+  index (commit `d25eae00`); `legendPosition` not moving the legend
+  (commit `082d053b`); column/bar slots overlapping value axis on first
+  index (commit `4406e92d`); stepped-line tail cut off (commit
+  `ee45357a`); pie/donut legend showing wrong labels (commit `4406e92d`).
+- `OrigamVideo` — double-click skip on desktop (`f50ccbdb`); controls bar
+  clicks restored after overlay removal (`4fd5f375`); skip ripple sizing
+  cascade (`80e2a9c0`, `9bbbea96`, `75b0779f`); cross-origin download
+  via blob (`73c2e2a4`, `d84fa9bc`).
+- `OrigamCalendar` — Calendar loading shape + active toolbar button
+  contrast (`55e58b3d`).
+- `OrigamQrCode` — intent-to-paint mapping, SVG host sizing, title
+  centring (commits `c1823057`, `dceb4cfe`).
+- Link composable — `ComputedRef` for `tag` and `href` unwrapped in
+  templates; previously caused a `[object Object]` render (commit
+  `9822c47b`, reverted and re-landed as `3f79d0c0`).
+- `withDefaults()` inline literal rule enforced — `Grid`, `Masonry`,
+  `Blockquote` were referencing `XXX_DEFAULTS` objects statically
+  unresolvable by the SFC compiler, causing `undefined` prop crashes
+  (commit `276fff1e`).
+- `OrigamSnackbar` — `roundedClasses` `ReferenceError` at mount (commit
+  `aa86f93c`).
 
 ---
 

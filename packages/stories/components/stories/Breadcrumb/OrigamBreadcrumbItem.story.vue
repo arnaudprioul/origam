@@ -3,200 +3,154 @@
 			group="components"
 			title="Breadcrumb/OrigamBreadcrumbItem"
 	>
-		<!-- ── Playground ───────────────────────────────────────────────── -->
 
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IBreadcrumbItemProps>({
-					title: 'Breadcrumb item',
-					href: '/',
-					disabled: false,
-					density: undefined,
-					color: undefined,
-					bgColor: undefined,
-					rounded: undefined,
-					prependIcon: undefined,
-					appendIcon: undefined,
-				})"
-		>
-			<template #default="{ state }">
-				<origam-breadcrumb>
-					<ol class="origam-breadcrumb__items">
-						<li class="origam-breadcrumb__item">
-							<origam-breadcrumb-item v-bind="state" data-cy="breadcrumb-item-playground"/>
-						</li>
-					</ol>
-				</origam-breadcrumb>
-			</template>
-			<template #controls="{ state }">
-				<HstText     v-model="state.title"       title="title"/>
-				<HstText     v-model="state.href"        title="href"/>
-				<HstSelect   v-model="state.color"       title="color"       :options="intentList"/>
-				<HstSelect   v-model="state.bgColor"     title="bgColor"     :options="intentList"/>
-				<HstSelect   v-model="state.density"     title="density"     :options="densityList"/>
-				<HstSelect   v-model="state.rounded"     title="rounded"     :options="roundedList"/>
-				<HstSelect   v-model="state.prependIcon" title="prependIcon" :options="iconList"/>
-				<HstSelect   v-model="state.appendIcon"  title="appendIcon"  :options="iconList"/>
-				<HstCheckbox v-model="state.disabled"    title="disabled"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — color"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<origam-breadcrumb>
-					<ol class="origam-breadcrumb__items">
-						<li class="origam-breadcrumb__item">
-							<origam-breadcrumb-item v-bind="state" title="Home" href="/" data-cy="breadcrumb-item-color"/>
-						</li>
-					</ol>
-				</origam-breadcrumb>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"        title="color"        :options="intentList"/>
-				<HstSelect v-model="state.bgColor"      title="bgColor"      :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — density"
-				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
-		>
-			<template #default="{ state }">
-				<origam-breadcrumb>
-					<ol class="origam-breadcrumb__items">
-						<li class="origam-breadcrumb__item">
-							<origam-breadcrumb-item :density="state.density" title="Dense item" data-cy="breadcrumb-item-density"/>
-						</li>
-					</ol>
-				</origam-breadcrumb>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — adjacent (prependIcon / appendIcon)"
-				:init-state="() => useStoryInitState<IAdjacentProps>({ prependIcon: MDI_ICONS.HOME })"
-		>
-			<template #default="{ state }">
-				<origam-breadcrumb>
-					<ol class="origam-breadcrumb__items">
-						<li class="origam-breadcrumb__item">
-							<origam-breadcrumb-item v-bind="state" title="Home" href="/" data-cy="breadcrumb-item-adjacent"/>
-						</li>
-					</ol>
-				</origam-breadcrumb>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.prependIcon"   title="prependIcon"   :options="iconList"/>
-				<HstSelect v-model="state.appendIcon"    title="appendIcon"    :options="iconList"/>
-				<HstText   v-model="state.prependAvatar" title="prependAvatar (URL)"/>
-				<HstText   v-model="state.appendAvatar"  title="appendAvatar (URL)"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — rounded"
-				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
-		>
-			<template #default="{ state }">
-				<origam-breadcrumb>
-					<ol class="origam-breadcrumb__items">
-						<li class="origam-breadcrumb__item">
-							<origam-breadcrumb-item :rounded="state.rounded" title="Rounded" data-cy="breadcrumb-item-rounded"/>
-						</li>
-					</ol>
-				</origam-breadcrumb>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — disabled & active"
-				:init-state="() => useStoryInitState<{ disabled: boolean, active: boolean }>({ disabled: false, active: false })"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IBreadcrumbItemProps>>({ title: 'Breadcrumb item', color: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-breadcrumb>
 					<ol class="origam-breadcrumb__items">
 						<li class="origam-breadcrumb__item">
 							<origam-breadcrumb-item
-									:disabled="state.disabled"
-									:active="state.active"
-									title="Item"
-									href="/item"
-									data-cy="breadcrumb-item-states"
+									:color="state.color"
+									:padding="state.padding"
+									:margin="state.margin"
+									:bg-color="state.bgColor"
+									:density="state.density"
+									:rounded="state.rounded"
+									:border="state.border"
+									:border-color="state.borderColor"
+									:border-style="state.borderStyle"
+									:prepend-icon="state.prependIcon || undefined"
+									:append-icon="state.appendIcon || undefined"
+									:prepend-avatar="state.prependAvatar || undefined"
+									:append-avatar="state.appendAvatar || undefined"
+									:title="state.title || 'Breadcrumb item'"
+									href="/"
 							/>
 						</li>
 					</ol>
 				</origam-breadcrumb>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-				<HstCheckbox v-model="state.active"   title="active"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded" title="Rounded" :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Icons">
+					<HstSelect v-model="state.prependIcon"   title="Prepend Icon"   :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.appendIcon"    title="Append Icon"    :options="ICON_OPTIONS"/>
+					<HstText   v-model="state.prependAvatar" title="Prepend Avatar (URL)"/>
+					<HstText   v-model="state.appendAvatar"  title="Append Avatar (URL)"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Slots ────────────────────────────────────────────────────── -->
+		<Variant
+				title="State"
+				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & IBgColorProps>({ bgColor: 'primary' })"
+		>
+			<template #default="{ state }">
+				<origam-breadcrumb>
+					<ol class="origam-breadcrumb__items">
+						<li class="origam-breadcrumb__item">
+							<origam-breadcrumb-item
+									:bg-color="state.bgColor"
+									:hover="resolveHoverState(state.hover)"
+									:active="resolveActiveState(state.active)"
+									title="Breadcrumb item"
+									href="/"
+							/>
+						</li>
+					</ol>
+				</origam-breadcrumb>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Surface">
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Interaction">
+					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
+					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
 
-		<Variant title="Slot — default">
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IBreadcrumbItemProps>>({ title: 'Breadcrumb item', tag: 'span' })"
+		>
+			<template #default="{ state }">
+				<origam-breadcrumb>
+					<ol class="origam-breadcrumb__items">
+						<li class="origam-breadcrumb__item">
+							<origam-breadcrumb-item
+									:title="state.title || 'Breadcrumb item'"
+									:disabled="state.disabled"
+									:tag="state.tag"
+									:href="state.href"
+									:to="state.to"
+									:replace="state.replace"
+									:exact="state.exact"
+							/>
+						</li>
+					</ol>
+				</origam-breadcrumb>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.title" title="Title"/>
+				</StoryGroup>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
+				<StoryGroup title="Link">
+					<HstSelect   v-model="state.tag"     title="Tag"     :options="TAG_OPTIONS"/>
+					<HstText     v-model="state.href"    title="Href"/>
+					<HstText     v-model="state.to"      title="To (router-link)"/>
+					<HstCheckbox v-model="state.replace" title="Replace"/>
+					<HstCheckbox v-model="state.exact"   title="Exact"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Events - click:prepend">
 			<origam-breadcrumb>
 				<ol class="origam-breadcrumb__items">
 					<li class="origam-breadcrumb__item">
-						<origam-breadcrumb-item title="Ignored when slot used" data-cy="breadcrumb-item-slot-default">
-							<template #default>
-								<strong style="color: var(--origam-color__action--primary---bg);">Custom Content</strong>
-							</template>
-						</origam-breadcrumb-item>
+						<origam-breadcrumb-item
+								title="Click the prepend icon"
+								:prepend-icon="homeIcon"
+								@click:prepend="logEvent('click:prepend', $event)"
+						/>
 					</li>
 				</ol>
 			</origam-breadcrumb>
 		</Variant>
 
-		<Variant title="Slot — prepend">
-			<origam-breadcrumb>
-				<ol class="origam-breadcrumb__items">
-					<li class="origam-breadcrumb__item">
-						<origam-breadcrumb-item title="With custom prepend" href="/" data-cy="breadcrumb-item-slot-prepend">
-							<template #prepend>
-								<origam-icon :icon="MDI_ICONS.HOME" style="font-size: 1em; margin-right: 4px;"/>
-							</template>
-						</origam-breadcrumb-item>
-					</li>
-				</ol>
-			</origam-breadcrumb>
-		</Variant>
-
-		<Variant title="Slot — append">
-			<origam-breadcrumb>
-				<ol class="origam-breadcrumb__items">
-					<li class="origam-breadcrumb__item">
-						<origam-breadcrumb-item title="With custom append" href="/" data-cy="breadcrumb-item-slot-append">
-							<template #append>
-								<origam-icon :icon="MDI_ICONS.OPEN_IN_NEW" style="font-size: 0.8em; margin-left: 4px;"/>
-							</template>
-						</origam-breadcrumb-item>
-					</li>
-				</ol>
-			</origam-breadcrumb>
-		</Variant>
-		<!-- ── Emits ────────────────────────────────────────────────────── -->
-
-		<Variant title="Emit — click:append">
+		<Variant title="Events - click:append">
 			<origam-breadcrumb>
 				<ol class="origam-breadcrumb__items">
 					<li class="origam-breadcrumb__item">
 						<origam-breadcrumb-item
 								title="Click the append icon"
-								:append-icon="MDI_ICONS.OPEN_IN_NEW"
-								data-cy="breadcrumb-item-emit-click-append"
+								:append-icon="openInNewIcon"
 								@click:append="logEvent('click:append', $event)"
 						/>
 					</li>
@@ -204,19 +158,84 @@
 			</origam-breadcrumb>
 		</Variant>
 
-		<Variant title="Emit — click:prepend">
+		<Variant title="Slots - Default">
 			<origam-breadcrumb>
 				<ol class="origam-breadcrumb__items">
 					<li class="origam-breadcrumb__item">
-						<origam-breadcrumb-item
-								title="Click the prepend icon"
-								:prepend-icon="MDI_ICONS.HOME"
-								data-cy="breadcrumb-item-emit-click-prepend"
-								@click:prepend="logEvent('click:prepend', $event)"
-						/>
+						<origam-breadcrumb-item title="Ignored when slot used">
+							<template #default>
+								<strong>Custom</strong> content
+							</template>
+						</origam-breadcrumb-item>
 					</li>
 				</ol>
 			</origam-breadcrumb>
+		</Variant>
+
+		<Variant title="Slots - Prepend">
+			<origam-breadcrumb>
+				<ol class="origam-breadcrumb__items">
+					<li class="origam-breadcrumb__item">
+						<origam-breadcrumb-item title="With custom prepend" href="/">
+							<template #prepend>
+								<origam-icon :icon="homeIcon"/>
+							</template>
+						</origam-breadcrumb-item>
+					</li>
+				</ol>
+			</origam-breadcrumb>
+		</Variant>
+
+		<Variant title="Slots - Append">
+			<origam-breadcrumb>
+				<ol class="origam-breadcrumb__items">
+					<li class="origam-breadcrumb__item">
+						<origam-breadcrumb-item title="With custom append" href="/">
+							<template #append>
+								<origam-icon :icon="openInNewIcon"/>
+							</template>
+						</origam-breadcrumb-item>
+					</li>
+				</ol>
+			</origam-breadcrumb>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IBreadcrumbItemProps>({ title: 'Breadcrumb item', tag: 'span' })"
+		>
+			<template #default="{ state }">
+				<origam-breadcrumb>
+					<ol class="origam-breadcrumb__items">
+						<li class="origam-breadcrumb__item">
+							<origam-breadcrumb-item
+									v-bind="state"
+									@click:prepend="logEvent('click:prepend', $event)"
+									@click:append="logEvent('click:append', $event)"
+							/>
+						</li>
+					</ol>
+				</origam-breadcrumb>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText   v-model="state.title"       title="Title"/>
+					<HstSelect v-model="state.prependIcon" title="Prepend Icon" :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.appendIcon"  title="Append Icon"  :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.density" title="Density"  :options="DENSITY_OPTIONS"/>
+					<HstSelect v-model="state.rounded" title="Rounded"  :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.border"  title="Border"   :options="BORDER_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+					<HstText     v-model="state.href"     title="Href"/>
+					<HstSelect   v-model="state.tag"      title="Tag"     :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -232,15 +251,30 @@
 		OrigamBreadcrumbItem,
 		OrigamIcon
 	} from '@origam/components'
-	import { DENSITY, MDI_ICONS } from '@origam/enums'
+	import { MDI_ICONS } from '@origam/enums'
 	import type {
-		IAdjacentProps,
+		IActiveProps,
+		IBgColorProps,
 		IBreadcrumbItemProps,
-		IColorProps,
-		IDensityProps,
-		IRoundedProps
+		IHoverProps
 	} from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, iconList, intentList, roundedList } from '@stories/const'
+	import {
+		ACTIVE_OPTIONS,
+		resolveActiveState,
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		HOVER_OPTIONS,
+		resolveHoverState,
+		ICON_OPTIONS,
+		ROUNDED_OPTIONS,
+		TAG_OPTIONS
+	} from '@stories/const'
+
+	const homeIcon = MDI_ICONS.HOME
+	const openInNewIcon = MDI_ICONS.OPEN_IN_NEW
 </script>

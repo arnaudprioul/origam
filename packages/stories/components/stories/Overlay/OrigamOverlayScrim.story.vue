@@ -3,137 +3,130 @@
 			group="components"
 			title="Overlay/OrigamOverlayScrim"
 	>
-		<!--
-			Playground — first by convention. Exposes every IOverlayScrimProps knob.
-		-->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IOverlayScrimProps>({
-					active: false,
-					scrim: true
-				})"
+				title="Design"
+				:init-state="() => useStoryInitState<IOverlayScrimProps>({ active: true, scrim: true })"
 		>
 			<template #default="{ state }">
-				<div class="story-host" data-cy="scrim-playground-host">
+				<div class="story-host">
+					<origam-overlay-scrim
+							:active="state.active"
+							:scrim="state.scrim"
+							:transition="state.transition"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Scrim">
+					<HstSelect v-model="state.scrim" title="Scrim" :options="SCRIM_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Transition">
+					<HstSelect v-model="state.transition" title="Transition" :options="TRANSITION_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<IOverlayScrimProps>({ active: false, scrim: true })"
+		>
+			<template #default="{ state }">
+				<div class="story-host">
 					<origam-btn
 							text="Toggle scrim"
-							data-cy="scrim-playground-toggle"
 							@click="state.active = !state.active"
 					/>
 					<origam-overlay-scrim
-							v-bind="state"
-							data-cy="scrim-playground"
+							:active="state.active"
+							:scrim="state.scrim"
+							:tag="state.tag"
+							:disabled="state.disabled"
 							@click="state.active = false"
 					/>
-					<span data-cy="scrim-playground-state">active={{ state.active }} | scrim={{ String(state.scrim) }}</span>
+					<span>active={{ state.active }}</span>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.active" title="active"/>
-				<HstSelect
-						v-model="state.scrim"
-						title="scrim"
-						:options="scrimColorList"
-				/>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.active"   title="Active"/>
+					<HstCheckbox v-model="state.disabled" title="Disabled (transition)"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — active"
-				:init-state="() => useStoryInitState<{ active: boolean }>({ active: false })"
-		>
-			<template #default="{ state }">
-				<div class="story-host" data-cy="scrim-active-host">
-					<origam-overlay-scrim
-							:active="state.active"
-							data-cy="scrim-active"
-					/>
-					<span data-cy="scrim-active-label">active={{ state.active }}</span>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.active" title="active"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — scrim (color)"
-				:init-state="() => useStoryInitState<{ scrim: boolean | string }>({ scrim: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div class="story-host" data-cy="scrim-color-host">
-					<origam-btn
-							text="Toggle"
-							data-cy="scrim-color-toggle"
-							@click="colorActive = !colorActive"
-					/>
-					<origam-overlay-scrim
-							:active="colorActive"
-							:scrim="state.scrim"
-							data-cy="scrim-color"
-							@click="colorActive = false"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.scrim"
-						title="scrim"
-						:options="scrimColorList"
-				/>
-			</template>
-		</Variant>
-
-		<!-- ── Emits ────────────────────────────────────────────────── -->
-
-		<Variant title="Emit — click">
-			<div class="story-host" data-cy="scrim-emit-host">
+		<Variant title="Events - click">
+			<div class="story-host">
 				<origam-btn
 						text="Show scrim"
-						data-cy="scrim-emit-toggle"
 						@click="emitActive = true"
 				/>
 				<origam-overlay-scrim
 						:active="emitActive"
-						data-cy="scrim-emit"
-						@click="handleClick"
+						@click="logEvent('click', $event); emitActive = false"
 				/>
-				<span data-cy="scrim-emit-counter">clicks={{ clickCount }}</span>
 			</div>
 		</Variant>
 
-		<Variant title="Emit — mouseenter">
-			<div class="story-host" data-cy="scrim-emit-mouseenter-host">
+		<Variant title="Events - mouseenter">
+			<div class="story-host">
 				<origam-btn
 						text="Show scrim"
-						data-cy="scrim-emit-mouseenter-toggle"
 						@click="mouseenterActive = true"
 				/>
 				<origam-overlay-scrim
 						:active="mouseenterActive"
-						data-cy="scrim-emit-mouseenter"
 						@click="mouseenterActive = false"
 						@mouseenter="logEvent('mouseenter', $event)"
 				/>
 			</div>
 		</Variant>
 
-		<Variant title="Emit — mouseleave">
-			<div class="story-host" data-cy="scrim-emit-mouseleave-host">
+		<Variant title="Events - mouseleave">
+			<div class="story-host">
 				<origam-btn
 						text="Show scrim"
-						data-cy="scrim-emit-mouseleave-toggle"
 						@click="mouseleaveActive = true"
 				/>
 				<origam-overlay-scrim
 						:active="mouseleaveActive"
-						data-cy="scrim-emit-mouseleave"
 						@click="mouseleaveActive = false"
 						@mouseleave="logEvent('mouseleave', $event)"
 				/>
 			</div>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IOverlayScrimProps>({ active: false, scrim: true })"
+		>
+			<template #default="{ state }">
+				<div class="story-host">
+					<origam-btn
+							text="Toggle scrim"
+							@click="state.active = !state.active"
+					/>
+					<origam-overlay-scrim
+							v-bind="state"
+							@click="state.active = false"
+					/>
+					<span>active={{ state.active }} | scrim={{ String(state.scrim) }}</span>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Design">
+					<HstSelect   v-model="state.scrim"      title="Scrim"      :options="SCRIM_OPTIONS"/>
+					<HstSelect   v-model="state.transition" title="Transition" :options="TRANSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.active"   title="Active"/>
+					<HstCheckbox v-model="state.disabled" title="Disabled (transition)"/>
+					<HstSelect   v-model="state.tag"      title="Tag"         :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -144,26 +137,31 @@
 >
 	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
+
 	import { OrigamBtn, OrigamOverlayScrim } from '@origam/components'
 	import type { IOverlayScrimProps } from '@origam/interfaces'
-	import { useStoryInitState } from '@stories/composables'
 
-	const colorActive      = ref(false)
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
+	import { useStoryInitState } from '@stories/composables'
+	import { TAG_OPTIONS } from '@stories/const'
+
 	const emitActive       = ref(false)
 	const mouseenterActive = ref(false)
 	const mouseleaveActive = ref(false)
-	const clickCount       = ref(0)
 
-	const handleClick = () => {
-		clickCount.value += 1
-		emitActive.value = false
-	}
+	const SCRIM_OPTIONS = [
+		{ label: 'true (default dark overlay)', value: true },
+		{ label: 'false (no scrim)',             value: false },
+		{ label: 'primary',                      value: 'primary' },
+		{ label: 'secondary',                    value: 'secondary' },
+		{ label: 'rgba blue',                    value: 'rgba(0, 120, 255, .45)' }
+	]
 
-	const scrimColorList = [
-		{ label: 'true (default)', value: true },
-		{ label: 'false', value: false },
-		{ label: 'primary', value: 'primary' },
-		{ label: 'rgba blue', value: 'rgba(0, 120, 255, .45)' }
+	const TRANSITION_OPTIONS = [
+		{ label: 'default (OrigamFade)', value: undefined },
+		{ label: 'disabled',             value: false },
+		{ label: 'fade',                 value: 'fade' },
+		{ label: 'slide-y',              value: 'slide-y' }
 	]
 </script>
 

@@ -14,18 +14,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 
 import OrigamClipboard from '@origam/components/Clipboard/OrigamClipboard.vue'
-
-import { DEFAULT_SETS, MDI, MDI_ALIASES, ORIGAM_ICONS_KEY } from '@origam/consts'
+import { createOrigam } from '@origam/origam'
 
 import type { IClipboardProps } from '@origam/interfaces'
-
-// Minimal icons provide so OrigamIcon — used by the default Clipboard
-// trigger — doesn't throw "Missing Origam Icons provide!" during mount.
-const ICONS_PROVIDE = {
-    defaultSet: DEFAULT_SETS.MDI,
-    aliases: MDI_ALIASES,
-    sets: { mdi: MDI }
-}
 
 type MountOptions = Partial<IClipboardProps> & { slots?: Record<string, any> }
 
@@ -35,7 +26,7 @@ const mountClipboard = (opts: MountOptions = {}): VueWrapper => {
         props: { value: 'hello', ...props },
         slots,
         global: {
-            provide: { [ORIGAM_ICONS_KEY as symbol]: ICONS_PROVIDE }
+            plugins: [createOrigam()]
         }
     })
 }
@@ -114,7 +105,7 @@ describe('OrigamClipboard', () => {
 
     it('passes { copy, copied, error } to the default scoped slot', async () => {
         let slotProps: any = null
-        const wrapper = mountClipboard({
+        const _wrapper = mountClipboard({
             slots: {
                 default: (props: any) => {
                     slotProps = props

@@ -3,9 +3,84 @@
 			group="components"
 			title="Chart/OrigamChartTreemap"
 	>
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<Record<string, unknown>>({
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IChartTreemapProps>>({
+					title: 'Tech Portfolio',
+					subtitle: '% allocation',
+					bgColor: undefined,
+					rounded: undefined,
+					elevation: undefined,
+					colorScheme: [],
+					aspectRatio: undefined,
+					animated: true,
+					animationDuration: 600,
+					showLabel: true,
+					algorithm: 'squarified',
+					legendPosition: 'bottom',
+					showLegend: true,
+					showTooltip: true,
+					height: 400
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart-treemap
+						:series="FIXTURE_TECH"
+						:title="state.title"
+						:subtitle="state.subtitle"
+						:bg-color="state.bgColor"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:color-scheme="state.colorScheme && state.colorScheme.length ? state.colorScheme : undefined"
+						:aspect-ratio="state.aspectRatio || undefined"
+						:animated="state.animated"
+						:animation-duration="state.animationDuration"
+						:show-label="state.showLabel"
+						:algorithm="state.algorithm"
+						:legend-position="state.legendPosition"
+						:show-legend="state.showLegend"
+						:show-tooltip="state.showTooltip"
+						:height="state.height"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Palette">
+					<HstText   v-model="state.aspectRatio"      title="Aspect Ratio"/>
+				</StoryGroup>
+				<StoryGroup title="Layout Algorithm">
+					<HstSelect v-model="state.algorithm"        title="Algorithm"        :options="ALGORITHM_OPTIONS"/>
+					<HstSelect v-model="state.legendPosition"   title="Legend Position"  :options="LEGEND_POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Display">
+					<HstCheckbox v-model="state.showLabel"   title="Show Label"/>
+					<HstCheckbox v-model="state.showLegend"  title="Show Legend"/>
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+				</StoryGroup>
+				<StoryGroup title="Animation">
+					<HstCheckbox v-model="state.animated"          title="Animated"/>
+					<HstNumber   v-model="state.animationDuration" title="Duration (ms)" :min="100" :max="2000" :step="100"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstNumber v-model="state.height" title="Height (px)" :min="100" :max="800" :step="20"/>
+				</StoryGroup>
+				<StoryGroup title="Title">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IChartTreemapProps>>({
 					algorithm: 'squarified',
 					height: 400,
 					animated: true,
@@ -18,154 +93,88 @@
 			<template #default="{ state }">
 				<div
 						class="story-shell"
-						data-cy="treemap-playground"
+						data-cy="treemap-functional"
 				>
 					<origam-chart-treemap
 							:series="FIXTURE_TECH"
 							:algorithm="state.algorithm"
-							:height="Number(state.height)"
-							:animated="Boolean(state.animated)"
-							:show-legend="Boolean(state.showLegend)"
-							:show-tooltip="Boolean(state.showTooltip)"
-							:show-label="Boolean(state.showLabel)"
+							:height="state.height"
+							:animated="state.animated"
+							:show-legend="state.showLegend"
+							:show-tooltip="state.showTooltip"
+							:show-label="state.showLabel"
 							:legend-position="state.legendPosition"
-							title="Tech portfolio"
+							title="Tech Portfolio"
 							subtitle="% allocation"
-							data-cy="treemap-playground-chart"
-							@point-click="onPointClick"
-							@legend-click="onLegendClick"
-							@series-toggle="onSeriesToggle"
+							data-cy="treemap-functional-chart"
 					/>
-					<pre
-							class="story-log"
-							data-cy="treemap-playground-log"
-					>{{ logLines.join('\n') }}</pre>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.algorithm"
-						title="algorithm"
-						:options="ALGORITHM_OPTIONS"
-				/>
-				<HstNumber
-						v-model="state.height"
-						title="height (px)"
-				/>
-				<HstSelect
-						v-model="state.legendPosition"
-						title="legendPosition"
-						:options="LEGEND_POSITION_OPTIONS"
-				/>
-				<HstCheckbox
-						v-model="state.animated"
-						title="animated"
-				/>
-				<HstCheckbox
-						v-model="state.showLegend"
-						title="showLegend"
-				/>
-				<HstCheckbox
-						v-model="state.showTooltip"
-						title="showTooltip"
-				/>
-				<HstCheckbox
-						v-model="state.showLabel"
-						title="showLabel"
-				/>
+				<StoryGroup title="Data">
+					<HstSelect v-model="state.algorithm"      title="Algorithm"       :options="ALGORITHM_OPTIONS"/>
+					<HstSelect v-model="state.legendPosition" title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Display">
+					<HstCheckbox v-model="state.showLabel"   title="Show Label"/>
+					<HstCheckbox v-model="state.showLegend"  title="Show Legend"/>
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+				</StoryGroup>
+				<StoryGroup title="Animation">
+					<HstCheckbox v-model="state.animated" title="Animated"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstNumber v-model="state.height" title="Height (px)" :min="100" :max="800" :step="20"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — algorithm (squarified vs slice-dice)">
+		<Variant title="Events - point-click">
 			<div
 					class="story-shell"
-					data-cy="treemap-algorithm"
+					data-cy="treemap-emit-point-click"
 			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>squarified (compact tiles)</strong>
-						<origam-chart-treemap
-								:series="FIXTURE_TECH"
-								algorithm="squarified"
-								:height="360"
-								title="Squarified"
-								data-cy="treemap-algorithm-squarified"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>slice-dice (ordered rows)</strong>
-						<origam-chart-treemap
-								:series="FIXTURE_TECH"
-								algorithm="slice-dice"
-								:height="360"
-								title="Slice-Dice"
-								data-cy="treemap-algorithm-slice-dice"
-						/>
-					</div>
-				</div>
+				<origam-chart-treemap
+						:series="FIXTURE_BUDGET"
+						:height="360"
+						title="Click a tile"
+						data-cy="treemap-emit-point-click-chart"
+						@point-click="logEvent('point-click', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — colorScheme (DS intents vs custom palette)">
+		<Variant title="Events - legend-click">
 			<div
 					class="story-shell"
-					data-cy="treemap-color-scheme"
+					data-cy="treemap-emit-legend-click"
 			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>default (intent cycle)</strong>
-						<origam-chart-treemap
-								:series="FIXTURE_TECH_NO_COLOR"
-								:height="320"
-								title="Intent palette"
-								data-cy="treemap-color-intent"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>custom CSS colors</strong>
-						<origam-chart-treemap
-								:series="FIXTURE_TECH_NO_COLOR"
-								:color-scheme="['#0ea5e9','#06b6d4','#14b8a6','#10b981','#84cc16','#eab308','#f97316','#ef4444','#ec4899','#8b5cf6']"
-								:height="320"
-								title="Custom palette"
-								data-cy="treemap-color-custom"
-						/>
-					</div>
-				</div>
+				<origam-chart-treemap
+						:series="FIXTURE_BUDGET"
+						:height="360"
+						title="Click a legend entry"
+						data-cy="treemap-emit-legend-click-chart"
+						@legend-click="logEvent('legend-click', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — showLabel (on / off)">
+		<Variant title="Events - series-toggle">
 			<div
 					class="story-shell"
-					data-cy="treemap-show-label"
+					data-cy="treemap-emit-series-toggle"
 			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>showLabel = true</strong>
-						<origam-chart-treemap
-								:series="FIXTURE_BUDGET"
-								:show-label="true"
-								:height="320"
-								title="Labels visible"
-								data-cy="treemap-label-on"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>showLabel = false</strong>
-						<origam-chart-treemap
-								:series="FIXTURE_BUDGET"
-								:show-label="false"
-								:height="320"
-								title="Labels hidden"
-								data-cy="treemap-label-off"
-						/>
-					</div>
-				</div>
+				<origam-chart-treemap
+						:series="FIXTURE_BUDGET"
+						:height="360"
+						title="Toggle a legend entry"
+						data-cy="treemap-emit-series-toggle-chart"
+						@series-toggle="logEvent('series-toggle', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Slot — tooltip">
+		<Variant title="Slots - Tooltip">
 			<div
 					class="story-shell"
 					data-cy="treemap-slot-tooltip"
@@ -186,7 +195,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — legend-item">
+		<Variant title="Slots - Legend-item">
 			<div
 					class="story-shell"
 					data-cy="treemap-slot-legend-item"
@@ -209,7 +218,42 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — empty">
+		<Variant title="Slots - Tile-label">
+			<div
+					class="story-shell"
+					data-cy="treemap-slot-tile-label"
+			>
+				<origam-chart-treemap
+						:series="FIXTURE_TECH"
+						:height="400"
+						title="Custom tile label"
+						data-cy="treemap-slot-tile-label-chart"
+				>
+					<template #tile-label="{ name, formatted }">
+						<tspan>{{ name }} ({{ formatted }}%)</tspan>
+					</template>
+				</origam-chart-treemap>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Title">
+			<div
+					class="story-shell"
+					data-cy="treemap-slot-title"
+			>
+				<origam-chart-treemap
+						:series="FIXTURE_TECH"
+						:height="400"
+						data-cy="treemap-slot-title-chart"
+				>
+					<template #title>
+						<strong class="custom-title">Custom title via slot</strong>
+					</template>
+				</origam-chart-treemap>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Empty">
 			<div
 					class="story-shell"
 					data-cy="treemap-slot-empty"
@@ -229,25 +273,52 @@
 			</div>
 		</Variant>
 
-		<Variant title="Emit — point-click / legend-click / series-toggle">
-			<div
-					class="story-shell"
-					data-cy="treemap-emit"
-			>
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IChartTreemapProps>({
+					series: [],
+					algorithm: 'squarified',
+					height: 400,
+					animated: true,
+					showLegend: true,
+					showTooltip: true,
+					showLabel: true,
+					legendPosition: 'bottom',
+					title: 'Tech Portfolio',
+					subtitle: '% allocation'
+				})"
+		>
+			<template #default="{ state }">
 				<origam-chart-treemap
-						:series="FIXTURE_BUDGET"
-						:height="360"
-						title="Interact with the chart"
-						data-cy="treemap-emit-chart"
-						@point-click="onPointClick"
-						@legend-click="onLegendClick"
-						@series-toggle="onSeriesToggle"
+						v-bind="state"
+						:series="FIXTURE_TECH"
+						@point-click="logEvent('point-click', $event)"
+						@legend-click="logEvent('legend-click', $event)"
+						@series-toggle="logEvent('series-toggle', $event)"
 				/>
-				<pre
-						class="story-log"
-						data-cy="treemap-emit-log"
-				>{{ logLines.join('\n') }}</pre>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect   v-model="state.bgColor"          title="Bg Color"        :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.rounded"          title="Rounded"         :options="ROUNDED_OPTIONS"/>
+					<HstSelect   v-model="state.elevation"        title="Elevation"       :options="ELEVATION_OPTIONS"/>
+					<HstSelect   v-model="state.algorithm"        title="Algorithm"       :options="ALGORITHM_OPTIONS"/>
+					<HstSelect   v-model="state.legendPosition"   title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+					<HstNumber   v-model="state.height"           title="Height (px)"     :min="100" :max="800" :step="20"/>
+					<HstText     v-model="state.aspectRatio"      title="Aspect Ratio"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.showLabel"        title="Show Label"/>
+					<HstCheckbox v-model="state.showLegend"       title="Show Legend"/>
+					<HstCheckbox v-model="state.showTooltip"      title="Show Tooltip"/>
+					<HstCheckbox v-model="state.animated"         title="Animated"/>
+					<HstNumber   v-model="state.animationDuration" title="Duration (ms)"  :min="100" :max="2000" :step="100"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -256,13 +327,19 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamChartTreemap } from '@origam/components'
 
-	import type { IChartPoint, IChartSeries } from '@origam/interfaces'
+	import type { IChartPoint, IChartSeries, IChartTreemapProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
 
 	const ALGORITHM_OPTIONS = [
 		{ value: 'squarified', label: 'squarified' },
@@ -294,24 +371,6 @@
 		}
 	]
 
-	const FIXTURE_TECH_NO_COLOR: Array<IChartSeries> = [
-		{
-			name: 'Tech Portfolio',
-			data: [
-				{ name: 'AAPL', value: 25 },
-				{ name: 'MSFT', value: 18 },
-				{ name: 'GOOG', value: 14 },
-				{ name: 'AMZN', value: 11 },
-				{ name: 'NVDA', value: 9 },
-				{ name: 'META', value: 7 },
-				{ name: 'TSLA', value: 5 },
-				{ name: 'ORCL', value: 4 },
-				{ name: 'IBM', value: 4 },
-				{ name: 'ADBE', value: 3 }
-			] as Array<any>
-		}
-	]
-
 	const FIXTURE_BUDGET: Array<IChartSeries> = [
 		{
 			name: 'Budget',
@@ -324,24 +383,6 @@
 			] as Array<any>
 		}
 	]
-
-	const logLines = ref<Array<string>>([])
-
-	const appendLog = (line: string) => {
-		logLines.value = [line, ...logLines.value].slice(0, 8)
-	}
-
-	const onPointClick = (point: IChartPoint) => {
-		appendLog(`point-click → x="${ point.x }" y=${ point.y }`)
-	}
-
-	const onLegendClick = (series: IChartSeries, index: number) => {
-		appendLog(`legend-click → ${ series.name } (index ${ index })`)
-	}
-
-	const onSeriesToggle = (series: IChartSeries, visible: boolean) => {
-		appendLog(`series-toggle → ${ series.name } now ${ visible ? 'visible' : 'hidden' }`)
-	}
 </script>
 
 <style scoped>
@@ -350,37 +391,6 @@
 		flex-direction: column;
 		gap: 12px;
 		padding: 16px;
-	}
-
-	.story-log {
-		font-size: 0.75rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-		min-height: 80px;
-		border: 1px solid var(--origam-color-border-subtle, #e5e7eb);
-		border-radius: 4px;
-		padding: 8px;
-		white-space: pre-wrap;
-	}
-
-	.story-grid {
-		display: grid;
-		gap: 16px;
-	}
-
-	.story-grid--2 {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	.story-col {
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-		min-width: 0;
-	}
-
-	.story-col strong {
-		font-size: 0.8125rem;
-		color: var(--origam-color-text-secondary, #6b7280);
 	}
 
 	.custom-tooltip {
@@ -396,6 +406,11 @@
 		cursor: pointer;
 	}
 
+	.custom-title {
+		font-size: 1.125rem;
+		color: var(--origam-color-text-primary);
+	}
+
 	.custom-empty {
 		color: var(--origam-color-text-secondary, #6b7280);
 		font-style: italic;
@@ -403,3 +418,8 @@
 		max-width: 280px;
 	}
 </style>
+
+<docs
+		lang="md"
+		src="@docs/components/Chart/OrigamChartTreemap.md"
+/>

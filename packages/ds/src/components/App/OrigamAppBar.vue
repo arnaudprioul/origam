@@ -4,6 +4,7 @@
 			:class="appBarClasses"
 			:collapse="isCollapsed"
 			:flat="isFlat"
+			:active="toolbarActive"
 			:style="appBarStyles"
 			v-bind="toolbarProps"
 	>
@@ -52,13 +53,13 @@
 	import { OrigamImg, OrigamToolbar } from '../../components'
 
 	import {
-	useActive,
 	useLayoutItem,
 	useProps,
 	useScroll,
 	useSsrBoot,
 	useStyle,
-	useToggleScope
+	useToggleScope,
+	useVModel
 } from '../../composables'
 
 	import { BLOCK, DENSITY } from '../../enums'
@@ -105,7 +106,7 @@
 	 ********************************************************/
 
 	const toolbarProps = computed(() => {
-		return origamToolbarRef.value?.filterProps(props, ['class', 'style', 'collapse', 'flat'])
+		return origamToolbarRef.value?.filterProps(props, ['class', 'style', 'collapse', 'flat', 'floating', 'active', 'width', 'minWidth', 'maxWidth'])
 	})
 
 	const hasImage = computed(() => {
@@ -125,7 +126,12 @@
 	 * Effect
 	 ********************************************************/
 
-	const {isActive, activeClasses} = useActive(props, 'modelValue')
+	// Visibility (show / hide on scroll) is a WRITABLE state — the hide
+	// behaviour assigns it. `useActive` only exposed a readonly computed, so
+	// the previous `isActive.value = …` writes silently failed and hide /
+	// inverted never worked. `useVModel` keeps the `modelValue` v-model contract
+	// (controlled) AND an internal ref fallback (uncontrolled), both writable.
+	const visible = useVModel(props, 'modelValue')
 
 	/*********************************************************
 	 * Scroll
@@ -143,6 +149,10 @@
 			inverted: behavior.has('inverted'),
 			collapse: behavior.has('collapse'),
 			elevate: behavior.has('elevate'),
+			// Engage the bar's `active` design-state once the page is scrolled
+			// (transparent at the top → painted/`--active` on scroll). Opt-in,
+			// like every other behaviour token.
+			active: behavior.has('active'),
 			fadeImage: behavior.has('fade-image')
 			// shrink: behavior.has('shrink'),
 		}
@@ -155,8 +165,9 @@
 				behavior.inverted ||
 				behavior.collapse ||
 				behavior.elevate ||
+				behavior.active ||
 				behavior.fadeImage ||
-				!isActive.value
+				!visible.value
 		)
 	})
 
@@ -170,14 +181,44 @@
 		watchEffect(() => {
 			if (scrollBehavior.value.hide) {
 				if (scrollBehavior.value.inverted) {
-					isActive.value = currentScroll.value > scrollThreshold.value
+					visible.value = currentScroll.value > scrollThreshold.value
 				} else {
-					isActive.value = isScrollingUp.value || (currentScroll.value < scrollThreshold.value)
+					visible.value = isScrollingUp.value || (currentScroll.value < scrollThreshold.value)
 				}
 			} else {
-				isActive.value = true
+				visible.value = true
 			}
 		})
+	})
+
+	// `active` scroll-behaviour: the bar engages its `active` design-state as
+	// soon as the page is scrolled away from the top. Drives the
+	// `origam-app-bar--active` class (consumer CSS hook) AND forwards a forced
+	// `active` to the inner Toolbar so its surface paints (see `toolbarActive`).
+	const isScrolled = computed(() => currentScroll.value > 0)
+
+	const isScrollActive = computed(() => scrollBehavior.value.active && isScrolled.value)
+
+	// `--active` is emitted ONLY for the `active` scroll-behaviour (engaged on
+	// scroll). It is intentionally NOT tied to `modelValue`/visibility — the bar
+	// being shown is not an "active" design-state, and binding the class to
+	// visibility painted the bar permanently (modelValue defaults to true).
+	// Visibility is handled by the layout transform, no class required.
+	const barActiveClasses = computed(() => {
+		return isScrollActive.value ? ['origam-app-bar--active'] : []
+	})
+
+	// Forwarded `active` for the Toolbar surface. The Toolbar's own design is
+	// only engaged on scroll when the consumer PROVIDED an override object
+	// (`:active="{ bgColor: 'surface' }"`). With no override we leave the
+	// surface untouched — `--active` (the class) is the only signal, so the
+	// consumer styles it however they want and nothing is imposed by default.
+	const toolbarActive = computed(() => {
+		const override = props.active && typeof props.active === 'object' ? props.active : undefined
+
+		if (!scrollBehavior.value.active || !override) return props.active
+
+		return isScrollActive.value ? { ...override, enabled: true } : false
 	})
 
 	const isCollapsed = computed(() => props.collapse || (
@@ -222,8 +263,11 @@
 		position: toRef(props, 'location'),
 		layoutSize: height,
 		elementSize: shallowRef(undefined),
-		active: isActive as unknown as ComputedRef,
-		absolute: toRef(props, 'absolute')
+		active: visible as unknown as ComputedRef,
+		// `absolute` is not part of the AppBar surface (it only toggles
+		// absolute↔fixed and never scrolls the bar away). The layout defaults
+		// to fixed for the root bar.
+		absolute: shallowRef(undefined)
 	})
 
 	/*********************************************************
@@ -243,7 +287,7 @@
 		return [
 			'origam-app-bar',
 			`origam-app-bar--${props.location}`,
-			activeClasses.value,
+			barActiveClasses.value,
 			props.class
 		]
 	})

@@ -1,0 +1,292 @@
+/*
+ * sobre.css — Sobre brand theme: complete, autonomous token layer.
+ *
+ * Specificity: :root:root[data-theme="sobre"] = 0,3,0
+ * Beats DS identity sheet (:root = 0,1,0) regardless of source order.
+ *
+ * Sources: Sobre_Light.html / Sobre_Dark.html maquettes + previously
+ * validated marketing-tokens.css sobre block (values reproduced faithfully,
+ * made complete and autonomous).
+ */
+
+/* ── SOBRE LIGHT ─────────────────────────────────────────────────────────── */
+
+:root:root[data-theme="sobre"],
+:root:root[data-theme="sobre"][data-mode="light"] {
+    /* Surfaces */
+    --origam-color__surface---default: #ffffff;
+    --origam-color__surface---raised: #fafafa;
+    --origam-color__surface---sunken: #f5f5f5;
+    --origam-color__surface---overlay: #f5f5f5;
+    --origam-color__surface---disabled: #e6e6e6;
+
+    /* Text */
+    --origam-color__text---primary: #0a0a0a;
+    --origam-color__text---secondary: #525252;
+    --origam-color__text---tertiary: #737373;
+    --origam-color__text---disabled: #a3a3a3;
+    --origam-color__text---inverse: #ffffff;
+    --origam-color__text---onColor: #ffffff;
+    --origam-color__text---ink: #0a0a0a;
+
+    /* Actions / primary */
+    --origam-color__action--primary---bg: #7c3aed;
+    --origam-color__action--primary---bgHover: #6d28d9;
+    --origam-color__action--primary---bgSubtle: rgba(124, 58, 237, 0.10);
+    --origam-color__action--primary---bgDisabled: #e6e6e6;
+    --origam-color__action--primary---fg: #ffffff;
+    --origam-color__action--primary---fgSubtle: #6d28d9;
+    --origam-color__action--primary---fgDisabled: #a3a3a3;
+
+    /* Actions / secondary */
+    --origam-color__action--secondary---bg: #f5f5f5;
+    --origam-color__action--secondary---bgHover: #e6e6e6;
+    --origam-color__action--secondary---bgDisabled: #fafafa;
+    --origam-color__action--secondary---fg: #171717;
+    --origam-color__action--secondary---fgDisabled: #a3a3a3;
+
+    /* Actions / ghost */
+    --origam-color__action--ghost---bg: rgba(0, 0, 0, 0);
+    --origam-color__action--ghost---bgHover: rgba(0, 0, 0, 0.06);
+    --origam-color__action--ghost---bgDisabled: rgba(0, 0, 0, 0);
+    --origam-color__action--ghost---fg: #7c3aed;
+    --origam-color__action--ghost---fgDisabled: #a3a3a3;
+
+    /* Borders */
+    --origam-color__border---default: rgba(0, 0, 0, 0.08);
+    --origam-color__border---subtle: rgba(0, 0, 0, 0.04);
+    --origam-color__border---strong: rgba(0, 0, 0, 0.16);
+    --origam-color__border---focus: #7c3aed;
+    --origam-color__border---subtle-alpha: rgba(0, 0, 0, 0.08);
+    --origam-color__border---ghost: rgba(0, 0, 0, 0.08);
+
+    /* Feedback */
+    --origam-color__feedback--success---bg: #16a34a;
+    --origam-color__feedback--success---bgSubtle: rgba(22, 163, 74, 0.08);
+    --origam-color__feedback--success---fg: #ffffff;
+    --origam-color__feedback--success---fgSubtle: #15803d;
+    --origam-color__feedback--success---border: #16a34a;
+    --origam-color__feedback--warning---bg: #d97706;
+    --origam-color__feedback--warning---bgSubtle: rgba(217, 119, 6, 0.08);
+    --origam-color__feedback--warning---fg: #ffffff;
+    --origam-color__feedback--warning---fgSubtle: #b45309;
+    --origam-color__feedback--warning---border: #d97706;
+    --origam-color__feedback--danger---bg: #dc2626;
+    --origam-color__feedback--danger---bgSubtle: rgba(220, 38, 38, 0.08);
+    --origam-color__feedback--danger---fg: #ffffff;
+    --origam-color__feedback--danger---fgSubtle: #b91c1c;
+    --origam-color__feedback--danger---border: #dc2626;
+    --origam-color__feedback--info---bg: #2563eb;
+    --origam-color__feedback--info---bgSubtle: rgba(37, 99, 235, 0.08);
+    --origam-color__feedback--info---fg: #ffffff;
+    --origam-color__feedback--info---fgSubtle: #1d4ed8;
+    --origam-color__feedback--info---border: #2563eb;
+
+    /* Appbar */
+    --origam-appbar---bg: rgba(255, 255, 255, 0.72);
+
+    /* Menu — appbar dropdowns */
+    --origam-menu---background: var(--origam-color__surface---default);
+    --origam-menu---color: var(--origam-color__text---primary);
+    --origam-menu---border-radius: 10px;
+    --origam-menu---box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.10), 0 1px 4px -1px rgba(0, 0, 0, 0.06), 0 0 0 1px var(--origam-color__border---default);
+    --origam-menu__content---padding: 6px;
+    --origam-list---background: transparent;
+    --origam-list---padding-block-start: 0;
+    --origam-list---padding-block-end: 0;
+    --origam-list-item---padding-inline-start: 12px;
+    --origam-list-item---padding-inline-end: 12px;
+
+    /* Shadows */
+    --origam-shadow---card-elevated: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px -16px rgba(0, 0, 0, 0.18);
+    --origam-shadow---glow-primary: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 8px 24px -8px rgba(124, 58, 237, 0.5);
+
+    /* Gradients — marketing display */
+    --origam-gradient---hero-glow: radial-gradient(ellipse 48% 30% at 50% 0%, rgba(124, 58, 237, 0.13), transparent 60%);
+    --origam-gradient---cta-glow: radial-gradient(ellipse 80% 60% at 80% 30%, rgba(124, 58, 237, 0.08), transparent 70%);
+    --origam-gradient---cta-glow-top: radial-gradient(ellipse 70% 55% at 50% 0%, rgba(124, 58, 237, 0.11), transparent 65%);
+    --origam-gradient---hero-title: linear-gradient(180deg, var(--origam-color__text---ink) 0%, var(--origam-color__text---ink) 45%, var(--origam-color__text---secondary) 100%);
+    --origam-gradient---hero-grid: linear-gradient(var(--origam-color__border---default) 1px, transparent 1px), linear-gradient(90deg, var(--origam-color__border---default) 1px, transparent 1px);
+    --origam-gradient---kpi-value: linear-gradient(var(--origam-color__action--primary---bg), var(--origam-color__action--primary---bg));
+
+    /* Button tokens — primary: transparent bg + violet glow (text variant look) */
+    --origam-gradient---btn-primary: none;
+    --origam-shadow---btn-primary: rgba(255, 255, 255, 0.20) 0px 1px 0px 0px inset, rgba(124, 58, 237, 0.50) 0px 8px 24px -8px;
+    --origam-color---btn-primary-text: var(--origam-color__text---ink);
+
+    /* Button tokens — secondary: clean ghost, no glow */
+    --origam-gradient---btn-secondary: none;
+    --origam-color---btn-secondary-bg: transparent;
+    --origam-color---btn-secondary-border: transparent;
+    --origam-color---btn-secondary-text: var(--origam-color__text---secondary);
+    --origam-shadow---btn-secondary: none;
+
+    /*
+     * OrigamBtn component-level defaults (tokens consumed by the component).
+     * Sobre = minimal, clean: 1px discrete border, subtle card shadow for
+     * elevated variant, no ghost shadow.
+     */
+    --origam-btn---border-color: var(--origam-color__border---strong);
+    --origam-btn---border-width-outlined: 1px;
+    --origam-btn---border-width-ghost: 1px;
+    --origam-btn---box-shadow-elevated: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px -16px rgba(0, 0, 0, 0.18);
+    --origam-btn---box-shadow-ghost: none;
+
+    /* ── OrigamCard component-level defaults ─────────────────────────── */
+    --origam-card---background: var(--origam-color__surface---raised);
+    --origam-card---border-color: var(--origam-color__border---default);
+    --origam-card---border-radius-rounded: 12px;
+
+    /* ── OrigamChip component-level defaults ─────────────────────────── */
+    --origam-chip---background-color: var(--origam-color__surface---raised);
+    --origam-chip---border-color: var(--origam-color__border---default);
+
+    /* ── OrigamCode component-level defaults ─────────────────────────── */
+    --origam-code---border-radius: 8px;
+    --origam-code---border-width: 1px;
+
+    /* ── OrigamAlert component-level defaults ────────────────────────── */
+    --origam-alert---border-radius: 10px;
+    --origam-alert---box-shadow-elevated: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px -16px rgba(0, 0, 0, 0.18);
+
+    /* ── OrigamTable component-level defaults ────────────────────────── */
+    --origam-table---border-radius: 10px;
+}
+
+/* ── SOBRE DARK ──────────────────────────────────────────────────────────── */
+
+:root:root[data-theme="sobre"][data-mode="dark"] {
+    /* Surfaces */
+    --origam-color__surface---default: #0a0a0a;
+    --origam-color__surface---raised: #0e0e0e;
+    --origam-color__surface---sunken: #171717;
+    --origam-color__surface---overlay: #0e0e0e;
+    --origam-color__surface---disabled: #262626;
+
+    /* Text */
+    --origam-color__text---primary: #fafafa;
+    --origam-color__text---secondary: #a3a3a3;
+    --origam-color__text---tertiary: #737373;
+    --origam-color__text---disabled: #525252;
+    --origam-color__text---inverse: #0a0a0a;
+    --origam-color__text---onColor: #ffffff;
+    --origam-color__text---ink: #fafafa;
+
+    /* Actions / primary */
+    --origam-color__action--primary---bg: #8b5cf6;
+    --origam-color__action--primary---bgHover: #7c3aed;
+    --origam-color__action--primary---bgSubtle: rgba(124, 58, 237, 0.14);
+    --origam-color__action--primary---bgDisabled: #262626;
+    --origam-color__action--primary---fg: #ffffff;
+    --origam-color__action--primary---fgSubtle: #c4b5fd;
+    --origam-color__action--primary---fgDisabled: #525252;
+
+    /* Actions / secondary */
+    --origam-color__action--secondary---bg: #262626;
+    --origam-color__action--secondary---bgHover: #404040;
+    --origam-color__action--secondary---bgDisabled: #171717;
+    --origam-color__action--secondary---fg: #fafafa;
+    --origam-color__action--secondary---fgDisabled: #525252;
+
+    /* Actions / ghost */
+    --origam-color__action--ghost---bg: rgba(0, 0, 0, 0);
+    --origam-color__action--ghost---bgHover: rgba(255, 255, 255, 0.06);
+    --origam-color__action--ghost---bgDisabled: rgba(0, 0, 0, 0);
+    --origam-color__action--ghost---fg: #c4b5fd;
+    --origam-color__action--ghost---fgDisabled: #525252;
+
+    /* Borders */
+    --origam-color__border---default: rgba(255, 255, 255, 0.08);
+    --origam-color__border---subtle: rgba(255, 255, 255, 0.04);
+    --origam-color__border---strong: rgba(255, 255, 255, 0.16);
+    --origam-color__border---focus: #a78bfa;
+    --origam-color__border---subtle-alpha: rgba(255, 255, 255, 0.08);
+    --origam-color__border---ghost: rgba(255, 255, 255, 0.08);
+
+    /* Feedback */
+    --origam-color__feedback--success---bg: #16a34a;
+    --origam-color__feedback--success---bgSubtle: rgba(22, 163, 74, 0.12);
+    --origam-color__feedback--success---fg: #ffffff;
+    --origam-color__feedback--success---fgSubtle: #6ee7b7;
+    --origam-color__feedback--success---border: #6ee7b7;
+    --origam-color__feedback--warning---bg: #d97706;
+    --origam-color__feedback--warning---bgSubtle: rgba(217, 119, 6, 0.12);
+    --origam-color__feedback--warning---fg: #ffffff;
+    --origam-color__feedback--warning---fgSubtle: #fbbf24;
+    --origam-color__feedback--warning---border: #fbbf24;
+    --origam-color__feedback--danger---bg: #dc2626;
+    --origam-color__feedback--danger---bgSubtle: rgba(220, 38, 38, 0.12);
+    --origam-color__feedback--danger---fg: #ffffff;
+    --origam-color__feedback--danger---fgSubtle: #f87171;
+    --origam-color__feedback--danger---border: #f87171;
+    --origam-color__feedback--info---bg: #2563eb;
+    --origam-color__feedback--info---bgSubtle: rgba(37, 99, 235, 0.12);
+    --origam-color__feedback--info---fg: #ffffff;
+    --origam-color__feedback--info---fgSubtle: #60a5fa;
+    --origam-color__feedback--info---border: #60a5fa;
+
+    /* Appbar */
+    --origam-appbar---bg: rgba(10, 10, 10, 0.72);
+
+    /* Menu — appbar dropdowns */
+    --origam-menu---background: var(--origam-color__surface---default);
+    --origam-menu---color: var(--origam-color__text---primary);
+    --origam-menu---border-radius: 10px;
+    --origam-menu---box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.50), 0 1px 4px -1px rgba(0, 0, 0, 0.30), 0 0 0 1px var(--origam-color__border---default);
+    --origam-menu__content---padding: 6px;
+    --origam-list---background: transparent;
+    --origam-list---padding-block-start: 0;
+    --origam-list---padding-block-end: 0;
+    --origam-list-item---padding-inline-start: 12px;
+    --origam-list-item---padding-inline-end: 12px;
+
+    /* Shadows */
+    --origam-shadow---card-elevated: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 8px 24px -16px rgba(0, 0, 0, 0.6);
+    --origam-shadow---glow-primary: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 8px 24px -8px rgba(139, 92, 246, 0.5);
+
+    /* Gradients — marketing display */
+    --origam-gradient---hero-glow: radial-gradient(ellipse 48% 30% at 50% 0%, rgba(124, 58, 237, 0.18), transparent 60%);
+    --origam-gradient---cta-glow: radial-gradient(ellipse 80% 60% at 80% 30%, rgba(124, 58, 237, 0.12), transparent 70%);
+    --origam-gradient---cta-glow-top: radial-gradient(ellipse 70% 55% at 50% 0%, rgba(124, 58, 237, 0.15), transparent 65%);
+    --origam-gradient---hero-title: linear-gradient(180deg, var(--origam-color__text---ink) 0%, var(--origam-color__text---ink) 50%, var(--origam-color__text---secondary) 100%);
+    --origam-gradient---hero-grid: linear-gradient(var(--origam-color__border---default) 1px, transparent 1px), linear-gradient(90deg, var(--origam-color__border---default) 1px, transparent 1px);
+    --origam-gradient---kpi-value: linear-gradient(180deg, var(--origam-color__text---ink) 0%, var(--origam-color__text---ink) 50%, var(--origam-color__text---secondary) 100%);
+
+    /* Button tokens — dark: same ghost look, darker bg for contrast */
+    --origam-gradient---btn-primary: none;
+    --origam-shadow---btn-primary: rgba(255, 255, 255, 0.08) 0px 1px 0px 0px inset, rgba(139, 92, 246, 0.50) 0px 8px 24px -8px;
+    --origam-color---btn-primary-text: var(--origam-color__text---ink);
+
+    --origam-gradient---btn-secondary: none;
+    --origam-color---btn-secondary-bg: transparent;
+    --origam-color---btn-secondary-border: transparent;
+    --origam-color---btn-secondary-text: var(--origam-color__text---secondary);
+    --origam-shadow---btn-secondary: none;
+
+    /* OrigamBtn component-level defaults (dark) — see light-mode note. */
+    --origam-btn---border-color: var(--origam-color__border---strong);
+    --origam-btn---border-width-outlined: 1px;
+    --origam-btn---border-width-ghost: 1px;
+    --origam-btn---box-shadow-elevated: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 8px 24px -16px rgba(0, 0, 0, 0.6);
+    --origam-btn---box-shadow-ghost: none;
+
+    /* OrigamCard component-level defaults (dark). */
+    --origam-card---background: var(--origam-color__surface---raised);
+    --origam-card---border-color: var(--origam-color__border---default);
+    --origam-card---border-radius-rounded: 12px;
+
+    /* OrigamChip component-level defaults (dark). */
+    --origam-chip---background-color: var(--origam-color__surface---raised);
+    --origam-chip---border-color: var(--origam-color__border---default);
+
+    /* OrigamCode component-level defaults (dark). */
+    --origam-code---border-radius: 8px;
+    --origam-code---border-width: 1px;
+
+    /* OrigamAlert component-level defaults (dark). */
+    --origam-alert---border-radius: 10px;
+    --origam-alert---box-shadow-elevated: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 8px 24px -16px rgba(0, 0, 0, 0.6);
+
+    /* OrigamTable component-level defaults (dark). */
+    --origam-table---border-radius: 10px;
+}

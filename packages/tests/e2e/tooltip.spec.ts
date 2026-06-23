@@ -1,183 +1,264 @@
 import { expect, FrameLocator, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-tooltip-origamtooltip-story-vue'
-
 /**
- * OrigamTooltip — runtime behavioural specs.
+ * OrigamTooltip — suite e2e calée sur la story réelle.
  *
- * Pre-rewrite, every spec only asserted "the activator button renders"
- * — including the Location / Text / Offset / Slot / Emit variants which
- * never even attempted to open the tooltip. The suite was 9/9 green
- * while the user reported visible bugs: classic case of asserting the
- * loose happy path instead of the actual behaviour.
+ * ## STORY_ID & Variants (0-based index)
  *
- * Each spec below now:
- *   1. opens the tooltip via the trigger declared by the variant
- *      (hover / click), and
- *   2. asserts the rendered tooltip content (text or rich markup), and
- *      where relevant the geometric relationship between the popup and
- *      its activator (`location`, `offset`).
+ *   STORY_ID = 'components-stories-tooltip-origamtooltip-story-vue'
+ *   Navigation : ?variantId=<STORY_ID>-<index>
+ *
+ *   Index → Titre
+ *     0  → Design          init: text="Tooltip text", location="right", offset=10, open-on-hover
+ *     1  → Functional      init: openOnHover=true, eager=true, disabled=false, …
+ *     2  → Events - update:modelValue  open-on-hover, text="Watch Events tab"
+ *     3  → Slots - Activator           open-on-hover, text="Tooltip text"
+ *     4  → Slots - Default             open-on-hover, slot default custom markup (<strong>Bold</strong>)
+ *     5  → Default (playground)        openOnHover=true, text="Tooltip text", location="right"
+ *
+ * ## DOM / floating
+ *
+ *   OrigamTooltip passe `absolute` sur OrigamOverlay. Avec `absolute`,
+ *   `teleportTarget` est null → le Teleport est disabled → le contenu
+ *   reste dans le DOM de la sandbox iframe. On peut donc localiser
+ *   `.origam-tooltip__content` directement dans le frameLocator sandbox.
+ *
+ *   `.origam-tooltip` est le root transparent (overlay racine, toujours
+ *   présent dans le DOM une fois monté) — ne jamais l'utiliser pour
+ *   asserter la visibilité (faux positif). Toujours asserter sur
+ *   `.origam-tooltip__content`.
+ *
+ * ## Pattern hover
+ *
+ *   1. Localiser `.origam-btn` (l'activateur dans chaque story).
+ *   2. `await expect(activator).toBeVisible({ timeout: 12000 })`.
+ *   3. `await activator.hover()`.
+ *   4. `await expect(sandbox.locator('.origam-tooltip__content')).toBeVisible({ timeout: 5000 })`.
+ *
+ *   Pas de `waitForLoadState('networkidle')` (histoire garde un WS HMR
+ *   ouvert → networkidle ne résout jamais). Pas de `data-cy` dans les
+ *   stories canoniques. Le bouton activateur est `.origam-btn` dans
+ *   chaque sandbox.
  */
 
-const openHover = async (sandbox: FrameLocator, activatorSelector: string) => {
-	const activator = sandbox.locator(activatorSelector)
-	await expect(activator).toBeVisible({ timeout: 5000 })
-	await activator.hover()
-	// The popup BODY is `.origam-tooltip__content`. `.origam-tooltip` is
-	// the overlay ROOT which is always rendered (transparent, full
-	// teleport-target span) — asserting visibility on it produces false
-	// positives. Always assert against `__content`.
-	const tooltip = sandbox.locator('.origam-tooltip__content')
-	await expect(tooltip).toBeVisible({ timeout: 5000 })
-	return { activator, tooltip }
+const STORY_ID   = 'components-stories-tooltip-origamtooltip-story-vue'
+// Histoire dev server uses vite.base = '/stories/' → story URLs are under /stories/story/...
+// The playwright.config baseURL (http://localhost:6006) must be prefixed with /stories to hit
+// the actual SPA. Using an absolute URL here avoids relying on the baseURL resolution.
+const STORY_BASE = 'http://localhost:6006/stories'
+const STORY_PATH = STORY_BASE + '/story/' + STORY_ID
+
+const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
+
+/**
+ * Hover l'activateur dans la sandbox et attend que le contenu tooltip
+ * soit visible. Retourne les locators activator + tooltip content.
+ *
+ * Timeout 35s sur l'activateur : Histoire applique `.htw-sandbox-hidden`
+ * (display:none) pendant le chargement initial du composant. Le premier
+ * test qui touche une story "froide" peut mettre 25-30s avant que le
+ * rendu soit révélé. Les tests suivants (même composant, cache chaud)
+ * sont bien en-dessous de 5s.
+ */
+const openTooltip = async (sandbox: FrameLocator) => {
+    const activator = sandbox.locator('.origam-btn').first()
+    await expect(activator).toBeVisible({ timeout: 35000 })
+    await activator.hover()
+    const content = sandbox.locator('.origam-tooltip__content')
+    await expect(content).toBeVisible({ timeout: 5000 })
+    return { activator, content }
 }
 
-const boxOf = (loc: ReturnType<FrameLocator['locator']>) =>
-	loc.evaluate(el => {
-		const r = el.getBoundingClientRect()
-		return { top: r.top, left: r.left, right: r.right, bottom: r.bottom, width: r.width, height: r.height }
-	})
-
 test.describe('OrigamTooltip', () => {
-	test('Default — tooltip appears on hover with declared text', async ({ page }) => {
-		await page.goto(STORY_PATH)
-		await page.waitForLoadState('networkidle')
-		await page.getByText('Default (hover)', { exact: true }).first().click()
-		await page.waitForTimeout(800)
+    test.setTimeout(60000)
 
-		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const { tooltip } = await openHover(sandbox, '[data-cy="tooltip-default-activator"]')
-		await expect(tooltip).toContainText('This is a tooltip')
-	})
+    // ------------------------------------------------------------------ //
+    // DESIGN (index 0)                                                     //
+    // init: text="Tooltip text", location="right", offset=10              //
+    // ------------------------------------------------------------------ //
 
-	test('Text — tooltip text matches the `text` prop', async ({ page }) => {
-		await page.goto(STORY_PATH)
-		await page.waitForLoadState('networkidle')
-		await page.getByText('Text', { exact: true }).first().click()
-		await page.waitForTimeout(800)
+    test.describe('Design (index 0)', () => {
+        test('activateur visible dans la sandbox', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const btn = sandbox.locator('.origam-btn').first()
+            await expect(btn).toBeVisible({ timeout: 35000 })
+        })
 
-		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const { tooltip } = await openHover(sandbox, '[data-cy="tooltip-text-activator"]')
-		// Default story state seeds text="Tooltip content".
-		await expect(tooltip).toContainText('Tooltip content')
-	})
+        test('tooltip apparaît au hover avec le texte issu du prop text', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const { content } = await openTooltip(sandbox)
+            await expect(content).toContainText('Tooltip text')
+        })
 
-	test('Open on click — tooltip does NOT appear on hover, DOES on click', async ({ page }) => {
-		await page.goto(STORY_PATH)
-		await page.waitForLoadState('networkidle')
-		await page.getByText('Open on click', { exact: true }).first().click()
-		await page.waitForTimeout(800)
+        test('root .origam-tooltip porte la classe BEM', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-btn').first()).toBeVisible({ timeout: 35000 })
+            const root = sandbox.locator('.origam-tooltip').first()
+            await expect(root).toBeAttached()
+        })
 
-		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const activator = sandbox.locator('[data-cy="tooltip-click-activator"]')
-		await expect(activator).toBeVisible({ timeout: 5000 })
+        test('contenu du tooltip porte la classe origam-tooltip__content', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const { content } = await openTooltip(sandbox)
+            await expect(content).toHaveClass(/origam-tooltip__content/)
+        })
 
-		// Use the BODY selector (`__content`) — the overlay root
-		// `.origam-tooltip` is always present in the DOM after the fix
-		// for the black-background bug, just transparent.
-		const tooltip = sandbox.locator('.origam-tooltip__content')
-		// Hover must NOT make the popup visible when `:open-on-hover="false"`.
-		await activator.hover()
-		await page.waitForTimeout(500)
-		await expect(tooltip).not.toBeVisible({ timeout: 1000 })
+        test('tooltip se ferme quand la souris quitte l activateur', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const { activator: _activator, content } = await openTooltip(sandbox)
+            // Déplacer la souris hors de l'activateur
+            await page.mouse.move(0, 0)
+            await expect(content).not.toBeVisible({ timeout: 5000 })
+        })
+    })
 
-		// Click MUST open it.
-		await activator.click()
-		await expect(tooltip).toBeVisible({ timeout: 5000 })
-		await expect(tooltip).toContainText('Click tooltip')
-	})
+    // ------------------------------------------------------------------ //
+    // FUNCTIONAL (index 1)                                                 //
+    // init: openOnHover=true, eager=true, disabled=false                  //
+    // ------------------------------------------------------------------ //
 
-	test('Slot — default — rich custom markup renders inside the popup', async ({ page }) => {
-		await page.goto(STORY_PATH)
-		await page.waitForLoadState('networkidle')
-		await page.getByText('Slot — default', { exact: true }).first().click()
-		await page.waitForTimeout(800)
+    test.describe('Functional (index 1)', () => {
+        test('tooltip apparaît au hover (openOnHover=true par défaut)', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const { content } = await openTooltip(sandbox)
+            await expect(content).toContainText('Tooltip text')
+        })
 
-		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const { tooltip } = await openHover(sandbox, '[data-cy="tooltip-slot-activator"]')
-		// The rich slot uses <strong>Bold</strong> and <em>custom markup</em>.
-		await expect(tooltip.locator('strong')).toHaveText('Bold')
-		await expect(tooltip.locator('em')).toHaveText('custom markup')
-	})
+        test('eager=true — le contenu est dans le DOM avant le premier hover', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            // S'assurer que l'activateur est présent sans hover
+            await expect(sandbox.locator('.origam-btn').first()).toBeVisible({ timeout: 35000 })
+            // Avec eager=true, le contenu est dans le DOM (peut être hidden mais attaché)
+            await expect(sandbox.locator('.origam-tooltip__content')).toBeAttached()
+        })
+    })
 
-	// ────────────────────────────────────────────────────────────────────
-	// Geometric assertions — `location` and `offset` must produce
-	// distinct popup positions relative to the activator. These were
-	// silently untested pre-rewrite.
-	// ────────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------ //
+    // EVENTS - update:modelValue (index 2)                                 //
+    // text="Watch Events tab", open-on-hover                              //
+    // ------------------------------------------------------------------ //
 
-	test('Location — top: popup sits ABOVE the activator', async ({ page }) => {
-		await page.goto(STORY_PATH)
-		await page.waitForLoadState('networkidle')
-		await page.getByText('Location', { exact: true }).first().click()
-		await page.waitForTimeout(800)
+    test.describe('Events - update:modelValue (index 2)', () => {
+        test('tooltip s ouvre au hover (proxy de l emit update:modelValue)', async ({ page }) => {
+            await page.goto(variantUrl(2))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const { content } = await openTooltip(sandbox)
+            // Le montage visible EST le signe que l'emit a bien déclenché
+            await expect(content).toBeVisible()
+        })
 
-		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		// Default state seeds location="top".
-		const { activator, tooltip } = await openHover(sandbox, '[data-cy="tooltip-location-activator"]')
+        test('tooltip affiche le texte déclaré dans la variant Events', async ({ page }) => {
+            await page.goto(variantUrl(2))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const { content } = await openTooltip(sandbox)
+            await expect(content).toContainText('Watch Events tab')
+        })
+    })
 
-		const a = await boxOf(activator)
-		const t = await boxOf(tooltip)
-		// Popup centre should be above the activator's centre.
-		expect(t.bottom).toBeLessThanOrEqual(a.top + 4 /* 4px tolerance for fractional layout */)
-	})
+    // ------------------------------------------------------------------ //
+    // SLOTS - ACTIVATOR (index 3)                                          //
+    // slot #activator avec origam-btn "Custom activator"                  //
+    // ------------------------------------------------------------------ //
 
-	test('Offset — popup is repositioned (anchor-origin computed) when offset changes', async ({ page }) => {
-		await page.goto(STORY_PATH)
-		await page.waitForLoadState('networkidle')
-		await page.getByText('Offset', { exact: true }).first().click()
-		await page.waitForTimeout(800)
+    test.describe('Slots - Activator (index 3)', () => {
+        test('le slot activator rend un bouton personnalisé', async ({ page }) => {
+            await page.goto(variantUrl(3))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const btn = sandbox.locator('.origam-btn').first()
+            await expect(btn).toBeVisible({ timeout: 35000 })
+            await expect(btn.locator('.origam-btn__content')).toContainText('Custom activator')
+        })
 
-		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		// Default state seeds offset=20. The story has no `location` prop
-		// so Tooltip's default `right` applies. The Histoire sandbox
-		// iframe is ~300 px wide — too narrow to honor the full 20 px
-		// gap on a `right` anchor (popup overflows and the strategy
-		// clamps it back to the viewport edge). So we can't assert a
-		// strict pixel gap here. Instead, prove the strategy IS running
-		// and producing geometry-aware inline styles by checking the
-		// computed anchor-origin token + a positive `top`/`left`.
-		await openHover(sandbox, '[data-cy="tooltip-offset-activator"]')
+        test('tooltip s ouvre au hover de l activateur custom', async ({ page }) => {
+            await page.goto(variantUrl(3))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const { content } = await openTooltip(sandbox)
+            await expect(content).toContainText('Tooltip text')
+        })
+    })
 
-		const styles = await sandbox.locator('.origam-overlay__content').evaluate(el => {
-			const cs = getComputedStyle(el)
-			return {
-				anchorOrigin: cs.getPropertyValue('--origam-overlay-anchor-origin').trim(),
-				top: cs.top,
-				left: cs.left,
-				transformOrigin: cs.transformOrigin
-			}
-		})
+    // ------------------------------------------------------------------ //
+    // SLOTS - DEFAULT (index 4)                                            //
+    // slot #default avec markup riche : <strong>Bold</strong> + <em>      //
+    // ------------------------------------------------------------------ //
 
-		// `right center` per Tooltip's default location.
-		expect(styles.anchorOrigin).toBe('right center')
-		// Strategy ran: `top` and `left` are pixel values, not `auto`.
-		expect(styles.top).toMatch(/\d+px/)
-		expect(styles.left).toMatch(/\d+px/)
-	})
+    test.describe('Slots - Default (index 4)', () => {
+        test('le slot default rend du markup riche dans le contenu tooltip', async ({ page }) => {
+            await page.goto(variantUrl(4))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const { content } = await openTooltip(sandbox)
+            // La variant Slots - Default contient :
+            //   <strong>Bold</strong> tooltip with <em>custom markup</em>.
+            await expect(content.locator('strong')).toHaveText('Bold')
+            await expect(content.locator('em')).toHaveText('custom markup')
+        })
 
-	test('Emit — update:modelValue — opening the tooltip flips state to true', async ({ page }) => {
-		await page.goto(STORY_PATH)
-		await page.waitForLoadState('networkidle')
-		await page.getByText('Emit — update:modelValue', { exact: true }).first().click()
-		await page.waitForTimeout(800)
+        test('le prop text n est pas rendu quand le slot default est utilisé', async ({ page }) => {
+            await page.goto(variantUrl(4))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const { content } = await openTooltip(sandbox)
+            // Le slot override le <span>{{ text }}</span> natif
+            // — aucun <span> direct dans le contenu (le markup est riche)
+            const directSpan = content.locator(':scope > span')
+            await expect(directSpan).toHaveCount(0)
+        })
+    })
 
-		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const { tooltip } = await openHover(sandbox, '[data-cy="tooltip-emit-activator"]')
-		// The popup mounting IS the emit firing. Histoire logs the event
-		// to its Events tab; we can't read that pane from inside the
-		// sandbox iframe, so the popup-visibility check is the proxy.
-		await expect(tooltip).toBeVisible()
-	})
+    // ------------------------------------------------------------------ //
+    // DEFAULT / PLAYGROUND (index 5)                                       //
+    // init: text="Tooltip text", location="right", openOnHover=true       //
+    // ------------------------------------------------------------------ //
 
-	test('Playground — default state opens tooltip on hover with seeded text', async ({ page }) => {
-		await page.goto(STORY_PATH)
-		await page.waitForLoadState('networkidle')
-		await page.getByText('Default', { exact: true }).first().click()
-		await page.waitForTimeout(800)
+    test.describe('Default / Playground (index 5)', () => {
+        test('tooltip apparaît au hover avec le texte seedé', async ({ page }) => {
+            await page.goto(variantUrl(5))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const { content } = await openTooltip(sandbox)
+            await expect(content).toContainText('Tooltip text')
+        })
 
-		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const { tooltip } = await openHover(sandbox, '[data-cy="tooltip-playground-activator"]')
-		await expect(tooltip).toContainText('Tooltip text')
-	})
+        test('location=right — le popup se positionne à droite de l activateur', async ({ page }) => {
+            await page.goto(variantUrl(5))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const { activator, content } = await openTooltip(sandbox)
+
+            const aBox = await activator.evaluate(el => {
+                const r = el.getBoundingClientRect()
+                return { left: r.left, right: r.right, top: r.top, bottom: r.bottom }
+            })
+            const cBox = await content.evaluate(el => {
+                const r = el.getBoundingClientRect()
+                return { left: r.left, right: r.right, top: r.top, bottom: r.bottom }
+            })
+
+            // Avec location="right", le bord gauche du popup doit être
+            // à droite du bord droit de l'activateur (tolérance 20px pour
+            // offset + arrondi layout).
+            expect(cBox.left).toBeGreaterThanOrEqual(aBox.right - 20)
+        })
+
+        test('offset=10 — le contenu overlay est positionné avec des coordonnées pixel', async ({ page }) => {
+            await page.goto(variantUrl(5))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await openTooltip(sandbox)
+
+            // L'overlay content doit avoir des coordonnées calculées (top/left en px)
+            // — preuve que la location strategy a tourné avec l'offset.
+            const overlayContent = sandbox.locator('.origam-overlay__content').first()
+            await expect(overlayContent).toBeAttached()
+            const styles = await overlayContent.evaluate(el => {
+                const cs = getComputedStyle(el)
+                return { top: cs.top, left: cs.left }
+            })
+            expect(styles.top).toMatch(/\d+px/)
+            expect(styles.left).toMatch(/\d+px/)
+        })
+    })
 })

@@ -3,184 +3,212 @@
 			group="components"
 			title="ConfirmWrapper/OrigamConfirmWrapper"
 	>
-		<!--
-			Playground — first variant by convention. Surfaces every
-			IConfirmWrapperProps knob via the sidebar controls.
-		-->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IConfirmWrapperProps>({
-					label: 'Value',
-					direction: 'vertical',
-					disabled: false,
-					readonly: false,
-					error: false
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IConfirmWrapperProps>>({
+					label: 'Email',
+					direction: DIRECTION.VERTICAL
 				})"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 500px;" data-cy="confirm-wrapper-playground">
+				<div style="padding: 24px; max-width: 500px;">
 					<origam-confirm-wrapper
-							v-model="playgroundValue"
-							v-model:confirm="playgroundConfirm"
-							v-bind="state"
+							v-model="designValue"
+							v-model:confirm="designConfirm"
+							:label="state.label"
+							:confirm-label="state.confirmLabel"
+							:direction="state.direction"
+							:color="state.color"
+							:density="state.density"
+							:rounded="state.rounded"
+							:elevation="state.elevation"
+							:variant="state.variant"
+							:prepend-icon="state.prependIcon || undefined"
+							:append-icon="state.appendIcon || undefined"
+							:center-affix="state.centerAffix"
 							field="text-field"
-							:defaults="{ label: state.label }"
-							data-cy="confirm-wrapper-playground-input"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstText     v-model="state.label"     title="label"/>
-				<HstSelect   v-model="state.direction" title="direction" :options="[
-					{ label: 'vertical', value: 'vertical' },
-					{ label: 'horizontal', value: 'horizontal' }
-				]"/>
-				<HstCheckbox v-model="state.disabled"  title="disabled"/>
-				<HstCheckbox v-model="state.readonly"  title="readonly"/>
-				<HstCheckbox v-model="state.error"     title="error"/>
+				<StoryGroup title="Label">
+					<HstText v-model="state.label"        title="Label"/>
+					<HstText v-model="state.confirmLabel" title="Confirm Label"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstSelect v-model="state.direction" title="Direction" :options="DIRECTION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Variant">
+					<HstSelect v-model="state.variant" title="Variant" :options="VARIANT_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Icons">
+					<HstSelect v-model="state.prependIcon" title="Prepend Icon" :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.appendIcon"  title="Append Icon"  :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Affix">
+					<HstCheckbox v-model="state.centerAffix" title="Center Affix"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — field (shorthand)">
-			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-default">
-				<origam-confirm-wrapper
-						v-model="defaultValue"
-						v-model:confirm="defaultConfirm"
-						field="text-field"
-						:defaults="{ label: 'Email' }"
-						data-cy="confirm-wrapper-default-input"
-				/>
-			</div>
 		</Variant>
 
 		<Variant
-				title="Prop — direction"
-				:init-state="() => useStoryInitState<{ direction: string }>({ direction: 'vertical' })"
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IConfirmWrapperProps>>({
+					field: 'text-field',
+					disabled: false,
+					readonly: false,
+					required: false,
+					error: false,
+					hideDetails: false,
+					persistentHint: false,
+					centerAffix: true
+				})"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 600px;" data-cy="confirm-wrapper-direction">
+				<div style="padding: 24px; max-width: 500px;">
 					<origam-confirm-wrapper
-							v-model="directionValue"
-							v-model:confirm="directionConfirm"
-							:direction="state.direction as any"
-							field="text-field"
+							v-model="functionalValue"
+							v-model:confirm="functionalConfirm"
+							:field="state.field || 'text-field'"
+							:disabled="state.disabled"
+							:readonly="state.readonly"
+							:required="state.required"
+							:error="state.error"
+							:error-messages="state.error ? ['Validation error'] : undefined"
+							:hide-details="state.hideDetails"
+							:hint="state.hint"
+							:persistent-hint="state.persistentHint"
 							:defaults="{ label: 'Email' }"
-							data-cy="confirm-wrapper-direction-input"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.direction"
-						title="direction"
-						:options="[
-							{ label: 'vertical', value: 'vertical' },
-							{ label: 'horizontal', value: 'horizontal' }
-						]"
-				/>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+					<HstCheckbox v-model="state.readonly" title="Readonly"/>
+					<HstCheckbox v-model="state.required" title="Required"/>
+					<HstCheckbox v-model="state.error"    title="Error"/>
+				</StoryGroup>
+				<StoryGroup title="Messages">
+					<HstCheckbox v-model="state.hideDetails"    title="Hide Details"/>
+					<HstText     v-model="state.hint"           title="Hint"/>
+					<HstCheckbox v-model="state.persistentHint" title="Persistent Hint"/>
+				</StoryGroup>
+				<StoryGroup title="Field">
+					<HstText v-model="state.field" title="Field (shorthand)"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — label & prependIcon">
-			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-label">
+		<Variant title="Events - update:modelValue">
+			<div style="padding: 24px; max-width: 400px;">
 				<origam-confirm-wrapper
-						v-model="labelValue"
-						v-model:confirm="labelConfirm"
-						label="New password"
-						prepend-icon="mdi-lock"
-						field="text-field"
-						:defaults="{ label: 'Password', type: 'password' }"
-						data-cy="confirm-wrapper-label-input"
-				/>
-			</div>
-		</Variant>
-
-		<Variant
-				title="Prop — disabled, readonly & error"
-				:init-state="() => useStoryInitState<{
-					disabled?: boolean
-					readonly?: boolean
-					error?: boolean
-				}>({})"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-states">
-					<origam-confirm-wrapper
-							v-model="statesValue"
-							v-model:confirm="statesConfirm"
-							v-bind="state"
-							field="text-field"
-							:defaults="{ label: 'Email' }"
-							data-cy="confirm-wrapper-states-input"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-				<HstCheckbox v-model="state.readonly" title="readonly"/>
-				<HstCheckbox v-model="state.error"    title="error"/>
-			</template>
-		</Variant>
-
-		<Variant title="Prop — confirm (mismatch validation)">
-			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-validation">
-				<origam-confirm-wrapper
-						v-model="validValue"
-						v-model:confirm="validConfirm"
-						field="text-field"
-						:defaults="{ label: 'Password', type: 'password' }"
-						data-cy="confirm-wrapper-validation-input"
-				/>
-				<p style="font-size: 0.75rem; margin-top: 8px;" data-cy="confirm-wrapper-validation-status">
-					primary={{ validValue }} | confirm={{ validConfirm }}
-				</p>
-			</div>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — append">
-			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-slot-append">
-				<origam-confirm-wrapper
-						v-model="slotAppendValue"
-						v-model:confirm="slotAppendConfirm"
+						v-model="emitModelValue"
+						v-model:confirm="emitModelConfirm"
 						field="text-field"
 						:defaults="{ label: 'Email' }"
-						data-cy="confirm-wrapper-slot-append-input"
+						@update:model-value="logEvent('update:modelValue', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - update:confirm">
+			<div style="padding: 24px; max-width: 400px;">
+				<origam-confirm-wrapper
+						v-model="emitConfirmValue"
+						v-model:confirm="emitConfirmConfirm"
+						field="text-field"
+						:defaults="{ label: 'Email' }"
+						@update:confirm="logEvent('update:confirm', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - update:focused">
+			<div style="padding: 24px; max-width: 400px;">
+				<origam-confirm-wrapper
+						v-model="emitFocusedValue"
+						v-model:confirm="emitFocusedConfirm"
+						field="text-field"
+						:defaults="{ label: 'Email' }"
+						@update:focused="logEvent('update:focused', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - click:prepend">
+			<div style="padding: 24px; max-width: 400px;">
+				<origam-confirm-wrapper
+						v-model="emitPrependValue"
+						v-model:confirm="emitPrependConfirm"
+						:prepend-icon="iconHeart"
+						field="text-field"
+						:defaults="{ label: 'Email' }"
+						@click:prepend="logEvent('click:prepend', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - click:append">
+			<div style="padding: 24px; max-width: 400px;">
+				<origam-confirm-wrapper
+						v-model="emitAppendValue"
+						v-model:confirm="emitAppendConfirm"
+						:append-icon="iconArrowRight"
+						field="text-field"
+						:defaults="{ label: 'Email' }"
+						@click:append="logEvent('click:append', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Default">
+			<div style="padding: 24px; max-width: 400px;">
+				<origam-confirm-wrapper
+						v-model="slotDefaultValue"
+						v-model:confirm="slotDefaultConfirm"
 				>
-					<template #append>
-						<origam-icon :icon="MDI_ICONS.HEART"/>
+					<origam-text-field v-model="slotDefaultValue" label="Custom primary input"/>
+					<template #confirm>
+						<origam-text-field v-model="slotDefaultConfirm" label="Confirm custom input"/>
 					</template>
 				</origam-confirm-wrapper>
 			</div>
 		</Variant>
 
-		<Variant title="Slot — details">
-			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-slot-details">
+		<Variant title="Slots - Confirm">
+			<div style="padding: 24px; max-width: 400px;">
 				<origam-confirm-wrapper
-						v-model="slotDetailsValue"
-						v-model:confirm="slotDetailsConfirm"
+						v-model="slotConfirmValue"
+						v-model:confirm="slotConfirmConfirm"
 						field="text-field"
-						:defaults="{ label: 'Email' }"
-						data-cy="confirm-wrapper-slot-details-input"
+						:defaults="{ label: 'Password', type: 'password' }"
 				>
-					<template #details>
-						<span>Custom slot content</span>
+					<template #confirm>
+						<origam-text-field v-model="slotConfirmConfirm" label="Custom confirm field"/>
 					</template>
 				</origam-confirm-wrapper>
 			</div>
 		</Variant>
 
-		<Variant title="Slot — header">
-			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-slot-header">
+		<Variant title="Slots - Header">
+			<div style="padding: 24px; max-width: 400px;">
 				<origam-confirm-wrapper
-						v-model="slotValue"
-						v-model:confirm="slotConfirm"
+						v-model="slotHeaderValue"
+						v-model:confirm="slotHeaderConfirm"
 						field="text-field"
 						:defaults="{ label: 'Email' }"
-						data-cy="confirm-wrapper-slot-header-input"
 				>
 					<template #header>
 						<div style="padding-bottom: 8px; font-weight: 700;">Custom header slot</div>
@@ -189,32 +217,59 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — message">
-			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-slot-message">
+		<Variant title="Slots - Title">
+			<div style="padding: 24px; max-width: 400px;">
 				<origam-confirm-wrapper
-						v-model="slotMessageValue"
-						v-model:confirm="slotMessageConfirm"
+						v-model="slotTitleValue"
+						v-model:confirm="slotTitleConfirm"
 						field="text-field"
 						:defaults="{ label: 'Email' }"
-						:error-messages="['Error message']"
-						data-cy="confirm-wrapper-slot-message-input"
 				>
-					<template #message="{ message }">
-						<span>{{ message }}</span>
+					<template #title>
+						<span>Custom title slot</span>
 					</template>
 				</origam-confirm-wrapper>
 			</div>
 		</Variant>
 
-		<Variant title="Slot — messages">
-			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-slot-messages">
+		<Variant title="Slots - Prepend">
+			<div style="padding: 24px; max-width: 400px;">
+				<origam-confirm-wrapper
+						v-model="slotPrependValue"
+						v-model:confirm="slotPrependConfirm"
+						field="text-field"
+						:defaults="{ label: 'Email' }"
+				>
+					<template #prepend>
+						<origam-icon :icon="iconHeart"/>
+					</template>
+				</origam-confirm-wrapper>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Append">
+			<div style="padding: 24px; max-width: 400px;">
+				<origam-confirm-wrapper
+						v-model="slotAppendValue"
+						v-model:confirm="slotAppendConfirm"
+						field="text-field"
+						:defaults="{ label: 'Email' }"
+				>
+					<template #append>
+						<origam-icon :icon="iconHeart"/>
+					</template>
+				</origam-confirm-wrapper>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Messages">
+			<div style="padding: 24px; max-width: 400px;">
 				<origam-confirm-wrapper
 						v-model="slotMessagesValue"
 						v-model:confirm="slotMessagesConfirm"
 						field="text-field"
 						:defaults="{ label: 'Email' }"
 						:error-messages="['Error A', 'Error B']"
-						data-cy="confirm-wrapper-slot-messages-input"
 				>
 					<template #messages="{ messages }">
 						<span v-for="(m, i) in messages" :key="i">{{ m }}</span>
@@ -223,88 +278,83 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — prepend">
-			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-slot-prepend">
+		<Variant title="Slots - Message">
+			<div style="padding: 24px; max-width: 400px;">
 				<origam-confirm-wrapper
-						v-model="slotPrependValue"
-						v-model:confirm="slotPrependConfirm"
+						v-model="slotMessageValue"
+						v-model:confirm="slotMessageConfirm"
 						field="text-field"
 						:defaults="{ label: 'Email' }"
-						data-cy="confirm-wrapper-slot-prepend-input"
+						:error-messages="['Error message']"
 				>
-					<template #prepend>
-						<origam-icon :icon="MDI_ICONS.HEART"/>
+					<template #message="{ message }">
+						<span>{{ message }}</span>
 					</template>
 				</origam-confirm-wrapper>
 			</div>
 		</Variant>
 
-		<Variant title="Slot — title">
-			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-slot-title">
+		<Variant title="Slots - Details">
+			<div style="padding: 24px; max-width: 400px;">
 				<origam-confirm-wrapper
-						v-model="slotTitleValue"
-						v-model:confirm="slotTitleConfirm"
+						v-model="slotDetailsValue"
+						v-model:confirm="slotDetailsConfirm"
 						field="text-field"
 						:defaults="{ label: 'Email' }"
-						data-cy="confirm-wrapper-slot-title-input"
 				>
-					<template #title>
-						<span>Custom slot content</span>
+					<template #details>
+						<span>Custom details slot content</span>
 					</template>
 				</origam-confirm-wrapper>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — default & confirm">
-			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-slot-custom">
-				<origam-confirm-wrapper
-						v-model="customValue"
-						v-model:confirm="customConfirm"
-						data-cy="confirm-wrapper-slot-custom-input"
-				>
-					<origam-text-field v-model="customValue" label="Custom input" data-cy="confirm-wrapper-custom-field"/>
-					<template #confirm>
-						<origam-text-field v-model="customConfirm" label="Confirm custom input" data-cy="confirm-wrapper-confirm-field"/>
-					</template>
-				</origam-confirm-wrapper>
-			</div>
-		</Variant>
-
-		<!-- ── Emits ────────────────────────────────────────────────── -->
-
-		<Variant title="Emit — update:confirm">
-			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-emit-confirm">
-				<origam-confirm-wrapper
-						v-model="emitConfirmOnlyValue"
-						v-model:confirm="emitConfirmOnlyConfirm"
-						field="text-field"
-						:defaults="{ label: 'Confirm field' }"
-						data-cy="confirm-wrapper-emit-confirm-input"
-						@update:confirm="logEvent('update:confirm', $event)"
-				/>
 			</div>
 		</Variant>
 
 		<Variant
-				title="Emit — update:modelValue & update:confirm"
-				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
+				title="Default"
+				:init-state="() => useStoryInitState<IConfirmWrapperProps>({
+					label: 'Email',
+					direction: DIRECTION.VERTICAL,
+					disabled: false,
+					readonly: false,
+					error: false,
+					centerAffix: true
+				})"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-emit">
+				<div style="padding: 24px; max-width: 500px;">
 					<origam-confirm-wrapper
-							v-model="emitValue"
-							v-model:confirm="emitConfirm"
+							v-model="playgroundValue"
+							v-model:confirm="playgroundConfirm"
+							v-bind="state"
 							field="text-field"
-							:defaults="{ label: 'Email' }"
-							data-cy="confirm-wrapper-emit-input"
-							@update:model-value="(v: any) => { state.log = [`update:modelValue → ${v}`, ...state.log].slice(0, 5) }"
-							@update:confirm="(v: any) => { state.log = [`update:confirm → ${v}`, ...state.log].slice(0, 5) }"
+							:defaults="{ label: state.label }"
+							@update:model-value="logEvent('update:modelValue', $event)"
+							@update:confirm="logEvent('update:confirm', $event)"
 					/>
-					<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 8px; padding-left: 16px;">
-						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
-					</ul>
-					<p v-if="state.log.length === 0" style="font-size: 0.8rem; opacity: 0.7;">Type to fire events.</p>
 				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.label"        title="Label"/>
+					<HstText v-model="state.confirmLabel" title="Confirm Label"/>
+					<HstText v-model="state.hint"         title="Hint"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect   v-model="state.direction" title="Direction" :options="DIRECTION_OPTIONS"/>
+					<HstSelect   v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
+					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstSelect   v-model="state.variant"   title="Variant"   :options="VARIANT_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.disabled"       title="Disabled"/>
+					<HstCheckbox v-model="state.readonly"       title="Readonly"/>
+					<HstCheckbox v-model="state.required"       title="Required"/>
+					<HstCheckbox v-model="state.error"          title="Error"/>
+					<HstCheckbox v-model="state.persistentHint" title="Persistent Hint"/>
+					<HstCheckbox v-model="state.centerAffix"    title="Center Affix"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 	</Story>
@@ -318,55 +368,78 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamConfirmWrapper, OrigamIcon, OrigamTextField } from '@origam/components'
-	import { MDI_ICONS } from '@origam/enums'
+	import { DIRECTION, MDI_ICONS } from '@origam/enums'
 	import type { IConfirmWrapperProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
+		ICON_OPTIONS,
+		ROUNDED_OPTIONS,
+		VARIANT_OPTIONS
+	} from '@stories/const'
 
-	const defaultValue = ref('')
-	const defaultConfirm = ref('')
+	import type { IOptions } from '@origam/interfaces'
+	import type { TDirection } from '@origam/types'
 
-	const directionValue = ref('')
-	const directionConfirm = ref('')
+	const DIRECTION_OPTIONS: Array<IOptions<TDirection>> = [
+		{ label: 'Vertical', value: DIRECTION.VERTICAL },
+		{ label: 'Horizontal', value: DIRECTION.HORIZONTAL }
+	]
 
-	const labelValue = ref('')
-	const labelConfirm = ref('')
+	const iconHeart = MDI_ICONS.HEART
+	const iconArrowRight = MDI_ICONS.ARROW_RIGHT
 
-	const statesValue = ref('')
-	const statesConfirm = ref('')
+	const designValue = ref('')
+	const designConfirm = ref('')
 
-	const validValue = ref('')
-	const validConfirm = ref('')
+	const functionalValue = ref('')
+	const functionalConfirm = ref('')
 
-	const slotValue = ref('')
-	const slotConfirm = ref('')
+	const emitModelValue = ref('')
+	const emitModelConfirm = ref('')
 
-	const customValue = ref('')
-	const customConfirm = ref('')
+	const emitConfirmValue = ref('')
+	const emitConfirmConfirm = ref('')
 
-	const emitValue = ref('')
-	const emitConfirm = ref('')
+	const emitFocusedValue = ref('')
+	const emitFocusedConfirm = ref('')
 
-	const emitConfirmOnlyValue = ref('')
-	const emitConfirmOnlyConfirm = ref('')
+	const emitPrependValue = ref('')
+	const emitPrependConfirm = ref('')
 
-	const slotAppendValue = ref('')
-	const slotAppendConfirm = ref('')
+	const emitAppendValue = ref('')
+	const emitAppendConfirm = ref('')
 
-	const slotDetailsValue = ref('')
-	const slotDetailsConfirm = ref('')
+	const slotDefaultValue = ref('')
+	const slotDefaultConfirm = ref('')
 
-	const slotMessageValue = ref('')
-	const slotMessageConfirm = ref('')
+	const slotConfirmValue = ref('')
+	const slotConfirmConfirm = ref('')
 
-	const slotMessagesValue = ref('')
-	const slotMessagesConfirm = ref('')
+	const slotHeaderValue = ref('')
+	const slotHeaderConfirm = ref('')
+
+	const slotTitleValue = ref('')
+	const slotTitleConfirm = ref('')
 
 	const slotPrependValue = ref('')
 	const slotPrependConfirm = ref('')
 
-	const slotTitleValue = ref('')
-	const slotTitleConfirm = ref('')
+	const slotAppendValue = ref('')
+	const slotAppendConfirm = ref('')
+
+	const slotMessagesValue = ref('')
+	const slotMessagesConfirm = ref('')
+
+	const slotMessageValue = ref('')
+	const slotMessageConfirm = ref('')
+
+	const slotDetailsValue = ref('')
+	const slotDetailsConfirm = ref('')
 
 	const playgroundValue = ref('')
 	const playgroundConfirm = ref('')

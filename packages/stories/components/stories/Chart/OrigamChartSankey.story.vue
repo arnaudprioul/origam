@@ -3,244 +3,252 @@
 			group="components"
 			title="Chart/OrigamChartSankey"
 	>
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<Record<string, unknown>>({
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IChartSankeyProps>>({
+					title: 'Web funnel flow',
+					subtitle: 'May 2026',
 					height: 400,
-					animated: true,
-					showLegend: false,
-					showTooltip: true,
-					legendPosition: 'bottom',
-					nodeWidth: 16,
-					nodePadding: 8,
-					linkOpacity: 0.4,
-					showLabel: true
+					colorScheme: [],
+					bgColor: undefined,
+					elevation: undefined,
+					rounded: undefined,
+					aspectRatio: undefined
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="sankey-playground"
-				>
-					<origam-chart-sankey
-							:series="FIXTURE_WEB_FUNNEL"
-							:height="Number(state.height)"
-							:animated="Boolean(state.animated)"
-							:show-legend="Boolean(state.showLegend)"
-							:show-tooltip="Boolean(state.showTooltip)"
-							:legend-position="state.legendPosition"
-							:node-width="Number(state.nodeWidth)"
-							:node-padding="Number(state.nodePadding)"
-							:link-opacity="Number(state.linkOpacity)"
-							:show-label="Boolean(state.showLabel)"
-							title="Web funnel flow"
-							subtitle="May 2026"
-							data-cy="sankey-playground-chart"
-							@point-click="onPointClick"
-							@legend-click="onLegendClick"
-							@series-toggle="onSeriesToggle"
-					/>
-					<pre
-							class="story-log"
-							data-cy="sankey-playground-log"
-					>{{ logLines.join('\n') }}</pre>
-				</div>
+				<origam-chart-sankey
+						:series="FIXTURE_WEB_FUNNEL"
+						:title="state.title"
+						:subtitle="state.subtitle"
+						:height="state.height"
+						:color-scheme="state.colorScheme"
+						:bg-color="state.bgColor || undefined"
+						:elevation="state.elevation || undefined"
+						:rounded="state.rounded || undefined"
+						:aspect-ratio="state.aspectRatio || undefined"
+				/>
 			</template>
 			<template #controls="{ state }">
-				<HstNumber
-						v-model="state.height"
-						title="height (px)"
-				/>
-				<HstNumber
-						v-model="state.nodeWidth"
-						title="nodeWidth"
-				/>
-				<HstNumber
-						v-model="state.nodePadding"
-						title="nodePadding"
-				/>
-				<HstSlider
-						v-model="state.linkOpacity"
-						title="linkOpacity"
-						:min="0"
-						:max="1"
-						:step="0.05"
-				/>
-				<HstSelect
-						v-model="state.legendPosition"
-						title="legendPosition"
-						:options="LEGEND_POSITION_OPTIONS"
-				/>
-				<HstCheckbox
-						v-model="state.animated"
-						title="animated"
-				/>
-				<HstCheckbox
-						v-model="state.showLegend"
-						title="showLegend"
-				/>
-				<HstCheckbox
-						v-model="state.showTooltip"
-						title="showTooltip"
-				/>
-				<HstCheckbox
-						v-model="state.showLabel"
-						title="showLabel"
-				/>
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.bgColor"    title="Bg Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.elevation"  title="Elevation"   :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded" title="Rounded" :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstNumber v-model="state.height"      title="Height (px)" :min="100" :max="800" :step="20"/>
+					<HstText   v-model="state.aspectRatio" title="Aspect Ratio (e.g. 16/9)"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — nodeWidth / nodePadding (compact vs spaced)">
-			<div
-					class="story-shell"
-					data-cy="sankey-node-sizing"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>compact (nodeWidth=8, nodePadding=4)</strong>
-						<origam-chart-sankey
-								:series="FIXTURE_ENERGY"
-								:height="360"
-								:node-width="8"
-								:node-padding="4"
-								title="Energy budget — compact"
-								data-cy="sankey-compact"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>spaced (nodeWidth=24, nodePadding=16)</strong>
-						<origam-chart-sankey
-								:series="FIXTURE_ENERGY"
-								:height="360"
-								:node-width="24"
-								:node-padding="16"
-								title="Energy budget — spaced"
-								data-cy="sankey-spaced"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — linkOpacity (translucent vs opaque)">
-			<div
-					class="story-shell"
-					data-cy="sankey-link-opacity"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>translucent (linkOpacity=0.2)</strong>
-						<origam-chart-sankey
-								:series="FIXTURE_WEB_FUNNEL"
-								:height="360"
-								:link-opacity="0.2"
-								title="Translucent links"
-								data-cy="sankey-translucent"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>opaque (linkOpacity=0.85)</strong>
-						<origam-chart-sankey
-								:series="FIXTURE_WEB_FUNNEL"
-								:height="360"
-								:link-opacity="0.85"
-								title="Opaque links"
-								data-cy="sankey-opaque"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — colorScheme (DS intents vs custom palette)">
-			<div
-					class="story-shell"
-					data-cy="sankey-color-scheme"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>default DS intent cycle</strong>
-						<origam-chart-sankey
-								:series="FIXTURE_ENERGY"
-								:height="360"
-								title="DS intents"
-								data-cy="sankey-color-intents"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>custom palette</strong>
-						<origam-chart-sankey
-								:series="FIXTURE_ENERGY"
-								:color-scheme="['#6366f1','#8b5cf6','#ec4899']"
-								:height="360"
-								title="Custom palette"
-								data-cy="sankey-color-custom"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — tooltip">
-			<div
-					class="story-shell"
-					data-cy="sankey-slot-tooltip"
-			>
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IChartSankeyProps>>({
+					nodeWidth: 16,
+					nodePadding: 8,
+					linkOpacity: 0.4,
+					showLabel: true,
+					animated: true,
+					animationDuration: 600,
+					showLegend: false,
+					legendPosition: 'bottom',
+					showTooltip: true
+				})"
+		>
+			<template #default="{ state }">
 				<origam-chart-sankey
 						:series="FIXTURE_WEB_FUNNEL"
-						:height="380"
-						title="Custom tooltip"
-						data-cy="sankey-slot-tooltip-chart"
-				>
-					<template #tooltip="{ point, category }">
-						<div class="custom-tooltip">
-							<strong>{{ category }}</strong>
-							<span>{{ typeof point?.y === 'number' ? point.y.toLocaleString() : (point?.y ?? '') }} users</span>
-						</div>
-					</template>
-				</origam-chart-sankey>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — empty">
-			<div
-					class="story-shell"
-					data-cy="sankey-slot-empty"
-			>
-				<origam-chart-sankey
-						:series="[]"
-						:height="320"
-						title="Empty state"
-						data-cy="sankey-slot-empty-chart"
-				>
-					<template #empty>
-						<div class="custom-empty">
-							No flow data available for this period.
-						</div>
-					</template>
-				</origam-chart-sankey>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — point-click on node + link">
-			<div
-					class="story-shell"
-					data-cy="sankey-emit"
-			>
-				<origam-chart-sankey
-						:series="FIXTURE_WEB_FUNNEL"
-						:height="360"
-						title="Interact — click nodes or links"
-						data-cy="sankey-emit-chart"
-						@point-click="onPointClick"
-						@legend-click="onLegendClick"
-						@series-toggle="onSeriesToggle"
+						title="Web funnel flow"
+						subtitle="May 2026"
+						:node-width="state.nodeWidth"
+						:node-padding="state.nodePadding"
+						:link-opacity="state.linkOpacity"
+						:show-label="state.showLabel"
+						:animated="state.animated"
+						:animation-duration="state.animationDuration"
+						:show-legend="state.showLegend"
+						:legend-position="state.legendPosition"
+						:show-tooltip="state.showTooltip"
 				/>
-				<pre
-						class="story-log"
-						data-cy="sankey-emit-log"
-				>{{ logLines.join('\n') }}</pre>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Layout">
+					<HstNumber v-model="state.nodeWidth"   title="Node Width"   :min="4"  :max="48" :step="2"/>
+					<HstNumber v-model="state.nodePadding" title="Node Padding" :min="0"  :max="32" :step="2"/>
+					<HstNumber v-model="state.linkOpacity" title="Link Opacity" :min="0"  :max="1"  :step="0.05"/>
+					<HstCheckbox v-model="state.showLabel" title="Show Label"/>
+				</StoryGroup>
+				<StoryGroup title="Animation">
+					<HstCheckbox v-model="state.animated"         title="Animated"/>
+					<HstNumber   v-model="state.animationDuration" title="Duration (ms)" :min="100" :max="2000" :step="100"/>
+				</StoryGroup>
+				<StoryGroup title="Legend">
+					<HstCheckbox v-model="state.showLegend"    title="Show Legend"/>
+					<HstSelect   v-model="state.legendPosition" title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Tooltip">
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Events - point-click">
+			<origam-chart-sankey
+					:series="FIXTURE_WEB_FUNNEL"
+					:height="360"
+					title="Click a node or link"
+					@point-click="logEvent('point-click', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - legend-click">
+			<origam-chart-sankey
+					:series="FIXTURE_WEB_FUNNEL"
+					:height="360"
+					:show-legend="true"
+					title="Click a legend entry"
+					@legend-click="logEvent('legend-click', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - series-toggle">
+			<origam-chart-sankey
+					:series="FIXTURE_WEB_FUNNEL"
+					:height="360"
+					:show-legend="true"
+					title="Toggle a series via legend"
+					@series-toggle="logEvent('series-toggle', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Slots - title">
+			<origam-chart-sankey
+					:series="FIXTURE_WEB_FUNNEL"
+					:height="360"
+			>
+				<template #title>
+					<strong>Custom title slot</strong>
+					<em style="font-size: 0.8125rem; color: var(--origam-color-text-secondary);">custom subtitle via slot</em>
+				</template>
+			</origam-chart-sankey>
+		</Variant>
+
+		<Variant title="Slots - tooltip">
+			<origam-chart-sankey
+					:series="FIXTURE_WEB_FUNNEL"
+					:height="380"
+					title="Custom tooltip"
+			>
+				<template #tooltip="{ point, category }">
+					<div style="display: flex; flex-direction: column; gap: 2px; padding: 4px;">
+						<strong>{{ category }}</strong>
+						<span>{{ typeof point?.y === 'number' ? point.y.toLocaleString() : (point?.y ?? '') }} users</span>
+					</div>
+				</template>
+			</origam-chart-sankey>
+		</Variant>
+
+		<Variant title="Slots - node-label">
+			<origam-chart-sankey
+					:series="FIXTURE_ENERGY"
+					:height="380"
+					title="Custom node label"
+			>
+				<template #node-label="{ name, formatted, color }">
+					<tspan :fill="color" font-weight="700">{{ name }}</tspan>
+					<tspan dx="4" font-size="0.625rem">({{ formatted }})</tspan>
+				</template>
+			</origam-chart-sankey>
+		</Variant>
+
+		<Variant title="Slots - legend-item">
+			<origam-chart-sankey
+					:series="FIXTURE_WEB_FUNNEL"
+					:height="380"
+					:show-legend="true"
+					title="Custom legend item"
+			>
+				<template #legend-item="{ series: s, index, visible }">
+					<span :style="{ opacity: visible ? 1 : 0.4, fontWeight: '600' }">
+						{{ index + 1 }}. {{ s.name }}
+					</span>
+				</template>
+			</origam-chart-sankey>
+		</Variant>
+
+		<Variant title="Slots - empty">
+			<origam-chart-sankey
+					:series="[]"
+					:height="320"
+					title="Empty state"
+			>
+				<template #empty>
+					<span style="font-style: italic; color: var(--origam-color-text-secondary);">
+						No flow data available for this period.
+					</span>
+				</template>
+			</origam-chart-sankey>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IChartSankeyProps>({
+					series: [],
+					title: 'Web funnel flow',
+					subtitle: 'May 2026',
+					height: 400,
+					nodeWidth: 16,
+					nodePadding: 8,
+					linkOpacity: 0.4,
+					showLabel: true,
+					animated: true,
+					animationDuration: 600,
+					showLegend: false,
+					legendPosition: 'bottom',
+					showTooltip: true,
+					colorScheme: []
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart-sankey
+						v-bind="state"
+						:series="FIXTURE_WEB_FUNNEL"
+						@point-click="logEvent('point-click', $event)"
+						@legend-click="logEvent('legend-click', $event)"
+						@series-toggle="logEvent('series-toggle', $event)"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstNumber   v-model="state.nodeWidth"        title="Node Width"     :min="4"   :max="48"   :step="2"/>
+					<HstNumber   v-model="state.nodePadding"      title="Node Padding"   :min="0"   :max="32"   :step="2"/>
+					<HstNumber   v-model="state.linkOpacity"      title="Link Opacity"   :min="0"   :max="1"    :step="0.05"/>
+					<HstNumber   v-model="state.height"           title="Height (px)"    :min="100" :max="800"  :step="20"/>
+					<HstNumber   v-model="state.animationDuration" title="Animation (ms)" :min="100" :max="2000" :step="100"/>
+					<HstSelect   v-model="state.legendPosition"   title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+					<HstCheckbox v-model="state.showLabel"   title="Show Label"/>
+					<HstCheckbox v-model="state.animated"    title="Animated"/>
+					<HstCheckbox v-model="state.showLegend"  title="Show Legend"/>
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -249,31 +257,36 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamChartSankey } from '@origam/components'
+	import type { IChartSankeyProps, IChartSeries } from '@origam/interfaces'
 
-	import type { IChartPoint, IChartSeries } from '@origam/interfaces'
-
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
 
 	const LEGEND_POSITION_OPTIONS = [
-		{ value: 'top', label: 'top' },
+		{ value: 'top',    label: 'top' },
 		{ value: 'bottom', label: 'bottom' },
-		{ value: 'left', label: 'left' },
-		{ value: 'right', label: 'right' }
+		{ value: 'left',   label: 'left' },
+		{ value: 'right',  label: 'right' }
 	]
 
 	const FIXTURE_ENERGY: Array<IChartSeries> = [
 		{
 			name: 'Energy budget',
 			data: [
-				{ from: 'Solar', to: 'Grid', value: 30 },
-				{ from: 'Wind', to: 'Grid', value: 25 },
-				{ from: 'Nuclear', to: 'Grid', value: 20 },
-				{ from: 'Grid', to: 'Residential', value: 35 },
-				{ from: 'Grid', to: 'Industrial', value: 25 },
-				{ from: 'Grid', to: 'Commercial', value: 15 }
+				{ from: 'Solar',   to: 'Grid',        value: 30 },
+				{ from: 'Wind',    to: 'Grid',        value: 25 },
+				{ from: 'Nuclear', to: 'Grid',        value: 20 },
+				{ from: 'Grid',    to: 'Residential', value: 35 },
+				{ from: 'Grid',    to: 'Industrial',  value: 25 },
+				{ from: 'Grid',    to: 'Commercial',  value: 15 }
 			] as any
 		}
 	]
@@ -282,84 +295,19 @@
 		{
 			name: 'Web funnel',
 			data: [
-				{ from: 'Home', to: 'Catalogue', value: 100 },
-				{ from: 'Catalogue', to: 'Cart', value: 40 },
-				{ from: 'Catalogue', to: 'Exit', value: 60 },
-				{ from: 'Cart', to: 'Checkout', value: 25 },
-				{ from: 'Cart', to: 'Exit', value: 15 },
-				{ from: 'Checkout', to: 'Success', value: 20 },
-				{ from: 'Checkout', to: 'Failure', value: 5 }
+				{ from: 'Home',      to: 'Catalogue', value: 100 },
+				{ from: 'Catalogue', to: 'Cart',      value: 40 },
+				{ from: 'Catalogue', to: 'Exit',      value: 60 },
+				{ from: 'Cart',      to: 'Checkout',  value: 25 },
+				{ from: 'Cart',      to: 'Exit',      value: 15 },
+				{ from: 'Checkout',  to: 'Success',   value: 20 },
+				{ from: 'Checkout',  to: 'Failure',   value: 5 }
 			] as any
 		}
 	]
-
-	const logLines = ref<Array<string>>([])
-
-	const appendLog = (line: string) => {
-		logLines.value = [line, ...logLines.value].slice(0, 8)
-	}
-
-	const onPointClick = (point: IChartPoint) => {
-		appendLog(`point-click → x="${ point.x }" y=${ point.y }`)
-	}
-
-	const onLegendClick = (series: IChartSeries, index: number) => {
-		appendLog(`legend-click → ${ series.name } (index ${ index })`)
-	}
-
-	const onSeriesToggle = (series: IChartSeries, visible: boolean) => {
-		appendLog(`series-toggle → ${ series.name } now ${ visible ? 'visible' : 'hidden' }`)
-	}
 </script>
 
-<style scoped>
-	.story-shell {
-		display: flex;
-		flex-direction: column;
-		gap: 12px;
-		padding: 16px;
-	}
-
-	.story-log {
-		font-size: 0.75rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-		min-height: 80px;
-		border: 1px solid var(--origam-color-border-subtle, #e5e7eb);
-		border-radius: 4px;
-		padding: 8px;
-		white-space: pre-wrap;
-	}
-
-	.story-grid {
-		display: grid;
-		gap: 16px;
-	}
-
-	.story-grid--2 {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	.story-col {
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-		min-width: 0;
-	}
-
-	.story-col strong {
-		font-size: 0.8125rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-	}
-
-	.custom-tooltip {
-		display: flex;
-		flex-direction: column;
-		gap: 2px;
-		padding: 4px;
-	}
-
-	.custom-empty {
-		color: var(--origam-color-text-secondary, #6b7280);
-		font-style: italic;
-	}
-</style>
+<docs
+		lang="md"
+		src="@docs/components/Chart/OrigamChartSankey.md"
+/>

@@ -53,11 +53,21 @@
 		useSlots
 } from 'vue'
 
+	import {
+		useBorder,
+		useElevation,
+		useMargin,
+		usePadding,
+		useRounded
+	} from '../../composables'
+
 	import { QUOTE_MARKS_BY_LANG } from '../../consts/Blockquote/blockquote.const'
 
 	import type { IBlockquoteProps } from '../../interfaces'
 
 	import type { TBlockquoteLang } from '../../types'
+
+	import { isIntent } from '../../utils'
 
 	/*********************************************************
 	 * Global
@@ -143,13 +153,47 @@
 	})
 
 	/*********************************************************
-	 * Class & Style
+	 * Cross-cutting surfaces (rounded / elevation / border / spacing)
+	 ********************************************************/
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {elevationClasses} = useElevation(props)
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+
+	/*********************************************************
+	 * Colour axes — `color` = text, `bgColor` = accent
 	 *
 	 * @description
-	 * The variant + intent color is materialised through static
-	 * `--variant-{name}` and `--color-{intent}` modifier classes. The
-	 * SCSS layer translates those into the right token overrides; the
-	 * component does not branch on the variant at the JS level.
+	 * Two independent intents. Tokenised values resolve through static
+	 * `--color-{intent}` (text) / `--accent-{intent}` (bar, glyph, author)
+	 * modifier classes; custom values fall back to inline CSS-var overrides
+	 * (classes-first, style-as-escape-hatch). `bgColor` never paints a
+	 * surface fill — it only drives the accent vars.
+	 ********************************************************/
+	const colorIsIntent = computed(() => typeof props.color === 'string' && isIntent(props.color))
+	const accentIsIntent = computed(() => typeof props.bgColor === 'string' && isIntent(props.bgColor))
+
+	const customColorStyles = computed<Record<string, string>>(() => {
+		const styles: Record<string, string> = {}
+
+		if (props.color && !colorIsIntent.value) {
+			styles['--origam-blockquote---color'] = String(props.color)
+			styles['--origam-blockquote__source---color'] = String(props.color)
+		}
+
+		if (props.bgColor && !accentIsIntent.value) {
+			const accent = String(props.bgColor)
+			styles['--origam-blockquote---resolved-accent-color'] = accent
+			styles['--origam-blockquote---resolved-quote-mark-color'] = accent
+			styles['--origam-blockquote---resolved-author-color'] = accent
+		}
+
+		return styles
+	})
+
+	/*********************************************************
+	 * Class & Style
 	 ********************************************************/
 	const blockquoteClasses = computed(() => {
 		return [
@@ -157,15 +201,28 @@
 			`origam-blockquote--variant-${props.variant}`,
 			`origam-blockquote--align-${effectiveAlign.value}`,
 			{
-				[`origam-blockquote--color-${props.color}`]: !!props.color,
+				[`origam-blockquote--color-${props.color}`]: colorIsIntent.value,
+				[`origam-blockquote--accent-${props.bgColor}`]: accentIsIntent.value,
 				'origam-blockquote--has-attribution': hasAttribution.value
 			},
+			roundedClasses.value,
+			elevationClasses.value,
+			borderClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})
 
 	const blockquoteStyles = computed<StyleValue>(() => {
-		return [props.style] as StyleValue
+		return [
+			roundedStyles.value,
+			borderStyles.value,
+			paddingStyles.value,
+			marginStyles.value,
+			customColorStyles.value,
+			props.style
+		] as StyleValue
 	})
 
 	/*********************************************************
@@ -273,6 +330,8 @@
 		font-style: var(--origam-blockquote__elegant---font-style, italic);
 		line-height: var(--origam-blockquote__elegant---line-height, 2);
 		padding-block: var(--origam-blockquote__elegant---padding-block, 24px);
+		border-inline-start: var(--origam-blockquote__accent---width, 4px) solid var(--origam-blockquote---resolved-accent-color);
+		padding-inline-start: calc(var(--origam-blockquote---resolved-padding-inline) + var(--origam-blockquote__accent---width, 4px));
 	}
 
 	.origam-blockquote--variant-quoted {
@@ -294,6 +353,8 @@
 		font-style: var(--origam-blockquote__minimal---font-style, italic);
 		padding-inline: var(--origam-blockquote__minimal---padding-inline, 12px);
 		padding-block: 0;
+		border-inline-start: var(--origam-blockquote--minimal---accent-width, 2px) solid var(--origam-blockquote---resolved-accent-color);
+		padding-inline-start: calc(var(--origam-blockquote__minimal---padding-inline, 12px) + var(--origam-blockquote--minimal---accent-width, 2px));
 	}
 
 	.origam-blockquote--variant-pull {
@@ -307,51 +368,91 @@
 		border-block-end: var(--origam-blockquote__pull---rule-width, 2px) solid var(--origam-blockquote---resolved-accent-color);
 	}
 
-	.origam-blockquote--color-primary {
+	.origam-blockquote--accent-primary {
 		--origam-blockquote---resolved-accent-color: var(--origam-color__action--primary---bg);
 		--origam-blockquote---resolved-quote-mark-color: var(--origam-color__action--primary---bg);
 		--origam-blockquote---resolved-author-color: var(--origam-color__action--primary---fgSubtle);
 	}
 
-	.origam-blockquote--color-secondary {
+	.origam-blockquote--accent-secondary {
 		--origam-blockquote---resolved-accent-color: var(--origam-color__action--secondary---bg);
 		--origam-blockquote---resolved-quote-mark-color: var(--origam-color__action--secondary---bg);
 		--origam-blockquote---resolved-author-color: var(--origam-color__action--secondary---fgSubtle);
 	}
 
-	.origam-blockquote--color-success {
+	.origam-blockquote--accent-success {
 		--origam-blockquote---resolved-accent-color: var(--origam-color__feedback--success---bg);
 		--origam-blockquote---resolved-quote-mark-color: var(--origam-color__feedback--success---bg);
 		--origam-blockquote---resolved-author-color: var(--origam-color__feedback--success---fgSubtle);
 	}
 
-	.origam-blockquote--color-warning {
+	.origam-blockquote--accent-warning {
 		--origam-blockquote---resolved-accent-color: var(--origam-color__feedback--warning---bg);
 		--origam-blockquote---resolved-quote-mark-color: var(--origam-color__feedback--warning---bg);
 		--origam-blockquote---resolved-author-color: var(--origam-color__feedback--warning---fgSubtle);
 	}
 
-	.origam-blockquote--color-danger {
+	.origam-blockquote--accent-danger {
 		--origam-blockquote---resolved-accent-color: var(--origam-color__feedback--danger---bg);
 		--origam-blockquote---resolved-quote-mark-color: var(--origam-color__feedback--danger---bg);
 		--origam-blockquote---resolved-author-color: var(--origam-color__feedback--danger---fgSubtle);
 	}
 
-	.origam-blockquote--color-info {
+	.origam-blockquote--accent-info {
 		--origam-blockquote---resolved-accent-color: var(--origam-color__feedback--info---bg);
 		--origam-blockquote---resolved-quote-mark-color: var(--origam-color__feedback--info---bg);
 		--origam-blockquote---resolved-author-color: var(--origam-color__feedback--info---fgSubtle);
 	}
 
-	.origam-blockquote--color-neutral {
+	.origam-blockquote--accent-neutral {
 		--origam-blockquote---resolved-accent-color: var(--origam-color__text---primary);
 		--origam-blockquote---resolved-quote-mark-color: var(--origam-color__text---primary);
 		--origam-blockquote---resolved-author-color: var(--origam-color__text---secondary);
 	}
 
-	.origam-blockquote--color-ghost {
+	.origam-blockquote--accent-ghost {
 		--origam-blockquote---resolved-accent-color: var(--origam-color__border---subtle);
 		--origam-blockquote---resolved-quote-mark-color: var(--origam-color__text---secondary);
 		--origam-blockquote---resolved-author-color: var(--origam-color__text---secondary);
+	}
+
+	.origam-blockquote--color-primary {
+		--origam-blockquote---color: var(--origam-color__action--primary---fgSubtle);
+		--origam-blockquote__source---color: var(--origam-color__action--primary---fgSubtle);
+	}
+
+	.origam-blockquote--color-secondary {
+		--origam-blockquote---color: var(--origam-color__action--secondary---fgSubtle);
+		--origam-blockquote__source---color: var(--origam-color__action--secondary---fgSubtle);
+	}
+
+	.origam-blockquote--color-success {
+		--origam-blockquote---color: var(--origam-color__feedback--success---fgSubtle);
+		--origam-blockquote__source---color: var(--origam-color__feedback--success---fgSubtle);
+	}
+
+	.origam-blockquote--color-warning {
+		--origam-blockquote---color: var(--origam-color__feedback--warning---fgSubtle);
+		--origam-blockquote__source---color: var(--origam-color__feedback--warning---fgSubtle);
+	}
+
+	.origam-blockquote--color-danger {
+		--origam-blockquote---color: var(--origam-color__feedback--danger---fgSubtle);
+		--origam-blockquote__source---color: var(--origam-color__feedback--danger---fgSubtle);
+	}
+
+	.origam-blockquote--color-info {
+		--origam-blockquote---color: var(--origam-color__feedback--info---fgSubtle);
+		--origam-blockquote__source---color: var(--origam-color__feedback--info---fgSubtle);
+	}
+
+	.origam-blockquote--color-neutral {
+		--origam-blockquote---color: var(--origam-color__text---primary);
+		--origam-blockquote__source---color: var(--origam-color__text---secondary);
+	}
+
+	.origam-blockquote--color-ghost {
+		--origam-blockquote---color: var(--origam-color__action--ghost---fg);
+		--origam-blockquote__source---color: var(--origam-color__action--ghost---fg);
 	}
 </style>

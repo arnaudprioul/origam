@@ -53,9 +53,9 @@ const measureHeightAtDensity = async (
     return box?.height ?? 0
 }
 
-const ALERT_STORY = '/story/stories-components-stories-alert-origamalert-story-vue'
-const BTN_GROUP_STORY = '/story/stories-components-stories-btn-origambtngroup-story-vue'
-const BREADCRUMB_STORY = '/story/stories-components-stories-breadcrumb-origambreadcrumb-story-vue'
+const ALERT_STORY = '/story/components-stories-alert-origamalert-story-vue'
+const BTN_GROUP_STORY = '/story/components-stories-btn-origambtngroup-story-vue'
+const BREADCRUMB_STORY = '/story/components-stories-breadcrumb-origambreadcrumb-story-vue'
 
 test('OrigamAlert — comfortable height > compact height', async ({ page }) => {
     const compact = await measureHeightAtDensity(page, ALERT_STORY, 'Default', 'compact', '.origam-alert')
@@ -65,18 +65,15 @@ test('OrigamAlert — comfortable height > compact height', async ({ page }) => 
 })
 
 test('OrigamBtnGroup — comfortable min-height > compact min-height', async ({ page }) => {
-    const compact = await measureHeightAtDensity(page, BTN_GROUP_STORY, 'Density', 'compact', '.origam-btn-group')
-    const comfortable = await measureHeightAtDensity(page, BTN_GROUP_STORY, 'Density', 'comfortable', '.origam-btn-group')
+    const compact = await measureHeightAtDensity(page, BTN_GROUP_STORY, 'Prop — density', 'compact', '.origam-btn-group')
+    const comfortable = await measureHeightAtDensity(page, BTN_GROUP_STORY, 'Prop — density', 'comfortable', '.origam-btn-group')
     console.log('[btn-group] compact=', compact, 'comfortable=', comfortable)
     expect(comfortable).toBeGreaterThan(compact)
 })
 
 test('OrigamBreadcrumb — comfortable height > compact height', async ({ page }) => {
-    // Breadcrumb's story exposes Density (not Default) as the variant
-    // wired to `:density` controls. Pre-existing test bug — never hit
-    // because the suite was added before the story-variant rename.
-    const compact = await measureHeightAtDensity(page, BREADCRUMB_STORY, 'Density', 'compact', '.origam-breadcrumb')
-    const comfortable = await measureHeightAtDensity(page, BREADCRUMB_STORY, 'Density', 'comfortable', '.origam-breadcrumb')
+    const compact = await measureHeightAtDensity(page, BREADCRUMB_STORY, 'Prop — density', 'compact', '.origam-breadcrumb')
+    const comfortable = await measureHeightAtDensity(page, BREADCRUMB_STORY, 'Prop — density', 'comfortable', '.origam-breadcrumb')
     console.log('[breadcrumb] compact=', compact, 'comfortable=', comfortable)
     expect(comfortable).toBeGreaterThan(compact)
 })

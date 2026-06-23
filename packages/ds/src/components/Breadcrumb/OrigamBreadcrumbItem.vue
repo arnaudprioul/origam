@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="link.tag"
+			v-contrast
 			:aria-current="isActive ? 'page' : undefined"
 			:class="breadcrumbItemClasses"
 			:href="link.href"
@@ -66,6 +67,8 @@
 		setup
 >
 	import { OrigamAvatar, OrigamIcon } from '../../components'
+
+	import { vContrast } from '../../directives'
 
 	import {
 		useActive,

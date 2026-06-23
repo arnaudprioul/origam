@@ -24,34 +24,35 @@
 					/>
 				</slot>
 
-				<origam-selection-control-group
-						:id="id"
-						ref="origamSelectionControlGroupRef"
-						v-model="model"
-						:aria-describedby="messagesId"
-						:aria-labelledby="label ? id : undefined"
-						:disabled="isDisabled"
-						:items="items"
-						:multiple="false"
-						:readonly="isReadonly"
-						v-bind="{ ...controlProps , ...controlAttrs}"
-				>
-					<template #item="{item}">
-						<slot
-								name="item"
-								v-bind="{id, messagesId, isDisabled, isReadonly, isValid}"
-						>
-							<origam-radio
-									ref="origamRadioRef"
-									v-model="model"
-									:aria-describedby="messagesId"
-									:disabled="isDisabled"
-									:readonly="isReadonly"
-									v-bind="item"
-							/>
-						</slot>
-					</template>
-				</origam-selection-control-group>
+				<origam-defaults-provider :defaults="radioDefaults">
+					<origam-selection-control-group
+							:id="id"
+							ref="origamSelectionControlGroupRef"
+							v-model="model"
+							:aria-describedby="messagesId"
+							:aria-labelledby="label ? id : undefined"
+							:disabled="isDisabled"
+							:items="items"
+							:multiple="false"
+							:readonly="isReadonly"
+							v-bind="{ ...controlProps , ...controlAttrs}"
+					>
+						<template #item="{item}">
+							<slot
+									name="item"
+									v-bind="{id, messagesId, isDisabled, isReadonly, isValid}"
+							>
+								<origam-radio
+										v-model="model"
+										:aria-describedby="messagesId"
+										:disabled="isDisabled"
+										:readonly="isReadonly"
+										v-bind="item"
+								/>
+							</slot>
+						</template>
+					</origam-selection-control-group>
+				</origam-defaults-provider>
 			</slot>
 		</template>
 	</origam-input>
@@ -62,7 +63,7 @@
 		setup
 >
 	import { computed, ref, StyleValue, useAttrs } from 'vue'
-	import { OrigamInput, OrigamLabel, OrigamRadio, OrigamSelectionControlGroup } from '../../components'
+	import { OrigamDefaultsProvider, OrigamInput, OrigamLabel, OrigamRadio, OrigamSelectionControlGroup } from '../../components'
 
 	import {
 	useProps,
@@ -73,7 +74,7 @@
 	import { DENSITY } from '../../enums'
 
 	import type { IRadioGroupProps } from '../../interfaces'
-	import type { TOrigamInput, TOrigamRadio, TOrigamSelectionControlGroup } from "../../types"
+	import type { TOrigamInput, TOrigamSelectionControlGroup } from "../../types"
 
 	import { filterInputAttrs, getUid } from '../../utils'
 
@@ -97,7 +98,6 @@
 	 ********************************************************/
 	const origamSelectionControlGroupRef = ref<TOrigamSelectionControlGroup>()
 	const origamInputRef = ref<TOrigamInput>()
-	const origamRadioRef = ref<TOrigamRadio>()
 
 	/*********************************************************
 	 * Value & identity
@@ -132,17 +132,23 @@
 	const controlProps = computed(() => {
 		return origamSelectionControlGroupRef.value?.filterProps(props, ['modelValue', 'id', 'style', 'class', 'readonly', 'disabled', 'type', 'multiple', 'items'])
 	})
-	const radioProps = computed(() => {
-		return origamRadioRef.value.filterProps(props)
-	})
+	// Radios inherit the group's visual props through the
+	// `<origam-defaults-provider :defaults="radioDefaults">` wrapper. Reading
+	// `origamRadioRef` (a v-for array ref, reassigned every render) inside a
+	// computed to derive the radios' own props re-triggered the render
+	// endlessly — "Maximum recursive updates in OrigamInput". Defaults provide
+	// the same forwarding with no ref read; per-item props still win.
+	const radioDefaults = computed(() => ({
+		'origam-radio': {
+			color: props.color,
+			bgColor: props.bgColor,
+			density: props.density,
+			size: props.size
+		}
+	}))
 
 	const items = computed(() => {
-		return props.items?.map((item) => {
-			return {
-				...radioProps.value,
-				...item
-			}
-		})
+		return props.items ?? []
 	})
 
 	/*********************************************************

@@ -3,6 +3,7 @@
 			:is="tag"
 			:id="tabDomId"
 			ref="rootRef"
+			v-contrast
 			role="tab"
 			type="button"
 			:class="tabClasses"
@@ -60,6 +61,8 @@
 		useProps,
 		useStyle
 	} from '../../composables'
+
+	import { vContrast } from '../../directives'
 
 	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_KEY } from '../../consts'
 

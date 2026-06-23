@@ -3,119 +3,112 @@
 			group="components"
 			title="Transition/OrigamFade"
 	>
-		<!--
-			Playground — first by convention. Exposes every ITransitionProps knob.
-			Toggle the button to see the animation in action.
-		-->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<ITransitionProps>({
-					name: 'origam-transition--fade',
-					disabled: false,
-					group: false,
-					hideOnLeave: false,
-					leaveAbsolute: false,
-					origin: ''
-				})"
+				title="Design"
+				:init-state="() => useStoryInitState<ITransitionProps>({ name: 'origam-transition--fade', origin: '' })"
 		>
 			<template #default="{ state }">
 				<div class="story-shell">
 					<button
 							class="story-toggle"
-							data-cy="toggle-playground"
-							@click="togglePlayground = !togglePlayground"
+							data-cy="toggle-design"
+							@click="toggleDesign = !toggleDesign"
 					>
 						Toggle
 					</button>
-					<origam-fade v-bind="state">
+					<origam-fade
+							:name="state.name"
+							:origin="state.origin || undefined"
+					>
 						<div
-								v-if="togglePlayground"
+								v-if="toggleDesign"
 								class="story-target"
-								data-cy="target-playground"
+								data-cy="target-design"
 						>
-							Playground
+							Fade target
 						</div>
 					</origam-fade>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstText     v-model="state.name"          title="name"/>
-				<HstCheckbox v-model="state.disabled"      title="disabled"/>
-				<HstCheckbox v-model="state.group"         title="group"/>
-				<HstCheckbox v-model="state.hideOnLeave"   title="hideOnLeave"/>
-				<HstCheckbox v-model="state.leaveAbsolute" title="leaveAbsolute"/>
-				<HstText     v-model="state.origin"        title="origin"/>
+				<StoryGroup title="Animation">
+					<HstText v-model="state.name"   title="Name (BEM class)"/>
+					<HstText v-model="state.origin" title="Origin (transformOrigin)"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — disabled (animation off)">
-			<template #default>
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<ITransitionProps>({ disabled: false, group: false, hideOnLeave: false, leaveAbsolute: false, mode: undefined })"
+		>
+			<template #default="{ state }">
 				<div class="story-shell">
-					<button
-							class="story-toggle"
-							data-cy="toggle-disabled"
-							@click="toggleDisabled = !toggleDisabled"
-					>
-						Toggle
-					</button>
-					<origam-fade disabled>
-						<div
-								v-if="toggleDisabled"
-								class="story-target"
-								data-cy="target-disabled"
+					<div class="story-actions">
+						<button
+								class="story-toggle"
+								data-cy="toggle-functional"
+								@click="toggleFunctional = !toggleFunctional"
 						>
-							No animation — instant show/hide
-						</div>
-					</origam-fade>
-				</div>
-			</template>
-		</Variant>
-
-		<Variant title="Prop — group (transition-group)">
-			<template #default>
-				<div class="story-shell">
-					<div style="display: flex; gap: 8px;">
-						<button class="story-toggle" data-cy="group-add"    @click="groupItems.push(groupItems.length + 1)">Add</button>
-						<button class="story-toggle" data-cy="group-remove" @click="groupItems.pop()">Remove</button>
+							Toggle
+						</button>
+						<button
+								class="story-toggle"
+								data-cy="group-add"
+								@click="functionalItems.push(functionalItems.length + 1)"
+						>
+							Add item
+						</button>
+						<button
+								class="story-toggle"
+								data-cy="group-remove"
+								@click="functionalItems.pop()"
+						>
+							Remove item
+						</button>
 					</div>
-					<origam-fade group>
-						<div
-								v-for="item in groupItems"
-								:key="item"
-								class="story-target"
-								:data-cy="`target-group-${item}`"
-						>
-							Item {{ item }}
-						</div>
-					</origam-fade>
-				</div>
-			</template>
-		</Variant>
-
-		<Variant title="Prop — appear (mount animation)">
-			<template #default>
-				<div class="story-shell">
-					<button
-							class="story-toggle"
-							data-cy="toggle-appear"
-							@click="appearKey++"
+					<origam-fade
+							:disabled="state.disabled"
+							:group="state.group"
+							:hide-on-leave="state.hideOnLeave"
+							:leave-absolute="state.leaveAbsolute"
+							:mode="state.mode"
 					>
-						Remount
-					</button>
-					<origam-fade :key="appearKey">
-						<div class="story-target" data-cy="target-appear">
-							Mounted at {{ appearKey }}
+						<template v-if="state.group">
+							<div
+									v-for="item in functionalItems"
+									:key="item"
+									class="story-target"
+									:data-cy="`target-group-${item}`"
+							>
+								Item {{ item }}
+							</div>
+						</template>
+						<div
+								v-else-if="toggleFunctional"
+								class="story-target"
+								data-cy="target-functional"
+						>
+							Functional target
 						</div>
 					</origam-fade>
 				</div>
 			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled"      title="Disabled (no animation)"/>
+					<HstCheckbox v-model="state.hideOnLeave"   title="Hide on Leave"/>
+					<HstCheckbox v-model="state.leaveAbsolute" title="Leave Absolute"/>
+				</StoryGroup>
+				<StoryGroup title="Mode">
+					<HstCheckbox v-model="state.group" title="Group (TransitionGroup)"/>
+					<HstSelect   v-model="state.mode"  title="Mode" :options="TRANSITION_MODE_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
+		<Variant title="Slots - Default">
 			<div class="story-shell">
 				<button
 						class="story-toggle"
@@ -125,11 +118,80 @@
 					Toggle
 				</button>
 				<origam-fade>
-					<div v-if="toggleSlotDefault" class="story-target" data-cy="target-slot-default">
-						<span>Custom slot content</span>
+					<div
+							v-if="toggleSlotDefault"
+							class="story-target"
+							data-cy="target-slot-default"
+					>
+						<strong>Custom</strong> slot content
 					</div>
 				</origam-fade>
 			</div>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<ITransitionProps>({ name: 'origam-transition--fade', disabled: false, group: false, hideOnLeave: false, leaveAbsolute: false, origin: '' })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<div class="story-actions">
+						<button
+								class="story-toggle"
+								data-cy="toggle-playground"
+								@click="togglePlayground = !togglePlayground"
+						>
+							Toggle
+						</button>
+						<button
+								class="story-toggle"
+								data-cy="playground-group-add"
+								@click="playgroundItems.push(playgroundItems.length + 1)"
+						>
+							Add item
+						</button>
+						<button
+								class="story-toggle"
+								data-cy="playground-group-remove"
+								@click="playgroundItems.pop()"
+						>
+							Remove item
+						</button>
+					</div>
+					<origam-fade v-bind="state">
+						<template v-if="state.group">
+							<div
+									v-for="item in playgroundItems"
+									:key="item"
+									class="story-target"
+									:data-cy="`target-playground-group-${item}`"
+							>
+								Item {{ item }}
+							</div>
+						</template>
+						<div
+								v-else-if="togglePlayground"
+								class="story-target"
+								data-cy="target-playground"
+						>
+							Playground
+						</div>
+					</origam-fade>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Design">
+					<HstText v-model="state.name"   title="Name (BEM class)"/>
+					<HstText v-model="state.origin" title="Origin (transformOrigin)"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
+					<HstCheckbox v-model="state.group"         title="Group"/>
+					<HstCheckbox v-model="state.hideOnLeave"   title="Hide on Leave"/>
+					<HstCheckbox v-model="state.leaveAbsolute" title="Leave Absolute"/>
+					<HstSelect   v-model="state.mode"          title="Mode" :options="TRANSITION_MODE_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -139,16 +201,26 @@
 		setup
 >
 	import { ref } from 'vue'
+
 	import { OrigamFade } from '@origam/components'
 	import type { ITransitionProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 
-	const toggleDisabled    = ref(false)
-	const togglePlayground  = ref(false)
+	const TRANSITION_MODE_OPTIONS = [
+		{ label: 'default', value: 'default' },
+		{ label: 'in-out',  value: 'in-out'  },
+		{ label: 'out-in',  value: 'out-in'  }
+	]
+
+	const toggleDesign      = ref(false)
+	const toggleFunctional  = ref(false)
 	const toggleSlotDefault = ref(false)
-	const appearKey         = ref(0)
-	const groupItems        = ref([1, 2])
+	const togglePlayground  = ref(false)
+
+	const functionalItems  = ref([1, 2])
+	const playgroundItems  = ref([1, 2])
 </script>
 
 <style scoped>
@@ -157,6 +229,11 @@
 		flex-direction: column;
 		gap: 12px;
 		align-items: flex-start;
+	}
+	.story-actions {
+		display: flex;
+		gap: 8px;
+		flex-wrap: wrap;
 	}
 	.story-toggle {
 		appearance: none;

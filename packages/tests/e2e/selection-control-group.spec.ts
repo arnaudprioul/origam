@@ -3,13 +3,13 @@ import { expect, test, type Page } from '@playwright/test'
 /**
  * OrigamSelectionControlGroup — runtime assertions per story Variant.
  *
- * Story URL: /story/stories-components-stories-selectioncontrol-origamselectioncontrolgroup-story-vue
+ * Story URL: /story/components-stories-selectioncontrol-origamselectioncontrolgroup-story-vue
  */
 
 const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
 
 const openVariant = async (page: Page, variant: string) => {
-    await page.goto('/story/stories-components-stories-selectioncontrol-origamselectioncontrolgroup-story-vue')
+    await page.goto('/story/components-stories-selectioncontrol-origamselectioncontrolgroup-story-vue')
     await page.waitForLoadState('networkidle')
     await page.getByText(variant, { exact: true }).first().click()
     await page.waitForTimeout(800)
@@ -19,7 +19,7 @@ const openVariant = async (page: Page, variant: string) => {
 
 test.describe('OrigamSelectionControlGroup — Type', () => {
     test('renders checkboxes in type variant', async ({ page }) => {
-        await openVariant(page, 'Type')
+        await openVariant(page, 'Prop — type')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="scg-type"]').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('[data-cy="scg-type"] .origam-selection-control').count()
@@ -31,7 +31,7 @@ test.describe('OrigamSelectionControlGroup — Type', () => {
 
 test.describe('OrigamSelectionControlGroup — Color', () => {
     test('color variant renders without errors', async ({ page }) => {
-        await openVariant(page, 'Color')
+        await openVariant(page, 'Prop — color')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="scg-color"]').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('[data-cy="scg-color"] .origam-selection-control').count()
@@ -43,7 +43,7 @@ test.describe('OrigamSelectionControlGroup — Color', () => {
 
 test.describe('OrigamSelectionControlGroup — Density', () => {
     test('density class lands on child controls', async ({ page }) => {
-        await openVariant(page, 'Density')
+        await openVariant(page, 'Prop — density')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="scg-density"]').first()).toBeVisible({ timeout: 8000 })
         const childClasses = await sandbox.locator('[data-cy="scg-density"] .origam-selection-control').evaluateAll(els =>
@@ -60,7 +60,7 @@ test.describe('OrigamSelectionControlGroup — Density', () => {
 
 test.describe('OrigamSelectionControlGroup — Selection modifiers', () => {
     test('renders 3 controls in selection modifiers variant', async ({ page }) => {
-        await openVariant(page, 'Selection modifiers')
+        await openVariant(page, 'Prop — inline & multiple')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="scg-modifiers"]').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('[data-cy="scg-modifiers"] .origam-selection-control').count()
@@ -72,7 +72,7 @@ test.describe('OrigamSelectionControlGroup — Selection modifiers', () => {
 
 test.describe('OrigamSelectionControlGroup — Icons', () => {
     test('icon override variant renders without errors', async ({ page }) => {
-        await openVariant(page, 'Icons (trueIcon / falseIcon)')
+        await openVariant(page, 'Prop — trueIcon & falseIcon')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="scg-icons"]').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('[data-cy="scg-icons"] .origam-selection-control').count()
@@ -84,7 +84,7 @@ test.describe('OrigamSelectionControlGroup — Icons', () => {
 
 test.describe('OrigamSelectionControlGroup — States', () => {
     test('states variant renders controls without crash', async ({ page }) => {
-        await openVariant(page, 'States')
+        await openVariant(page, 'Prop — disabled, readonly & error')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="scg-states"]').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('[data-cy="scg-states"] .origam-selection-control').count()
@@ -96,7 +96,7 @@ test.describe('OrigamSelectionControlGroup — States', () => {
 
 test.describe('OrigamSelectionControlGroup — Items prop', () => {
     test('renders one control per items entry (3)', async ({ page }) => {
-        await openVariant(page, 'Items prop')
+        await openVariant(page, 'Prop — items')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="scg-items"]').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('[data-cy="scg-items"] .origam-selection-control').count()

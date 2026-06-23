@@ -43,7 +43,7 @@
 							>
 								<origam-btn
 										:aria-expanded="isExpanded(item)"
-										:aria-label="isExpanded(item) ? 'Collapse row' : 'Expand row'"
+										:aria-label="isExpanded(item) ? t('origam.dataTableRow.collapseRow', 'Collapse row') : t('origam.dataTableRow.expandRow', 'Expand row')"
 										:icon="isExpanded(item) ? MDI_ICONS.CHEVRON_UP : MDI_ICONS.CHEVRON_DOWN"
 										:size="SIZES.SMALL"
 										@click="handleBtnClick"
@@ -92,6 +92,7 @@
 	useDisplay,
 	useExpanded,
 	useHeaders,
+	useLocale,
 	useProps,
 	useSelection,
 	useSort,
@@ -116,7 +117,13 @@
 	 * Global
 	 ********************************************************/
 
-	const props = withDefaults(defineProps<IDataTableRowProps>(), {})
+	const props = defineProps<IDataTableRowProps>()
+
+	/*********************************************************
+	 * Labels — localised through the DS i18n provider (`useLocale`).
+	 * Keys live under `origam.dataTableRow.*` in the shipped locale messages.
+	 ********************************************************/
+	const { t } = useLocale()
 
 	const emits = defineEmits<IDataTableRowEmits>()
 

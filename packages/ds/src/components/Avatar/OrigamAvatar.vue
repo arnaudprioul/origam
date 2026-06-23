@@ -165,10 +165,6 @@
 	const avatarClasses = computed(() => {
 		return [
 			'origam-avatar',
-			{
-				'origam-avatar--start': props.start,
-				'origam-avatar--end': props.end
-			},
 			colorClasses.value,
 			densityClasses.value,
 			roundedClasses.value,

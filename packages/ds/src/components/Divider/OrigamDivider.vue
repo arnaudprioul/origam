@@ -134,7 +134,7 @@
 		height: 0px;
 		max-height: 0px;
 		max-width: var(--origam-divider---max-width, 100%);
-		opacity: 0.12;
+		opacity: var(--origam-divider---opacity, 0.12);
 		transition: inherit;
 		border-style: solid;
 

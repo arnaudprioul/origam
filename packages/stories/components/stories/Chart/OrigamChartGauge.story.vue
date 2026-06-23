@@ -3,308 +3,278 @@
 			group="components"
 			title="Chart/OrigamChartGauge"
 	>
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<Record<string, unknown>>({
-					value: 62,
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IChartGaugeProps>>({
+					series: [{ name: 'Value', data: [62], color: 'primary' }],
+					gaugeMin: 0,
+					gaugeMax: 100,
+					gaugeUnit: '%',
+					gaugeThickness: 18,
+					gaugeShowEndpoints: true,
+					gaugeShowValue: true,
+					title: 'Completion',
+					height: 300
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart-gauge
+						:series="state.series"
+						:gauge-min="state.gaugeMin"
+						:gauge-max="state.gaugeMax"
+						:gauge-unit="state.gaugeUnit"
+						:gauge-thickness="state.gaugeThickness"
+						:gauge-show-endpoints="state.gaugeShowEndpoints"
+						:gauge-show-value="state.gaugeShowValue"
+						:title="state.title"
+						:subtitle="state.subtitle"
+						:bg-color="state.bgColor"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:height="state.height"
+						:width="state.width"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Gauge Options">
+					<HstNumber v-model="state.gaugeMin"       title="Gauge Min"/>
+					<HstNumber v-model="state.gaugeMax"       title="Gauge Max"/>
+					<HstText   v-model="state.gaugeUnit"      title="Gauge Unit"/>
+					<HstNumber v-model="state.gaugeThickness" title="Gauge Thickness" :min="4" :max="60" :step="2"/>
+					<HstCheckbox v-model="state.gaugeShowEndpoints" title="Show Endpoints"/>
+					<HstCheckbox v-model="state.gaugeShowValue"     title="Show Value"/>
+				</StoryGroup>
+				<StoryGroup title="Labels">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText   v-model="state.width"  title="Width"/>
+					<HstNumber v-model="state.height" title="Height (px)" :min="100" :max="600" :step="20"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IChartGaugeProps>>({
+					series: [{ name: 'Value', data: [62], color: 'primary' }],
 					gaugeMin: 0,
 					gaugeMax: 100,
 					gaugeUnit: '%',
 					animated: true,
-					height: 320
+					animationDuration: 600,
+					showLegend: false,
+					showTooltip: false,
+					height: 300
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="gauge-playground"
-				>
-					<origam-chart-gauge
-							:series="[{ name: 'Value', data: [Number(state.value)], color: 'primary' }]"
-							:gauge-min="Number(state.gaugeMin)"
-							:gauge-max="Number(state.gaugeMax)"
-							:gauge-unit="String(state.gaugeUnit)"
-							:animated="Boolean(state.animated)"
-							:height="Number(state.height)"
-							title="Completion"
-							data-cy="gauge-playground-chart"
-					/>
-				</div>
+				<origam-chart-gauge
+						:series="state.series"
+						:gauge-min="state.gaugeMin"
+						:gauge-max="state.gaugeMax"
+						:gauge-unit="state.gaugeUnit"
+						:animated="state.animated"
+						:animation-duration="state.animationDuration"
+						:show-legend="state.showLegend"
+						:show-tooltip="state.showTooltip"
+						:height="state.height"
+				/>
 			</template>
 			<template #controls="{ state }">
-				<HstNumber
-						v-model="state.value"
-						title="value (series[0].data[0])"
-				/>
-				<HstNumber
-						v-model="state.gaugeMin"
-						title="gaugeMin"
-				/>
-				<HstNumber
-						v-model="state.gaugeMax"
-						title="gaugeMax"
-				/>
-				<HstText
-						v-model="state.gaugeUnit"
-						title="gaugeUnit"
-				/>
-				<HstNumber
-						v-model="state.height"
-						title="height (px)"
-				/>
-				<HstCheckbox
-						v-model="state.animated"
-						title="animated"
-				/>
+				<StoryGroup title="Animation">
+					<HstCheckbox v-model="state.animated"         title="Animated"/>
+					<HstNumber   v-model="state.animationDuration" title="Duration (ms)" :min="0" :max="3000" :step="100"/>
+				</StoryGroup>
+				<StoryGroup title="Visibility">
+					<HstCheckbox v-model="state.showLegend"  title="Show Legend"/>
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — value (0 / 25 / 50 / 75 / 100)">
-			<div
-					class="story-shell"
-					data-cy="gauge-values"
-			>
-				<div class="story-grid story-grid--5">
-					<div class="story-col">
-						<strong>0</strong>
-						<origam-chart-gauge
-								:series="[{ name: 'Progress', data: [0], color: 'primary' }]"
-								:gauge-min="0"
-								:gauge-max="100"
-								gauge-unit="%"
-								:height="200"
-								data-cy="gauge-value-0"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>25</strong>
-						<origam-chart-gauge
-								:series="[{ name: 'Progress', data: [25], color: 'primary' }]"
-								:gauge-min="0"
-								:gauge-max="100"
-								gauge-unit="%"
-								:height="200"
-								data-cy="gauge-value-25"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>50</strong>
-						<origam-chart-gauge
-								:series="[{ name: 'Progress', data: [50], color: 'warning' }]"
-								:gauge-min="0"
-								:gauge-max="100"
-								gauge-unit="%"
-								:height="200"
-								data-cy="gauge-value-50"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>75</strong>
-						<origam-chart-gauge
-								:series="[{ name: 'Progress', data: [75], color: 'success' }]"
-								:gauge-min="0"
-								:gauge-max="100"
-								gauge-unit="%"
-								:height="200"
-								data-cy="gauge-value-75"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>100</strong>
-						<origam-chart-gauge
-								:series="[{ name: 'Progress', data: [100], color: 'success' }]"
-								:gauge-min="0"
-								:gauge-max="100"
-								gauge-unit="%"
-								:height="200"
-								data-cy="gauge-value-100"
-						/>
-					</div>
-				</div>
-			</div>
+		<Variant title="Events - point-click">
+			<origam-chart-gauge
+					:series="[{ name: 'CPU', data: [72], color: 'primary' }]"
+					:gauge-min="0"
+					:gauge-max="100"
+					gauge-unit="%"
+					title="Point click"
+					:height="280"
+					@point-click="logEvent('point-click', $event)"
+			/>
 		</Variant>
 
-		<Variant title="Prop — gaugeMin / gaugeMax (0–100, -50–50, 0–1000)">
-			<div
-					class="story-shell"
-					data-cy="gauge-range"
-			>
-				<div class="story-grid story-grid--3">
-					<div class="story-col">
-						<strong>0 – 100 (value=62)</strong>
-						<origam-chart-gauge
-								:series="[{ name: 'Metric', data: [62], color: 'primary' }]"
-								:gauge-min="0"
-								:gauge-max="100"
-								gauge-unit="%"
-								:height="240"
-								data-cy="gauge-range-0-100"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>-50 – 50 (value=12)</strong>
-						<origam-chart-gauge
-								:series="[{ name: 'Temperature delta', data: [12], color: 'info' }]"
-								:gauge-min="-50"
-								:gauge-max="50"
-								gauge-unit="°C"
-								:height="240"
-								data-cy="gauge-range-neg50-50"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>0 – 1000 (value=640)</strong>
-						<origam-chart-gauge
-								:series="[{ name: 'Throughput', data: [640], color: 'warning' }]"
-								:gauge-min="0"
-								:gauge-max="1000"
-								gauge-unit="MB/s"
-								:height="240"
-								data-cy="gauge-range-0-1000"
-						/>
-					</div>
-				</div>
-			</div>
+		<Variant title="Events - legend-click">
+			<origam-chart-gauge
+					:series="[{ name: 'Load', data: [55], color: 'success' }]"
+					:gauge-min="0"
+					:gauge-max="100"
+					gauge-unit="%"
+					title="Legend click"
+					:show-legend="true"
+					:height="280"
+					@legend-click="logEvent('legend-click', $event)"
+			/>
 		</Variant>
 
-		<Variant title="Prop — gaugeUnit (%, °C, MB/s, none)">
-			<div
-					class="story-shell"
-					data-cy="gauge-unit"
-			>
-				<div class="story-grid story-grid--4">
-					<div class="story-col">
-						<strong>%</strong>
-						<origam-chart-gauge
-								:series="[{ name: 'Load', data: [73], color: 'primary' }]"
-								:gauge-min="0"
-								:gauge-max="100"
-								gauge-unit="%"
-								:height="220"
-								data-cy="gauge-unit-percent"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>°C</strong>
-						<origam-chart-gauge
-								:series="[{ name: 'Temp', data: [22], color: 'success' }]"
-								:gauge-min="-20"
-								:gauge-max="50"
-								gauge-unit="°C"
-								:height="220"
-								data-cy="gauge-unit-celsius"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>MB/s</strong>
-						<origam-chart-gauge
-								:series="[{ name: 'Bandwidth', data: [450], color: 'warning' }]"
-								:gauge-min="0"
-								:gauge-max="1000"
-								gauge-unit="MB/s"
-								:height="220"
-								data-cy="gauge-unit-mbs"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>no unit</strong>
-						<origam-chart-gauge
-								:series="[{ name: 'Score', data: [8], color: 'info' }]"
-								:gauge-min="0"
-								:gauge-max="10"
-								gauge-unit=""
-								:height="220"
-								data-cy="gauge-unit-none"
-						/>
-					</div>
-				</div>
-			</div>
+		<Variant title="Events - series-toggle">
+			<origam-chart-gauge
+					:series="[{ name: 'Load', data: [55], color: 'success' }]"
+					:gauge-min="0"
+					:gauge-max="100"
+					gauge-unit="%"
+					title="Series toggle"
+					:show-legend="true"
+					:height="280"
+					@series-toggle="logEvent('series-toggle', $event)"
+			/>
 		</Variant>
 
-		<Variant title="Prop — colorScheme">
-			<div
-					class="story-shell"
-					data-cy="gauge-color-scheme"
+		<Variant title="Slots - title">
+			<origam-chart-gauge
+					:series="[{ name: 'Score', data: [84], color: 'success' }]"
+					:gauge-min="0"
+					:gauge-max="100"
+					gauge-unit="%"
+					:height="280"
 			>
-				<div class="story-grid story-grid--3">
-					<div class="story-col">
-						<strong>intent: primary</strong>
-						<origam-chart-gauge
-								:series="[{ name: 'CPU', data: [62], color: 'primary' }]"
-								:gauge-min="0"
-								:gauge-max="100"
-								gauge-unit="%"
-								:height="240"
-								data-cy="gauge-color-primary"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>intent: danger</strong>
-						<origam-chart-gauge
-								:series="[{ name: 'CPU', data: [87], color: 'danger' }]"
-								:gauge-min="0"
-								:gauge-max="100"
-								gauge-unit="%"
-								:height="240"
-								data-cy="gauge-color-danger"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>custom CSS color</strong>
-						<origam-chart-gauge
-								:series="[{ name: 'CPU', data: [42], color: '#8b5cf6' }]"
-								:gauge-min="0"
-								:gauge-max="100"
-								gauge-unit="%"
-								:height="240"
-								data-cy="gauge-color-custom"
-						/>
-					</div>
-				</div>
-			</div>
+				<template #title>
+					<strong>Custom title slot</strong>
+				</template>
+			</origam-chart-gauge>
 		</Variant>
 
-		<Variant title="Prop — height">
-			<div
-					class="story-shell"
-					data-cy="gauge-height"
+		<Variant title="Slots - gauge-value">
+			<origam-chart-gauge
+					:series="[{ name: 'Perf', data: [67], color: 'warning' }]"
+					:gauge-min="0"
+					:gauge-max="100"
+					gauge-unit="%"
+					:height="280"
 			>
-				<div class="story-grid story-grid--3">
-					<div class="story-col">
-						<strong>160px</strong>
-						<origam-chart-gauge
-								:series="[{ name: 'Load', data: [60], color: 'primary' }]"
-								:gauge-min="0"
-								:gauge-max="100"
-								gauge-unit="%"
-								:height="160"
-								data-cy="gauge-height-160"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>300px</strong>
-						<origam-chart-gauge
-								:series="[{ name: 'Load', data: [60], color: 'primary' }]"
-								:gauge-min="0"
-								:gauge-max="100"
-								gauge-unit="%"
-								:height="300"
-								data-cy="gauge-height-300"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>480px</strong>
-						<origam-chart-gauge
-								:series="[{ name: 'Load', data: [60], color: 'primary' }]"
-								:gauge-min="0"
-								:gauge-max="100"
-								gauge-unit="%"
-								:height="480"
-								data-cy="gauge-height-480"
-						/>
-					</div>
-				</div>
-			</div>
+				<template #gauge-value="{ formatted, unit }">
+					<tspan font-size="20" font-weight="700">{{ formatted }}{{ unit }}</tspan>
+				</template>
+			</origam-chart-gauge>
+		</Variant>
+
+		<Variant title="Slots - gauge-min">
+			<origam-chart-gauge
+					:series="[{ name: 'Level', data: [45], color: 'info' }]"
+					:gauge-min="0"
+					:gauge-max="100"
+					gauge-unit=""
+					:height="280"
+			>
+				<template #gauge-min="{ value }">
+					<tspan font-size="11" fill="currentColor">Min: {{ value }}</tspan>
+				</template>
+			</origam-chart-gauge>
+		</Variant>
+
+		<Variant title="Slots - gauge-max">
+			<origam-chart-gauge
+					:series="[{ name: 'Level', data: [45], color: 'info' }]"
+					:gauge-min="0"
+					:gauge-max="100"
+					gauge-unit=""
+					:height="280"
+			>
+				<template #gauge-max="{ value }">
+					<tspan font-size="11" fill="currentColor">Max: {{ value }}</tspan>
+				</template>
+			</origam-chart-gauge>
+		</Variant>
+
+		<Variant title="Slots - tooltip">
+			<origam-chart-gauge
+					:series="[{ name: 'CPU', data: [62], color: 'primary' }]"
+					:gauge-min="0"
+					:gauge-max="100"
+					gauge-unit="%"
+					:show-tooltip="true"
+					:height="280"
+			>
+				<template #tooltip="{ point, series }">
+					<span><strong>{{ series.name }}</strong>: {{ point.y }}</span>
+				</template>
+			</origam-chart-gauge>
+		</Variant>
+
+		<Variant title="Slots - empty">
+			<origam-chart-gauge
+					:series="[]"
+					:gauge-min="0"
+					:gauge-max="100"
+					gauge-unit="%"
+					:height="280"
+			>
+				<template #empty>
+					<span>No gauge data available</span>
+				</template>
+			</origam-chart-gauge>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IChartGaugeProps>({
+					series: [{ name: 'Value', data: [62], color: 'primary' }],
+					gaugeMin: 0,
+					gaugeMax: 100,
+					gaugeUnit: '%',
+					gaugeThickness: 18,
+					gaugeShowEndpoints: true,
+					gaugeShowValue: true,
+					animated: true,
+					animationDuration: 600,
+					showLegend: false,
+					showTooltip: false,
+					title: 'Completion',
+					height: 300
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart-gauge
+						v-bind="state"
+						@point-click="logEvent('point-click', $event)"
+						@legend-click="logEvent('legend-click', $event)"
+						@series-toggle="logEvent('series-toggle', $event)"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Labels">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect   v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstText     v-model="state.width"     title="Width"/>
+					<HstNumber   v-model="state.height"    title="Height (px)" :min="100" :max="600" :step="20"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstNumber   v-model="state.gaugeMin"           title="Gauge Min"/>
+					<HstNumber   v-model="state.gaugeMax"           title="Gauge Max"/>
+					<HstText     v-model="state.gaugeUnit"          title="Gauge Unit"/>
+					<HstNumber   v-model="state.gaugeThickness"     title="Gauge Thickness" :min="4" :max="60" :step="2"/>
+					<HstCheckbox v-model="state.gaugeShowEndpoints" title="Show Endpoints"/>
+					<HstCheckbox v-model="state.gaugeShowValue"     title="Show Value"/>
+					<HstCheckbox v-model="state.animated"           title="Animated"/>
+					<HstCheckbox v-model="state.showLegend"         title="Show Legend"/>
+					<HstCheckbox v-model="state.showTooltip"        title="Show Tooltip"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -313,45 +283,21 @@
 		lang="ts"
 		setup
 >
-	import { OrigamChartGauge } from '@origam/components'
+	import { logEvent } from 'histoire/client'
 
+	import { OrigamChartGauge } from '@origam/components'
+	import type { IChartGaugeProps } from '@origam/interfaces'
+
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
 </script>
 
-<style scoped>
-	.story-shell {
-		display: flex;
-		flex-direction: column;
-		gap: 12px;
-		padding: 16px;
-	}
-
-	.story-grid {
-		display: grid;
-		gap: 16px;
-	}
-
-	.story-grid--3 {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
-
-	.story-grid--4 {
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-	}
-
-	.story-grid--5 {
-		grid-template-columns: repeat(5, minmax(0, 1fr));
-	}
-
-	.story-col {
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-		min-width: 0;
-	}
-
-	.story-col strong {
-		font-size: 0.8125rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-	}
-</style>
+<docs
+		lang="md"
+		src="@docs/components/Chart/OrigamChartGauge.md"
+/>

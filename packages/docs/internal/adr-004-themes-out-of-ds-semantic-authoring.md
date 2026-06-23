@@ -1,6 +1,6 @@
 # ADR-004 — Themes out of the DS + semantic JSON theme authoring
 
-- **Status**: Accepted (2026-05-30)
+- **Status**: Implemented (2026-06-12)
 - **Deciders**: user (arnaudprioul), backend-lead, architect
 - **Scope**: `packages/ds` (createOrigam + theme model + Nuxt module + token
   build) + `packages/marketing` (consumer, separate stream)
@@ -76,13 +76,13 @@ flows through the existing CSS-variable grammar:
 - The marketing stream re-authors its 7 brands in the semantic JSON format and
   passes them as `IOrigamTheme[]` objects to the Nuxt module.
 
-## Open item — gradient preset palette
+## Resolved item — gradient preset palette
 
-The named-gradient preset feature (`gradient-sunset` → `var(--origam-gradient
----sunset)`, consumed by `OrigamTextMask` and `color.composable`) still relies
-on the `--origam-gradient---*` CSS tier generated from
-`tokens/semantic/gradient-{light,dark}.json`. That tier is **kept generating**
-so the shipped feature and its e2e/unit coverage stay green. It is no longer
-part of the theme-authoring model (no `gradient` field). Fully retiring the CSS
-tier would require migrating `gradient.util` off those vars (losing per-mode
-gradient variants) and is deferred pending the user's decision.
+**Decision**: gradient presets (`gradient-sunset`, `gradient-ocean`, …) are
+**kept** in the DS as a named CSS tier. They are NOT brand themes — they are
+primitive preset values exposed via `--origam-gradient---*` CSS variables
+(generated from `tokens/semantic/gradient-{light,dark}.json`) and consumed by
+`OrigamTextMask` and `color.composable`. The gradient tier continues to generate
+alongside `light` and `dark`. It is not part of the theme-authoring model (no
+`gradient` field in `IOrigamTheme`) and is not shipped as a consumer import —
+it is a DS-internal feature, retained in `$metadata.json` / `$themes.json`.

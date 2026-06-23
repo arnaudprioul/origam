@@ -1,5 +1,6 @@
 <template>
 	<div
+			v-contrast
 			:class="fieldClasses"
 			:style="fieldStyles"
 			v-bind="attrs"
@@ -185,6 +186,8 @@
 		useStyle,
 		useVariant
 } from '../../composables'
+
+	import { vContrast } from '../../directives'
 
 	import { DENSITY, EASING, KEYBOARD_VALUES, MDI_ICONS, PROGRESS_TYPE, VARIANT_INPUT } from '../../enums'
 
@@ -569,7 +572,7 @@
 		font-size: 16px;
 		letter-spacing: 0.009375em;
 		max-width: 100%;
-		border-radius: var(--origam-field---rounded);
+		border-radius: var(--origam-field---border-radius, 8px);
 		contain: layout;
 		flex: 1 0;
 		grid-area: control;
@@ -579,7 +582,7 @@
 		&__skeleton {
 			width: 100%;
 			min-height: var(--origam-field__skeleton---min-height, var(--origam-input__control---height, 36px));
-			border-radius: var(--origam-field---rounded);
+			border-radius: var(--origam-field---border-radius, 8px);
 			grid-column: 1 / -1;
 			grid-row: 1;
 		}
@@ -730,7 +733,7 @@
 			max-width: calc(100% - var(--origam-field__input---padding-start, 0) - var(--origam-field__input---padding-end, 0));
 			pointer-events: none;
 			position: absolute;
-			top: calc(var(--origam-input---padding-top, 16px) + var(--origam-input---density) - 8px);
+			top: calc(var(--origam-input---padding-top, 16px) + var(--origam-input---density, 0px) - 8px);
 			transform-origin: left center;
 			transition: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 			transition-property: opacity, transform;
@@ -937,7 +940,7 @@
 
 			&-filled {
 				background: var(--origam-field--variant-filled---background-color, color-mix(in srgb, currentColor 12%, transparent));
-				border-radius: var(--origam-field---rounded) var(--origam-field---rounded) 0 0;
+				border-radius: var(--origam-field---border-radius, 8px) var(--origam-field---border-radius, 8px) 0 0;
 				--origam-field__input---padding-top: 20px;
 
 				#{$this}__outlines {
@@ -993,10 +996,10 @@
 						border-bottom-width: var(--origam-field---border-width);
 						border-inline-start-width: var(--origam-field---border-width);
 						border-inline-end-width: 0;
-						border-start-start-radius: var(--origam-field---rounded);
+						border-start-start-radius: var(--origam-field---border-radius, 8px);
 						border-start-end-radius: 0;
 						border-end-end-radius: 0;
-						border-end-start-radius: var(--origam-field---rounded);
+						border-end-start-radius: var(--origam-field---border-radius, 8px);
 					}
 
 					&--end {
@@ -1005,8 +1008,8 @@
 						border-inline-end-width: var(--origam-field---border-width);
 						border-inline-start-width: 0;
 						border-start-start-radius: 0;
-						border-start-end-radius: var(--origam-field---rounded);
-						border-end-end-radius: var(--origam-field---rounded);
+						border-start-end-radius: var(--origam-field---border-radius, 8px);
+						border-end-end-radius: var(--origam-field---border-radius, 8px);
 						border-end-start-radius: 0;
 					}
 

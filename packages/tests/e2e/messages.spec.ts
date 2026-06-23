@@ -5,13 +5,15 @@ import { expect, test, type Page } from '@playwright/test'
  *
  * Asserts every Variant in `OrigamMessages.story.vue` produces the
  * runtime contract documented in `OrigamMessages.md`:
- *   - default renders the container with aria-live + role=alert
- *   - multiple: two message elements rendered
- *   - active: transition flag does not prevent render
- *   - color: CSS color var applied to root
- *   - density: --density-{x} class emitted
- *   - slot — default: custom span rendered per message
- *   - dynamic: add/clear messages updates DOM
+ *   - default (playground) renders the container with aria-live + role=alert
+ *   - active: transition flag does not prevent render  (Variant: "Prop — active")
+ *   - color: CSS color var applied to root             (Variant: "Prop — color")
+ *   - density: --density-{x} class emitted            (Variant: "Prop — density")
+ *   - slot — default: custom span rendered per message (Variant: "Slot — default (custom render)")
+ *   - dynamic: add/clear messages updates DOM          (Variant: "Dynamic (append & clear)")
+ *
+ * NOTE: The "Multiple" variant was removed in the story restructuring (no
+ * dedicated Variant with two pre-seeded messages exists any more).
  */
 
 const sandboxOf = (page: Page) =>
@@ -24,16 +26,17 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.waitForTimeout(800)
 }
 
-const STORY = '/story/stories-components-stories-messages-origammessages-story-vue'
+const STORY = '/story/components-stories-messages-origammessages-story-vue'
 
 // ─── Default ────────────────────────────────────────────────────────────────
 
 test.describe('OrigamMessages — default', () => {
     test('renders container with aria-live and role=alert', async ({ page }) => {
+        // Variant title is "Default" (playground); data-cy is "messages-playground"
         await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
-        const container = sandbox.locator('[data-cy="messages-default"]').first()
+        const container = sandbox.locator('[data-cy="messages-playground"]').first()
         await expect(container).toBeVisible({ timeout: 8000 })
 
         const ariaLive = await container.evaluate(el => el.getAttribute('aria-live'))
@@ -47,34 +50,18 @@ test.describe('OrigamMessages — default', () => {
     })
 
     test('renders one message item', async ({ page }) => {
+        // Variant title is "Default" (playground); data-cy is "messages-playground"
+        // init-state seeds messages with ['Hint message.']
         await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
-        const container = sandbox.locator('[data-cy="messages-default"]').first()
+        const container = sandbox.locator('[data-cy="messages-playground"]').first()
         await expect(container).toBeVisible({ timeout: 8000 })
 
         const messages = await container.locator('.origam-messages__message').count()
         expect(messages).toBe(1)
 
-        await expect(container).toContainText('This field is required.')
-    })
-})
-
-// ─── Multiple ───────────────────────────────────────────────────────────────
-
-test.describe('OrigamMessages — multiple', () => {
-    test('renders two message items', async ({ page }) => {
-        await openVariant(page, STORY, 'Multiple')
-        const sandbox = sandboxOf(page)
-
-        const container = sandbox.locator('[data-cy="messages-multiple"]').first()
-        await expect(container).toBeVisible({ timeout: 8000 })
-
-        const messages = await container.locator('.origam-messages__message').count()
-        expect(messages).toBe(2)
-
-        await expect(container).toContainText('Too short.')
-        await expect(container).toContainText('Must contain a number.')
+        await expect(container).toContainText('Hint message.')
     })
 })
 
@@ -82,7 +69,8 @@ test.describe('OrigamMessages — multiple', () => {
 
 test.describe('OrigamMessages — active', () => {
     test('component renders whether active is true or false', async ({ page }) => {
-        await openVariant(page, STORY, 'Active')
+        // Variant title is "Prop — active"
+        await openVariant(page, STORY, 'Prop — active')
         const sandbox = sandboxOf(page)
 
         const container = sandbox.locator('[data-cy="messages-active"]').first()
@@ -97,7 +85,8 @@ test.describe('OrigamMessages — active', () => {
 
 test.describe('OrigamMessages — color', () => {
     test('color prop applies CSS color variable to container', async ({ page }) => {
-        await openVariant(page, STORY, 'Color')
+        // Variant title is "Prop — color"
+        await openVariant(page, STORY, 'Prop — color')
         const sandbox = sandboxOf(page)
 
         const container = sandbox.locator('[data-cy="messages-color"]').first()
@@ -113,7 +102,8 @@ test.describe('OrigamMessages — color', () => {
 
 test.describe('OrigamMessages — density', () => {
     test('default density emits --density-default modifier class', async ({ page }) => {
-        await openVariant(page, STORY, 'Density')
+        // Variant title is "Prop — density"
+        await openVariant(page, STORY, 'Prop — density')
         const sandbox = sandboxOf(page)
 
         const container = sandbox.locator('[data-cy="messages-density"]').first()
@@ -128,7 +118,8 @@ test.describe('OrigamMessages — density', () => {
 
 test.describe('OrigamMessages — slot default', () => {
     test('default slot renders custom element per message', async ({ page }) => {
-        await openVariant(page, STORY, 'Slot — default')
+        // Variant title is "Slot — default (custom render)"
+        await openVariant(page, STORY, 'Slot — default (custom render)')
         const sandbox = sandboxOf(page)
 
         const container = sandbox.locator('[data-cy="messages-slot-default"]').first()
@@ -144,7 +135,8 @@ test.describe('OrigamMessages — slot default', () => {
 
 test.describe('OrigamMessages — dynamic', () => {
     test('add button increments message count; clear removes all', async ({ page }) => {
-        await openVariant(page, STORY, 'Dynamic')
+        // Variant title is "Dynamic (append & clear)"
+        await openVariant(page, STORY, 'Dynamic (append & clear)')
         const sandbox = sandboxOf(page)
 
         const container = sandbox.locator('[data-cy="messages-dynamic"]').first()

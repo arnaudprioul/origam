@@ -3,110 +3,86 @@
 			group="components"
 			title="Breadcrumb/OrigamBreadcrumbDivider"
 	>
-		<!-- ── Playground ───────────────────────────────────────────────── -->
 
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IBreadcrumbDividerProps>({
-					divider: '/',
-					color: undefined,
-					bgColor: undefined,
-					size: undefined,
-					density: undefined,
-				})"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IBreadcrumbDividerProps>>({ divider: '/' })"
 		>
 			<template #default="{ state }">
 				<div style="display: flex; align-items: center; gap: 8px;">
 					<span>Segment A</span>
-					<origam-breadcrumb-divider v-bind="state" data-cy="breadcrumb-divider-playground"/>
+					<origam-breadcrumb-divider
+							:divider="state.divider"
+							:color="state.color"
+							:size="state.size"
+							:density="state.density"
+							:padding="state.padding"
+							:padding-inline="state.paddingInline"
+							:margin="state.margin"
+							:margin-inline="state.marginInline"
+					/>
 					<span>Segment B</span>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstText   v-model="state.divider"  title="divider"/>
-				<HstSelect v-model="state.color"    title="color"   :options="intentList"/>
-				<HstSelect v-model="state.bgColor"  title="bgColor" :options="intentList"/>
-				<HstSelect v-model="state.size"     title="size"    :options="sizeList"/>
-				<HstSelect v-model="state.density"  title="density" :options="densityList"/>
+				<StoryGroup title="Content">
+					<HstText v-model="state.divider" title="Divider"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.size"    title="Size"    :options="SIZE_OPTIONS"/>
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding"       title="Padding"/>
+					<HstText v-model="state.paddingInline" title="Padding Inline"/>
+					<HstText v-model="state.margin"        title="Margin"/>
+					<HstText v-model="state.marginInline"  title="Margin Inline"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Props ────────────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — divider (string vs icon)"
-				:init-state="() => useStoryInitState<{ divider: string }>({ divider: '/' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; align-items: center; gap: 8px;">
-					<origam-breadcrumb-divider :divider="state.divider" data-cy="breadcrumb-divider-string"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstText v-model="state.divider" title="divider (string or MDI icon name)"/>
-			</template>
-		</Variant>
-
-		<Variant title="Prop — divider (icon)">
-			<!-- Demonstrates using an MDI icon constant as the divider -->
+		<Variant title="Slots - Default">
 			<div style="display: flex; align-items: center; gap: 8px;">
-				<origam-breadcrumb-divider :divider="MDI_ICONS.CHEVRON_RIGHT" data-cy="breadcrumb-divider-icon"/>
-			</div>
-		</Variant>
-
-		<Variant
-				title="Prop — color"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; align-items: center; gap: 8px;">
-					<origam-breadcrumb-divider v-bind="state" divider="/" data-cy="breadcrumb-divider-color"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — size"
-				:init-state="() => useStoryInitState<ISizeProps>({ size: undefined })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; align-items: center; gap: 8px;">
-					<origam-breadcrumb-divider :size="state.size" divider="/" data-cy="breadcrumb-divider-size"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — density"
-				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; align-items: center; gap: 8px;">
-					<origam-breadcrumb-divider :density="state.density" divider="/" data-cy="breadcrumb-divider-density"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<div style="display: flex; align-items: center; gap: 8px;">
-				<origam-breadcrumb-divider divider="/" data-cy="breadcrumb-divider-slot">
+				<span>Segment A</span>
+				<origam-breadcrumb-divider divider="/">
 					<template #default>
-						<span style="font-weight: 700; color: var(--origam-color__action--primary---bg);">»</span>
+						<strong>»</strong>
 					</template>
 				</origam-breadcrumb-divider>
+				<span>Segment B</span>
 			</div>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IBreadcrumbDividerProps>({ divider: '/' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; align-items: center; gap: 8px;">
+					<span>Segment A</span>
+					<origam-breadcrumb-divider v-bind="state"/>
+					<span>Segment B</span>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.divider" title="Divider"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"   title="Color"   :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.size"    title="Size"    :options="SIZE_OPTIONS"/>
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding"       title="Padding"/>
+					<HstText v-model="state.paddingInline" title="Padding Inline"/>
+					<HstText v-model="state.margin"        title="Margin"/>
+					<HstText v-model="state.marginInline"  title="Margin Inline"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -116,14 +92,13 @@
 		setup
 >
 	import { OrigamBreadcrumbDivider } from '@origam/components'
-	import { DENSITY, MDI_ICONS } from '@origam/enums'
-	import type {
-		IBreadcrumbDividerProps,
-		IColorProps,
-		IDensityProps,
-		ISizeProps
-	} from '@origam/interfaces'
+	import type { IBreadcrumbDividerProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, intentList, sizeList } from '@stories/const'
+	import {
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		SIZE_OPTIONS
+	} from '@stories/const'
 </script>

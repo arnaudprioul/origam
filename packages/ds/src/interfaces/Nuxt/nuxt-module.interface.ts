@@ -12,17 +12,18 @@ import type { IOrigamTheme } from '../Theme/origam-theme.interface'
  * SSR-side to avoid FOUC: the brand `theme` (cookie) and the color `mode`
  * (cookie + `Sec-CH-Prefers-Color-Scheme` hint).
  *
- * ADR-004: the DS ships exactly ONE theme (`sobre`, its base). Brand themes
- * (glass, geek, …) live in the consuming app (e.g. the marketing package) and
- * are passed here as `IOrigamTheme[]` objects — the DS no longer resolves
- * preset names.
+ * ADR-004 (Implemented): the DS ships exactly ONE neutral identity (the origam
+ * baseline). Brand themes live in the consuming app (e.g. the marketing
+ * package) and are passed here as `IOrigamTheme[]` objects authored in
+ * semantic JSON — the DS no longer resolves preset names or ships brand
+ * token sheets.
  */
 export interface IOrigamNuxtModuleOptions {
     /**
      * Themes to install, as `IOrigamTheme` objects (one per brand×mode). The
      * objects are passed verbatim to `createOrigam`, which injects each as a
      * scoped CSS-var block — no pre-generated per-theme CSS file is loaded.
-     * When omitted, the DS installs its single built-in `sobre` theme.
+     * When omitted, `createOrigam` installs the DS built-in baseline (neutral identity).
      */
     themes?: IOrigamTheme[]
 

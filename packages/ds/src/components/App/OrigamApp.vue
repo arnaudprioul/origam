@@ -4,6 +4,10 @@
 			ref="origamAppRef"
 			:class="appClasses"
 			:style="appStyles"
+			:color="color"
+			:bg-color="bgColor"
+			:full-height="fullHeight"
+			:overlaps="overlaps"
 	>
 		<template #default>
 			<slot name="default"/>
@@ -19,7 +23,7 @@
 
 	import { useProps, useRtl , useStyle} from "../../composables"
 
-	import type { ILayoutProps } from '../../interfaces'
+	import type { IAppProps } from '../../interfaces'
 
 	import type { TOrigamApp } from "../../types"
 
@@ -31,9 +35,9 @@
 	 * @description
 	 * Props and utility hooks for the App root component.
 	 ********************************************************/
-	const props = withDefaults(defineProps<ILayoutProps>(), {fullHeight: true})
+	const props = withDefaults(defineProps<IAppProps>(), {fullHeight: true})
 
-	const {filterProps} = useProps<ILayoutProps>(props)
+	const {filterProps} = useProps<IAppProps>(props)
 
 	/*********************************************************
 	 * Composables

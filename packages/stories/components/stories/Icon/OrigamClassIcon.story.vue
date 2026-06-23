@@ -3,85 +3,100 @@
 			group="components"
 			title="Icon/OrigamClassIcon"
 	>
-		<!--
-			Playground — first by convention. OrigamClassIcon is the leaf
-			that applies MDI class strings directly to the DOM element.
-		-->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<IIconComponentProps>({ icon: MDI_HOME })"
+		>
+			<template #default="{ state }">
+				<origam-class-icon
+						:icon="state.icon"
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:size="state.size"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
+						:rounded="state.rounded"
+						:width="state.width"
+						:height="state.height"
+						:padding="state.padding"
+						:margin="state.margin"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Icon">
+					<HstSelect v-model="state.icon" title="Icon" :options="ICON_CLASS_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.size" title="Size" :options="SIZE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded" title="Rounded" :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<IIconComponentProps>({ icon: MDI_HOME })"
+		>
+			<template #default="{ state }">
+				<origam-class-icon
+						:icon="state.icon"
+						:disabled="state.disabled"
+						:tag="state.tag"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<IIconComponentProps>({
-					icon: MDI_HOME,
-					size: undefined,
-					tag: undefined,
-				})"
+				:init-state="() => useStoryInitState<IIconComponentProps>({ icon: MDI_HOME })"
 		>
 			<template #default="{ state }">
 				<origam-class-icon v-bind="state"/>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.icon" title="icon" :options="iconClassList"/>
-				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
-				<HstSelect v-model="state.tag"  title="tag"  :options="tagList"/>
+				<StoryGroup title="Content">
+					<HstSelect v-model="state.icon" title="Icon" :options="ICON_CLASS_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.size"    title="Size"     :options="SIZE_OPTIONS"/>
+					<HstSelect v-model="state.rounded" title="Rounded"  :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+					<HstSelect   v-model="state.tag"      title="Tag"     :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — icon (class string)"
-				:init-state="() => useStoryInitState<{ icon?: string }>({ icon: MDI_HOME })"
-		>
-			<template #default="{ state }">
-				<origam-class-icon :icon="state.icon"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.icon" title="icon" :options="iconClassList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — size"
-				:init-state="() => useStoryInitState<ISizeProps>({ size: undefined })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; gap: 16px; align-items: center;">
-					<origam-class-icon :size="state.size" :icon="MDI_HEART"/>
-				</div>
-				<div style="display: flex; gap: 16px; align-items: center; margin-top: 16px;">
-					<origam-class-icon :icon="MDI_COG" size="x-small"/>
-					<origam-class-icon :icon="MDI_COG" size="small"/>
-					<origam-class-icon :icon="MDI_COG" size="default"/>
-					<origam-class-icon :icon="MDI_COG" size="large"/>
-					<origam-class-icon :icon="MDI_COG" size="x-large"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — tag"
-				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: undefined })"
-		>
-			<template #default="{ state }">
-				<origam-class-icon
-						:tag="state.tag"
-						:icon="MDI_STAR"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
-			</template>
-		</Variant>
-
-		<Variant title="Prop — size (numeric override)">
-			<div style="display: flex; gap: 16px; align-items: center;">
-				<origam-class-icon :icon="MDI_BELL" :size="16"/>
-				<origam-class-icon :icon="MDI_BELL" :size="24"/>
-				<origam-class-icon :icon="MDI_BELL" :size="40"/>
-				<origam-class-icon :icon="MDI_BELL" :size="64"/>
-			</div>
 		</Variant>
 	</Story>
 </template>
@@ -91,34 +106,33 @@
 		setup
 >
 	import { OrigamClassIcon } from '@origam/components'
-	import type { IIconComponentProps, ISizeProps } from '@origam/interfaces'
+	import type { IIconComponentProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { sizeList, tagList } from '@stories/const'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		ROUNDED_OPTIONS,
+		SIZE_OPTIONS,
+		TAG_OPTIONS
+	} from '@stories/const'
 
-	// OrigamClassIcon is the leaf component that applies icon names as CSS
-	// classes. It expects the CSS class string directly (e.g. "mdi mdi-home"),
-	// not the set-prefixed enum format ("mdi:mdi-home") used by the OrigamIcon
-	// dispatcher. The dispatcher strips the prefix via useIcon(); here we must
-	// provide the resolved class names.
-	const MDI_HOME  = 'mdi mdi-home'
-	const MDI_HEART = 'mdi mdi-heart'
-	const MDI_STAR  = 'mdi mdi-star'
-	const MDI_COG   = 'mdi mdi-cog'
-	const MDI_BELL  = 'mdi mdi-bell'
+	const MDI_HOME = 'mdi mdi-home'
 
-	const iconClassList = [
-		{ label: '(none)',   value: undefined   },
-		{ label: 'Home',     value: MDI_HOME    },
-		{ label: 'Heart',    value: MDI_HEART   },
-		{ label: 'Star',     value: MDI_STAR    },
-		{ label: 'Cog',      value: MDI_COG     },
-		{ label: 'Bell',     value: MDI_BELL    },
-		{ label: 'Account',  value: 'mdi mdi-account'  },
-		{ label: 'Close',    value: 'mdi mdi-close'    },
-		{ label: 'Check',    value: 'mdi mdi-check'    },
-		{ label: 'Alert',    value: 'mdi mdi-alert'    },
-		{ label: 'Menu',     value: 'mdi mdi-menu'     },
+	const ICON_CLASS_OPTIONS = [
+		{ label: '(none)',   value: undefined              },
+		{ label: 'Home',     value: 'mdi mdi-home'         },
+		{ label: 'Heart',    value: 'mdi mdi-heart'        },
+		{ label: 'Star',     value: 'mdi mdi-star'         },
+		{ label: 'Cog',      value: 'mdi mdi-cog'          },
+		{ label: 'Bell',     value: 'mdi mdi-bell'         },
+		{ label: 'Account',  value: 'mdi mdi-account'      },
+		{ label: 'Close',    value: 'mdi mdi-close'        },
+		{ label: 'Check',    value: 'mdi mdi-check'        },
+		{ label: 'Alert',    value: 'mdi mdi-alert'        },
+		{ label: 'Menu',     value: 'mdi mdi-menu'         },
 	]
 </script>
 

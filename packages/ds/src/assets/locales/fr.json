@@ -58,7 +58,20 @@
     },
     "calendar": {
       "moreEvents": "{0} de plus",
-      "today": "Aujourd\"hui"
+      "today": "Aujourd'hui",
+      "previous": "Précédent",
+      "next": "Suivant",
+      "viewSwitcher": "Vue",
+      "monthGrid": "Grille du mois",
+      "ariaLabel": "Calendrier",
+      "toolbar": "Barre d'outils du calendrier",
+      "empty": "Aucun événement à afficher",
+      "view": {
+        "month": "Mois",
+        "week": "Semaine",
+        "day": "Jour",
+        "agenda": "Agenda"
+      }
     },
     "input": {
       "clear": "Vider {0}",
@@ -101,9 +114,28 @@
       "of": "sur",
       "info": "Affichage de {0}-{1} sur {2}"
     },
+    "code": {
+      "copy": "Copier",
+      "copied": "Copié !",
+      "copyAriaLabel": "Copier le code dans le presse-papier",
+      "copiedAriaLabel": "Code copié dans le presse-papier"
+    },
+    "clipboard": {
+      "copyAriaLabel": "Copier dans le presse-papier",
+      "copiedAriaLabel": "Valeur copiée dans le presse-papier"
+    },
+    "snackbar": {
+      "dismiss": "Fermer la notification"
+    },
     "stepper": {
       "next": "Suivant",
-      "prev": "Précédent"
+      "prev": "Précédent",
+      "progressSteps": "Étapes de progression",
+      "stepAriaLabel": "Étape {0} : {1}"
+    },
+    "dataTableRow": {
+      "expandRow": "Développer la ligne",
+      "collapseRow": "Réduire la ligne"
     },
     "rating": {
       "ariaLabel": {

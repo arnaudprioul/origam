@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			v-click-outside="clickOutsideArgs"
 			:class="avatarGroupClasses"
 			:style="avatarGroupStyles"
 			role="group"
@@ -19,7 +20,6 @@
 				>
 					<origam-avatar
 							:id="`avatar-${index}`"
-							ref="origamAvatarRef"
 							class="origam-avatar-group__item"
 							v-bind="avatarProps(item)"
 					/>
@@ -32,7 +32,6 @@
 						v-bind="{rest: restItems, length: restItems.length}"
 				>
 					<origam-avatar
-							ref="origamAvatarRef"
 							class="origam-avatar-group__rest"
 							v-bind="avatarProps()"
 					>
@@ -55,11 +54,11 @@
 
 	import { OrigamAvatar, OrigamDefaultsProvider } from "../../components"
 	import { useActive, useDensity, useHover, useProps, useRtl, useStateEffect, useStyle } from "../../composables"
+	import { vClickOutside } from "../../directives"
 	import { DIRECTION } from "../../enums"
 	import type { IAvatarGroupProps, IAvatarProps} from "../../interfaces"
 
 	import type { IAvatarGroupEmits } from '../../interfaces/Avatar/avatar-group.interface'
-	import type { TOrigamAvatar } from '../../types'
 
 	import type { ComputedRef, StyleValue, VNodeProps } from 'vue'
 	import { computed, mergeProps, ref } from "vue"
@@ -85,7 +84,12 @@
 			density: props.density,
 			size: props.size,
 			color: props.color,
-			bgColor: props.bgColor
+			bgColor: props.bgColor,
+			rounded: props.rounded,
+			elevation: props.elevation,
+			border: props.border,
+			borderColor: props.borderColor,
+			borderStyle: props.borderStyle
 		}
 	}))
 
@@ -147,12 +151,28 @@
 	const {hoverClasses, hoverState, isHover, onMouseleave, onMouseenter} = useHover(props)
 	const {activeClasses, activeState, isActive, onActive} = useActive(props)
 
-	const origamAvatarRef = ref<TOrigamAvatar>()
+	// Avatars inherit the group's density / size / color / bgColor through the
+	// `<origam-defaults-provider :defaults="slotDefaults">` wrapper, so we must
+	// NOT re-derive them here by reading the children's own refs: doing so read
+	// `origamAvatarRef` during the parent render to build the children's props,
+	// which (because `filterProps` returns a fresh object every call) retriggered
+	// the render endlessly — "Maximum recursive updates in OrigamDefaultsProvider".
+	// Forward the group's hover / active STATE — not just a boolean — to every
+	// child avatar, so the group's interaction (or a forced hover / active
+	// prop) actually changes each avatar's surface. A configured state object
+	// (e.g. `{ bgColor: 'success' }`) is forwarded with `enabled` synced to the
+	// group's live hover / active, so it switches the avatars on group hover /
+	// click and reverts on leave; a bare boolean is forwarded as-is.
+	const forwardState = (state: unknown, isOn: boolean) => {
+		return state && typeof state === 'object'
+			? {...(state as Record<string, unknown>), enabled: isOn}
+			: isOn
+	}
 	const avatarProps = (item: IAvatarProps = {}) => {
-		const ignoreProps = ['margin', 'marginLeft', 'marginTop', 'marginRight', 'marginBottom', 'padding', 'paddingLeft', 'paddingTop', 'paddingRight', 'paddingBottom']
-		const avatarDefaultProps = origamAvatarRef.value?.[0]?.filterProps(props, ignoreProps) || origamAvatarRef.value?.filterProps(props, ignoreProps)
-
-		return mergeProps(item as VNodeProps, avatarDefaultProps, {hover: isHover.value, active: isActive.value})
+		return mergeProps(item as VNodeProps, {
+			hover: forwardState(props.hover, isHover.value),
+			active: forwardState(props.active, isActive.value)
+		} as VNodeProps)
 	}
 
 	/*********************************************************
@@ -180,6 +200,21 @@
 		}
 
 		onActive()
+	}
+
+	// Click-to-expand groups collapse when the pointer lands outside the group.
+	// `closeConditional` gates the handler so it only fires while expand-on-click
+	// is active AND the group is currently open.
+	const handleClickOutside = () => {
+		isExpanded.value = false
+
+		if (isActive.value) {
+			onActive()
+		}
+	}
+	const clickOutsideArgs = {
+		handler: handleClickOutside,
+		closeConditional: () => Boolean(props.expandOnClick) && isActive.value
 	}
 
 	/*********************************************************

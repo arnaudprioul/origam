@@ -2,7 +2,14 @@ import type { TScrollBehavior, TScrollStrategy, TScrollStrategyFn } from '../../
 import type { Ref } from 'vue'
 
 export interface IScrollProps {
-    scrollBehavior?: TScrollBehavior
+    /**
+     * Space-separated list of scroll behaviours, e.g. `"hide inverted"` or
+     * `"elevate active"`. `inverted` is a MODIFIER that flips the trigger of
+     * `hide` / `collapse` / `elevate` and does nothing on its own. The
+     * `(string & {})` member keeps single-token autocomplete while allowing
+     * multi-token combinations.
+     */
+    scrollBehavior?: TScrollBehavior | (string & {})
     scrollTarget?: string
     scrollThreshold?: string | number
 }

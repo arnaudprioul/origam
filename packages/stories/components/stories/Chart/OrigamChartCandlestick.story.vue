@@ -3,197 +3,162 @@
 			group="components"
 			title="Chart/OrigamChartCandlestick"
 	>
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<Record<string, unknown>>({
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IChartCandlestickProps>>({
 					height: 400,
-					animated: true,
-					showLegend: false,
-					showTooltip: true,
-					showGrid: true,
-					showAxis: true,
-					legendPosition: 'bottom',
 					bullishColor: 'success',
 					bearishColor: 'danger',
 					candleWidth: 0.6,
-					wickWidth: 1
+					wickWidth: 1,
+					showLegend: false,
+					legendPosition: 'bottom',
+					showGrid: true,
+					showAxis: true,
+					showTooltip: true,
+					title: 'AAPL — 14 trading days',
+					subtitle: 'Prices in USD'
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="candlestick-playground"
-				>
-					<origam-chart-candlestick
-							:series="FIXTURE_AAPL"
-							:height="Number(state.height)"
-							:animated="Boolean(state.animated)"
-							:show-legend="Boolean(state.showLegend)"
-							:show-tooltip="Boolean(state.showTooltip)"
-							:show-grid="Boolean(state.showGrid)"
-							:show-axis="Boolean(state.showAxis)"
-							:legend-position="state.legendPosition"
-							:bullish-color="state.bullishColor"
-							:bearish-color="state.bearishColor"
-							:candle-width="Number(state.candleWidth)"
-							:wick-width="Number(state.wickWidth)"
-							title="AAPL — 14 trading days"
-							subtitle="Prices in USD"
-							data-cy="candlestick-playground-chart"
-							@point-click="onPointClick"
-							@legend-click="onLegendClick"
-							@series-toggle="onSeriesToggle"
-					/>
-					<pre
-							class="story-log"
-							data-cy="candlestick-playground-log"
-					>{{ logLines.join('\n') }}</pre>
-				</div>
+				<origam-chart-candlestick
+						:series="FIXTURE_AAPL"
+						:height="state.height"
+						:bullish-color="state.bullishColor"
+						:bearish-color="state.bearishColor"
+						:candle-width="state.candleWidth"
+						:wick-width="state.wickWidth"
+						:show-legend="state.showLegend"
+						:legend-position="state.legendPosition"
+						:show-grid="state.showGrid"
+						:show-axis="state.showAxis"
+						:show-tooltip="state.showTooltip"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:bg-color="state.bgColor"
+						:title="state.title"
+						:subtitle="state.subtitle"
+						:aspect-ratio="state.aspectRatio"
+				/>
 			</template>
 			<template #controls="{ state }">
-				<HstNumber
-						v-model="state.height"
-						title="height (px)"
-				/>
-				<HstText
-						v-model="state.bullishColor"
-						title="bullishColor"
-				/>
-				<HstText
-						v-model="state.bearishColor"
-						title="bearishColor"
-				/>
-				<HstNumber
-						v-model="state.candleWidth"
-						title="candleWidth [0..1]"
-				/>
-				<HstNumber
-						v-model="state.wickWidth"
-						title="wickWidth (px)"
-				/>
-				<HstSelect
-						v-model="state.legendPosition"
-						title="legendPosition"
-						:options="LEGEND_POSITION_OPTIONS"
-				/>
-				<HstCheckbox
-						v-model="state.animated"
-						title="animated"
-				/>
-				<HstCheckbox
-						v-model="state.showLegend"
-						title="showLegend"
-				/>
-				<HstCheckbox
-						v-model="state.showTooltip"
-						title="showTooltip"
-				/>
-				<HstCheckbox
-						v-model="state.showGrid"
-						title="showGrid"
-				/>
-				<HstCheckbox
-						v-model="state.showAxis"
-						title="showAxis"
-				/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.bullishColor" title="Bullish Color" :options="INTENT_OPTIONS"/>
+					<HstSelect v-model="state.bearishColor" title="Bearish Color" :options="INTENT_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"      title="Bg Color"      :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Candle Shape">
+					<HstNumber v-model="state.candleWidth" title="Candle Width [0..1]" :min="0.1" :max="1" :step="0.05"/>
+					<HstNumber v-model="state.wickWidth"   title="Wick Width (px)"     :min="0.5" :max="4" :step="0.5"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Legend">
+					<HstCheckbox v-model="state.showLegend"     title="Show Legend"/>
+					<HstSelect   v-model="state.legendPosition" title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Display">
+					<HstCheckbox v-model="state.showGrid"    title="Show Grid"/>
+					<HstCheckbox v-model="state.showAxis"    title="Show Axis"/>
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstNumber v-model="state.height"      title="Height (px)" :min="100" :max="800" :step="50"/>
+					<HstText   v-model="state.aspectRatio" title="Aspect Ratio (e.g. 16/9)"/>
+				</StoryGroup>
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — bullishColor / bearishColor (DS intents vs custom hex)">
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IChartCandlestickProps>>({
+					animated: true,
+					animationDuration: 600,
+					showTooltip: true
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart-candlestick
+						:series="FIXTURE_AAPL"
+						:height="360"
+						:animated="state.animated"
+						:animation-duration="state.animationDuration"
+						:show-tooltip="state.showTooltip"
+						:y-min="state.yMin || undefined"
+						:y-max="state.yMax || undefined"
+						title="AAPL — functional controls"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Animation">
+					<HstCheckbox v-model="state.animated"         title="Animated"/>
+					<HstNumber   v-model="state.animationDuration" title="Duration (ms)" :min="0" :max="2000" :step="100"/>
+				</StoryGroup>
+				<StoryGroup title="Tooltip">
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+				</StoryGroup>
+				<StoryGroup title="Y Axis Override">
+					<HstNumber v-model="state.yMin" title="Y Min (0 = auto)" :min="0" :step="10"/>
+					<HstNumber v-model="state.yMax" title="Y Max (0 = auto)" :min="0" :step="10"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Events - point-click">
 			<div
 					class="story-shell"
-					data-cy="candlestick-colors"
+					data-cy="candlestick-emit-point-click"
 			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>DS intents: success / danger (default)</strong>
-						<origam-chart-candlestick
-								:series="FIXTURE_AAPL"
-								:height="300"
-								bullish-color="success"
-								bearish-color="danger"
-								:show-axis="false"
-								title="AAPL — intents"
-								data-cy="candlestick-color-intents"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>Custom hex: #22d3ee / #f43f5e</strong>
-						<origam-chart-candlestick
-								:series="FIXTURE_AAPL"
-								:height="300"
-								bullish-color="#22d3ee"
-								bearish-color="#f43f5e"
-								:show-axis="false"
-								title="AAPL — custom hex"
-								data-cy="candlestick-color-hex"
-						/>
-					</div>
-				</div>
+				<origam-chart-candlestick
+						:series="FIXTURE_AAPL"
+						:height="360"
+						title="Click a candle"
+						data-cy="candlestick-emit-point-click-chart"
+						@point-click="logEvent('point-click', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — candleWidth (slim 0.3 vs wide 0.9)">
+		<Variant title="Events - legend-click">
 			<div
 					class="story-shell"
-					data-cy="candlestick-candle-width"
+					data-cy="candlestick-emit-legend-click"
 			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>slim (0.3)</strong>
-						<origam-chart-candlestick
-								:series="FIXTURE_AAPL"
-								:height="300"
-								:candle-width="0.3"
-								title="candleWidth = 0.3"
-								data-cy="candlestick-width-slim"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>wide (0.9)</strong>
-						<origam-chart-candlestick
-								:series="FIXTURE_AAPL"
-								:height="300"
-								:candle-width="0.9"
-								title="candleWidth = 0.9"
-								data-cy="candlestick-width-wide"
-						/>
-					</div>
-				</div>
+				<origam-chart-candlestick
+						:series="FIXTURE_AAPL"
+						:height="360"
+						:show-legend="true"
+						title="Click a legend entry"
+						data-cy="candlestick-emit-legend-click-chart"
+						@legend-click="logEvent('legend-click', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — wickWidth (thin 0.5 vs thick 2)">
+		<Variant title="Events - series-toggle">
 			<div
 					class="story-shell"
-					data-cy="candlestick-wick-width"
+					data-cy="candlestick-emit-series-toggle"
 			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>thin (0.5)</strong>
-						<origam-chart-candlestick
-								:series="FIXTURE_AAPL"
-								:height="300"
-								:wick-width="0.5"
-								title="wickWidth = 0.5"
-								data-cy="candlestick-wick-thin"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>thick (2)</strong>
-						<origam-chart-candlestick
-								:series="FIXTURE_AAPL"
-								:height="300"
-								:wick-width="2"
-								title="wickWidth = 2"
-								data-cy="candlestick-wick-thick"
-						/>
-					</div>
-				</div>
+				<origam-chart-candlestick
+						:series="FIXTURE_AAPL"
+						:height="360"
+						:show-legend="true"
+						title="Toggle a series via legend"
+						data-cy="candlestick-emit-series-toggle-chart"
+						@series-toggle="logEvent('series-toggle', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Slot — tooltip">
+		<Variant title="Slots - Tooltip">
 			<div
 					class="story-shell"
 					data-cy="candlestick-slot-tooltip"
@@ -223,7 +188,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — empty">
+		<Variant title="Slots - Empty">
 			<div
 					class="story-shell"
 					data-cy="candlestick-slot-empty"
@@ -244,25 +209,101 @@
 			</div>
 		</Variant>
 
-		<Variant title="Emit — point-click on candle">
+		<Variant title="Slots - Legend-Item">
 			<div
 					class="story-shell"
-					data-cy="candlestick-emit"
+					data-cy="candlestick-slot-legend-item"
 			>
 				<origam-chart-candlestick
 						:series="FIXTURE_AAPL"
 						:height="360"
-						title="Click a candle"
-						data-cy="candlestick-emit-chart"
-						@point-click="onPointClick"
-						@legend-click="onLegendClick"
-						@series-toggle="onSeriesToggle"
-				/>
-				<pre
-						class="story-log"
-						data-cy="candlestick-emit-log"
-				>{{ logLines.join('\n') }}</pre>
+						:show-legend="true"
+						title="AAPL — custom legend item"
+						data-cy="candlestick-slot-legend-item-chart"
+				>
+					<template #legend-item="{ series, index, visible }">
+						<span
+								class="custom-legend-item"
+								:style="{ opacity: visible ? 1 : 0.4 }"
+						>
+							[{{ index }}] {{ series.name }}
+						</span>
+					</template>
+				</origam-chart-candlestick>
 			</div>
+		</Variant>
+
+		<Variant title="Slots - Title">
+			<div
+					class="story-shell"
+					data-cy="candlestick-slot-title"
+			>
+				<origam-chart-candlestick
+						:series="FIXTURE_AAPL"
+						:height="360"
+						data-cy="candlestick-slot-title-chart"
+				>
+					<template #title>
+						<div class="custom-title">
+							<strong>Custom Chart Title</strong>
+							<em>with a fully custom header block</em>
+						</div>
+					</template>
+				</origam-chart-candlestick>
+			</div>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IChartCandlestickProps>({
+					series: FIXTURE_AAPL,
+					height: 400,
+					bullishColor: 'success',
+					bearishColor: 'danger',
+					candleWidth: 0.6,
+					wickWidth: 1,
+					showLegend: false,
+					legendPosition: 'bottom',
+					showGrid: true,
+					showAxis: true,
+					showTooltip: true,
+					animated: true,
+					title: 'AAPL — 14 trading days',
+					subtitle: 'Prices in USD'
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart-candlestick
+						v-bind="state"
+						@point-click="logEvent('point-click', $event)"
+						@legend-click="logEvent('legend-click', $event)"
+						@series-toggle="logEvent('series-toggle', $event)"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect   v-model="state.bullishColor"  title="Bullish Color"      :options="INTENT_OPTIONS"/>
+					<HstSelect   v-model="state.bearishColor"  title="Bearish Color"      :options="INTENT_OPTIONS"/>
+					<HstSelect   v-model="state.bgColor"       title="Bg Color"           :options="COLOR_OPTIONS"/>
+					<HstNumber   v-model="state.candleWidth"   title="Candle Width [0..1]" :min="0.1" :max="1"   :step="0.05"/>
+					<HstNumber   v-model="state.wickWidth"     title="Wick Width (px)"     :min="0.5" :max="4"   :step="0.5"/>
+					<HstSelect   v-model="state.rounded"       title="Rounded"            :options="ROUNDED_OPTIONS"/>
+					<HstSelect   v-model="state.elevation"     title="Elevation"          :options="ELEVATION_OPTIONS"/>
+					<HstNumber   v-model="state.height"        title="Height (px)"         :min="100" :max="800" :step="50"/>
+					<HstCheckbox v-model="state.showLegend"    title="Show Legend"/>
+					<HstSelect   v-model="state.legendPosition" title="Legend Position"   :options="LEGEND_POSITION_OPTIONS"/>
+					<HstCheckbox v-model="state.showGrid"      title="Show Grid"/>
+					<HstCheckbox v-model="state.showAxis"      title="Show Axis"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.showTooltip"  title="Show Tooltip"/>
+					<HstCheckbox v-model="state.animated"     title="Animated"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -271,32 +312,45 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamChartCandlestick } from '@origam/components'
+	import type {
+		IChartCandlestickProps,
+		IChartPoint,
+		IChartSeries
+	} from '@origam/interfaces'
 
-	import type { IChartPoint, IChartSeries } from '@origam/interfaces'
-
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		INTENT_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
 
-	const LEGEND_POSITION_OPTIONS = [
-		{ value: 'top', label: 'top' },
-		{ value: 'bottom', label: 'bottom' },
-		{ value: 'left', label: 'left' },
-		{ value: 'right', label: 'right' }
+	import type { TChartLegendPosition } from '@origam/types'
+	import type { IOptions } from '@origam/interfaces'
+
+	const LEGEND_POSITION_OPTIONS: Array<IOptions<TChartLegendPosition>> = [
+		{ value: 'top',    label: 'Top' },
+		{ value: 'bottom', label: 'Bottom' },
+		{ value: 'left',   label: 'Left' },
+		{ value: 'right',  label: 'Right' }
 	]
 
 	const FIXTURE_AAPL: Array<IChartSeries> = [
 		{
 			name: 'AAPL',
 			data: [
-				{ date: 'May 1', open: 150.20, high: 153.80, low: 149.50, close: 152.90 },
-				{ date: 'May 2', open: 152.90, high: 155.40, low: 151.20, close: 151.60 },
-				{ date: 'May 5', open: 151.60, high: 154.20, low: 150.80, close: 153.70 },
-				{ date: 'May 6', open: 153.70, high: 157.30, low: 153.10, close: 156.80 },
-				{ date: 'May 7', open: 156.80, high: 158.90, low: 154.60, close: 155.20 },
-				{ date: 'May 8', open: 155.20, high: 157.00, low: 153.40, close: 154.10 },
-				{ date: 'May 9', open: 154.10, high: 156.50, low: 152.70, close: 155.90 },
+				{ date: 'May 1',  open: 150.20, high: 153.80, low: 149.50, close: 152.90 },
+				{ date: 'May 2',  open: 152.90, high: 155.40, low: 151.20, close: 151.60 },
+				{ date: 'May 5',  open: 151.60, high: 154.20, low: 150.80, close: 153.70 },
+				{ date: 'May 6',  open: 153.70, high: 157.30, low: 153.10, close: 156.80 },
+				{ date: 'May 7',  open: 156.80, high: 158.90, low: 154.60, close: 155.20 },
+				{ date: 'May 8',  open: 155.20, high: 157.00, low: 153.40, close: 154.10 },
+				{ date: 'May 9',  open: 154.10, high: 156.50, low: 152.70, close: 155.90 },
 				{ date: 'May 12', open: 155.90, high: 159.80, low: 155.30, close: 158.40 },
 				{ date: 'May 13', open: 158.40, high: 161.20, low: 157.90, close: 160.10 },
 				{ date: 'May 14', open: 160.10, high: 162.50, low: 158.60, close: 159.30 },
@@ -312,15 +366,15 @@
 		{
 			name: 'BTC/USD',
 			data: [
-				{ date: 'Apr 1', open: 45000, high: 46800, low: 44200, close: 46200 },
-				{ date: 'Apr 2', open: 46200, high: 48100, low: 45500, close: 47500 },
-				{ date: 'Apr 3', open: 47500, high: 49300, low: 46100, close: 45800 },
-				{ date: 'Apr 4', open: 45800, high: 47600, low: 44800, close: 46900 },
-				{ date: 'Apr 5', open: 46900, high: 50200, low: 46400, close: 49800 },
-				{ date: 'Apr 6', open: 49800, high: 51500, low: 48200, close: 48600 },
-				{ date: 'Apr 7', open: 48600, high: 50800, low: 47300, close: 50100 },
-				{ date: 'Apr 8', open: 50100, high: 52600, low: 49500, close: 51800 },
-				{ date: 'Apr 9', open: 51800, high: 53200, low: 49800, close: 50200 },
+				{ date: 'Apr 1',  open: 45000, high: 46800, low: 44200, close: 46200 },
+				{ date: 'Apr 2',  open: 46200, high: 48100, low: 45500, close: 47500 },
+				{ date: 'Apr 3',  open: 47500, high: 49300, low: 46100, close: 45800 },
+				{ date: 'Apr 4',  open: 45800, high: 47600, low: 44800, close: 46900 },
+				{ date: 'Apr 5',  open: 46900, high: 50200, low: 46400, close: 49800 },
+				{ date: 'Apr 6',  open: 49800, high: 51500, low: 48200, close: 48600 },
+				{ date: 'Apr 7',  open: 48600, high: 50800, low: 47300, close: 50100 },
+				{ date: 'Apr 8',  open: 50100, high: 52600, low: 49500, close: 51800 },
+				{ date: 'Apr 9',  open: 51800, high: 53200, low: 49800, close: 50200 },
 				{ date: 'Apr 10', open: 50200, high: 52000, low: 48600, close: 51500 },
 				{ date: 'Apr 11', open: 51500, high: 54800, low: 50900, close: 54200 },
 				{ date: 'Apr 12', open: 54200, high: 56100, low: 52800, close: 53400 },
@@ -345,24 +399,6 @@
 			] as any
 		}
 	]
-
-	const logLines = ref<Array<string>>([])
-
-	const appendLog = (line: string) => {
-		logLines.value = [line, ...logLines.value].slice(0, 8)
-	}
-
-	const onPointClick = (point: IChartPoint) => {
-		appendLog(`point-click → date="${ point.x }" close=${ point.y }`)
-	}
-
-	const onLegendClick = (series: IChartSeries, index: number) => {
-		appendLog(`legend-click → ${ series.name } (index ${ index })`)
-	}
-
-	const onSeriesToggle = (series: IChartSeries, visible: boolean) => {
-		appendLog(`series-toggle → ${ series.name } now ${ visible ? 'visible' : 'hidden' }`)
-	}
 </script>
 
 <style scoped>
@@ -371,37 +407,6 @@
 		flex-direction: column;
 		gap: 12px;
 		padding: 16px;
-	}
-
-	.story-log {
-		font-size: 0.75rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-		min-height: 80px;
-		border: 1px solid var(--origam-color-border-subtle, #e5e7eb);
-		border-radius: 4px;
-		padding: 8px;
-		white-space: pre-wrap;
-	}
-
-	.story-grid {
-		display: grid;
-		gap: 16px;
-	}
-
-	.story-grid--2 {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	.story-col {
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-		min-width: 0;
-	}
-
-	.story-col strong {
-		font-size: 0.8125rem;
-		color: var(--origam-color-text-secondary, #6b7280);
 	}
 
 	.custom-tooltip {
@@ -418,11 +423,27 @@
 		flex-direction: column;
 		align-items: center;
 		gap: 6px;
-		color: var(--origam-color-text-secondary, #6b7280);
+		color: var(--origam-color-text-secondary);
 	}
 
 	.custom-empty strong {
 		font-size: 1rem;
-		color: var(--origam-color-text-primary, #111827);
+		color: var(--origam-color-text-primary);
+	}
+
+	.custom-legend-item {
+		font-size: 0.8125rem;
+		font-style: italic;
+	}
+
+	.custom-title {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
 	}
 </style>
+
+<docs
+		lang="md"
+		src="@docs/components/Chart/OrigamChartCandlestick.md"
+/>

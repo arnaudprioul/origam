@@ -287,6 +287,8 @@
 		margin-inline-end: var(--origam-sheet---margin-inline-end);
 
 		background: var(--origam-sheet---background);
+		backdrop-filter: var(--origam-sheet---backdrop-filter, none);
+		-webkit-backdrop-filter: var(--origam-sheet---backdrop-filter, none);
 		box-shadow: var(--origam-sheet---box-shadow);
 		color: var(--origam-sheet---color);
 
@@ -295,7 +297,7 @@
 			--origam-sheet---border-right-width: var(--origam-border__width---thin, 1px);
 			--origam-sheet---border-bottom-width: var(--origam-border__width---thin, 1px);
 			--origam-sheet---border-left-width: var(--origam-border__width---thin, 1px);
-			box-shadow: var(--origam-sheet--border---box-shadow);
+			box-shadow: var(--origam-sheet--border---box-shadow, var(--origam-sheet---box-shadow));
 		}
 
 		&--rounded {

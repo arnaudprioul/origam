@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-confirmwrapper-origamconfirmwrapper-story-vue'
+const STORY_PATH = '/story/components-stories-confirmwrapper-origamconfirmwrapper-story-vue'
 
 test.describe('OrigamConfirmWrapper', () => {
 	test('Default (field shorthand) — wrapper renders with two inputs', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Default (field shorthand)', { exact: true }).first().click()
+		await page.getByText('Prop — field (shorthand)', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -26,7 +26,7 @@ test.describe('OrigamConfirmWrapper', () => {
 	test('Direction — wrapper renders with direction variant', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Direction', { exact: true }).first().click()
+		await page.getByText('Prop — direction', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -37,7 +37,7 @@ test.describe('OrigamConfirmWrapper', () => {
 	test('Label and prepend icon — wrapper with label renders', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Label and prepend icon', { exact: true }).first().click()
+		await page.getByText('Prop — label & prependIcon', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -48,7 +48,7 @@ test.describe('OrigamConfirmWrapper', () => {
 	test('States — wrapper renders with state controls', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('States', { exact: true }).first().click()
+		await page.getByText('Prop — disabled, readonly & error', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -59,7 +59,7 @@ test.describe('OrigamConfirmWrapper', () => {
 	test('Validation — wrapper renders with validation status', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Validation (mismatch error)', { exact: true }).first().click()
+		await page.getByText('Prop — confirm (mismatch validation)', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -83,7 +83,7 @@ test.describe('OrigamConfirmWrapper', () => {
 	test('Slot — default + confirm — custom fields render', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Slot — default + confirm', { exact: true }).first().click()
+		await page.getByText('Slot — default & confirm', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -96,7 +96,7 @@ test.describe('OrigamConfirmWrapper', () => {
 	test('Emit — update:modelValue — wrapper renders for emit test', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Emit — update:modelValue', { exact: true }).first().click()
+		await page.getByText('Emit — update:modelValue & update:confirm', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

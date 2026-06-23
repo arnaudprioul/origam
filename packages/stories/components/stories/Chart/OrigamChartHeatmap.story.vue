@@ -3,192 +3,164 @@
 			group="components"
 			title="Chart/OrigamChartHeatmap"
 	>
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<Record<string, unknown>>({
-					height: 440,
-					animated: true,
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IChartHeatmapProps>>({
+					title: 'GitHub-style activity grid',
+					subtitle: 'Commits per weekday × hour',
+					colorRange: ['info', 'danger'],
+					cellGap: 2,
 					showLabel: true,
 					showAxis: true,
 					showGradientLegend: true,
-					showTooltip: true,
+					showLegend: true,
 					legendPosition: 'bottom',
-					cellGap: 2,
-					colorRangeStart: 'info',
-					colorRangeEnd: 'danger'
+					height: 440
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="heatmap-playground"
-				>
-					<origam-chart-heatmap
-							:series="FIXTURE_ACTIVITY"
-							:x-categories="HOURS"
-							:y-categories="DAYS"
-							:height="Number(state.height)"
-							:cell-gap="Number(state.cellGap)"
-							:color-range="[state.colorRangeStart, state.colorRangeEnd]"
-							:animated="Boolean(state.animated)"
-							:show-label="Boolean(state.showLabel)"
-							:show-axis="Boolean(state.showAxis)"
-							:show-gradient-legend="Boolean(state.showGradientLegend)"
-							:show-tooltip="Boolean(state.showTooltip)"
-							:legend-position="state.legendPosition"
-							title="GitHub-style activity grid"
-							subtitle="Commits per weekday × hour"
-							data-cy="heatmap-playground-chart"
-							@point-click="onPointClick"
-					/>
-					<pre
-							class="story-log"
-							data-cy="heatmap-playground-log"
-					>{{ logLines.join('\n') }}</pre>
-				</div>
+				<origam-chart-heatmap
+						:series="FIXTURE_ACTIVITY"
+						:x-categories="HOURS"
+						:y-categories="DAYS"
+						:bg-color="state.bgColor"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:width="state.width"
+						:height="state.height"
+						:aspect-ratio="state.aspectRatio"
+						:color-range="state.colorRange"
+						:cell-gap="state.cellGap"
+						:show-label="state.showLabel"
+						:show-axis="state.showAxis"
+						:show-gradient-legend="state.showGradientLegend"
+						:show-legend="state.showLegend"
+						:legend-position="state.legendPosition"
+						:title="state.title"
+						:subtitle="state.subtitle"
+				/>
 			</template>
 			<template #controls="{ state }">
-				<HstNumber
-						v-model="state.height"
-						title="height (px)"
-				/>
-				<HstNumber
-						v-model="state.cellGap"
-						title="cellGap"
-				/>
-				<HstSelect
-						v-model="state.legendPosition"
-						title="legendPosition"
-						:options="LEGEND_POSITION_OPTIONS"
-				/>
-				<HstCheckbox
-						v-model="state.animated"
-						title="animated"
-				/>
-				<HstCheckbox
-						v-model="state.showLabel"
-						title="showLabel"
-				/>
-				<HstCheckbox
-						v-model="state.showAxis"
-						title="showAxis"
-				/>
-				<HstCheckbox
-						v-model="state.showGradientLegend"
-						title="showGradientLegend"
-				/>
-				<HstCheckbox
-						v-model="state.showTooltip"
-						title="showTooltip"
-				/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="INTENT_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText   v-model="state.width"       title="Width"/>
+					<HstNumber v-model="state.height"      title="Height (px)"/>
+					<HstText   v-model="state.aspectRatio" title="Aspect Ratio"/>
+				</StoryGroup>
+				<StoryGroup title="Color Range">
+					<HstSelect v-model="state.colorRange[0]" title="Range Start" :options="INTENT_OPTIONS"/>
+					<HstSelect v-model="state.colorRange[1]" title="Range End"   :options="INTENT_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Cells">
+					<HstNumber   v-model="state.cellGap"  title="Cell Gap"/>
+					<HstCheckbox v-model="state.showLabel" title="Show Label"/>
+					<HstCheckbox v-model="state.showAxis"  title="Show Axis"/>
+				</StoryGroup>
+				<StoryGroup title="Legend">
+					<HstCheckbox v-model="state.showLegend"         title="Show Legend"/>
+					<HstCheckbox v-model="state.showGradientLegend" title="Show Gradient Legend"/>
+					<HstSelect   v-model="state.legendPosition"     title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Labels">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — colorRange (info→danger vs primary→warning)">
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IChartHeatmapProps>>({
+					animated: true,
+					animationDuration: 600,
+					showTooltip: true,
+					height: 440
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart-heatmap
+						:series="FIXTURE_ACTIVITY"
+						:x-categories="HOURS"
+						:y-categories="DAYS"
+						:animated="state.animated"
+						:animation-duration="state.animationDuration"
+						:show-tooltip="state.showTooltip"
+						:height="state.height"
+						title="Functional controls"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Animation">
+					<HstCheckbox v-model="state.animated"         title="Animated"/>
+					<HstNumber   v-model="state.animationDuration" title="Duration (ms)" :min="0" :max="3000" :step="100"/>
+				</StoryGroup>
+				<StoryGroup title="Tooltip">
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Events - point-click">
 			<div
 					class="story-shell"
-					data-cy="heatmap-color-range"
+					data-cy="heatmap-emit-point-click"
 			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>info → danger (default)</strong>
-						<origam-chart-heatmap
-								:series="FIXTURE_CORRELATION"
-								:x-categories="TICKERS"
-								:y-categories="TICKERS"
-								:color-range="['info', 'danger']"
-								:height="320"
-								title="Correlation matrix"
-								data-cy="heatmap-color-range-info-danger"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>primary → warning</strong>
-						<origam-chart-heatmap
-								:series="FIXTURE_CORRELATION"
-								:x-categories="TICKERS"
-								:y-categories="TICKERS"
-								:color-range="['primary', 'warning']"
-								:height="320"
-								title="Correlation matrix"
-								data-cy="heatmap-color-range-primary-warning"
-						/>
-					</div>
-				</div>
+				<origam-chart-heatmap
+						:series="FIXTURE_ACTIVITY"
+						:x-categories="HOURS"
+						:y-categories="DAYS"
+						:height="400"
+						title="Click a cell"
+						data-cy="heatmap-emit-point-click-chart"
+						@point-click="logEvent('point-click', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — cellGap (compact vs spaced)">
+		<Variant title="Events - legend-click">
 			<div
 					class="story-shell"
-					data-cy="heatmap-cell-gap"
+					data-cy="heatmap-emit-legend-click"
 			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>compact (cellGap=0)</strong>
-						<origam-chart-heatmap
-								:series="FIXTURE_ACTIVITY"
-								:x-categories="HOURS"
-								:y-categories="DAYS"
-								:cell-gap="0"
-								:height="280"
-								title="No gap"
-								data-cy="heatmap-cell-gap-compact"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>spaced (cellGap=6)</strong>
-						<origam-chart-heatmap
-								:series="FIXTURE_ACTIVITY"
-								:x-categories="HOURS"
-								:y-categories="DAYS"
-								:cell-gap="6"
-								:height="280"
-								title="Wide gap"
-								data-cy="heatmap-cell-gap-spaced"
-						/>
-					</div>
-				</div>
+				<origam-chart-heatmap
+						:series="FIXTURE_ACTIVITY"
+						:x-categories="HOURS"
+						:y-categories="DAYS"
+						:height="400"
+						:show-legend="true"
+						title="Click a legend entry"
+						data-cy="heatmap-emit-legend-click-chart"
+						@legend-click="logEvent('legend-click', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — showLabel / showAxis (on/off matrix)">
+		<Variant title="Events - series-toggle">
 			<div
 					class="story-shell"
-					data-cy="heatmap-flags"
+					data-cy="heatmap-emit-series-toggle"
 			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>showLabel=true showAxis=true</strong>
-						<origam-chart-heatmap
-								:series="FIXTURE_CORRELATION"
-								:x-categories="TICKERS"
-								:y-categories="TICKERS"
-								:show-label="true"
-								:show-axis="true"
-								:height="300"
-								title="Labels + axes"
-								data-cy="heatmap-flags-both-on"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>showLabel=false showAxis=false</strong>
-						<origam-chart-heatmap
-								:series="FIXTURE_CORRELATION"
-								:x-categories="TICKERS"
-								:y-categories="TICKERS"
-								:show-label="false"
-								:show-axis="false"
-								:height="300"
-								title="No labels / no axes"
-								data-cy="heatmap-flags-both-off"
-						/>
-					</div>
-				</div>
+				<origam-chart-heatmap
+						:series="FIXTURE_ACTIVITY"
+						:x-categories="HOURS"
+						:y-categories="DAYS"
+						:height="400"
+						:show-legend="true"
+						title="Toggle series visibility"
+						data-cy="heatmap-emit-series-toggle-chart"
+						@series-toggle="logEvent('series-toggle', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Slot — tooltip">
+		<Variant title="Slots - tooltip">
 			<div
 					class="story-shell"
 					data-cy="heatmap-slot-tooltip"
@@ -211,7 +183,49 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — empty">
+		<Variant title="Slots - legend-item">
+			<div
+					class="story-shell"
+					data-cy="heatmap-slot-legend-item"
+			>
+				<origam-chart-heatmap
+						:series="FIXTURE_ACTIVITY"
+						:x-categories="HOURS"
+						:y-categories="DAYS"
+						:height="400"
+						:show-legend="true"
+						title="Custom legend item"
+						data-cy="heatmap-slot-legend-item-chart"
+				>
+					<template #legend-item="{ series, index, visible }">
+						<span :style="{ opacity: visible ? 1 : 0.4 }">
+							[{{ index }}] {{ series.name }}
+						</span>
+					</template>
+				</origam-chart-heatmap>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - title">
+			<div
+					class="story-shell"
+					data-cy="heatmap-slot-title"
+			>
+				<origam-chart-heatmap
+						:series="FIXTURE_ACTIVITY"
+						:x-categories="HOURS"
+						:y-categories="DAYS"
+						:height="400"
+						data-cy="heatmap-slot-title-chart"
+				>
+					<template #title>
+						<h2>Custom <em>title</em> slot</h2>
+					</template>
+				</origam-chart-heatmap>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - empty">
 			<div
 					class="story-shell"
 					data-cy="heatmap-slot-empty"
@@ -231,25 +245,58 @@
 			</div>
 		</Variant>
 
-		<Variant title="Emit — point-click on cell">
-			<div
-					class="story-shell"
-					data-cy="heatmap-emit"
-			>
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IChartHeatmapProps>({
+					series: FIXTURE_ACTIVITY,
+					xCategories: HOURS,
+					yCategories: DAYS,
+					title: 'GitHub-style activity grid',
+					subtitle: 'Commits per weekday × hour',
+					colorRange: ['info', 'danger'],
+					cellGap: 2,
+					showLabel: true,
+					showAxis: true,
+					showGradientLegend: true,
+					showLegend: true,
+					legendPosition: 'bottom',
+					animated: true,
+					showTooltip: true,
+					height: 440
+				})"
+		>
+			<template #default="{ state }">
 				<origam-chart-heatmap
-						:series="FIXTURE_ACTIVITY"
-						:x-categories="HOURS"
-						:y-categories="DAYS"
-						:height="400"
-						title="Click a cell"
-						data-cy="heatmap-emit-chart"
-						@point-click="onPointClick"
+						v-bind="state"
+						@point-click="logEvent('point-click', $event)"
+						@legend-click="logEvent('legend-click', $event)"
+						@series-toggle="logEvent('series-toggle', $event)"
 				/>
-				<pre
-						class="story-log"
-						data-cy="heatmap-emit-log"
-				>{{ logLines.join('\n') }}</pre>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect   v-model="state.bgColor"          title="Bg Color"        :options="INTENT_OPTIONS"/>
+					<HstSelect   v-model="state.rounded"          title="Rounded"         :options="ROUNDED_OPTIONS"/>
+					<HstSelect   v-model="state.elevation"        title="Elevation"       :options="ELEVATION_OPTIONS"/>
+					<HstNumber   v-model="state.height"           title="Height (px)"/>
+					<HstText     v-model="state.aspectRatio"      title="Aspect Ratio"/>
+					<HstNumber   v-model="state.cellGap"          title="Cell Gap"/>
+					<HstSelect   v-model="state.legendPosition"   title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+					<HstCheckbox v-model="state.showLabel"         title="Show Label"/>
+					<HstCheckbox v-model="state.showAxis"          title="Show Axis"/>
+					<HstCheckbox v-model="state.showGradientLegend" title="Show Gradient Legend"/>
+					<HstCheckbox v-model="state.showLegend"        title="Show Legend"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.animated"    title="Animated"/>
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+					<HstNumber   v-model="state.animationDuration" title="Duration (ms)" :min="0" :max="3000" :step="100"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -258,13 +305,18 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamChartHeatmap } from '@origam/components'
+	import type { IChartHeatmapProps, IChartSeries } from '@origam/interfaces'
 
-	import type { IChartPoint, IChartSeries } from '@origam/interfaces'
-
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		ELEVATION_OPTIONS,
+		INTENT_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
 
 	const LEGEND_POSITION_OPTIONS = [
 		{ value: 'top', label: 'top' },
@@ -275,7 +327,6 @@
 
 	const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 	const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0') + 'h')
-	const TICKERS = ['AAPL', 'MSFT', 'GOOG', 'AMZN', 'TSLA']
 
 	const seedRandom = (seed: number): (() => number) => {
 		let s = seed
@@ -298,35 +349,10 @@
 		return data
 	}
 
-	const buildCorrelationData = (): Array<{ x: number | string, y: number | string, value: number }> => {
-		const rand = seedRandom(7)
-		const data: Array<{ x: number | string, y: number | string, value: number }> = []
-		for (let i = 0; i < TICKERS.length; i++) {
-			for (let j = 0; j < TICKERS.length; j++) {
-				const val = i === j ? 1 : Math.abs((i - j) / 5) * (rand() * 2 - 1)
-				data.push({ x: TICKERS[j], y: TICKERS[i], value: parseFloat(val.toFixed(2)) })
-			}
-		}
-		return data
-	}
-
 	const FIXTURE_ACTIVITY: Array<IChartSeries> = [
 		{ name: 'Commits', data: buildActivityData() }
 	]
 
-	const FIXTURE_CORRELATION: Array<IChartSeries> = [
-		{ name: 'Correlation', data: buildCorrelationData() }
-	]
-
-	const logLines = ref<Array<string>>([])
-
-	const appendLog = (line: string) => {
-		logLines.value = [line, ...logLines.value].slice(0, 8)
-	}
-
-	const onPointClick = (point: IChartPoint) => {
-		appendLog(`point-click → x="${ point.x }" y=${ point.y }`)
-	}
 </script>
 
 <style scoped>
@@ -335,37 +361,6 @@
 		flex-direction: column;
 		gap: 12px;
 		padding: 16px;
-	}
-
-	.story-log {
-		font-size: 0.75rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-		min-height: 80px;
-		border: 1px solid var(--origam-color-border-subtle, #e5e7eb);
-		border-radius: 4px;
-		padding: 8px;
-		white-space: pre-wrap;
-	}
-
-	.story-grid {
-		display: grid;
-		gap: 16px;
-	}
-
-	.story-grid--2 {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	.story-col {
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-		min-width: 0;
-	}
-
-	.story-col strong {
-		font-size: 0.8125rem;
-		color: var(--origam-color-text-secondary, #6b7280);
 	}
 
 	.custom-tooltip {
@@ -380,3 +375,8 @@
 		font-style: italic;
 	}
 </style>
+
+<docs
+		lang="md"
+		src="@docs/components/Chart/OrigamChartHeatmap.md"
+/>

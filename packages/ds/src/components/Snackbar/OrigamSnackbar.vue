@@ -86,7 +86,6 @@
     ref,
     shallowRef,
     StyleValue,
-    toRef,
     useSlots,
     watch,
     watchEffect
@@ -159,7 +158,7 @@
    * Icon / Status
    ********************************************************/
 
-  const { icon, statusClasses } = useStatus(props)
+  const { icon, statusClasses, statusIntent } = useStatus(props)
 
   const origamOverlayRef = ref<TOrigamOverlay>()
   const isHovering = shallowRef(false)
@@ -243,7 +242,9 @@
    * Color & state effects
    ********************************************************/
 
-  const { colorClasses, colorStyles } = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+  const statusBgColor = computed(() => statusIntent.value ?? props.bgColor)
+  const statusColor = computed(() => statusIntent.value ? undefined : props.color)
+  const { colorClasses, colorStyles } = useBothColor(statusBgColor, statusColor)
 
   const {
     roundedClasses, roundedStyles,

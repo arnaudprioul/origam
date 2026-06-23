@@ -19,13 +19,15 @@ export function updateHover (el: IHoverHtmlElement, binding: IHoverDirectiveBind
     const enabled = isHoverEnabled(value)
     const options: IHoverOptions = {class: `${name}--hover`}
 
-    if (isObject(value) && value.class) {
+    if (isObject(value) && typeof value.class === 'string') {
         options.class = value.class
     }
 
     el._hover = el._hover ?? {}
     el._hover.enabled = enabled
     el._hover.class = options.class
+    el._hover.mouseenter = isObject(value) ? value.mouseenter : undefined
+    el._hover.mouseleave = isObject(value) ? value.mouseleave : undefined
 
     if (!enabled) {
         HOVER.hide(el, options)
@@ -89,6 +91,8 @@ export function hoverShow (e: THoverEvent) {
     }
 
     HOVER.show(e, element, value)
+
+    element._hover.mouseenter?.(element, e)
 }
 
 /**
@@ -116,6 +120,8 @@ export function hoverHide (e: Event) {
     }
 
     HOVER.hide(element, value)
+
+    element._hover.mouseleave?.(element, e)
 }
 
 /**

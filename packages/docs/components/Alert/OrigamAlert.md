@@ -41,16 +41,6 @@ const visible = ref(true)
 </script>
 ```
 
-## Prominent
-
-`prominent` enlarges the status icon and uses a two-row grid layout.
-
-```vue
-<template>
-    <OrigamAlert prominent status="info" title="Prominent" text="Larger icon layout." />
-</template>
-```
-
 ## Title
 
 ```vue

@@ -14,7 +14,7 @@ import { expect, test, type Page } from '@playwright/test'
  *  - point-click emit variant shows the event log after clicking a bar.
  */
 
-const PARETO_STORY = '/story/stories-components-stories-chart-origamchartpareto-story-vue'
+const PARETO_STORY = '/story/components-stories-chart-origamchartpareto-story-vue'
 
 const sandboxOf = (page: Page) =>
 	page.frameLocator('iframe[src*="__sandbox"]')

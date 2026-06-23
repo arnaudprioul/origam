@@ -3,237 +3,180 @@
 			group="components"
 			title="Dialog/OrigamDialog"
 	>
-		<!--
-			Playground — first variant by convention. Surfaces every
-			IDialogProps knob via the sidebar controls.
-		-->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IDialogProps>({
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IDialogProps>>({
 					title: 'Dialog',
-					fullscreen: false,
-					scrollable: false,
-					retainFocus: true
+					bgColor: 'surface',
+					size: 'default'
 				})"
 		>
 			<template #default="{ state }">
-				<div style="padding: 16px;" data-cy="dialog-playground-host">
-					<origam-dialog v-model="playgroundOpen" v-bind="state">
+				<div style="padding: 16px;">
+					<origam-dialog v-model="designOpen" v-bind="state">
 						<template #activator="{ props: a }">
-							<origam-btn v-bind="a" text="Open playground" data-cy="dialog-playground-activator"/>
+							<origam-btn v-bind="a" text="Open (Design)"/>
 						</template>
 						<template #content>
-							<p style="padding: 0 16px;">Playground content.</p>
+							<p style="padding: 0 16px;">Design variant preview.</p>
 						</template>
 						<template #footer>
 							<div style="padding: 8px 16px; text-align: right;">
-								<origam-btn text="Close" data-cy="dialog-playground-close" @click="playgroundOpen = false"/>
+								<origam-btn text="Close" @click="designOpen = false"/>
 							</div>
 						</template>
 					</origam-dialog>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstText     v-model="state.title"       title="title"/>
-				<HstCheckbox v-model="state.fullscreen"  title="fullscreen"/>
-				<HstCheckbox v-model="state.scrollable"  title="scrollable"/>
-				<HstCheckbox v-model="state.retainFocus" title="retainFocus"/>
-				<HstCheckbox v-model="state.persistent"  title="persistent"/>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.size"    title="Size"    :options="SIZE_OPTIONS"/>
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"   :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstCheckbox v-model="state.flat"      title="Flat"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Status">
+					<HstSelect v-model="state.status"             title="Status"          :options="STATUS_OPTIONS"/>
+					<HstSelect v-model="state.statusIconPosition" title="Status Position" :options="STATUS_POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Icons">
+					<HstSelect v-model="state.prependIcon" title="Prepend Icon" :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.appendIcon"  title="Append Icon"  :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.icon"        title="Icon"         :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+					<HstText v-model="state.text"     title="Text"/>
+					<HstText v-model="state.image"    title="Image URL"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — title (default)">
-			<div style="padding: 16px;" data-cy="dialog-default-host">
-				<origam-dialog v-model="defaultOpen" title="Dialog title">
-					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="Open dialog" data-cy="dialog-default-activator"/>
-					</template>
-					<template #content>
-						<p style="padding: 0 16px;">Dialog body content goes here.</p>
-					</template>
-					<template #footer>
-						<div style="display: flex; justify-content: flex-end; gap: 8px; padding: 8px 16px;">
-							<origam-btn text="Cancel" data-cy="dialog-default-cancel" @click="defaultOpen = false"/>
-							<origam-btn color="primary" text="Confirm" data-cy="dialog-default-confirm" @click="defaultOpen = false"/>
-						</div>
-					</template>
-				</origam-dialog>
-			</div>
-		</Variant>
-
 		<Variant
-				title="Prop — fullscreen"
-				:init-state="() => useStoryInitState<{ fullscreen: boolean }>({ fullscreen: true })"
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IDialogProps>>({
+					title: 'Functional dialog',
+					fullscreen: false,
+					scrollable: false,
+					retainFocus: true,
+					persistent: false,
+					disabled: false
+				})"
 		>
 			<template #default="{ state }">
-				<div style="padding: 16px;" data-cy="dialog-fullscreen-host">
-					<origam-dialog v-model="fullscreenOpen" :fullscreen="state.fullscreen" title="Fullscreen dialog">
+				<div style="padding: 16px;">
+					<origam-dialog
+							v-model="functionalOpen"
+							:title="state.title"
+							:fullscreen="state.fullscreen"
+							:scrollable="state.scrollable"
+							:retain-focus="state.retainFocus"
+							:persistent="state.persistent"
+							:disabled="state.disabled"
+					>
 						<template #activator="{ props: a }">
-							<origam-btn v-bind="a" text="Open fullscreen" data-cy="dialog-fullscreen-activator"/>
+							<origam-btn v-bind="a" text="Open (Functional)"/>
 						</template>
 						<template #content>
-							<p style="padding: 0 16px;">fullscreen={{ state.fullscreen }}</p>
-						</template>
-						<template #footer>
-							<div style="padding: 8px 16px;">
-								<origam-btn text="Close" data-cy="dialog-fullscreen-close" @click="fullscreenOpen = false"/>
+							<div style="padding: 0 16px;">
+								<p v-for="n in 8" :key="n">Line {{ n }} of content.</p>
 							</div>
-						</template>
-					</origam-dialog>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.fullscreen" title="fullscreen"/>
-			</template>
-		</Variant>
-
-		<Variant title="Prop — size">
-			<div style="padding: 16px; display: flex; flex-wrap: wrap; gap: 8px;" data-cy="dialog-sizes-host">
-				<origam-dialog v-model="sizeXsOpen" size="x-small" title="xs · 320px">
-					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="xs · 320" data-cy="dialog-size-xs-activator"/>
-					</template>
-					<template #content><p style="padding: 0 16px;">Size x-small — 320px</p></template>
-					<template #footer>
-						<div style="padding: 8px 16px; text-align: right;">
-							<origam-btn text="Close" data-cy="dialog-size-xs-close" @click="sizeXsOpen = false"/>
-						</div>
-					</template>
-				</origam-dialog>
-
-				<origam-dialog v-model="sizeSmOpen" size="small" title="sm · 400px">
-					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="sm · 400" data-cy="dialog-size-sm-activator"/>
-					</template>
-					<template #content><p style="padding: 0 16px;">Size small — 400px</p></template>
-					<template #footer>
-						<div style="padding: 8px 16px; text-align: right;">
-							<origam-btn text="Close" data-cy="dialog-size-sm-close" @click="sizeSmOpen = false"/>
-						</div>
-					</template>
-				</origam-dialog>
-
-				<origam-dialog v-model="sizeMdOpen" size="default" title="md · 720px">
-					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="md · 720" data-cy="dialog-size-md-activator"/>
-					</template>
-					<template #content><p style="padding: 0 16px;">Size default — 720px</p></template>
-					<template #footer>
-						<div style="padding: 8px 16px; text-align: right;">
-							<origam-btn text="Close" data-cy="dialog-size-md-close" @click="sizeMdOpen = false"/>
-						</div>
-					</template>
-				</origam-dialog>
-
-				<origam-dialog v-model="sizeLgOpen" size="large" title="lg · 960px">
-					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="lg · 960" data-cy="dialog-size-lg-activator"/>
-					</template>
-					<template #content><p style="padding: 0 16px;">Size large — 960px</p></template>
-					<template #footer>
-						<div style="padding: 8px 16px; text-align: right;">
-							<origam-btn text="Close" data-cy="dialog-size-lg-close" @click="sizeLgOpen = false"/>
-						</div>
-					</template>
-				</origam-dialog>
-
-				<origam-dialog v-model="sizeXlOpen" size="x-large" title="xl · 1080px">
-					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="xl · 1080" data-cy="dialog-size-xl-activator"/>
-					</template>
-					<template #content><p style="padding: 0 16px;">Size x-large — 1080px</p></template>
-					<template #footer>
-						<div style="padding: 8px 16px; text-align: right;">
-							<origam-btn text="Close" data-cy="dialog-size-xl-close" @click="sizeXlOpen = false"/>
-						</div>
-					</template>
-				</origam-dialog>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — scrollable">
-			<div style="padding: 16px;" data-cy="dialog-scrollable-host">
-				<origam-dialog v-model="scrollableOpen" scrollable title="Scrollable dialog">
-					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="Open scrollable" data-cy="dialog-scrollable-activator"/>
-					</template>
-					<template #content>
-						<div style="padding: 0 16px;">
-							<p v-for="n in 20" :key="n">Line {{ n }} of scrollable content.</p>
-						</div>
-					</template>
-					<template #footer>
-						<div style="padding: 8px 16px; text-align: right;">
-							<origam-btn color="primary" text="Done" data-cy="dialog-scrollable-close" @click="scrollableOpen = false"/>
-						</div>
-					</template>
-				</origam-dialog>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — persistent">
-			<div style="padding: 16px;" data-cy="dialog-persistent-host">
-				<origam-dialog v-model="persistentOpen" persistent title="Persistent dialog">
-					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="Open persistent" data-cy="dialog-persistent-activator"/>
-					</template>
-					<template #content>
-						<p style="padding: 0 16px;">Cannot close by clicking outside.</p>
-					</template>
-					<template #footer>
-						<div style="padding: 8px 16px; text-align: right;">
-							<origam-btn color="danger" text="Close" data-cy="dialog-persistent-close" @click="persistentOpen = false"/>
-						</div>
-					</template>
-				</origam-dialog>
-			</div>
-		</Variant>
-
-		<Variant
-				title="Prop — status"
-				:init-state="() => useStoryInitState<{ status?: string }>({ status: 'success' })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 16px;" data-cy="dialog-status-host">
-					<origam-dialog v-model="statusOpen" :status="state.status as any" title="Status dialog">
-						<template #activator="{ props: a }">
-							<origam-btn v-bind="a" text="Open status dialog" data-cy="dialog-status-activator"/>
-						</template>
-						<template #content>
-							<p style="padding: 0 16px;">Status: {{ state.status }}</p>
 						</template>
 						<template #footer>
 							<div style="padding: 8px 16px; text-align: right;">
-								<origam-btn text="OK" data-cy="dialog-status-close" @click="statusOpen = false"/>
+								<origam-btn text="Close" @click="functionalOpen = false"/>
 							</div>
 						</template>
 					</origam-dialog>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.status"
-						title="status"
-						:options="[
-							{ label: '(none)', value: undefined },
-							{ label: 'success', value: 'success' },
-							{ label: 'warning', value: 'warning' },
-							{ label: 'danger', value: 'danger' },
-							{ label: 'info', value: 'info' }
-						]"
-				/>
+				<StoryGroup title="Behaviour">
+					<HstCheckbox v-model="state.fullscreen"  title="Fullscreen"/>
+					<HstCheckbox v-model="state.scrollable"  title="Scrollable"/>
+					<HstCheckbox v-model="state.retainFocus" title="Retain Focus"/>
+					<HstCheckbox v-model="state.persistent"  title="Persistent"/>
+				</StoryGroup>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Slots ────────────────────────────────────────────────── -->
+		<Variant title="Events - update:modelValue">
+			<div style="padding: 16px;">
+				<origam-dialog
+						v-model="emitModelOpen"
+						title="update:modelValue"
+						@update:model-value="logEvent('update:modelValue', $event)"
+				>
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Toggle (watch Events tab)"/>
+					</template>
+					<template #content>
+						<p style="padding: 0 16px;">Open/close to fire update:modelValue.</p>
+					</template>
+				</origam-dialog>
+			</div>
+		</Variant>
 
-		<Variant title="Slot — activator">
-			<div style="padding: 16px;" data-cy="dialog-slot-activator-host">
+		<Variant title="Events - isRead">
+			<div style="padding: 16px;">
+				<origam-dialog
+						v-model="emitIsReadOpen"
+						title="isRead"
+						@is-read="logEvent('isRead', $event)"
+				>
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open (watch Events tab)"/>
+					</template>
+					<template #content>
+						<p style="padding: 0 16px;">Scroll to the bottom to fire isRead.</p>
+					</template>
+				</origam-dialog>
+			</div>
+		</Variant>
+
+		<Variant title="Events - click:outside">
+			<div style="padding: 16px;">
+				<origam-dialog
+						v-model="emitOutsideOpen"
+						title="click:outside"
+						@click:outside="logEvent('click:outside', $event)"
+				>
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open then click outside"/>
+					</template>
+					<template #content>
+						<p style="padding: 0 16px;">Click outside this dialog.</p>
+					</template>
+				</origam-dialog>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Activator">
+			<div style="padding: 16px;">
 				<origam-dialog v-model="slotActivatorOpen" title="Activator slot">
 					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="Open (custom activator)" data-cy="dialog-slot-activator-btn"/>
+						<origam-btn v-bind="a" text="Open (custom activator)"/>
 					</template>
 					<template #content>
 						<p style="padding: 0 16px;">Custom activator slot demo.</p>
@@ -242,11 +185,11 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — asset">
-			<div style="padding: 16px;" data-cy="dialog-slot-asset-host">
+		<Variant title="Slots - Asset">
+			<div style="padding: 16px;">
 				<origam-dialog v-model="slotAssetOpen" title="Asset slot">
 					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-asset-activator"/>
+						<origam-btn v-bind="a" text="Open"/>
 					</template>
 					<template #asset>
 						<origam-icon :icon="MDI_ICONS.STAR" :size="48"/>
@@ -258,54 +201,57 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — content">
-			<div style="padding: 16px;" data-cy="dialog-slot-content-host">
+		<Variant title="Slots - Content">
+			<div style="padding: 16px;">
 				<origam-dialog v-model="slotContentOpen" title="Content slot">
 					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-content-activator"/>
+						<origam-btn v-bind="a" text="Open"/>
 					</template>
 					<template #content>
-						<span>Custom slot content</span>
+						<span style="padding: 0 16px; display: block;">Custom content slot.</span>
 					</template>
 				</origam-dialog>
 			</div>
 		</Variant>
 
-		<Variant title="Slot — default">
-			<div style="padding: 16px;" data-cy="dialog-slot-default-host">
+		<Variant title="Slots - Default">
+			<div style="padding: 16px;">
 				<origam-dialog v-model="slotDefaultOpen" title="Default slot">
 					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-default-activator"/>
+						<origam-btn v-bind="a" text="Open"/>
 					</template>
-					<span>Custom slot content</span>
+					<span>Custom default slot content.</span>
 				</origam-dialog>
 			</div>
 		</Variant>
 
-		<Variant title="Slot — footer">
-			<div style="padding: 16px;" data-cy="dialog-slot-footer-host">
+		<Variant title="Slots - Footer">
+			<div style="padding: 16px;">
 				<origam-dialog v-model="slotFooterOpen" title="Footer slot">
 					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-footer-activator"/>
+						<origam-btn v-bind="a" text="Open"/>
 					</template>
 					<template #content>
 						<p style="padding: 0 16px;">Content here.</p>
 					</template>
 					<template #footer>
-						<span>Custom slot content</span>
+						<div style="padding: 8px 16px; display: flex; gap: 8px; justify-content: flex-end;">
+							<origam-btn text="Cancel" @click="slotFooterOpen = false"/>
+							<origam-btn bg-color="primary" color="white" text="Confirm" @click="slotFooterOpen = false"/>
+						</div>
 					</template>
 				</origam-dialog>
 			</div>
 		</Variant>
 
-		<Variant title="Slot — header">
-			<div style="padding: 16px;" data-cy="dialog-slot-header-host">
+		<Variant title="Slots - Header">
+			<div style="padding: 16px;">
 				<origam-dialog v-model="slotHeaderOpen">
 					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-header-activator"/>
+						<origam-btn v-bind="a" text="Open"/>
 					</template>
 					<template #header>
-						<span>Custom slot content</span>
+						<div style="padding: 12px 16px; font-weight: 600;">Custom header slot</div>
 					</template>
 					<template #content>
 						<p style="padding: 0 16px;">Content here.</p>
@@ -314,11 +260,11 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — header-append">
-			<div style="padding: 16px;" data-cy="dialog-slot-header-append-host">
+		<Variant title="Slots - Header Append">
+			<div style="padding: 16px;">
 				<origam-dialog v-model="slotHeaderAppendOpen" title="Header append slot">
 					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-header-append-activator"/>
+						<origam-btn v-bind="a" text="Open"/>
 					</template>
 					<template #header-append>
 						<origam-icon :icon="MDI_ICONS.HEART" :size="20"/>
@@ -330,14 +276,14 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — header-content">
-			<div style="padding: 16px;" data-cy="dialog-slot-header-content-host">
+		<Variant title="Slots - Header Content">
+			<div style="padding: 16px;">
 				<origam-dialog v-model="slotHeaderContentOpen">
 					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-header-content-activator"/>
+						<origam-btn v-bind="a" text="Open"/>
 					</template>
 					<template #header-content>
-						<span>Custom slot content</span>
+						<span style="font-style: italic;">Custom header-content slot</span>
 					</template>
 					<template #content>
 						<p style="padding: 0 16px;">Content here.</p>
@@ -346,11 +292,11 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — header-prepend">
-			<div style="padding: 16px;" data-cy="dialog-slot-header-prepend-host">
-				<origam-dialog v-model="slotPrependOpen" title="With prepend icon">
+		<Variant title="Slots - Header Prepend">
+			<div style="padding: 16px;">
+				<origam-dialog v-model="slotHeaderPrependOpen" title="With prepend icon">
 					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-prepend-activator"/>
+						<origam-btn v-bind="a" text="Open"/>
 					</template>
 					<template #header-prepend>
 						<origam-icon :icon="MDI_ICONS.INFORMATION" :size="28"/>
@@ -362,14 +308,14 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — header-subtitle">
-			<div style="padding: 16px;" data-cy="dialog-slot-header-subtitle-host">
-				<origam-dialog v-model="slotHeaderSubtitleOpen">
+		<Variant title="Slots - Header Subtitle">
+			<div style="padding: 16px;">
+				<origam-dialog v-model="slotHeaderSubtitleOpen" title="With subtitle">
 					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-header-subtitle-activator"/>
+						<origam-btn v-bind="a" text="Open"/>
 					</template>
 					<template #header-subtitle>
-						<span>Custom slot content</span>
+						<span>Custom subtitle slot</span>
 					</template>
 					<template #content>
 						<p style="padding: 0 16px;">Content here.</p>
@@ -378,14 +324,14 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — header-title">
-			<div style="padding: 16px;" data-cy="dialog-slot-header-title-host">
+		<Variant title="Slots - Header Title">
+			<div style="padding: 16px;">
 				<origam-dialog v-model="slotHeaderTitleOpen">
 					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-header-title-activator"/>
+						<origam-btn v-bind="a" text="Open"/>
 					</template>
 					<template #header-title>
-						<span>Custom slot content</span>
+						<strong>Custom title slot</strong>
 					</template>
 					<template #content>
 						<p style="padding: 0 16px;">Content here.</p>
@@ -394,11 +340,11 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — loader">
-			<div style="padding: 16px;" data-cy="dialog-slot-loader-host">
+		<Variant title="Slots - Loader">
+			<div style="padding: 16px;">
 				<origam-dialog v-model="slotLoaderOpen" title="Loader slot">
 					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-loader-activator"/>
+						<origam-btn v-bind="a" text="Open"/>
 					</template>
 					<template #loader>
 						<span>Loading…</span>
@@ -410,95 +356,70 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — text">
-			<div style="padding: 16px;" data-cy="dialog-slot-text-host">
+		<Variant title="Slots - Text">
+			<div style="padding: 16px;">
 				<origam-dialog v-model="slotTextOpen" title="Text slot">
 					<template #activator="{ props: a }">
-						<origam-btn v-bind="a" text="Open" data-cy="dialog-slot-text-activator"/>
+						<origam-btn v-bind="a" text="Open"/>
 					</template>
 					<template #text>
-						<span>Custom slot content</span>
+						<span>Custom text slot content.</span>
 					</template>
 				</origam-dialog>
 			</div>
 		</Variant>
 
-		<!-- ── Emits ────────────────────────────────────────────────── -->
-
 		<Variant
-				title="Emit — update:modelValue"
-				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
+				title="Default"
+				:init-state="() => useStoryInitState<IDialogProps>({
+					title: 'Dialog',
+					fullscreen: false,
+					scrollable: false,
+					retainFocus: true
+				})"
 		>
 			<template #default="{ state }">
-				<div style="padding: 16px;" data-cy="dialog-emit-host">
+				<div style="padding: 16px;">
 					<origam-dialog
-							v-model="emitOpen"
-							title="Emit dialog"
-							@update:model-value="(v: boolean) => { state.log = [`update:modelValue → ${v}`, ...state.log].slice(0, 5) }"
+							v-model="playgroundOpen"
+							v-bind="state"
+							@update:model-value="logEvent('update:modelValue', $event)"
 					>
 						<template #activator="{ props: a }">
-							<origam-btn v-bind="a" text="Toggle (watch Events tab)" data-cy="dialog-emit-activator"/>
+							<origam-btn v-bind="a" text="Open playground"/>
 						</template>
 						<template #content>
-							<p style="padding: 0 16px;">Watch the log below.</p>
+							<p style="padding: 0 16px;">Playground content.</p>
+						</template>
+						<template #footer>
+							<div style="padding: 8px 16px; text-align: right;">
+								<origam-btn text="Close" @click="playgroundOpen = false"/>
+							</div>
 						</template>
 					</origam-dialog>
-					<span data-cy="dialog-emit-state" style="display: block; margin-top: 8px;">open={{ emitOpen }}</span>
-					<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 4px; padding-left: 16px;">
-						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
-					</ul>
 				</div>
 			</template>
-		</Variant>
-
-		<Variant
-				title="Emit — isRead"
-				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 16px;" data-cy="dialog-emit-is-read-host">
-					<origam-dialog
-							v-model="emitIsReadOpen"
-							title="isRead emit"
-							@is-read="(v: boolean) => { state.log = [`isRead → ${v}`, ...state.log].slice(0, 5) }"
-					>
-						<template #activator="{ props: a }">
-							<origam-btn v-bind="a" text="Open (watch Events tab)" data-cy="dialog-emit-is-read-activator"/>
-						</template>
-						<template #content>
-							<p style="padding: 0 16px;">Scroll or interact to trigger isRead.</p>
-						</template>
-					</origam-dialog>
-					<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 8px; padding-left: 16px;">
-						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
-					</ul>
-				</div>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Emit — click:outside"
-				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 16px;" data-cy="dialog-emit-outside-host">
-					<origam-dialog
-							v-model="emitOutsideOpen"
-							title="Click outside"
-							@click:outside="(e: MouseEvent) => { state.log = [`click:outside fired`, ...state.log].slice(0, 5) }"
-					>
-						<template #activator="{ props: a }">
-							<origam-btn v-bind="a" text="Open then click outside" data-cy="dialog-emit-outside-activator"/>
-						</template>
-						<template #content>
-							<p style="padding: 0 16px;">Click outside this dialog.</p>
-						</template>
-					</origam-dialog>
-					<ul style="font-family: monospace; font-size: 0.8rem; margin-top: 8px; padding-left: 16px;">
-						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
-					</ul>
-					<p v-if="state.log.length === 0" style="font-size: 0.8rem; opacity: 0.7;">Open the dialog and click outside.</p>
-				</div>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+					<HstText v-model="state.text"     title="Text"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect   v-model="state.size"      title="Size"      :options="SIZE_OPTIONS"/>
+					<HstSelect   v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstSelect   v-model="state.status"    title="Status"    :options="STATUS_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.fullscreen"  title="Fullscreen"/>
+					<HstCheckbox v-model="state.scrollable"  title="Scrollable"/>
+					<HstCheckbox v-model="state.retainFocus" title="Retain Focus"/>
+					<HstCheckbox v-model="state.persistent"  title="Persistent"/>
+					<HstCheckbox v-model="state.disabled"    title="Disabled"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 	</Story>
@@ -509,40 +430,46 @@
 		setup
 >
 	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamBtn, OrigamDialog, OrigamIcon } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 	import type { IDialogProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
+		ICON_OPTIONS,
+		ROUNDED_OPTIONS,
+		SIZE_OPTIONS,
+		STATUS_OPTIONS,
+		STATUS_POSITION_OPTIONS
+	} from '@stories/const'
 
-	const defaultOpen = ref(false)
-	const fullscreenOpen = ref(false)
-	const scrollableOpen = ref(false)
-	const persistentOpen = ref(false)
-	const statusOpen = ref(false)
-	const slotActivatorOpen = ref(false)
-	const slotAssetOpen = ref(false)
-	const slotContentOpen = ref(false)
-	const slotDefaultOpen = ref(false)
-	const slotFooterOpen = ref(false)
-	const slotHeaderOpen = ref(false)
-	const slotHeaderAppendOpen = ref(false)
-	const slotHeaderContentOpen = ref(false)
+	const designOpen         = ref(false)
+	const functionalOpen     = ref(false)
+	const emitModelOpen      = ref(false)
+	const emitIsReadOpen     = ref(false)
+	const emitOutsideOpen    = ref(false)
+	const slotActivatorOpen  = ref(false)
+	const slotAssetOpen      = ref(false)
+	const slotContentOpen    = ref(false)
+	const slotDefaultOpen    = ref(false)
+	const slotFooterOpen     = ref(false)
+	const slotHeaderOpen     = ref(false)
+	const slotHeaderAppendOpen   = ref(false)
+	const slotHeaderContentOpen  = ref(false)
+	const slotHeaderPrependOpen  = ref(false)
 	const slotHeaderSubtitleOpen = ref(false)
-	const slotHeaderTitleOpen = ref(false)
-	const slotLoaderOpen = ref(false)
-	const slotTextOpen = ref(false)
-	const slotPrependOpen = ref(false)
-	const emitOpen = ref(false)
-	const emitIsReadOpen = ref(false)
-	const emitOutsideOpen = ref(false)
-	const playgroundOpen = ref(false)
-	const sizeXsOpen = ref(false)
-	const sizeSmOpen = ref(false)
-	const sizeMdOpen = ref(false)
-	const sizeLgOpen = ref(false)
-	const sizeXlOpen = ref(false)
+	const slotHeaderTitleOpen    = ref(false)
+	const slotLoaderOpen     = ref(false)
+	const slotTextOpen       = ref(false)
+	const playgroundOpen     = ref(false)
 </script>
 
 <docs lang="md" src="@docs/components/Dialog/OrigamDialog.md"/>

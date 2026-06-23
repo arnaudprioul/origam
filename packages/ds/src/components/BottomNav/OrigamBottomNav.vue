@@ -4,6 +4,8 @@
 				:is="tag"
 				v-if="isActive"
 				:id="id"
+				v-contrast
+				:data-origam-color-locked="colorLocked"
 				:class="bottomNavClasses"
 				aria-label="Bottom navigation"
 				@mouseenter="handleMouseenter"
@@ -44,9 +46,13 @@
 		setup
 >
 	import { OrigamBtn, OrigamDefaultsProvider, OrigamTransition, OrigamTranslateBottom } from "../../components"
+
+	import { vContrast } from '../../directives'
+
 	import {
 		useActive,
 		useDensity,
+		useDimension,
 		useGroup,
 		useHover,
 		useLayoutItem,
@@ -81,6 +87,7 @@
 		modelValue: true,
 		selectedClass: 'origam-bottom-nav__btn--selected',
 		mode: MODE.VERTICAL,
+		position: 'start',
 		items: () => [] as Array<TOrigamBtn>,
 		// Default transition — slide up from the bottom of the viewport.
 		// Passed as a component descriptor (not just a name string) so the
@@ -94,6 +101,10 @@
 	defineEmits<IBottomNavEmits>()
 
 	const {filterProps} = useProps<IBottomNavProps>(props)
+
+	// When `color` is explicitly set, mark the element so `v-contrast` keeps
+	// the chosen foreground instead of forcing black/white for legibility.
+	const colorLocked = computed(() => (props.color ? 'true' : undefined))
 
 	// Push visual-token props down to every descendant `<origam-btn>` (the
 	// bottom-nav button children) as DEFAULTS — items that pass their own
@@ -197,8 +208,13 @@
 	 * and spacing classes/styles onto the root element.
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
+	const {dimensionStyles} = useDimension(props)
 	const bottomNavStyles = computed(() => {
 		return [
+			// All dimension props (width / minWidth / maxWidth / minHeight /
+			// maxHeight / height). The custom `height` below overrides the
+			// plain height with the density-aware value.
+			dimensionStyles.value,
 			{
 				height: props.height ? convertToUnit(height.value) : undefined
 			},
@@ -216,6 +232,7 @@
 		return [
 			'origam-bottom-nav',
 			`origam-bottom-nav--${props.mode}`,
+			`origam-bottom-nav--position-${props.position}`,
 			{
 				'origam-bottom-nav--grow': props.grow
 			},
@@ -270,7 +287,7 @@
 		transition: var(--origam-bottom-bar---transition);
 
 		max-width: var(--origam-bottom-bar---max-width);
-		height: calc(var(--origam-bottom-bar---height) - var(--origam-bottom-bar---density));
+		min-height: calc(var(--origam-bottom-bar---height) - var(--origam-bottom-bar---density));
 
 		background-color: var(--origam-bottom-bar---background);
 		box-shadow: var(--origam-bottom-bar---box-shadow);
@@ -326,6 +343,22 @@
 
 		&--elevated {
 			--origam-bottom-bar---box-shadow: var(--origam-bottom-bar--elevated---box-shadow);
+		}
+
+		&--position-start {
+			left: 0;
+			right: auto;
+		}
+
+		&--position-center {
+			left: 0;
+			right: 0;
+			margin-inline: auto;
+		}
+
+		&--position-end {
+			left: auto;
+			right: 0;
 		}
 
 		&--border {

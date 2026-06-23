@@ -3,6 +3,110 @@
 			group="components"
 			title="NumberFormat/OrigamNumberFormat"
 	>
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<INumberFormatProps>({
+					value: 1234567.89,
+					format: 'decimal',
+					locale: 'fr-FR',
+					currency: 'EUR',
+					currencyDisplay: 'symbol',
+					unit: 'kilometer-per-hour',
+					unitDisplay: 'short',
+					notation: undefined,
+					compactDisplay: 'short',
+					minimumFractionDigits: undefined,
+					maximumFractionDigits: undefined,
+					minimumSignificantDigits: undefined,
+					maximumSignificantDigits: undefined,
+					useGrouping: true,
+					signDisplay: 'auto',
+					tag: 'span'
+				})"
+		>
+			<template #default="{ state }">
+				<origam-number-format
+						:value="state.value"
+						:format="state.format"
+						:locale="state.locale"
+						:currency="state.currency"
+						:currency-display="state.currencyDisplay"
+						:unit="state.unit"
+						:unit-display="state.unitDisplay"
+						:notation="state.notation || undefined"
+						:compact-display="state.compactDisplay"
+						:minimum-fraction-digits="state.minimumFractionDigits || undefined"
+						:maximum-fraction-digits="state.maximumFractionDigits || undefined"
+						:minimum-significant-digits="state.minimumSignificantDigits || undefined"
+						:maximum-significant-digits="state.maximumSignificantDigits || undefined"
+						:use-grouping="state.useGrouping"
+						:sign-display="state.signDisplay"
+						:tag="state.tag"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Data">
+					<HstNumber v-model="state.value" title="Value"/>
+				</StoryGroup>
+				<StoryGroup title="Format">
+					<HstSelect v-model="state.format"   title="Format"   :options="FORMAT_OPTIONS"/>
+					<HstSelect v-model="state.notation" title="Notation" :options="NOTATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Locale">
+					<HstSelect v-model="state.locale" title="Locale" :options="LOCALE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Currency">
+					<HstSelect v-model="state.currency"        title="Currency"         :options="CURRENCY_OPTIONS"/>
+					<HstSelect v-model="state.currencyDisplay" title="Currency Display" :options="CURRENCY_DISPLAY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Unit">
+					<HstSelect v-model="state.unit"        title="Unit"         :options="UNIT_OPTIONS"/>
+					<HstSelect v-model="state.unitDisplay" title="Unit Display" :options="UNIT_DISPLAY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Compact">
+					<HstSelect v-model="state.compactDisplay" title="Compact Display" :options="COMPACT_DISPLAY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Precision">
+					<HstNumber v-model="state.minimumFractionDigits"   title="Min Fraction Digits"   :min="0" :max="20" :step="1"/>
+					<HstNumber v-model="state.maximumFractionDigits"   title="Max Fraction Digits"   :min="0" :max="20" :step="1"/>
+					<HstNumber v-model="state.minimumSignificantDigits" title="Min Significant Digits" :min="1" :max="21" :step="1"/>
+					<HstNumber v-model="state.maximumSignificantDigits" title="Max Significant Digits" :min="1" :max="21" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Display">
+					<HstSelect   v-model="state.signDisplay"  title="Sign Display"  :options="SIGN_DISPLAY_OPTIONS"/>
+					<HstCheckbox v-model="state.useGrouping"  title="Use Grouping"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Slots - Default">
+			<div class="story-shell">
+				<p class="hint">
+					The default slot is scoped — it exposes
+					<code>{ formatted, parts, value }</code> so consumers can paint
+					specific segments (here the currency glyph in orange).
+				</p>
+				<origam-number-format
+						:value="1234567.89"
+						format="currency"
+						currency="EUR"
+						locale="fr-FR"
+				>
+					<template #default="{ parts }">
+						<span
+								v-for="(part, index) in parts"
+								:key="index"
+								:class="`number-format-slot-part-${part.type}`"
+						>{{ part.value }}</span>
+					</template>
+				</origam-number-format>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<INumberFormatProps>({
@@ -19,254 +123,24 @@
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="number-format-playground"
-				>
-					<origam-number-format
-							v-bind="state"
-							data-cy="number-format-playground-host"
-					/>
-				</div>
+				<origam-number-format v-bind="state"/>
 			</template>
 			<template #controls="{ state }">
-				<HstNumber
-						v-model="state.value"
-						title="value"
-				/>
-				<HstSelect
-						v-model="state.format"
-						title="format"
-						:options="formatOptions"
-				/>
-				<HstSelect
-						v-model="state.locale"
-						title="locale"
-						:options="localeOptions"
-				/>
-				<HstSelect
-						v-model="state.currency"
-						title="currency"
-						:options="currencyOptions"
-				/>
-				<HstSelect
-						v-model="state.unit"
-						title="unit"
-						:options="unitOptions"
-				/>
-				<HstSelect
-						v-model="state.notation"
-						title="notation"
-						:options="notationOptions"
-				/>
-				<HstNumber
-						v-model="state.minimumFractionDigits"
-						title="minimumFractionDigits"
-				/>
-				<HstNumber
-						v-model="state.maximumFractionDigits"
-						title="maximumFractionDigits"
-				/>
-				<HstCheckbox
-						v-model="state.useGrouping"
-						title="useGrouping"
-				/>
-				<HstSelect
-						v-model="state.signDisplay"
-						title="signDisplay"
-						:options="signOptions"
-				/>
+				<StoryGroup title="Data">
+					<HstNumber v-model="state.value" title="Value"/>
+				</StoryGroup>
+				<StoryGroup title="Format">
+					<HstSelect v-model="state.format"    title="Format"    :options="FORMAT_OPTIONS"/>
+					<HstSelect v-model="state.locale"    title="Locale"    :options="LOCALE_OPTIONS"/>
+					<HstSelect v-model="state.notation"  title="Notation"  :options="NOTATION_OPTIONS"/>
+					<HstSelect v-model="state.currency"  title="Currency"  :options="CURRENCY_OPTIONS"/>
+					<HstSelect v-model="state.unit"      title="Unit"      :options="UNIT_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Display">
+					<HstSelect   v-model="state.signDisplay" title="Sign Display"  :options="SIGN_DISPLAY_OPTIONS"/>
+					<HstCheckbox v-model="state.useGrouping" title="Use Grouping"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<Variant title="Prop — format (parallel)">
-			<div
-					class="story-shell"
-					data-cy="number-format-formats"
-			>
-				<p class="hint">
-					Same value (`1234567.89`) rendered through every dialect.
-					Currency and unit need their companion props; the others
-					are self-contained.
-				</p>
-				<div
-						v-for="entry in formatSamples"
-						:key="entry.format"
-						class="story-col"
-				>
-					<strong>format = {{ entry.format }}</strong>
-					<origam-number-format
-							:value="1234567.89"
-							:format="entry.format"
-							:currency="entry.currency"
-							:unit="entry.unit"
-							locale="en-US"
-							:data-cy="`number-format-format-${entry.format}`"
-					/>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — locale (parallel)">
-			<div
-					class="story-shell"
-					data-cy="number-format-locales"
-			>
-				<p class="hint">
-					Same currency value rendered in five locales — note the
-					glyph position (prefix vs suffix), the thousands
-					separator, and the decimal mark all shift.
-				</p>
-				<div
-						v-for="loc in locales"
-						:key="loc"
-						class="story-col"
-				>
-					<strong>locale = {{ loc }}</strong>
-					<origam-number-format
-							:value="1234567.89"
-							format="currency"
-							currency="EUR"
-							:locale="loc"
-							:data-cy="`number-format-locale-${loc}`"
-					/>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — currency (parallel)">
-			<div
-					class="story-shell"
-					data-cy="number-format-currencies"
-			>
-				<div
-						v-for="curr in currencies"
-						:key="curr"
-						class="story-col"
-				>
-					<strong>currency = {{ curr }}</strong>
-					<origam-number-format
-							:value="9999.99"
-							format="currency"
-							:currency="curr"
-							locale="en-US"
-							:data-cy="`number-format-currency-${curr}`"
-					/>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — unit (parallel)">
-			<div
-					class="story-shell"
-					data-cy="number-format-units"
-			>
-				<p class="hint">
-					Sanctioned units — full list via
-					`Intl.supportedValuesOf('unit')` at runtime.
-				</p>
-				<div
-						v-for="u in units"
-						:key="u"
-						class="story-col"
-				>
-					<strong>unit = {{ u }}</strong>
-					<origam-number-format
-							:value="42"
-							format="unit"
-							:unit="u"
-							locale="en-US"
-							:data-cy="`number-format-unit-${u}`"
-					/>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — notation compact (1.2K / 1.2M / 1.2B)">
-			<div
-					class="story-shell"
-					data-cy="number-format-compact"
-			>
-				<p class="hint">
-					Compact notation scales the suffix automatically — no
-					custom thresholds to maintain.
-				</p>
-				<div
-						v-for="entry in compactSamples"
-						:key="entry.value"
-						class="story-col"
-				>
-					<strong>value = {{ entry.value.toLocaleString('en-US') }}</strong>
-					<origam-number-format
-							:value="entry.value"
-							format="compact"
-							locale="en-US"
-							:data-cy="`number-format-compact-${entry.label}`"
-					/>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — signDisplay (parallel)">
-			<div
-					class="story-shell"
-					data-cy="number-format-signs"
-			>
-				<div
-						v-for="sign in signs"
-						:key="sign"
-						class="story-col"
-				>
-					<strong>signDisplay = {{ sign }}</strong>
-					<origam-number-format
-							:value="42"
-							:sign-display="sign"
-							locale="en-US"
-							:data-cy="`number-format-sign-${sign}-positive`"
-					/>
-					<origam-number-format
-							:value="-42"
-							:sign-display="sign"
-							locale="en-US"
-							:data-cy="`number-format-sign-${sign}-negative`"
-					/>
-					<origam-number-format
-							:value="0"
-							:sign-display="sign"
-							locale="en-US"
-							:data-cy="`number-format-sign-${sign}-zero`"
-					/>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — default scoped (highlight currency symbol)">
-			<div
-					class="story-shell"
-					data-cy="number-format-slot"
-			>
-				<p class="hint">
-					The default slot is scoped — it exposes
-					`{ formatted, parts, value }` so consumers can paint
-					specific segments (here the currency glyph in orange).
-				</p>
-				<origam-number-format
-						:value="1234567.89"
-						format="currency"
-						currency="EUR"
-						locale="fr-FR"
-						data-cy="number-format-slot-host"
-				>
-					<template #default="{ parts }">
-						<span
-								v-for="(part, index) in parts"
-								:key="index"
-								:class="`number-format-slot-part-${part.type}`"
-								:data-cy="`number-format-slot-part-${part.type}`"
-						>{{ part.value }}</span>
-					</template>
-				</origam-number-format>
-			</div>
 		</Variant>
 	</Story>
 </template>
@@ -276,57 +150,87 @@
 		setup
 >
 	import { OrigamNumberFormat } from '@origam/components'
-
 	import type { INumberFormatProps } from '@origam/interfaces'
-
 	import type {
+		TNumberFormatCompactDisplay,
+		TNumberFormatCurrencyDisplay,
 		TNumberFormatFormat,
 		TNumberFormatNotation,
-		TNumberFormatSignDisplay
+		TNumberFormatSignDisplay,
+		TNumberFormatUnitDisplay
 	} from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import { TAG_OPTIONS } from '@stories/const'
 
-	interface IOption<T> {
-		label: string
-		value: T
-	}
-
-	const formats: TNumberFormatFormat[] = ['decimal', 'currency', 'percent', 'unit', 'compact', 'scientific', 'engineering']
-	const locales = ['fr-FR', 'en-US', 'de-DE', 'ja-JP', 'ar-EG']
-	const currencies = ['EUR', 'USD', 'JPY', 'GBP', 'CHF', 'CNY']
-	const units = ['kilometer-per-hour', 'celsius', 'liter', 'megabyte']
-	const signs: TNumberFormatSignDisplay[] = ['auto', 'always', 'except-zero', 'negative', 'never']
-	const notations: Array<TNumberFormatNotation | undefined> = [undefined, 'standard', 'compact', 'scientific', 'engineering']
-
-	const formatOptions: Array<IOption<TNumberFormatFormat>> = formats.map(v => ({ label: v, value: v }))
-	const localeOptions: Array<IOption<string>> = locales.map(v => ({ label: v, value: v }))
-	const currencyOptions: Array<IOption<string>> = currencies.map(v => ({ label: v, value: v }))
-	const unitOptions: Array<IOption<string>> = units.map(v => ({ label: v, value: v }))
-	const signOptions: Array<IOption<TNumberFormatSignDisplay>> = signs.map(v => ({ label: v, value: v }))
-	const notationOptions: Array<IOption<TNumberFormatNotation | undefined>> = notations.map(v => ({
-		label: v ?? '(default)',
-		value: v as TNumberFormatNotation
-	}))
-
-	const formatSamples: Array<{
-		format: TNumberFormatFormat
-		currency?: string
-		unit?: string
-	}> = [
-		{ format: 'decimal' },
-		{ format: 'currency', currency: 'USD' },
-		{ format: 'percent' },
-		{ format: 'unit', unit: 'kilometer-per-hour' },
-		{ format: 'compact' },
-		{ format: 'scientific' },
-		{ format: 'engineering' }
+	const FORMAT_OPTIONS: Array<{ label: string; value: TNumberFormatFormat }> = [
+		{ label: 'decimal', value: 'decimal' },
+		{ label: 'currency', value: 'currency' },
+		{ label: 'percent', value: 'percent' },
+		{ label: 'unit', value: 'unit' },
+		{ label: 'compact', value: 'compact' },
+		{ label: 'scientific', value: 'scientific' },
+		{ label: 'engineering', value: 'engineering' }
 	]
 
-	const compactSamples = [
-		{ label: 'K', value: 1234 },
-		{ label: 'M', value: 1234567 },
-		{ label: 'B', value: 1234567890 }
+	const NOTATION_OPTIONS: Array<{ label: string; value: TNumberFormatNotation | undefined }> = [
+		{ label: '(default)', value: undefined },
+		{ label: 'standard', value: 'standard' },
+		{ label: 'compact', value: 'compact' },
+		{ label: 'scientific', value: 'scientific' },
+		{ label: 'engineering', value: 'engineering' }
+	]
+
+	const CURRENCY_DISPLAY_OPTIONS: Array<{ label: string; value: TNumberFormatCurrencyDisplay }> = [
+		{ label: 'symbol', value: 'symbol' },
+		{ label: 'narrowSymbol', value: 'narrowSymbol' },
+		{ label: 'code', value: 'code' },
+		{ label: 'name', value: 'name' }
+	]
+
+	const UNIT_DISPLAY_OPTIONS: Array<{ label: string; value: TNumberFormatUnitDisplay }> = [
+		{ label: 'short', value: 'short' },
+		{ label: 'long', value: 'long' },
+		{ label: 'narrow', value: 'narrow' }
+	]
+
+	const COMPACT_DISPLAY_OPTIONS: Array<{ label: string; value: TNumberFormatCompactDisplay }> = [
+		{ label: 'short', value: 'short' },
+		{ label: 'long', value: 'long' }
+	]
+
+	const SIGN_DISPLAY_OPTIONS: Array<{ label: string; value: TNumberFormatSignDisplay }> = [
+		{ label: 'auto', value: 'auto' },
+		{ label: 'always', value: 'always' },
+		{ label: 'except-zero', value: 'except-zero' },
+		{ label: 'negative', value: 'negative' },
+		{ label: 'never', value: 'never' }
+	]
+
+	const LOCALE_OPTIONS: Array<{ label: string; value: string }> = [
+		{ label: 'auto (runtime)', value: 'auto' },
+		{ label: 'fr-FR', value: 'fr-FR' },
+		{ label: 'en-US', value: 'en-US' },
+		{ label: 'de-DE', value: 'de-DE' },
+		{ label: 'ja-JP', value: 'ja-JP' },
+		{ label: 'ar-EG', value: 'ar-EG' }
+	]
+
+	const CURRENCY_OPTIONS: Array<{ label: string; value: string }> = [
+		{ label: 'EUR', value: 'EUR' },
+		{ label: 'USD', value: 'USD' },
+		{ label: 'JPY', value: 'JPY' },
+		{ label: 'GBP', value: 'GBP' },
+		{ label: 'CHF', value: 'CHF' },
+		{ label: 'CNY', value: 'CNY' }
+	]
+
+	const UNIT_OPTIONS: Array<{ label: string; value: string }> = [
+		{ label: 'kilometer-per-hour', value: 'kilometer-per-hour' },
+		{ label: 'celsius', value: 'celsius' },
+		{ label: 'liter', value: 'liter' },
+		{ label: 'megabyte', value: 'megabyte' }
 	]
 </script>
 
@@ -343,20 +247,6 @@
 		margin: 0;
 		font: 0.875rem/1.4 system-ui, sans-serif;
 		color: var(--origam-color__text---secondary, #555);
-	}
-
-	.story-col {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-		padding: 8px 12px;
-		border-radius: 4px;
-		background: var(--origam-color__surface---raised, #f5f5f5);
-	}
-
-	.story-col strong {
-		font: 600 0.75rem/1.2 ui-monospace, monospace;
-		color: var(--origam-color__text---primary, #171717);
 	}
 
 	.number-format-slot-part-currency {

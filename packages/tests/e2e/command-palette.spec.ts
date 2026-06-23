@@ -34,7 +34,7 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.waitForTimeout(600)
 }
 
-const STORY = '/story/stories-components-stories-commandpalette-origamcommandpalette-story-vue'
+const STORY = '/story/components-stories-commandpalette-origamcommandpalette-story-vue'
 
 test.describe('OrigamCommandPalette — Default (open via trigger / v-model)', () => {
     test('opens when the trigger button is clicked', async ({ page }) => {
@@ -79,7 +79,11 @@ test.describe('OrigamCommandPalette — global hotkey', () => {
         // owns the keyboard focus.
         await sandbox.locator('[data-cy="command-palette-playground"]').click()
 
-        await page.keyboard.press('Meta+K')
+        // useHotkey attaches its listener on `window` of the sandbox iframe —
+        // page.keyboard.press() dispatches into the top-level frame and never
+        // reaches that listener. We must dispatch inside the iframe by pressing
+        // on a locator that belongs to the sandbox frame.
+        await sandbox.locator('[data-cy="command-palette-playground"]').press('Meta+K')
 
         await expect(sandbox.locator('[role="dialog"]')).toBeVisible({ timeout: 4000 })
     })

@@ -3,139 +3,143 @@
 			group="components"
 			title="DatePicker/OrigamDatePickerHeader"
 	>
-		<!--
-			Playground — the "Selected: May 8, 2026" heading at the top of
-			the picker. Can be used standalone or inside the parent picker.
-		-->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IDensityProps & { color: string; header: string }>({
-					density: DENSITY.DEFAULT,
-					color: 'primary',
+				title="Design"
+				:init-state="() => useStoryInitState<IDatePickerHeaderProps>({
 					header: 'May 8, 2026',
+					color: 'primary',
+					density: 'default',
 				})"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 320px;">
+				<div style="padding: 24px; max-width: 360px;">
 					<origam-date-picker-header
 							:header="state.header"
-							:density="state.density"
 							:color="state.color"
-							data-cy="dp-header-playground"
+							:density="state.density"
+							:prepend-icon="state.prependIcon || undefined"
+							:prepend-avatar="state.prependAvatar || undefined"
+							:append-icon="state.appendIcon || undefined"
+							:append-avatar="state.appendAvatar || undefined"
+							data-cy="dp-header-design"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstText   v-model="state.header"  title="header"/>
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
+				<StoryGroup title="Content">
+					<HstText v-model="state.header" title="Header"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Icons">
+					<HstSelect v-model="state.prependIcon" title="Prepend Icon" :options="ICON_OPTIONS"/>
+					<HstText   v-model="state.prependAvatar" title="Prepend Avatar (URL)"/>
+					<HstSelect v-model="state.appendIcon" title="Append Icon" :options="ICON_OPTIONS"/>
+					<HstText   v-model="state.appendAvatar" title="Append Avatar (URL)"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — header (realistic, embedded in DatePicker)">
-			<div style="padding: 24px; display: flex; justify-content: center;">
-				<origam-date-picker v-model="defaultValue" data-cy="dp-header-default"/>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — header (standalone custom text)">
-			<div style="padding: 24px; max-width: 320px;">
-				<origam-date-picker-header
-						header="May 2026"
-						data-cy="dp-header-custom"
-				/>
-			</div>
 		</Variant>
 
 		<Variant
-				title="Prop — color"
-				:init-state="() => useStoryInitState<{ color: string }>({ color: 'primary' })"
+				title="Functional"
+				:init-state="() => useStoryInitState<IDatePickerHeaderProps & { transitionName: string; transitionMode: string }>({
+					header: 'May 8, 2026',
+					transitionName: '',
+					transitionMode: TRANSITION_MODE.OUT_IN,
+				})"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 320px;">
+				<div style="padding: 24px; max-width: 360px;">
 					<origam-date-picker-header
-							header="Tinted heading"
-							:color="state.color"
-							data-cy="dp-header-color"
+							:header="state.header"
+							:transition="state.transitionName ? { name: state.transitionName, mode: state.transitionMode as TTransitionMode } : undefined"
+							data-cy="dp-header-functional"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.color" title="color" :options="intentList"/>
+				<StoryGroup title="Content">
+					<HstText v-model="state.header" title="Header"/>
+				</StoryGroup>
+				<StoryGroup title="Transition">
+					<HstText   v-model="state.transitionName" title="Transition Name"/>
+					<HstSelect v-model="state.transitionMode" title="Transition Mode" :options="TRANSITION_MODE_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — prependIcon & appendIcon">
-			<div style="padding: 24px; max-width: 320px;">
-				<origam-date-picker-header
-						header="May 8, 2026"
-						:prepend-icon="MDI_ICONS.CALENDAR"
-						:append-icon="MDI_ICONS.CHEVRON_DOWN"
-						data-cy="dp-header-icons"
-				/>
-			</div>
-		</Variant>
-
-		<Variant
-				title="Prop — density"
-				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 320px;">
-					<origam-date-picker-header
-							header="Density-aware heading"
-							:density="state.density"
-							data-cy="dp-header-density"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — append">
-			<div style="padding: 24px; max-width: 320px;">
-				<origam-date-picker-header header="May 8, 2026" data-cy="dp-header-slot-append">
-					<template #append>
-						<origam-icon :icon="MDI_ICONS.HEART"/>
-					</template>
-				</origam-date-picker-header>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — default">
-			<div style="padding: 24px; max-width: 320px;">
-				<origam-date-picker-header header="May 8, 2026" data-cy="dp-header-slot-default">
-					<span>Custom slot content</span>
-				</origam-date-picker-header>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — prepend">
-			<div style="padding: 24px; max-width: 320px;">
-				<origam-date-picker-header header="May 8, 2026" data-cy="dp-header-slot-prepend">
-					<template #prepend>
-						<origam-icon :icon="MDI_ICONS.HEART"/>
-					</template>
-				</origam-date-picker-header>
-			</div>
-		</Variant>
-
-		<!-- ── Emits ────────────────────────────────────────────────── -->
-
-		<Variant title="Emit — click">
-			<div style="padding: 24px; max-width: 320px;">
+		<Variant title="Events - click">
+			<div style="padding: 24px; max-width: 360px;">
 				<origam-date-picker-header
 						header="May 8, 2026"
 						data-cy="dp-header-emit-click"
 						@click="logEvent('click', $event)"
 				/>
 			</div>
+		</Variant>
+
+		<Variant title="Slots - Default">
+			<div style="padding: 24px; max-width: 360px;">
+				<origam-date-picker-header header="May 8, 2026" data-cy="dp-header-slot-default">
+					<span>Custom slot content</span>
+				</origam-date-picker-header>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Prepend">
+			<div style="padding: 24px; max-width: 360px;">
+				<origam-date-picker-header header="May 8, 2026" data-cy="dp-header-slot-prepend">
+					<template #prepend>
+						<origam-icon :icon="calendarIcon"/>
+					</template>
+				</origam-date-picker-header>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Append">
+			<div style="padding: 24px; max-width: 360px;">
+				<origam-date-picker-header header="May 8, 2026" data-cy="dp-header-slot-append">
+					<template #append>
+						<origam-icon :icon="chevronIcon"/>
+					</template>
+				</origam-date-picker-header>
+			</div>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IDatePickerHeaderProps>({
+					header: 'May 8, 2026',
+					color: 'primary',
+					density: 'default',
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px; max-width: 360px;">
+					<origam-date-picker-header
+							v-bind="state"
+							@click="logEvent('click', $event)"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.header" title="Header"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"   title="Color"   :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Icons">
+					<HstSelect v-model="state.prependIcon" title="Prepend Icon" :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.appendIcon"  title="Append Icon"  :options="ICON_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -145,16 +149,28 @@
 		setup
 >
 	import { logEvent } from 'histoire/client'
-	import { ref } from 'vue'
 
-	import { OrigamDatePicker, OrigamDatePickerHeader, OrigamIcon } from '@origam/components'
-	import { DENSITY, MDI_ICONS } from '@origam/enums'
-	import type { IDensityProps } from '@origam/interfaces'
+	import { OrigamDatePickerHeader, OrigamIcon } from '@origam/components'
+	import { MDI_ICONS, TRANSITION_MODE } from '@origam/enums'
+	import type { IDatePickerHeaderProps } from '@origam/interfaces'
+	import type { TTransitionMode } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, intentList } from '@stories/const'
+	import {
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ICON_OPTIONS
+	} from '@stories/const'
 
-	const defaultValue = ref('2026-05-08')
+	const calendarIcon = MDI_ICONS.CALENDAR
+	const chevronIcon  = MDI_ICONS.CHEVRON_DOWN
+
+	const TRANSITION_MODE_OPTIONS = [
+		{ label: 'out-in', value: TRANSITION_MODE.OUT_IN },
+		{ label: 'in-out', value: TRANSITION_MODE.IN_OUT },
+		{ label: 'default', value: TRANSITION_MODE.DEFAULT }
+	]
 </script>
 
 <docs lang="md" src="@docs/components/DatePicker/OrigamDatePickerHeader.md"/>

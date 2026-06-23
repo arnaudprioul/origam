@@ -13,10 +13,10 @@ import { expect, test, type Page } from '@playwright/test'
  *  - point-click emit fires when a node or link is activated.
  *  - Label text elements render when showLabel is true.
  *  - Compact vs spaced node sizing produces visually distinct widths.
- *  - linkOpacity is applied as a style attribute on link paths.
+ *  - linkOpacity is applied as a fill-opacity style attribute on link paths (filled ribbons, not stroked).
  */
 
-const SANKEY_STORY = '/story/stories-components-stories-chart-origamchartsankey-story-vue'
+const SANKEY_STORY = '/story/components-stories-chart-origamchartsankey-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')
@@ -47,13 +47,14 @@ test.describe('OrigamChartSankey — Default', () => {
         await expect(svg.locator('desc')).toHaveCount(1)
     })
 
-    test('renders 6 node rects for the web funnel fixture (6 unique nodes)', async ({ page }) => {
+    test('renders 7 node rects for the web funnel fixture (7 unique nodes)', async ({ page }) => {
         await openVariant(page, SANKEY_STORY, 'Default')
         const sandbox = sandboxOf(page)
         await page.screenshot({ path: '/tmp/chart-sankey-default.png', fullPage: false })
 
+        // FIXTURE_WEB_FUNNEL unique nodes: Home, Catalogue, Cart, Exit, Checkout, Success, Failure = 7
         const nodes = sandbox.locator('[data-cy="sankey-playground-chart"] [data-cy^="origam-chart-sankey-node-"]')
-        await expect(nodes).toHaveCount(6, { timeout: 8000 })
+        await expect(nodes).toHaveCount(7, { timeout: 8000 })
     })
 
     test('renders 7 link paths for the web funnel fixture (7 data entries)', async ({ page }) => {
@@ -92,12 +93,13 @@ test.describe('OrigamChartSankey — Default', () => {
 })
 
 test.describe('OrigamChartSankey — energy budget fixture', () => {
-    test('renders 5 node rects for the energy budget fixture (5 unique nodes)', async ({ page }) => {
+    test('renders 7 node rects for the energy budget fixture (7 unique nodes)', async ({ page }) => {
         await openVariant(page, SANKEY_STORY, 'Prop — nodeWidth / nodePadding (compact vs spaced)')
         const sandbox = sandboxOf(page)
 
+        // FIXTURE_ENERGY unique nodes: Solar, Wind, Nuclear, Grid, Residential, Industrial, Commercial = 7
         const nodes = sandbox.locator('[data-cy="sankey-compact"] [data-cy^="origam-chart-sankey-node-"]')
-        await expect(nodes).toHaveCount(5, { timeout: 8000 })
+        await expect(nodes).toHaveCount(7, { timeout: 8000 })
     })
 
     test('renders 6 link paths for the energy budget fixture (6 data entries)', async ({ page }) => {
@@ -175,8 +177,9 @@ test.describe('OrigamChartSankey — labels', () => {
     test('label text elements are present when showLabel is true (default)', async ({ page }) => {
         await openVariant(page, SANKEY_STORY, 'Default')
         const sandbox = sandboxOf(page)
+        // One label per node: FIXTURE_WEB_FUNNEL has 7 unique nodes
         const labels = sandbox.locator('[data-cy="sankey-playground-chart"] [data-cy^="origam-chart-sankey-label-"]')
-        await expect(labels).toHaveCount(6, { timeout: 6000 })
+        await expect(labels).toHaveCount(7, { timeout: 6000 })
     })
 })
 
@@ -219,15 +222,17 @@ test.describe('OrigamChartSankey — empty state', () => {
 })
 
 test.describe('OrigamChartSankey — linkOpacity', () => {
-    test('link paths carry a strokeOpacity style attribute', async ({ page }) => {
+    test('link paths carry a fillOpacity style attribute', async ({ page }) => {
         await openVariant(page, SANKEY_STORY, 'Prop — linkOpacity (translucent vs opaque)')
         const sandbox = sandboxOf(page)
 
+        // The sankey renders links as filled ribbons (fill + fill-opacity, stroke: none),
+        // not stroked paths. The linkOpacity prop is applied as fill-opacity on the path style.
         const links = sandbox.locator('[data-cy="sankey-translucent"] [data-cy^="origam-chart-sankey-link-"]')
         await expect(links.first()).toBeVisible({ timeout: 8000 })
 
         const style = await links.first().getAttribute('style')
         expect(style).toBeTruthy()
-        expect(style).toContain('stroke-opacity')
+        expect(style).toContain('fill-opacity')
     })
 })

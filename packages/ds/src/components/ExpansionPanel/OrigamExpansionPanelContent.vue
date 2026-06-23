@@ -4,6 +4,7 @@
 				:is="tag"
 				v-show="isSelected"
 				:id="`expansion-panel-content-${expansionPanel.id}`"
+				v-contrast
 				:aria-labelledby="`expansion-panel-header-${expansionPanel.id}`"
 				:class="expansionPanelContentClasses"
 				:style="expansionPanelContentStyles"
@@ -56,6 +57,8 @@
 >
 	import { computed, inject, StyleValue, toRef } from 'vue'
 	import { OrigamExpandY, OrigamProgress, OrigamSkeleton } from '../../components'
+
+	import { vContrast } from '../../directives'
 
 	import {
 		useBorder,

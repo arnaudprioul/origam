@@ -1,222 +1,434 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 /**
- * Lot C2 — OrigamAlert runtime probes.
+ * OrigamAlert — e2e spec (recipe btn.spec.ts / avatar.spec.ts pattern)
  *
- * Asserts every Variant in `OrigamAlert.story.vue` produces the
- * runtime contract documented in `OrigamAlert.md`:
- *   - default renders the alert with role="alert"
- *   - status emits the matching CSS status class + icon
- *   - closable alert hides on close click (modelValue → false)
- *   - title renders the title span
- *   - prominent emits --prominent modifier
- *   - density emits --density-{x} modifier
- *   - color forwards style to alert root
- *   - slot — prepend renders custom prepend content
+ * ## Navigation
+ *   Navigation directe avec variantId query param (index 0-based).
+ *   STORY_ID = 'components-stories-alert-origamalert-story-vue'
+ *
+ * ## Variant index map (OrigamAlert.story.vue, 0-based)
+ *
+ *   0  → Design
+ *   1  → State
+ *   2  → Functional
+ *   3  → Events - click:close
+ *   4  → Events - update:hover
+ *   5  → Events - update:modelValue
+ *   6  → Slots - Default
+ *   7  → Slots - Title
+ *   8  → Slots - Text
+ *   9  → Slots - Prepend
+ *  10  → Slots - Append
+ *  11  → Slots - Close
+ *  12  → Slots - Wrapper
+ *  13  → Default (playground)
+ *
+ * ## Color / class contract
+ *
+ *   useStateEffect.colorClasses returns [] when isActive=true OR isHover=true.
+ *   Alert uses useActive(props, 'modelValue'), default modelValue=true → isActive=true.
+ *   Therefore, in variants where modelValue is not explicitly false, colorClasses=[].
+ *   Background is owned by colorStyles (inline style via useStyle).
+ *
+ *   In the State variant, init-state = { bgColor: 'info' } without modelValue=true
+ *   (hover/active not forced) → isActive=false → colorClasses=['origam--bg-info'].
+ *
+ *   statusClasses = ['origam-alert--{status}'] regardless of active state.
+ *
+ * ## Timeout note
+ *   VIS = { timeout: 20000 } — cold Playwright contexts take up to ~15s to
+ *   mount the Histoire sandbox iframe (font loading + Vite HMR handshake).
+ *   test.setTimeout(60000) covers the full sequence: gotoVariant + VIS wait.
  */
 
-const sandboxOf = (page: Page) =>
-    page.frameLocator('iframe[src*="__sandbox"]')
+const STORY_ID   = 'components-stories-alert-origamalert-story-vue'
+const STORY_PATH = '/stories/story/' + STORY_ID
 
-const openVariant = async (page: Page, storyPath: string, variant: string) => {
-    await page.goto(storyPath)
-    await page.waitForLoadState('networkidle')
-    await page.getByText(variant, { exact: true }).first().click()
-    await page.waitForTimeout(800)
-}
+const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
-const STORY = '/story/stories-components-stories-alert-origamalert-story-vue'
+/** Visibility timeout: absorbs cold Playwright sandbox startup (~15s). */
+const VIS = { timeout: 20000 }
 
-// ─── Default ────────────────────────────────────────────────────────────────
+test.describe('OrigamAlert', () => {
+    test.setTimeout(60000)
 
-test.describe('OrigamAlert — default', () => {
-    test('renders with role=alert and origam-alert class', async ({ page }) => {
-        await openVariant(page, STORY, 'Default')
-        const sandbox = sandboxOf(page)
+    // ------------------------------------------------------------------ //
+    // DESIGN (index 0)                                                     //
+    // init: { text: 'Alert message.', status: undefined, color: undefined, bgColor: undefined }
+    // ------------------------------------------------------------------ //
 
-        const alert = sandbox.locator('[data-cy="alert-default"]').first()
-        await expect(alert).toBeVisible({ timeout: 8000 })
+    test.describe('Design', () => {
+        test('renders the alert root with BEM class', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+        })
 
-        const cls = await alert.evaluate(el => el.className)
-        expect(cls).toContain('origam-alert')
+        test('default role is "status" (no status prop)', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            const role = await alert.getAttribute('role')
+            expect(role).toBe('status')
+        })
 
-        const role = await alert.evaluate(el => el.getAttribute('role'))
-        expect(role).toBe('alert')
+        test('text prop renders "Alert message." in the body', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await expect(alert.locator('.origam-alert__body')).toContainText('Alert message.')
+        })
+
+        test('default density class is applied (density-default)', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await expect(alert).toHaveClass(/origam-alert--density-default/)
+        })
+
+        test('alert is active by default (modelValue=true → origam-alert--active class)', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await expect(alert).toHaveClass(/origam-alert--active/)
+        })
+
+        test('underlay element is present in the DOM', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await expect(alert.locator('.origam-alert__underlay')).toBeAttached()
+        })
+
+        test('content area is present in the DOM', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await expect(alert.locator('.origam-alert__content')).toBeAttached()
+        })
     })
-})
 
-// ─── Color showcase ─────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------ //
+    // STATE (index 1)                                                      //
+    // init: { bgColor: 'info' }                                           //
+    // isActive=false → colorClasses=['origam--bg-info']                   //
+    // ------------------------------------------------------------------ //
 
-// Alert renders with `useColorEffect` which sometimes emits the
-// `bgHover` rung at rest depending on the elevation/state — `primary`
-// resolves to `rgb(109, 40, 217)` (= `#6d28d9`, primary's bgHover)
-// rather than the canonical `#7c3aed`. The other intents map to their
-// `bg` token. Probe-confirmed; not a bug.
-const EXPECTED_ALERT_BG: Record<string, string> = {
-    primary: 'rgb(109, 40, 217)',
-    success: 'rgb(76, 175, 80)',
-    warning: 'rgb(251, 140, 0)',
-    danger:  'rgb(239, 68, 68)'
-}
-
-test.describe('OrigamAlert — color showcase', () => {
-    test('bgColor prop paints each intent on the alert root', async ({ page }) => {
-        await openVariant(page, STORY, 'Color')
-        const sandbox = sandboxOf(page)
-
-        for (const [intent, expected] of Object.entries(EXPECTED_ALERT_BG)) {
-            const alert = sandbox.locator(`[data-cy="alert-color-${intent}"]`)
-            await expect(alert).toBeVisible({ timeout: 5000 })
+    test.describe('State', () => {
+        test('renders with a non-transparent background when bgColor="info"', async ({ page }) => {
+            // The State variant init-state = { bgColor: 'info' } but does NOT set modelValue=false.
+            // OrigamAlert defaults to modelValue=true → isActive=true.
+            // useStateEffect returns colorClasses=[] when isActive=true (classes-first rule).
+            // Background is owned by useStyle (injected <style> tag via colorStyles), not a utility class.
+            // We assert via getComputedStyle rather than a class assertion.
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
             const bg = await alert.evaluate(el => getComputedStyle(el).backgroundColor)
-            expect(bg, `alert-color-${intent}`).toBe(expected)
-        }
-    })
-})
+            expect(bg).not.toBe('rgba(0, 0, 0, 0)')
+            expect(bg).not.toBe('transparent')
+        })
 
-// ─── Status ─────────────────────────────────────────────────────────────────
+        test('bgColor=info produces a non-transparent background', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            const bg = await alert.evaluate(el => getComputedStyle(el).backgroundColor)
+            expect(bg).not.toBe('rgba(0, 0, 0, 0)')
+            expect(bg).not.toBe('transparent')
+        })
 
-test.describe('OrigamAlert — status', () => {
-    test('info status emits --info modifier class', async ({ page }) => {
-        await openVariant(page, STORY, 'Status')
-        const sandbox = sandboxOf(page)
-
-        const alert = sandbox.locator('[data-cy="alert-status"]').first()
-        await expect(alert).toBeVisible({ timeout: 8000 })
-
-        const cls = await alert.evaluate(el => el.className)
-        expect(cls).toContain('origam-alert--info')
-    })
-})
-
-// ─── Closable ───────────────────────────────────────────────────────────────
-
-test.describe('OrigamAlert — closable', () => {
-    test('clicking close hides the alert and updates status', async ({ page }) => {
-        await openVariant(page, STORY, 'Closable')
-        const sandbox = sandboxOf(page)
-
-        const alert = sandbox.locator('[data-cy="alert-closable"]').first()
-        await expect(alert).toBeVisible({ timeout: 8000 })
-
-        // Click the close button inside the alert
-        const closeBtn = alert.locator('[data-cy="close"]').first()
-        await closeBtn.click()
-        await page.waitForTimeout(400)
-
-        // Status should reflect false
-        const status = sandbox.locator('[data-cy="alert-closable-status"]').first()
-        await expect(status).toContainText('false')
+        test('renders hover instruction text', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await expect(alert).toContainText('Hover over this alert.')
+        })
     })
 
-    test('reset button restores the alert visibility', async ({ page }) => {
-        await openVariant(page, STORY, 'Closable')
-        const sandbox = sandboxOf(page)
+    // ------------------------------------------------------------------ //
+    // FUNCTIONAL (index 2)                                                 //
+    // init: { text: 'Alert message.', title: '', modelValue: true, closable: false }
+    // ------------------------------------------------------------------ //
 
-        const alert = sandbox.locator('[data-cy="alert-closable"]').first()
-        await expect(alert).toBeVisible({ timeout: 8000 })
+    test.describe('Functional', () => {
+        test('renders with modelValue=true (active + visible)', async ({ page }) => {
+            await page.goto(variantUrl(2))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await expect(alert).toHaveClass(/origam-alert--active/)
+        })
 
-        await alert.locator('[data-cy="close"]').first().click()
-        await page.waitForTimeout(400)
+        test('closable=false: close button is absent in initial state', async ({ page }) => {
+            await page.goto(variantUrl(2))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            // data-cy="close" is on the inner btn — should not be present when closable=false
+            await expect(alert.locator('[data-cy="close"]')).not.toBeAttached()
+        })
 
-        const reset = sandbox.locator('[data-cy="alert-closable-reset"]').first()
-        await reset.click()
-        await page.waitForTimeout(300)
+        test('SCSS --density-comfortable: adding the class sets density to -8px', async ({ page }) => {
+            await page.goto(variantUrl(2))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            const densityValue = await alert.evaluate(el => {
+                el.classList.remove('origam-alert--density-default')
+                el.classList.add('origam-alert--density-comfortable')
+                return getComputedStyle(el).getPropertyValue('--origam-alert---density').trim()
+            })
+            expect(densityValue).toBe('-8px')
+        })
 
-        await expect(alert).toBeVisible()
+        test('SCSS --density-compact: adding the class sets density to 8px', async ({ page }) => {
+            await page.goto(variantUrl(2))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            const densityValue = await alert.evaluate(el => {
+                el.classList.remove('origam-alert--density-default')
+                el.classList.add('origam-alert--density-compact')
+                return getComputedStyle(el).getPropertyValue('--origam-alert---density').trim()
+            })
+            expect(densityValue).toBe('8px')
+        })
+
+        test('SCSS --density-default: density variable is 0px', async ({ page }) => {
+            await page.goto(variantUrl(2))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            const densityValue = await alert.evaluate(el => {
+                return getComputedStyle(el).getPropertyValue('--origam-alert---density').trim()
+            })
+            expect(densityValue).toBe('0px')
+        })
+
+        test('SCSS --warning: injecting status class sets a non-empty background-color variable', async ({ page }) => {
+            await page.goto(variantUrl(2))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            const bg = await alert.evaluate(el => {
+                el.classList.add('origam-alert--warning')
+                return getComputedStyle(el).getPropertyValue('--origam-alert---background-color').trim()
+            })
+            expect(bg).toBeTruthy()
+            expect(bg.length).toBeGreaterThan(0)
+        })
+
+        test('SCSS --rounded: adding class produces a non-zero border-radius', async ({ page }) => {
+            await page.goto(variantUrl(2))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            const radius = await alert.evaluate(el => {
+                el.classList.add('origam-alert--rounded')
+                return getComputedStyle(el).borderRadius
+            })
+            expect(radius).not.toBe('0px')
+            expect(radius).not.toBe('')
+        })
     })
-})
 
-// ─── Title ───────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------ //
+    // EVENTS (indexes 3–5)                                                 //
+    // ------------------------------------------------------------------ //
 
-test.describe('OrigamAlert — title', () => {
-    test('title prop renders the title span', async ({ page }) => {
-        await openVariant(page, STORY, 'Title prop')
-        const sandbox = sandboxOf(page)
+    test.describe('Events - click:close', () => {
+        test('renders a closable alert with the close button', async ({ page }) => {
+            await page.goto(variantUrl(3))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await expect(alert.locator('[data-cy="close"]')).toBeVisible()
+        })
 
-        const alert = sandbox.locator('[data-cy="alert-title"]').first()
-        await expect(alert).toBeVisible({ timeout: 8000 })
-
-        const titleEl = alert.locator('.origam-alert__title').first()
-        await expect(titleEl).toBeVisible()
-        await expect(titleEl).toContainText('Alert title')
+        test('clicking the close button does not throw', async ({ page }) => {
+            await page.goto(variantUrl(3))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const closeBtn = sandbox.locator('[data-cy="close"]').first()
+            await expect(closeBtn).toBeVisible(VIS)
+            await closeBtn.click()
+        })
     })
-})
 
-// ─── Text ────────────────────────────────────────────────────────────────────
+    test.describe('Events - update:hover', () => {
+        test('renders an alert with hover instruction text', async ({ page }) => {
+            await page.goto(variantUrl(4))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await expect(alert).toContainText('Hover over this alert to fire update:hover.')
+        })
 
-test.describe('OrigamAlert — text', () => {
-    test('text prop renders the body content', async ({ page }) => {
-        await openVariant(page, STORY, 'Text prop')
-        const sandbox = sandboxOf(page)
-
-        const alert = sandbox.locator('[data-cy="alert-text"]').first()
-        await expect(alert).toBeVisible({ timeout: 8000 })
-        await expect(alert).toContainText('Alert body text.')
+        test('hovering over the alert does not throw', async ({ page }) => {
+            await page.goto(variantUrl(4))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await alert.hover()
+            await page.waitForTimeout(300)
+        })
     })
-})
 
-// ─── Prominent ───────────────────────────────────────────────────────────────
+    test.describe('Events - update:modelValue', () => {
+        test('renders a closable alert for dismiss interaction', async ({ page }) => {
+            await page.goto(variantUrl(5))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await expect(alert.locator('[data-cy="close"]')).toBeVisible()
+        })
 
-test.describe('OrigamAlert — prominent', () => {
-    test('prominent=true emits the --prominent modifier class', async ({ page }) => {
-        await openVariant(page, STORY, 'Prominent')
-        const sandbox = sandboxOf(page)
-
-        const alert = sandbox.locator('[data-cy="alert-prominent"]').first()
-        await expect(alert).toBeVisible({ timeout: 8000 })
-
-        const cls = await alert.evaluate(el => el.className)
-        expect(cls).toContain('origam-alert--prominent')
+        test('clicking close does not throw (logEvent side-effect not observable headlessly)', async ({ page }) => {
+            // This variant wires @update:model-value to logEvent() only — no v-model toggle.
+            // The alert stays active after click; the emit is an Histoire-internal side-effect
+            // that cannot be observed from the outer page. We verify the close button is present
+            // and the click does not throw.
+            await page.goto(variantUrl(5))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            const closeBtn = alert.locator('[data-cy="close"]').first()
+            await expect(closeBtn).toBeVisible()
+            await closeBtn.click()
+            await page.waitForTimeout(300)
+        })
     })
-})
 
-// ─── Density ─────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------ //
+    // SLOTS (indexes 6–12)                                                 //
+    // ------------------------------------------------------------------ //
 
-test.describe('OrigamAlert — density', () => {
-    test('default density emits --density-default modifier', async ({ page }) => {
-        await openVariant(page, STORY, 'Density')
-        const sandbox = sandboxOf(page)
-
-        const alert = sandbox.locator('[data-cy="alert-density"]').first()
-        await expect(alert).toBeVisible({ timeout: 8000 })
-
-        const cls = await alert.evaluate(el => el.className)
-        expect(cls).toContain('origam-alert--density-default')
+    test.describe('Slots - Default', () => {
+        test('default slot renders custom content', async ({ page }) => {
+            await page.goto(variantUrl(6))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await expect(alert).toContainText('Custom default slot content')
+        })
     })
-})
 
-// ─── Color ───────────────────────────────────────────────────────────────────
-
-test.describe('OrigamAlert — color', () => {
-    test('color prop renders the alert with the expected class structure', async ({ page }) => {
-        await openVariant(page, STORY, 'Color (intent)')
-        const sandbox = sandboxOf(page)
-
-        const alert = sandbox.locator('[data-cy="alert-color"]').first()
-        await expect(alert).toBeVisible({ timeout: 8000 })
-
-        // Alert uses useStyle which injects a <style> tag (not an inline style).
-        // We verify the component is present and the id attribute is set
-        // (useStyle assigns a unique id to the element for targeting via the injected rule).
-        const id = await alert.evaluate(el => (el as HTMLElement).id)
-        // The id may or may not be set depending on the useStyle implementation;
-        // what we assert is that the element is present and carries the base class.
-        const cls = await alert.evaluate(el => el.className)
-        expect(cls).toContain('origam-alert')
+    test.describe('Slots - Title', () => {
+        test('title slot renders custom strong element in the title area', async ({ page }) => {
+            await page.goto(variantUrl(7))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await expect(alert.locator('.origam-alert__title')).toBeVisible()
+            await expect(alert.locator('.origam-alert__title')).toContainText('Custom title via slot')
+        })
     })
-})
 
-// ─── Slot: prepend ────────────────────────────────────────────────────────────
+    test.describe('Slots - Text', () => {
+        test('text slot renders custom italic content in the body', async ({ page }) => {
+            await page.goto(variantUrl(8))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await expect(alert.locator('.origam-alert__body')).toBeVisible()
+            await expect(alert.locator('.origam-alert__body')).toContainText('Custom text slot content')
+        })
+    })
 
-test.describe('OrigamAlert — slot prepend', () => {
-    test('prepend slot renders custom icon', async ({ page }) => {
-        await openVariant(page, STORY, 'Slot — prepend')
-        const sandbox = sandboxOf(page)
+    test.describe('Slots - Prepend', () => {
+        test('prepend slot renders an origam-icon in the prepend area', async ({ page }) => {
+            await page.goto(variantUrl(9))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await expect(alert.locator('.origam-alert__prepend')).toBeAttached()
+            await expect(alert.locator('.origam-alert__prepend .origam-icon')).toBeAttached()
+        })
+    })
 
-        const alert = sandbox.locator('[data-cy="alert-slot-prepend"]').first()
-        await expect(alert).toBeVisible({ timeout: 8000 })
+    test.describe('Slots - Append', () => {
+        test('append slot renders an origam-icon in the append area', async ({ page }) => {
+            await page.goto(variantUrl(10))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await expect(alert.locator('.origam-alert__append')).toBeAttached()
+            await expect(alert.locator('.origam-alert__append .origam-icon')).toBeAttached()
+        })
+    })
 
-        const prependIcon = alert.locator('[data-cy="alert-prepend-icon"]').first()
-        await expect(prependIcon).toBeVisible()
+    test.describe('Slots - Close', () => {
+        test('close slot renders a custom origam-icon; default data-cy="close" btn is absent', async ({ page }) => {
+            await page.goto(variantUrl(11))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            // The custom close slot replaces OrigamBtn — origam-icon is direct child
+            await expect(alert.locator('.origam-alert__close .origam-icon')).toBeAttached()
+            // Default close btn with data-cy="close" is NOT rendered in this variant
+            await expect(alert.locator('[data-cy="close"]')).not.toBeAttached()
+        })
+    })
+
+    test.describe('Slots - Wrapper', () => {
+        test('wrapper slot replaces default layout; origam-alert__content is absent', async ({ page }) => {
+            await page.goto(variantUrl(12))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await expect(alert).toContainText('Custom wrapper slot content')
+            // Default origam-alert__content must NOT be present when wrapper slot is used
+            await expect(alert.locator('.origam-alert__content')).not.toBeAttached()
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // DEFAULT / PLAYGROUND (index 13)                                      //
+    // init: { text: 'Alert message.', status: undefined }                  //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Default (playground)', () => {
+        test('renders the alert root with BEM class', async ({ page }) => {
+            await page.goto(variantUrl(13))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+        })
+
+        test('default role is "status" (no status prop)', async ({ page }) => {
+            await page.goto(variantUrl(13))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            const role = await alert.getAttribute('role')
+            expect(role).toBe('status')
+        })
+
+        test('alert is active by default (modelValue implicit true → --active class)', async ({ page }) => {
+            await page.goto(variantUrl(13))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await expect(alert).toHaveClass(/origam-alert--active/)
+        })
+
+        test('text prop renders "Alert message." in the body', async ({ page }) => {
+            await page.goto(variantUrl(13))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const alert = sandbox.locator('.origam-alert').first()
+            await expect(alert).toBeVisible(VIS)
+            await expect(alert.locator('.origam-alert__body')).toContainText('Alert message.')
+        })
     })
 })

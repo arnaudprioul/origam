@@ -114,6 +114,25 @@ For one-off custom colors, use a `:style` binding instead of `color`:
 </template>
 ```
 
+## Border customization
+
+The `outlined` and `ghost` variants expose a customizable border. Beyond
+the `border` shorthand (inherited from `IBorderProps`), the standalone
+`borderColor` and `borderStyle` props override only the colour or the
+line-style without restating the width — the width stays theme-driven.
+
+```vue
+<template>
+    <OrigamBtn variant="outlined" border-color="tomato"   text="Custom color" />
+    <OrigamBtn variant="outlined" border-style="dashed"   text="Dashed" />
+    <OrigamBtn variant="outlined" border-color="rebeccapurple" border-style="dotted" text="Both" />
+</template>
+```
+
+The outlined variant resolves its colour from
+`var(--origam-btn---border-color, currentColor)`, so per-instance overrides
+work via the prop, a token, or an inline `--origam-btn---border-color`.
+
 ## Polymorphic tag
 
 ```vue
@@ -225,6 +244,8 @@ a `:style` binding to re-skin a single instance.
 | `--origam-btn---color` | `{color.action.secondary.fg}` |
 | `--origam-btn---background-color-hover` | `{color.action.secondary.bgHover}` |
 | `--origam-btn---border-radius` | `{radius.sm}` |
+| `--origam-btn---border-color` | `currentColor` (outlined variant; overridable via `borderColor` prop) |
+| `--origam-btn---border-color-ghost` | `color-mix(currentColor 24%)` (ghost variant) |
 | `--origam-btn---font-size` | `{font.size.md}` |
 | `--origam-btn---font-weight` | `{font.weight.medium}` |
 | `--origam-btn---transition-duration` | `{motion.duration.slow}` |

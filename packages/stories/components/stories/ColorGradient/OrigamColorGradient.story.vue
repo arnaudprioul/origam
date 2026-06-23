@@ -3,43 +3,8 @@
 			group="components"
 			title="ColorGradient/OrigamColorGradient"
 	>
-		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IPlaygroundState>({
-					type: 'linear',
-					from: 'primary',
-					to: 'success',
-					via: undefined,
-					direction: 135
-				})"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; align-items: flex-start;">
-					<origam-btn
-							:bg-color="buildGradient(state)"
-							text="Gradient button"
-							data-cy="playground-btn"
-					/>
-					<origam-card
-							:bg-color="buildGradient(state)"
-							style="padding: 24px; min-width: 240px; color: white;"
-							data-cy="playground-card"
-					>
-						Gradient card surface
-					</origam-card>
-					<pre style="margin-top: 8px; padding: 12px; background: var(--origam-color__surface---overlay); border-radius: 8px; font-size: 12px; max-width: 100%;">{{ JSON.stringify(buildGradient(state), null, 2) }}</pre>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.type"      title="type"      :options="gradientTypeList"/>
-				<HstSelect v-model="state.from"      title="from"      :options="intentList"/>
-				<HstSelect v-model="state.via"       title="via"       :options="intentList"/>
-				<HstSelect v-model="state.to"        title="to"        :options="intentList"/>
-				<HstNumber v-model="state.direction" title="direction (deg)" :min="0" :max="360" :step="15"/>
-			</template>
-		</Variant>
 
-		<Variant title="Prop — raw CSS gradient string">
+		<Variant title="Design - Raw CSS string">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; align-items: flex-start;">
 				<origam-btn
 						bg-color="linear-gradient(135deg, #ff0080, #7928ca)"
@@ -59,7 +24,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Prop — IGradient object (intents)">
+		<Variant title="Design - IGradient object">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; align-items: flex-start;">
 				<origam-btn
 						:bg-color="{ from: 'primary', to: 'success', direction: 135 }"
@@ -90,7 +55,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Prop — preset names">
+		<Variant title="Design - Preset names">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; align-items: flex-start;">
 				<origam-btn bg-color="gradient-sunset"   text="Sunset"   data-cy="preset-btn-sunset"/>
 				<origam-btn bg-color="gradient-ocean"    text="Ocean"    data-cy="preset-btn-ocean"/>
@@ -100,24 +65,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Component matrix — Btn / Card / Chip / Badge">
-			<div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; align-items: flex-start;">
-				<origam-btn   bg-color="gradient-sunset" text="Sunset button" data-cy="matrix-btn"/>
-				<origam-card
-						bg-color="gradient-ocean"
-						style="padding: 24px; min-width: 240px; color: white;"
-						data-cy="matrix-card"
-				>
-					Ocean card surface
-				</origam-card>
-				<origam-chip  bg-color="gradient-forest" text="Forest chip" data-cy="matrix-chip"/>
-				<origam-badge :bg-color="{ from: 'primary', to: 'danger' }" content="3" data-cy="matrix-badge">
-					<origam-btn text="Inbox" variant="outlined"/>
-				</origam-badge>
-			</div>
-		</Variant>
-
-		<Variant title="Text gradient — background-clip: text">
+		<Variant title="Design - Text gradient (background-clip: text)">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; align-items: flex-start;">
 				<origam-title
 						:color="{ from: 'primary', to: 'success' }"
@@ -142,6 +90,107 @@
 				</origam-title>
 			</div>
 		</Variant>
+
+		<Variant title="Design - Multi-component matrix">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; align-items: flex-start;">
+				<origam-btn   bg-color="gradient-sunset" text="Sunset button" data-cy="matrix-btn"/>
+				<origam-card
+						bg-color="gradient-ocean"
+						style="padding: 24px; min-width: 240px; color: white;"
+						data-cy="matrix-card"
+				>
+					Ocean card surface
+				</origam-card>
+				<origam-chip  bg-color="gradient-forest" text="Forest chip" data-cy="matrix-chip"/>
+				<origam-badge :bg-color="{ from: 'primary', to: 'danger' }" content="3" data-cy="matrix-badge">
+					<origam-btn text="Inbox" variant="outlined"/>
+				</origam-badge>
+			</div>
+		</Variant>
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<IFunctionalState>({
+					type: 'linear',
+					from: 'primary',
+					to: 'success',
+					via: undefined,
+					direction: 135
+				})"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; align-items: flex-start;">
+					<origam-btn
+							:bg-color="buildGradient(state)"
+							text="Gradient button"
+							data-cy="functional-btn"
+					/>
+					<origam-card
+							:bg-color="buildGradient(state)"
+							style="padding: 24px; min-width: 240px; color: white;"
+							data-cy="functional-card"
+					>
+						Gradient card surface
+					</origam-card>
+					<pre style="margin-top: 8px; padding: 12px; background: var(--origam-color__surface---overlay); border-radius: 8px; font-size: 12px; max-width: 100%;">{{ JSON.stringify(buildGradient(state), null, 2) }}</pre>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Gradient Type">
+					<HstSelect v-model="state.type" title="Type" :options="GRADIENT_TYPE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Color Stops">
+					<HstSelect v-model="state.from" title="From" :options="INTENT_OPTIONS"/>
+					<HstSelect v-model="state.via"  title="Via"  :options="INTENT_OPTIONS"/>
+					<HstSelect v-model="state.to"   title="To"   :options="INTENT_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Direction">
+					<HstNumber v-model="state.direction" title="Direction (deg)" :min="0" :max="360" :step="15"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IFunctionalState>({
+					type: 'linear',
+					from: 'primary',
+					to: 'success',
+					via: undefined,
+					direction: 135
+				})"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; align-items: flex-start;">
+					<origam-btn
+							:bg-color="buildGradient(state)"
+							text="Gradient button"
+							data-cy="playground-btn"
+					/>
+					<origam-card
+							:bg-color="buildGradient(state)"
+							style="padding: 24px; min-width: 240px; color: white;"
+							data-cy="playground-card"
+					>
+						Gradient card surface
+					</origam-card>
+					<pre style="margin-top: 8px; padding: 12px; background: var(--origam-color__surface---overlay); border-radius: 8px; font-size: 12px; max-width: 100%;">{{ JSON.stringify(buildGradient(state), null, 2) }}</pre>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.type" title="Type" :options="GRADIENT_TYPE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Color Stops">
+					<HstSelect v-model="state.from" title="From" :options="INTENT_OPTIONS"/>
+					<HstSelect v-model="state.via"  title="Via"  :options="INTENT_OPTIONS"/>
+					<HstSelect v-model="state.to"   title="To"   :options="INTENT_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstNumber v-model="state.direction" title="Direction (deg)" :min="0" :max="360" :step="15"/>
+				</StoryGroup>
+			</template>
+		</Variant>
 	</Story>
 </template>
 
@@ -153,10 +202,11 @@
 	import type { IGradient } from '@origam/interfaces'
 	import type { TIntent } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { intentList } from '@stories/const'
+	import { INTENT_OPTIONS } from '@stories/const'
 
-	interface IPlaygroundState {
+	interface IFunctionalState {
 		type: 'linear' | 'radial' | 'conic'
 		from: TIntent
 		to: TIntent
@@ -164,18 +214,18 @@
 		direction: number
 	}
 
-	const gradientTypeList = [
-		{ label: 'Linear',  value: 'linear' },
-		{ label: 'Radial',  value: 'radial' },
-		{ label: 'Conic',   value: 'conic' }
+	const GRADIENT_TYPE_OPTIONS = [
+		{ label: 'Linear', value: 'linear' },
+		{ label: 'Radial', value: 'radial' },
+		{ label: 'Conic',  value: 'conic' }
 	]
 
-	function buildGradient (state: IPlaygroundState): IGradient {
+	function buildGradient (state: IFunctionalState): IGradient {
 		return {
-			type: state.type,
-			from: state.from,
-			to: state.to,
-			via: state.via,
+			type:      state.type,
+			from:      state.from,
+			to:        state.to,
+			via:       state.via,
 			direction: state.direction
 		}
 	}

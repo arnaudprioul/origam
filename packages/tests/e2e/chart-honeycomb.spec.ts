@@ -14,8 +14,8 @@ import { expect, test, type Page } from '@playwright/test'
  *  - Empty slot renders when series is empty.
  */
 
-const HONEYCOMB_STORY = '/story/stories-components-stories-chart-origamcharthoneycomb-story-vue'
-const CHART_STORY = '/story/stories-components-stories-chart-origamchart-story-vue'
+const HONEYCOMB_STORY = '/story/components-stories-chart-origamcharthoneycomb-story-vue'
+const CHART_STORY = '/story/components-stories-chart-origamchart-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')
@@ -51,14 +51,14 @@ test.describe('OrigamChartHoneycomb — Default', () => {
         const sandbox = sandboxOf(page)
         await page.screenshot({ path: '/tmp/chart-honeycomb-default.png', fullPage: false })
 
-        const tiles = sandbox.locator('[data-cy="honeycomb-playground-chart"] [data-cy^="origam-chart-honeycomb-tile-"]')
+        const tiles = sandbox.locator('[data-cy="honeycomb-playground-chart"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
         await expect(tiles).toHaveCount(9, { timeout: 8000 })
     })
 
     test('each tile polygon has a non-empty points attribute', async ({ page }) => {
         await openVariant(page, HONEYCOMB_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const tiles = sandbox.locator('[data-cy="honeycomb-playground-chart"] [data-cy^="origam-chart-honeycomb-tile-"]')
+        const tiles = sandbox.locator('[data-cy="honeycomb-playground-chart"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
         const count = await tiles.count()
         expect(count).toBe(9)
         for (let i = 0; i < count; i++) {
@@ -73,7 +73,7 @@ test.describe('OrigamChartHoneycomb — accessibility', () => {
     test('each tile has role="button" and a non-empty aria-label', async ({ page }) => {
         await openVariant(page, HONEYCOMB_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const tiles = sandbox.locator('[data-cy="honeycomb-playground-chart"] [data-cy^="origam-chart-honeycomb-tile-"]')
+        const tiles = sandbox.locator('[data-cy="honeycomb-playground-chart"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
         const count = await tiles.count()
         for (let i = 0; i < count; i++) {
             await expect(tiles.nth(i)).toHaveAttribute('role', 'button')
@@ -85,7 +85,7 @@ test.describe('OrigamChartHoneycomb — accessibility', () => {
     test('each tile is keyboard-focusable (tabindex=0)', async ({ page }) => {
         await openVariant(page, HONEYCOMB_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const tiles = sandbox.locator('[data-cy="honeycomb-playground-chart"] [data-cy^="origam-chart-honeycomb-tile-"]')
+        const tiles = sandbox.locator('[data-cy="honeycomb-playground-chart"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
         const count = await tiles.count()
         for (let i = 0; i < count; i++) {
             await expect(tiles.nth(i)).toHaveAttribute('tabindex', '0')
@@ -99,8 +99,8 @@ test.describe('OrigamChartHoneycomb — orientation variant', () => {
         const sandbox = sandboxOf(page)
         await page.screenshot({ path: '/tmp/chart-honeycomb-orientation.png', fullPage: false })
 
-        const pointyTiles = sandbox.locator('[data-cy="honeycomb-orientation-pointy"] [data-cy^="origam-chart-honeycomb-tile-"]')
-        const flatTiles = sandbox.locator('[data-cy="honeycomb-orientation-flat"] [data-cy^="origam-chart-honeycomb-tile-"]')
+        const pointyTiles = sandbox.locator('[data-cy="honeycomb-orientation-pointy"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
+        const flatTiles = sandbox.locator('[data-cy="honeycomb-orientation-flat"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
 
         await expect(pointyTiles).toHaveCount(9, { timeout: 8000 })
         await expect(flatTiles).toHaveCount(9, { timeout: 8000 })
@@ -110,8 +110,8 @@ test.describe('OrigamChartHoneycomb — orientation variant', () => {
         await openVariant(page, HONEYCOMB_STORY, 'Prop — orientation (pointy-top vs flat-top side by side)')
         const sandbox = sandboxOf(page)
 
-        const pointyTile0 = sandbox.locator('[data-cy="honeycomb-orientation-pointy"] [data-cy="origam-chart-honeycomb-tile-0"]')
-        const flatTile0 = sandbox.locator('[data-cy="honeycomb-orientation-flat"] [data-cy="origam-chart-honeycomb-tile-0"]')
+        const pointyTile0 = sandbox.locator('[data-cy="honeycomb-orientation-pointy"] polygon[data-cy="origam-chart-honeycomb-tile-0"]')
+        const flatTile0 = sandbox.locator('[data-cy="honeycomb-orientation-flat"] polygon[data-cy="origam-chart-honeycomb-tile-0"]')
 
         const pointyPoints = await pointyTile0.getAttribute('points')
         const flatPoints = await flatTile0.getAttribute('points')
@@ -128,8 +128,8 @@ test.describe('OrigamChartHoneycomb — colorMode variant', () => {
         const sandbox = sandboxOf(page)
         await page.screenshot({ path: '/tmp/chart-honeycomb-heatmap.png', fullPage: false })
 
-        const catTiles = sandbox.locator('[data-cy="honeycomb-color-mode-categorical"] [data-cy^="origam-chart-honeycomb-tile-"]')
-        const heatTiles = sandbox.locator('[data-cy="honeycomb-color-mode-heatmap"] [data-cy^="origam-chart-honeycomb-tile-"]')
+        const catTiles = sandbox.locator('[data-cy="honeycomb-color-mode-categorical"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
+        const heatTiles = sandbox.locator('[data-cy="honeycomb-color-mode-heatmap"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
 
         await expect(catTiles).toHaveCount(12, { timeout: 8000 })
         await expect(heatTiles).toHaveCount(12, { timeout: 8000 })
@@ -139,7 +139,7 @@ test.describe('OrigamChartHoneycomb — colorMode variant', () => {
         await openVariant(page, HONEYCOMB_STORY, 'Prop — colorMode (categorical vs heatmap side by side)')
         const sandbox = sandboxOf(page)
 
-        const tiles = sandbox.locator('[data-cy="honeycomb-color-mode-categorical"] [data-cy^="origam-chart-honeycomb-tile-"]')
+        const tiles = sandbox.locator('[data-cy="honeycomb-color-mode-categorical"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
         const count = await tiles.count()
         expect(count).toBeGreaterThanOrEqual(2)
 
@@ -164,10 +164,10 @@ test.describe('OrigamChartHoneycomb — empty state', () => {
 
 test.describe('OrigamChart shell — honeycomb dispatch', () => {
     test('honeycomb tile in 14-primitives grid renders 9 tiles', async ({ page }) => {
-        await openVariant(page, CHART_STORY, 'Prop — type (14 primitives)')
+        await openVariant(page, CHART_STORY, 'Prop — type (29 primitives)')
         const sandbox = sandboxOf(page)
 
-        const tiles = sandbox.locator('[data-cy="chart-type-honeycomb"] [data-cy^="origam-chart-honeycomb-tile-"]')
+        const tiles = sandbox.locator('[data-cy="chart-type-honeycomb"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
         await expect(tiles).toHaveCount(9, { timeout: 8000 })
     })
 
@@ -175,7 +175,7 @@ test.describe('OrigamChart shell — honeycomb dispatch', () => {
         await openVariant(page, CHART_STORY, 'Prop — honeycomb tile-map')
         const sandbox = sandboxOf(page)
 
-        const tiles = sandbox.locator('[data-cy="chart-honeycomb-9tiles"] [data-cy^="origam-chart-honeycomb-tile-"]')
+        const tiles = sandbox.locator('[data-cy="chart-honeycomb-9tiles"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
         await expect(tiles).toHaveCount(9, { timeout: 8000 })
     })
 })

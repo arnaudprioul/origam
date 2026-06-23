@@ -3,6 +3,7 @@
 			:is="tag"
 			:id="`expansion-panel-header-${expansionPanel.id}`"
 			v-ripple="ripple"
+			v-contrast
 			:aria-controls="`expansion-panel-content-${expansionPanel.id}`"
 			:aria-expanded="isSelected"
 			:class="expansionPanelHeaderClasses"
@@ -104,7 +105,7 @@
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
 
-	import { vRipple } from '../../directives'
+	import { vContrast, vRipple } from '../../directives'
 
 	import { MDI_ICONS } from "../../enums"
 

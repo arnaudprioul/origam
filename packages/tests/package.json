@@ -11,20 +11,26 @@
     "test:unit": "vitest",
     "test:unit:run": "vitest --run",
     "test:run": "vitest --run",
+    "test:coverage": "vitest --run --coverage",
     "test:e2e": "playwright test",
+    "test:e2e:audit": "node e2e/_support/audit-variant-titles.mjs",
+    "pretest:e2e": "node e2e/_support/audit-variant-titles.mjs",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:report": "playwright show-report",
     "test:a11y": "playwright test --config=playwright.a11y.config.ts"
   },
   "dependencies": {
+    "@vue/server-renderer": "^3.5.0",
     "origam": "workspace:*",
     "vue": "^3.5.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
+    "@histoire/shared": "^1.0.0-beta.1",
     "@playwright/test": "^1.48.0",
     "@vitejs/plugin-vue": "^6.0.0",
+    "@vitest/coverage-v8": "3.2.4",
     "@vue/test-utils": "^2.4.6",
     "axe-core": "^4.11.4",
     "happy-dom": "^15.11.7",

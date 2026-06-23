@@ -3,99 +3,10 @@
 			group="components"
 			title="Stepper/OrigamStepper"
 	>
-		<!-- ── Playground ───────────────────────────────────────────────── -->
 
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IStepperProps>({
-					modelValue: 1,
-					orientation: 'horizontal',
-					clickable: false,
-					showConnectors: true,
-					color: undefined,
-					bgColor: undefined,
-					density: 'default',
-					size: 'default'
-				})"
-		>
-			<template #default="{ state }">
-				<origam-stepper
-						v-bind="state"
-						:items="defaultItems"
-						data-cy="stepper-playground"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSlider    v-model="state.modelValue"     title="modelValue"     :min="0" :max="3" :step="1"/>
-				<HstSelect    v-model="state.orientation"    title="orientation"    :options="orientationList"/>
-				<HstCheckbox  v-model="state.clickable"      title="clickable"/>
-				<HstCheckbox  v-model="state.showConnectors" title="showConnectors"/>
-				<HstSelect    v-model="state.color"          title="color"          :options="intentList"/>
-				<HstSelect    v-model="state.bgColor"        title="bgColor"        :options="intentList"/>
-				<HstSelect    v-model="state.density"        title="density"        :options="densityList"/>
-				<HstSelect    v-model="state.size"           title="size"           :options="sizeList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — default (horizontal)">
-			<origam-stepper
-					:items="defaultItems"
-					:model-value="1"
-					data-cy="stepper-default"
-			/>
-		</Variant>
-
-		<Variant title="Vertical">
-			<origam-stepper
-					:items="defaultItems"
-					:model-value="1"
-					orientation="vertical"
-					data-cy="stepper-vertical"
-			/>
-		</Variant>
-
-		<Variant title="Status mix">
-			<origam-stepper
-					:items="statusMixItems"
-					data-cy="stepper-status-mix"
-			/>
-		</Variant>
-
-		<Variant title="With icons">
-			<origam-stepper
-					:items="iconItems"
-					:model-value="1"
-					data-cy="stepper-with-icons"
-			/>
-		</Variant>
-
-		<Variant
-				title="Clickable"
-				:init-state="() => useStoryInitState<{ step: number }>({ step: 0 })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 16px;">
-					<origam-stepper
-							v-model="state.step"
-							:items="defaultItems"
-							:clickable="true"
-							data-cy="stepper-clickable"
-					/>
-					<p style="font-size: 0.875rem; color: var(--origam-color__text---secondary);">
-						Active step: {{ state.step }}
-					</p>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSlider v-model="state.step" title="step (v-model)" :min="0" :max="3" :step="1"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — color & bgColor"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IStepperProps>>({ color: 'primary', bgColor: undefined, size: 'default', density: 'default' })"
 		>
 			<template #default="{ state }">
 				<origam-stepper
@@ -103,129 +14,128 @@
 						:model-value="1"
 						:color="state.color"
 						:bg-color="state.bgColor"
-						data-cy="stepper-color"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
-				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — hover"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<origam-stepper
-						:items="defaultItems"
-						:model-value="1"
-						:color="state.color"
-						:bg-color="state.bgColor"
-						data-cy="stepper-color"
-				/>
-			</template>
-			<template #controls="{ state }">
-							<HstSelect
-							:model-value="state._hHover"
-							:options="hoverList"
-							title="hover"
-							@update:model-value="(v) => state._hHover = v"
-						/>
-</template>
-		</Variant>
-
-		<Variant
-				title="Prop — active"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<origam-stepper
-						:items="defaultItems"
-						:model-value="1"
-						:color="state.color"
-						:bg-color="state.bgColor"
-						data-cy="stepper-color"
-				/>
-			</template>
-			<template #controls="{ state }">
-							<HstSelect
-							:model-value="state._hActive"
-							:options="activeList"
-							title="active"
-							@update:model-value="(v) => state._hActive = v"
-						/>
-</template>
-		</Variant>
-
-		<Variant
-				title="Size / Density"
-				:init-state="() => useStoryInitState<{ size: TSize; density: TDensity }>({ size: 'default', density: 'default' })"
-		>
-			<template #default="{ state }">
-				<origam-stepper
-						:items="defaultItems"
-						:model-value="1"
 						:size="state.size"
 						:density="state.density"
-						data-cy="stepper-size-density"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
+						:width="state.width"
+						:height="state.height"
+						:min-width="state.minWidth"
+						:max-width="state.maxWidth"
+						:min-height="state.minHeight"
+						:max-height="state.maxHeight"
+						:margin="state.margin"
+						:padding="state.padding"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.size"    title="size"    :options="sizeList"/>
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.size"    title="Size"    :options="SIZE_OPTIONS"/>
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"     title="Width"/>
+					<HstText v-model="state.height"    title="Height"/>
+					<HstText v-model="state.minWidth"  title="Min Width"/>
+					<HstText v-model="state.maxWidth"  title="Max Width"/>
+					<HstText v-model="state.minHeight" title="Min Height"/>
+					<HstText v-model="state.maxHeight" title="Max Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.margin"  title="Margin"/>
+					<HstText v-model="state.padding" title="Padding"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IStepperProps>({
-					modelValue: 1,
-					orientation: 'horizontal',
-					clickable: false,
-					showConnectors: true,
-					color: undefined,
-					bgColor: undefined,
-					density: 'default',
-					size: 'default'
-				})"
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IStepperProps>>({ modelValue: 1, orientation: 'horizontal', clickable: false, showConnectors: true })"
 		>
 			<template #default="{ state }">
 				<origam-stepper
-						v-bind="state"
-						:active="state._hActive" :hover="state._hHover" :items="defaultItems"
-						data-cy="stepper-playground"
+						:items="defaultItems"
+						:model-value="state.modelValue"
+						:orientation="state.orientation"
+						:clickable="state.clickable"
+						:show-connectors="state.showConnectors"
+						@update:model-value="state.modelValue = $event"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstSlider    v-model="state.modelValue"     title="modelValue"     :min="0" :max="3" :step="1"/>
-				<HstSelect    v-model="state.orientation"    title="orientation"    :options="orientationList"/>
-				<HstCheckbox  v-model="state.clickable"      title="clickable"/>
-				<HstCheckbox  v-model="state.showConnectors" title="showConnectors"/>
-				<HstSelect    v-model="state.color"          title="color"          :options="intentList"/>
-				<HstSelect    v-model="state.bgColor"        title="bgColor"        :options="intentList"/>
-				<HstSelect    v-model="state.density"        title="density"        :options="densityList"/>
-				<HstSelect    v-model="state.size"           title="size"           :options="sizeList"/>
+				<StoryGroup title="Data">
+					<HstNumber   v-model="state.modelValue" title="Model Value" :min="0" :max="3" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstSelect   v-model="state.orientation"    title="Orientation"     :options="STEPPER_ORIENTATION_OPTIONS"/>
+					<HstCheckbox v-model="state.showConnectors" title="Show Connectors"/>
+				</StoryGroup>
+				<StoryGroup title="Behaviour">
+					<HstCheckbox v-model="state.clickable" title="Clickable"/>
+				</StoryGroup>
 			</template>
 		</Variant>
-		<!-- ── Slots ────────────────────────────────────────────────────── -->
 
-		<Variant title="Slot — default">
-			<origam-stepper :items="defaultItems" :model-value="1" data-cy="stepper-slot-default">
-				<span>Custom slot content</span>
-			</origam-stepper>
-		</Variant>
-
-		<!-- ── Emits ────────────────────────────────────────────────────── -->
-
-		<Variant title="Emit — update:modelValue">
+		<Variant title="Events - update:modelValue">
 			<origam-stepper
 					:items="defaultItems"
 					:model-value="1"
 					:clickable="true"
-					data-cy="stepper-emit-model-value"
 					@update:model-value="logEvent('update:modelValue', $event)"
 			/>
+		</Variant>
+
+		<Variant title="Slots - Default">
+			<origam-stepper :items="defaultItems" :model-value="1">
+				<span>Custom slot content</span>
+			</origam-stepper>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IStepperProps>({ modelValue: 1, orientation: 'horizontal', clickable: false, showConnectors: true, color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<origam-stepper
+						v-bind="state"
+						:items="defaultItems"
+						@update:model-value="state.modelValue = $event"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Data">
+					<HstNumber v-model="state.modelValue" title="Model Value" :min="0" :max="3" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect   v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.size"      title="Size"      :options="SIZE_OPTIONS"/>
+					<HstSelect   v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
+					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect   v-model="state.orientation"    title="Orientation"     :options="STEPPER_ORIENTATION_OPTIONS"/>
+					<HstCheckbox v-model="state.clickable"      title="Clickable"/>
+					<HstCheckbox v-model="state.showConnectors" title="Show Connectors"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -237,46 +147,31 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamStepper } from '@origam/components'
-	import { MDI_ICONS } from '@origam/enums'
-	import type { IColorProps, IOptions, IStepperItem, IStepperProps } from '@origam/interfaces'
-	import type { TDensity, TSize, TStepperItemStatus, TStepperOrientation } from '@origam/types'
+	import type { IOptions, IStepperItem, IStepperProps } from '@origam/interfaces'
+	import type { TStepperOrientation } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
-		activeList,
-		densityList, intentList, sizeList,
-		hoverList
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS,
+		SIZE_OPTIONS
 	} from '@stories/const'
 
-	// Orientation list
-	const orientationList: Array<IOptions<TStepperOrientation>> = [
+	const STEPPER_ORIENTATION_OPTIONS: Array<IOptions<TStepperOrientation>> = [
 		{ label: 'Horizontal', value: 'horizontal' },
 		{ label: 'Vertical', value: 'vertical' }
 	]
 
-	// Default 4-step items
 	const defaultItems: Array<IStepperItem> = [
 		{ title: 'Account', subtitle: 'Email & password' },
 		{ title: 'Profile', subtitle: 'Personal info' },
 		{ title: 'Plan', subtitle: 'Choose plan' },
 		{ title: 'Confirm', subtitle: 'Review & submit' }
-	]
-
-	// Status mix items
-	const statusMixItems: Array<IStepperItem> = [
-		{ title: 'Account', status: 'done' as TStepperItemStatus },
-		{ title: 'Profile', status: 'done' as TStepperItemStatus },
-		{ title: 'Plan', status: 'active' as TStepperItemStatus },
-		{ title: 'Billing', status: 'error' as TStepperItemStatus },
-		{ title: 'Confirm', status: 'pending' as TStepperItemStatus }
-	]
-
-	// Items with icons
-	const iconItems: Array<IStepperItem> = [
-		{ title: 'Account', icon: MDI_ICONS.ACCOUNT },
-		{ title: 'Settings', icon: MDI_ICONS.COG },
-		{ title: 'Payment', icon: MDI_ICONS.CREDIT_CARD },
-		{ title: 'Confirm', icon: MDI_ICONS.CHECK_CIRCLE }
 	]
 </script>
 

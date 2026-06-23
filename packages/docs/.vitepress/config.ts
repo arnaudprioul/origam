@@ -233,7 +233,11 @@ export default defineConfig({
     title: 'Origam UI',
     description: 'Documentation de la bibliothèque de composants Origam',
     lang: 'fr-FR',
-    base: '/',
+    // Served under /docs on the marketing origin: Nuxt serves the built static
+    // site from packages/marketing/public/docs (see outDir below). The base
+    // prefixes every asset/link URL so they resolve at /docs/**.
+    base: '/docs/',
+    outDir: '../marketing/public/docs',
 
     /*
      * Many component .md files have cross-links to siblings that
@@ -244,13 +248,28 @@ export default defineConfig({
      */
     ignoreDeadLinks: true,
 
+    // Internal engineering docs (ADRs, audits) are not part of the public
+    // component documentation and contain prose with unescaped angle-bracket
+    // placeholders (e.g. `<custom>`) that VitePress' Vue-SFC compiler rejects.
+    // They live in-repo for maintainers, not on the published /docs site.
+    srcExclude: ['internal/**', '**/README.md'],
+
     vite: {
+        // esbuild's default transpile target chokes on the wasm→JS shim shiki
+        // bundles (vscode-oniguruma) during the production build
+        // (`wasm.!~{001}~.js: Expected ":" but found "}"`). esnext lets the
+        // generated module through untouched.
+        build: {
+            target: 'esnext'
+        },
+        esbuild: {
+            target: 'esnext'
+        },
         resolve: {
             alias: {
-                // After the monorepo migration, docs sits at packages/docs/
-                // and the design-system source at packages/ds/src.
-                // From .vitepress/, ../.. is the packages/docs root, then
-                // ../ds/src reaches the lib.
+                // Docs track the live DS source. origam is kept out of the SSR
+                // bundle by the client-only dynamic import in theme/index.ts, so
+                // aliasing to src (not dist) no longer breaks the server render.
                 '@origam': resolve(__dirname, '../../ds/src')
             }
         },
@@ -258,7 +277,11 @@ export default defineConfig({
             include: ['@origam']
         },
         ssr: {
-            noExternal: ['@origam']
+            // Bundle origam + the @vueuse/* deps it (and VitePress' theme) pull
+            // in, so Node's native ESM loader never tries to resolve them from
+            // pnpm's nested node_modules at render time (which fails with
+            // "Cannot find package 'vue' imported from @vueuse/core").
+            noExternal: ['@origam', /@vueuse\//]
         }
     },
 

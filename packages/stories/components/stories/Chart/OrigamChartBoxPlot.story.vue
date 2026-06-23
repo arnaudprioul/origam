@@ -3,273 +3,265 @@
 			group="components"
 			title="Chart/OrigamChartBoxPlot"
 	>
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<Record<string, unknown>>({
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IChartBoxPlotProps>>({
+					bgColor: undefined,
+					rounded: undefined,
+					elevation: undefined,
+					width: undefined,
 					height: 400,
-					animated: true,
-					showLegend: false,
-					showTooltip: true,
-					showOutliers: true,
-					showAxis: true,
-					showGrid: true,
-					legendPosition: 'bottom',
+					aspectRatio: undefined,
+					colorScheme: undefined,
 					boxWidth: 0.6,
 					whiskerCapWidth: 0.4
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="box-plot-playground"
-				>
-					<origam-chart-box-plot
-							:series="FIXTURE_API_SERIES"
-							:height="Number(state.height)"
-							:animated="Boolean(state.animated)"
-							:show-legend="Boolean(state.showLegend)"
-							:show-tooltip="Boolean(state.showTooltip)"
-							:show-outliers="Boolean(state.showOutliers)"
-							:show-axis="Boolean(state.showAxis)"
-							:show-grid="Boolean(state.showGrid)"
-							:legend-position="state.legendPosition"
-							:box-width="Number(state.boxWidth)"
-							:whisker-cap-width="Number(state.whiskerCapWidth)"
-							title="API Response Time"
-							subtitle="Distribution per endpoint (ms)"
-							data-cy="box-plot-playground-chart"
-							@point-click="onPointClick"
-							@legend-click="onLegendClick"
-							@series-toggle="onSeriesToggle"
-					/>
-					<pre
-							class="story-log"
-							data-cy="box-plot-playground-log"
-					>{{ logLines.join('\n') }}</pre>
-				</div>
+				<origam-chart-box-plot
+						:series="FIXTURE_API_SERIES"
+						:bg-color="state.bgColor"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:width="state.width"
+						:height="state.height"
+						:aspect-ratio="state.aspectRatio"
+						:color-scheme="state.colorScheme"
+						:box-width="state.boxWidth"
+						:whisker-cap-width="state.whiskerCapWidth"
+						title="API Response Time"
+						subtitle="Distribution per endpoint (ms)"
+				/>
 			</template>
 			<template #controls="{ state }">
-				<HstNumber
-						v-model="state.height"
-						title="height (px)"
-				/>
-				<HstSelect
-						v-model="state.legendPosition"
-						title="legendPosition"
-						:options="LEGEND_POSITION_OPTIONS"
-				/>
-				<HstNumber
-						v-model="state.boxWidth"
-						title="boxWidth [0..1]"
-				/>
-				<HstNumber
-						v-model="state.whiskerCapWidth"
-						title="whiskerCapWidth [0..1]"
-				/>
-				<HstCheckbox
-						v-model="state.animated"
-						title="animated"
-				/>
-				<HstCheckbox
-						v-model="state.showLegend"
-						title="showLegend"
-				/>
-				<HstCheckbox
-						v-model="state.showTooltip"
-						title="showTooltip"
-				/>
-				<HstCheckbox
-						v-model="state.showOutliers"
-						title="showOutliers"
-				/>
-				<HstCheckbox
-						v-model="state.showAxis"
-						title="showAxis"
-				/>
-				<HstCheckbox
-						v-model="state.showGrid"
-						title="showGrid"
-				/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="INTENT_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Box Geometry">
+					<HstNumber v-model="state.boxWidth"        title="Box Width [0..1]"         :min="0.1" :max="1" :step="0.05"/>
+					<HstNumber v-model="state.whiskerCapWidth" title="Whisker Cap Width [0..1]" :min="0.1" :max="1" :step="0.05"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText   v-model="state.width"       title="Width"/>
+					<HstNumber v-model="state.height"      title="Height (px)" :min="200" :max="800" :step="20"/>
+					<HstText   v-model="state.aspectRatio" title="Aspect Ratio (e.g. 16/9)"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — raw samples (computes quartiles internally)">
-			<div
-					class="story-shell"
-					data-cy="box-plot-raw-samples"
-			>
-				<origam-chart-box-plot
-						:series="FIXTURE_SALES_SERIES"
-						:height="380"
-						:show-outliers="true"
-						:show-axis="true"
-						title="Daily Sales Distribution"
-						subtitle="Raw samples — Mon / Wed / Fri"
-						data-cy="box-plot-raw-samples-chart"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — boxWidth (slim 0.3 vs wide 0.9)">
-			<div
-					class="story-shell"
-					data-cy="box-plot-box-width"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>boxWidth = 0.3 (slim)</strong>
-						<origam-chart-box-plot
-								:series="FIXTURE_API_SERIES"
-								:height="320"
-								:box-width="0.3"
-								:whisker-cap-width="0.2"
-								title="Slim boxes"
-								data-cy="box-plot-slim"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>boxWidth = 0.9 (wide)</strong>
-						<origam-chart-box-plot
-								:series="FIXTURE_API_SERIES"
-								:height="320"
-								:box-width="0.9"
-								:whisker-cap-width="0.7"
-								title="Wide boxes"
-								data-cy="box-plot-wide"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — showOutliers (on / off)">
-			<div
-					class="story-shell"
-					data-cy="box-plot-outliers"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>showOutliers = true</strong>
-						<origam-chart-box-plot
-								:series="FIXTURE_API_SERIES"
-								:height="320"
-								:show-outliers="true"
-								title="With outliers"
-								data-cy="box-plot-outliers-on"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>showOutliers = false</strong>
-						<origam-chart-box-plot
-								:series="FIXTURE_API_SERIES"
-								:height="320"
-								:show-outliers="false"
-								title="Without outliers"
-								data-cy="box-plot-outliers-off"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — colorScheme">
-			<div
-					class="story-shell"
-					data-cy="box-plot-color-scheme"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>default intent palette</strong>
-						<origam-chart-box-plot
-								:series="FIXTURE_API_SERIES"
-								:height="300"
-								title="Intent palette"
-								data-cy="box-plot-color-default"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>custom CSS ramp</strong>
-						<origam-chart-box-plot
-								:series="FIXTURE_API_SERIES"
-								:color-scheme="['#6366f1','#8b5cf6','#a78bfa','#c4b5fd','#ddd6fe']"
-								:height="300"
-								title="Custom purple ramp"
-								data-cy="box-plot-color-custom"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — tooltip">
-			<div
-					class="story-shell"
-					data-cy="box-plot-slot-tooltip"
-			>
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IChartBoxPlotProps>>({
+					title: 'API Response Time',
+					subtitle: 'Distribution per endpoint (ms)',
+					showLegend: false,
+					legendPosition: 'bottom',
+					showTooltip: true,
+					animated: true,
+					animationDuration: 600,
+					showOutliers: true,
+					showAxis: true,
+					showGrid: true,
+					yMin: undefined,
+					yMax: undefined
+				})"
+		>
+			<template #default="{ state }">
 				<origam-chart-box-plot
 						:series="FIXTURE_API_SERIES"
 						:height="380"
-						title="Custom tooltip"
-						data-cy="box-plot-slot-tooltip-chart"
-				>
-					<template #tooltip="{ box }">
-						<div class="custom-tooltip">
-							<strong>{{ box.category }}</strong>
-							<dl class="custom-tooltip__stats">
-								<dt>Median</dt>
-								<dd>{{ box.rawStats.median }} ms</dd>
-								<dt>IQR</dt>
-								<dd>{{ Math.round(box.iqr) }} ms</dd>
-								<dt>Min / Max</dt>
-								<dd>{{ box.rawStats.min }} / {{ box.rawStats.max }} ms</dd>
-								<dt>Outliers</dt>
-								<dd>{{ box.outliers.length }}</dd>
-							</dl>
-						</div>
-					</template>
-				</origam-chart-box-plot>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — empty">
-			<div
-					class="story-shell"
-					data-cy="box-plot-slot-empty"
-			>
-				<origam-chart-box-plot
-						:series="[]"
-						:height="320"
-						title="Empty state"
-						data-cy="box-plot-slot-empty-chart"
-				>
-					<template #empty>
-						<div class="custom-empty">
-							No distribution data available for this period.
-						</div>
-					</template>
-				</origam-chart-box-plot>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — point-click">
-			<div
-					class="story-shell"
-					data-cy="box-plot-emit"
-			>
-				<origam-chart-box-plot
-						:series="FIXTURE_API_SERIES"
-						:height="360"
-						title="Click a box or outlier"
-						data-cy="box-plot-emit-chart"
-						@point-click="onPointClick"
-						@legend-click="onLegendClick"
-						@series-toggle="onSeriesToggle"
+						:title="state.title"
+						:subtitle="state.subtitle"
+						:show-legend="state.showLegend"
+						:legend-position="state.legendPosition"
+						:show-tooltip="state.showTooltip"
+						:animated="state.animated"
+						:animation-duration="state.animationDuration"
+						:show-outliers="state.showOutliers"
+						:show-axis="state.showAxis"
+						:show-grid="state.showGrid"
+						:y-min="state.yMin"
+						:y-max="state.yMax"
 				/>
-				<pre
-						class="story-log"
-						data-cy="box-plot-emit-log"
-				>{{ logLines.join('\n') }}</pre>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Labels">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Legend">
+					<HstCheckbox v-model="state.showLegend"     title="Show Legend"/>
+					<HstSelect   v-model="state.legendPosition" title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Display">
+					<HstCheckbox v-model="state.showTooltip"  title="Show Tooltip"/>
+					<HstCheckbox v-model="state.showOutliers" title="Show Outliers"/>
+					<HstCheckbox v-model="state.showAxis"     title="Show Axis"/>
+					<HstCheckbox v-model="state.showGrid"     title="Show Grid"/>
+				</StoryGroup>
+				<StoryGroup title="Animation">
+					<HstCheckbox v-model="state.animated"          title="Animated"/>
+					<HstNumber   v-model="state.animationDuration" title="Animation Duration (ms)" :min="0" :max="2000" :step="100"/>
+				</StoryGroup>
+				<StoryGroup title="Y Axis Range">
+					<HstNumber v-model="state.yMin" title="Y Min (override)"/>
+					<HstNumber v-model="state.yMax" title="Y Max (override)"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Events - point-click">
+			<origam-chart-box-plot
+					:series="FIXTURE_API_SERIES"
+					:height="360"
+					title="Click a box or outlier"
+					@point-click="logEvent('point-click', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - legend-click">
+			<origam-chart-box-plot
+					:series="FIXTURE_API_SERIES"
+					:height="360"
+					:show-legend="true"
+					title="Click a legend entry"
+					@legend-click="logEvent('legend-click', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - series-toggle">
+			<origam-chart-box-plot
+					:series="FIXTURE_API_SERIES"
+					:height="360"
+					:show-legend="true"
+					title="Toggle series via legend"
+					@series-toggle="logEvent('series-toggle', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Slots - Tooltip">
+			<origam-chart-box-plot
+					:series="FIXTURE_API_SERIES"
+					:height="380"
+					title="Custom tooltip"
+			>
+				<template #tooltip="{ box }">
+					<div class="custom-tooltip">
+						<strong>{{ box.category }}</strong>
+						<dl class="custom-tooltip__stats">
+							<dt>Median</dt>
+							<dd>{{ box.rawStats.median }} ms</dd>
+							<dt>IQR</dt>
+							<dd>{{ Math.round(box.iqr) }} ms</dd>
+							<dt>Min / Max</dt>
+							<dd>{{ box.rawStats.min }} / {{ box.rawStats.max }} ms</dd>
+							<dt>Outliers</dt>
+							<dd>{{ box.outliers.length }}</dd>
+						</dl>
+					</div>
+				</template>
+			</origam-chart-box-plot>
+		</Variant>
+
+		<Variant title="Slots - Legend-item">
+			<origam-chart-box-plot
+					:series="FIXTURE_API_SERIES"
+					:height="360"
+					:show-legend="true"
+					title="Custom legend item"
+			>
+				<template #legend-item="{ series, index, visible }">
+					<span :style="{ opacity: visible ? 1 : 0.4, fontWeight: 600 }">
+						{{ index + 1 }}. {{ series.name }}
+					</span>
+				</template>
+			</origam-chart-box-plot>
+		</Variant>
+
+		<Variant title="Slots - Title">
+			<origam-chart-box-plot
+					:series="FIXTURE_API_SERIES"
+					:height="360"
+			>
+				<template #title>
+					<h2 style="margin: 0; font-size: 1rem;">
+						Custom title block
+					</h2>
+					<p style="margin: 0; font-size: 0.75rem; opacity: 0.6;">
+						Custom subtitle via slot
+					</p>
+				</template>
+			</origam-chart-box-plot>
+		</Variant>
+
+		<Variant title="Slots - Empty">
+			<origam-chart-box-plot
+					:series="[]"
+					:height="320"
+					title="Empty state"
+			>
+				<template #empty>
+					<div class="custom-empty">
+						No distribution data available for this period.
+					</div>
+				</template>
+			</origam-chart-box-plot>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IChartBoxPlotProps>({
+					series: FIXTURE_API_SERIES,
+					title: 'API Response Time',
+					subtitle: 'Distribution per endpoint (ms)',
+					height: 400,
+					showLegend: false,
+					legendPosition: 'bottom',
+					showTooltip: true,
+					animated: true,
+					showOutliers: true,
+					showAxis: true,
+					showGrid: true,
+					boxWidth: 0.6,
+					whiskerCapWidth: 0.4
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart-box-plot
+						v-bind="state"
+						@point-click="logEvent('point-click', $event)"
+						@legend-click="logEvent('legend-click', $event)"
+						@series-toggle="logEvent('series-toggle', $event)"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.bgColor"   title="Bg Color"   :options="INTENT_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"    :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation"  :options="ELEVATION_OPTIONS"/>
+					<HstNumber v-model="state.height"    title="Height (px)" :min="200" :max="800" :step="20"/>
+					<HstNumber v-model="state.boxWidth"        title="Box Width [0..1]"         :min="0.1" :max="1" :step="0.05"/>
+					<HstNumber v-model="state.whiskerCapWidth" title="Whisker Cap Width [0..1]" :min="0.1" :max="1" :step="0.05"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.showLegend"    title="Show Legend"/>
+					<HstSelect   v-model="state.legendPosition" title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+					<HstCheckbox v-model="state.showTooltip"  title="Show Tooltip"/>
+					<HstCheckbox v-model="state.animated"     title="Animated"/>
+					<HstCheckbox v-model="state.showOutliers" title="Show Outliers"/>
+					<HstCheckbox v-model="state.showAxis"     title="Show Axis"/>
+					<HstCheckbox v-model="state.showGrid"     title="Show Grid"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -278,14 +270,20 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import OrigamChartBoxPlot from '@origam/components/Chart/OrigamChartBoxPlot.vue'
 
-	import type { IChartPoint, IChartSeries } from '@origam/interfaces'
-	import type { IChartBoxPlotDatum, IChartBoxPlotRawDatum } from '@origam/interfaces/Chart/chart-box-plot.interface'
+	import type { IChartBoxPlotDatum, IChartBoxPlotProps } from '@origam/interfaces/Chart/chart-box-plot.interface'
+	import type { IChartSeries } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		ELEVATION_OPTIONS,
+		INTENT_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
 
 	const LEGEND_POSITION_OPTIONS = [
 		{ value: 'top', label: 'top' },
@@ -305,80 +303,9 @@
 	const FIXTURE_API_SERIES: Array<IChartSeries> = [
 		{ name: 'API response time (ms)', data: API_DATA as unknown as Array<number> }
 	]
-
-	const buildSalesSamples = (offset: number): Array<number> =>
-		Array.from({ length: 30 }, (_, i) =>
-			Math.round(50 + Math.random() * 40 + (i * 0.5) + offset)
-		)
-
-	const SALES_DATA: Array<IChartBoxPlotRawDatum> = [
-		{ category: 'Monday', samples: buildSalesSamples(0) },
-		{ category: 'Wednesday', samples: buildSalesSamples(15) },
-		{ category: 'Friday', samples: buildSalesSamples(30) }
-	]
-
-	const FIXTURE_SALES_SERIES: Array<IChartSeries> = [
-		{ name: 'Daily sales', data: SALES_DATA as unknown as Array<number> }
-	]
-
-	const logLines = ref<Array<string>>([])
-
-	const appendLog = (line: string) => {
-		logLines.value = [line, ...logLines.value].slice(0, 8)
-	}
-
-	const onPointClick = (point: IChartPoint) => {
-		appendLog(`point-click → x="${ point.x }" y=${ point.y }`)
-	}
-
-	const onLegendClick = (series: IChartSeries, index: number) => {
-		appendLog(`legend-click → ${ series.name } (index ${ index })`)
-	}
-
-	const onSeriesToggle = (series: IChartSeries, visible: boolean) => {
-		appendLog(`series-toggle → ${ series.name } now ${ visible ? 'visible' : 'hidden' }`)
-	}
 </script>
 
 <style scoped>
-	.story-shell {
-		display: flex;
-		flex-direction: column;
-		gap: 12px;
-		padding: 16px;
-	}
-
-	.story-log {
-		font-size: 0.75rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-		min-height: 80px;
-		border: 1px solid var(--origam-color-border-subtle, #e5e7eb);
-		border-radius: 4px;
-		padding: 8px;
-		white-space: pre-wrap;
-	}
-
-	.story-grid {
-		display: grid;
-		gap: 16px;
-	}
-
-	.story-grid--2 {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	.story-col {
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-		min-width: 0;
-	}
-
-	.story-col strong {
-		font-size: 0.8125rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-	}
-
 	.custom-tooltip {
 		display: flex;
 		flex-direction: column;
@@ -410,3 +337,8 @@
 		font-style: italic;
 	}
 </style>
+
+<docs
+		lang="md"
+		src="@docs/components/Chart/OrigamChartBoxPlot.md"
+/>

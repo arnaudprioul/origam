@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			v-contrast
 			:class="codeClasses"
 			:style="codeStyles"
 	>
@@ -14,31 +15,33 @@
 			>
 				<span v-if="filename" class="origam-code__filename" data-cy="origam-code-filename">{{ filename }}</span>
 				<span v-else class="origam-code__lang-badge" data-cy="origam-code-lang">{{ lang }}</span>
-				<button
+				<origam-btn
 						v-if="copyable"
-						type="button"
+						variant="text"
 						class="origam-code__copy origam-code__copy--header"
+						:text="copyButtonLabel"
 						:aria-label="copyAriaLabel"
+						:style="copyBtnStyle"
 						aria-live="polite"
 						data-cy="origam-code-copy"
 						@click="handleCopy"
-				>
-					<span class="origam-code__copy-label">{{ copyButtonLabel }}</span>
-				</button>
+				/>
 			</slot>
 		</component>
 
-		<button
-				v-if="copyable && !showHeader"
-				type="button"
+		<origam-btn
+				v-if="copyable && !showHeader && !compact"
+				variant="text"
 				class="origam-code__copy origam-code__copy--floating"
+				:text="copyButtonLabel"
 				:aria-label="copyAriaLabel"
+				:style="copyBtnStyle"
 				aria-live="polite"
 				data-cy="origam-code-copy"
 				@click="handleCopy"
-		>
-			<span class="origam-code__copy-label">{{ copyButtonLabel }}</span>
-		</button>
+		/>
+
+		<span v-if="compact && prompt" class="origam-code__prompt" aria-hidden="true" data-cy="origam-code-prompt">{{ prompt }}</span>
 
 		<div class="origam-code__scroller" :style="scrollerStyles">
 			<pre class="origam-code__pre" :class="preClasses"><code
@@ -47,6 +50,18 @@
 					:data-lang="lang"
 			></code></pre>
 		</div>
+
+		<origam-btn
+				v-if="copyable && compact"
+				variant="text"
+				size="x-small"
+				class="origam-code__copy origam-code__copy--compact"
+				:icon="compactCopyIcon"
+				:aria-label="copyAriaLabel"
+				aria-live="polite"
+				data-cy="origam-code-copy"
+				@click="handleCopy"
+		/>
 
 		<footer v-if="$slots.footer" class="origam-code__footer">
 			<slot name="footer"/>
@@ -62,6 +77,8 @@
 >
 	import { computed, onMounted, ref, toRef, useSlots, watch } from 'vue'
 
+	import { OrigamBtn } from '../../components'
+
 	import {
 		useBorder,
 		useBothColor,
@@ -69,10 +86,13 @@
 		useCode,
 		useDimension,
 		useElevation,
+		useLocale,
 		useMargin,
 		usePadding,
 		useRounded
 	} from '../../composables'
+
+	import { vContrast } from '../../directives'
 
 	import { CODE_DEFAULTS } from '../../consts'
 	import { CODE_LANG } from '../../enums'
@@ -106,6 +126,8 @@
 		copyable: true,
 		wrap: false,
 		format: false,
+		compact: false,
+		prompt: undefined,
 		code: undefined,
 		highlightLines: null,
 		filename: undefined
@@ -128,6 +150,7 @@
 	const { colorClasses, colorStyles } = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const { dimensionStyles } = useDimension(props)
 	const { highlight } = useCode()
+	const { t } = useLocale()
 
 	/*********************************************************
 	 * Source extraction — prop wins over slot, slot used as fallback.
@@ -239,7 +262,7 @@
 			const lineNo = i + 1
 			const isHl = highlightSet.has(lineNo) ? ' origam-code__row--highlighted' : ''
 			return `<span class="origam-code__row${isHl}" data-line="${lineNo}">${line || '&nbsp;'}</span>`
-		}).join('\n')
+		}).join('')
 
 		// Background colour comes from origam tokens via SCSS — we ignore
 		// any background colour shiki would emit because our surface is
@@ -277,15 +300,33 @@
 	}
 
 	/*********************************************************
-	 * Labels (i18n-friendly fallback strings; consumers wrap with t()).
+	 * Labels — localised through the DS i18n provider (`useLocale`).
+	 * Keys live under `origam.code.*` in the shipped locale messages.
 	 ********************************************************/
-	const copyButtonLabel = computed(() => copied.value ? 'Copied!' : 'Copy')
-	const copyAriaLabel = computed(() => copied.value ? 'Code copied to clipboard' : 'Copy code to clipboard')
+	const copyButtonLabel = computed(() => copied.value
+		? t('origam.code.copied', 'Copied!')
+		: t('origam.code.copy', 'Copy')
+	)
+	const copyAriaLabel = computed(() => copied.value
+		? t('origam.code.copiedAriaLabel', 'Code copied to clipboard')
+		: t('origam.code.copyAriaLabel', 'Copy code to clipboard')
+	)
+
+	const copyBtnStyle = {
+		padding: 'var(--origam-code__copy---padding-block) var(--origam-code__copy---padding-inline)'
+	}
 
 	/*********************************************************
 	 * Class & Style.
 	 ********************************************************/
-	const showHeader = computed(() => !!props.filename || !!slots.header)
+	const showHeader = computed(() => !props.compact && (!!props.filename || !!slots.header || props.copyable))
+
+	/**
+	 * Compact-mode copy control is an icon button, not a text "Copy". It swaps
+	 * to a check mark while the "copied" feedback window is open so the inline
+	 * pill never grows / reflows (a text label would).
+	 */
+	const compactCopyIcon = computed(() => copied.value ? 'mdi-check' : 'mdi-content-copy')
 
 	/**
 	 * `<figcaption>` is only valid as a child of `<figure>` (W3C HTML5 Living
@@ -299,7 +340,8 @@
 		'origam-code',
 		`origam-code--lang-${props.lang}`,
 		{
-			'origam-code--line-numbers': props.lineNumbers,
+			'origam-code--compact': props.compact,
+			'origam-code--line-numbers': props.lineNumbers && !props.compact,
 			'origam-code--wrap': props.wrap,
 			'origam-code--has-header': showHeader.value,
 			'origam-code--copyable': props.copyable,
@@ -341,6 +383,7 @@
 	.origam-code {
 		position: relative;
 		display: block;
+		margin: 0;
 		background-color: var(--origam-code---background-color);
 		color: var(--origam-code---color);
 		border: var(--origam-code---border-width) solid var(--origam-code---border-color);
@@ -351,6 +394,66 @@
 		line-height: var(--origam-code---line-height);
 		overflow: hidden;
 
+	}
+
+	/* Non-compact blocks lay their regions out as a vertical flex column so the
+	 * scroller fills the leftover height when the host CONSTRAINS the block
+	 * (grid cell, explicit height, max-height). With an auto height the column
+	 * collapses to content, so unconstrained consumers are unaffected. Scoped
+	 * to :not(.--compact) because the compact variant is an inline-flex ROW. */
+	.origam-code:not(.origam-code--compact) {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.origam-code:not(.origam-code--compact) .origam-code__scroller {
+		flex: 1 1 auto;
+		min-height: 0;
+	}
+
+	.origam-code--compact {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--origam-code__compact---gap, 0.5rem);
+		padding: var(--origam-code__compact---padding-block) var(--origam-code__compact---padding-inline);
+		line-height: var(--origam-code__compact---line-height);
+		max-inline-size: 100%;
+	}
+
+	.origam-code--compact .origam-code__scroller {
+		overflow: hidden;
+		min-inline-size: 0;
+	}
+
+	.origam-code--compact .origam-code__pre,
+	.origam-code--compact .origam-code__code,
+	.origam-code--compact .origam-code__row {
+		min-height: 0;
+		white-space: nowrap;
+	}
+
+	.origam-code__prompt {
+		flex: none;
+		color: var(--origam-code__prompt---color);
+		user-select: none;
+	}
+
+	.origam-code__copy--compact {
+		flex: none;
+		--origam-btn---min-height: 0;
+		--origam-btn---min-width: 0;
+		--origam-btn---height: auto;
+		--origam-btn---padding-block: var(--origam-code__compact-copy---padding-block);
+		--origam-btn---padding-inline: var(--origam-code__compact-copy---padding-inline);
+		--origam-btn---border-radius: var(--origam-code__compact-copy---border-radius);
+		--origam-btn---font-size: var(--origam-code__compact-copy---font-size);
+		--origam-btn---color: var(--origam-code__copy---color);
+		--origam-btn---background-color: var(--origam-code__compact-copy---background-color);
+	}
+
+	.origam-code__copy--compact:hover {
+		--origam-btn---color: var(--origam-code__copy---color-hover);
+		background-color: var(--origam-code__copy---background-color-hover) !important;
 	}
 
 
@@ -381,23 +484,18 @@
 	}
 
 	.origam-code__copy {
-		all: unset;
-		box-sizing: border-box;
-		cursor: pointer;
-		display: inline-flex;
-		align-items: center;
+		--origam-btn---min-height: 0;
+		--origam-btn---min-width: 0;
+		--origam-btn---border-radius: var(--origam-code__copy---border-radius);
+		--origam-btn---font-size: var(--origam-code__copy---font-size);
+		--origam-btn---color: var(--origam-code__copy---color);
+		--origam-btn---background-color: var(--origam-code__copy---background-color);
 		gap: var(--origam-code__copy---gap);
-		padding: var(--origam-code__copy---padding-block) var(--origam-code__copy---padding-inline);
-		border-radius: var(--origam-code__copy---border-radius);
-		font-size: var(--origam-code__copy---font-size);
-		color: var(--origam-code__copy---color);
-		background-color: var(--origam-code__copy---background-color);
-		transition: color 120ms ease, background-color 120ms ease;
 	}
 
 	.origam-code__copy:hover {
-		color: var(--origam-code__copy---color-hover);
-		background-color: var(--origam-code__copy---background-color-hover);
+		--origam-btn---color: var(--origam-code__copy---color-hover);
+		background-color: var(--origam-code__copy---background-color-hover) !important;
 	}
 
 	.origam-code__copy--floating {
@@ -496,8 +594,18 @@
 	 * `.origam-code__code` class instead — collisions are impossible.
 	 *
 	 * shiki output per token: `<span style="--shiki-light:#X;--shiki-dark:#Y">`.
-	 * We resolve --shiki-light by default, --shiki-dark under data-theme="dark"
-	 * (or prefers-color-scheme: dark when no data-theme is set). */
+	 *
+	 * The DS theming is TWO-AXIS: `data-theme` carries the brand identity and
+	 * `data-mode` (always concrete: "light" | "dark") carries the light/dark
+	 * choice (see useTheme). The light/dark token swap MUST therefore key on
+	 * `data-mode`, NOT on `data-theme="dark"` — a brand theme like
+	 * `data-theme="brand"` is never named "dark", so the old selector silently
+	 * fell through to the `prefers-color-scheme` block and painted the dark
+	 * (near-white) github-dark foreground on a LIGHT surface whenever the OS
+	 * was in dark mode. We resolve `--shiki-light` by default, `--shiki-dark`
+	 * when `data-mode="dark"`. Legacy single-axis `data-theme="dark"` (no
+	 * `data-mode` present) is still honoured, and `prefers-color-scheme` is the
+	 * fallback ONLY when neither axis pins a choice (SSR / un-themed host). */
 	.origam-code__code span {
 		color: var(--shiki-light);
 	}
@@ -506,20 +614,22 @@
 		background-color: var(--shiki-light-bg, transparent);
 	}
 
-	html[data-theme="dark"] .origam-code__code span {
+	html[data-mode="dark"] .origam-code__code span,
+	html:not([data-mode])[data-theme="dark"] .origam-code__code span {
 		color: var(--shiki-dark);
 	}
 
-	html[data-theme="dark"] .origam-code .shiki {
+	html[data-mode="dark"] .origam-code .shiki,
+	html:not([data-mode])[data-theme="dark"] .origam-code .shiki {
 		background-color: var(--shiki-dark-bg, transparent);
 	}
 
 	@media (prefers-color-scheme: dark) {
-		html:not([data-theme="light"]) .origam-code__code span {
+		html:not([data-mode]):not([data-theme="light"]):not([data-theme="dark"]) .origam-code__code span {
 			color: var(--shiki-dark);
 		}
 
-		html:not([data-theme="light"]) .origam-code .shiki {
+		html:not([data-mode]):not([data-theme="light"]):not([data-theme="dark"]) .origam-code .shiki {
 			background-color: var(--shiki-dark-bg, transparent);
 		}
 	}

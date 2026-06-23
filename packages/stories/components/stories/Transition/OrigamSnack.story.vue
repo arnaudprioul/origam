@@ -3,6 +3,71 @@
 			group="components"
 			title="Transition/OrigamSnack"
 	>
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<ITransitionProps>({
+					name: 'origam-transition--snack',
+					disabled: false,
+					group: false,
+					hideOnLeave: false,
+					leaveAbsolute: false,
+					origin: ''
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<button class="story-toggle" data-cy="toggle-functional" @click="toggleFunctional = !toggleFunctional">Toggle</button>
+					<origam-snack
+							:name="state.name"
+							:mode="state.mode"
+							:disabled="state.disabled"
+							:group="state.group"
+							:hide-on-leave="state.hideOnLeave"
+							:leave-absolute="state.leaveAbsolute"
+							:origin="state.origin || undefined"
+					>
+						<div v-if="!state.group && toggleFunctional" class="story-target" data-cy="target-functional">Snack transition</div>
+						<template v-if="state.group">
+							<div v-for="item in groupItemsFunctional" :key="item" class="story-target" :data-cy="`target-group-functional-${item}`">Snack {{ item }}</div>
+						</template>
+					</origam-snack>
+					<div v-if="state.group" style="display: flex; gap: 8px;">
+						<button class="story-toggle" data-cy="group-add-functional" @click="groupItemsFunctional.push(groupItemsFunctional.length + 1)">Add</button>
+						<button class="story-toggle" data-cy="group-remove-functional" @click="groupItemsFunctional.pop()">Remove</button>
+					</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Animation">
+					<HstText     v-model="state.name"     title="Name"/>
+					<HstSelect   v-model="state.mode"     title="Mode" :options="TRANSITION_MODE_OPTIONS"/>
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
+				<StoryGroup title="Group">
+					<HstCheckbox v-model="state.group" title="Group (TransitionGroup)"/>
+				</StoryGroup>
+				<StoryGroup title="Leave Behaviour">
+					<HstCheckbox v-model="state.hideOnLeave"    title="Hide On Leave"/>
+					<HstCheckbox v-model="state.leaveAbsolute"  title="Leave Absolute"/>
+				</StoryGroup>
+				<StoryGroup title="Origin">
+					<HstText v-model="state.origin" title="Transform Origin"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Slots - Default">
+			<div class="story-shell">
+				<button class="story-toggle" data-cy="toggle-slot-default" @click="toggleSlotDefault = !toggleSlotDefault">Toggle</button>
+				<origam-snack>
+					<div v-if="toggleSlotDefault" class="story-target" data-cy="target-slot-default">
+						<span>Custom slot content</span>
+					</div>
+				</origam-snack>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ITransitionProps>({
@@ -23,50 +88,16 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstText     v-model="state.name"     title="name"/>
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-				<HstCheckbox v-model="state.group"    title="group"/>
+				<StoryGroup title="Functional">
+					<HstText     v-model="state.name"         title="Name"/>
+					<HstSelect   v-model="state.mode"         title="Mode"             :options="TRANSITION_MODE_OPTIONS"/>
+					<HstCheckbox v-model="state.disabled"     title="Disabled"/>
+					<HstCheckbox v-model="state.group"        title="Group"/>
+					<HstCheckbox v-model="state.hideOnLeave"  title="Hide On Leave"/>
+					<HstCheckbox v-model="state.leaveAbsolute" title="Leave Absolute"/>
+					<HstText     v-model="state.origin"       title="Transform Origin"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — disabled (animation off)">
-			<template #default>
-				<div class="story-shell">
-					<button class="story-toggle" data-cy="toggle-disabled" @click="toggleDisabled = !toggleDisabled">Toggle</button>
-					<origam-snack disabled>
-						<div v-if="toggleDisabled" class="story-target" data-cy="target-disabled">No animation — instant show/hide</div>
-					</origam-snack>
-				</div>
-			</template>
-		</Variant>
-
-		<Variant title="Prop — group (transition-group)">
-			<template #default>
-				<div class="story-shell">
-					<div style="display: flex; gap: 8px;">
-						<button class="story-toggle" data-cy="group-add"    @click="groupItems.push(groupItems.length + 1)">Add</button>
-						<button class="story-toggle" data-cy="group-remove" @click="groupItems.pop()">Remove</button>
-					</div>
-					<origam-snack group>
-						<div v-for="item in groupItems" :key="item" class="story-target" :data-cy="`target-group-${item}`">Snack {{ item }}</div>
-					</origam-snack>
-				</div>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<div class="story-shell">
-				<button class="story-toggle" data-cy="toggle-slot-default" @click="toggleSlotDefault = !toggleSlotDefault">Toggle</button>
-				<origam-snack>
-					<div v-if="toggleSlotDefault" class="story-target" data-cy="target-slot-default">
-						<span>Custom slot content</span>
-					</div>
-				</origam-snack>
-			</div>
 		</Variant>
 	</Story>
 </template>
@@ -76,15 +107,26 @@
 		setup
 >
 	import { ref } from 'vue'
-	import { OrigamSnack } from '@origam/components'
-	import type { ITransitionProps } from '@origam/interfaces'
 
+	import { OrigamSnack } from '@origam/components'
+	import { TRANSITION_MODE } from '@origam/enums'
+	import type { IOptions, ITransitionProps } from '@origam/interfaces'
+
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 
-	const toggleDisabled = ref(false)
-	const togglePlayground = ref(false)
+	const toggleFunctional  = ref(false)
 	const toggleSlotDefault = ref(false)
-	const groupItems = ref([1])
+	const togglePlayground  = ref(false)
+
+	const groupItemsFunctional = ref([1])
+
+	const TRANSITION_MODE_OPTIONS: Array<IOptions<string | undefined>> = [
+		{ label: '(none)', value: undefined },
+		{ label: 'in-out', value: TRANSITION_MODE.IN_OUT },
+		{ label: 'out-in', value: TRANSITION_MODE.OUT_IN },
+		{ label: 'default', value: TRANSITION_MODE.DEFAULT }
+	]
 </script>
 
 <style scoped>

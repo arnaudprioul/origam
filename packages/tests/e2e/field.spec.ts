@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-field-origamfield-story-vue'
+const STORY_PATH = '/story/components-stories-field-origamfield-story-vue'
 
 test.describe('OrigamField', () => {
     test('Variant — default variant emits origam-field--variant-outlined class', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Variant', { exact: true }).first().click()
+        await page.getByText('Prop — variant', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -20,7 +20,7 @@ test.describe('OrigamField', () => {
         // solo-filled and solo-inverted were removed in the PDF-alignment cleanup (2026-05-06)
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Variants showcase', { exact: true }).first().click()
+        await page.getByText('Prop — variant (all)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -36,7 +36,7 @@ test.describe('OrigamField', () => {
     test('Color — field renders with color prop', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Color', { exact: true }).first().click()
+        await page.getByText('Prop — color', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -46,7 +46,7 @@ test.describe('OrigamField', () => {
     test('Density — field renders at specified density', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Density', { exact: true }).first().click()
+        await page.getByText('Prop — density', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -56,7 +56,7 @@ test.describe('OrigamField', () => {
     test('Prefix & suffix — prefix and suffix text visible', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prefix & suffix', { exact: true }).first().click()
+        await page.getByText('Prop — prefix & suffix', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -67,7 +67,7 @@ test.describe('OrigamField', () => {
     test('States — error state applies error class', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('States', { exact: true }).first().click()
+        await page.getByText('Prop — disabled, error & dirty', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -88,7 +88,7 @@ test.describe('OrigamField', () => {
     test('Emit focus / blur — focusing input fires events', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Emit — focus / blur', { exact: true }).first().click()
+        await page.getByText('Emit — focus & blur', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -97,6 +97,28 @@ test.describe('OrigamField', () => {
         await input.focus()
         await input.blur()
         // logEvent called — no throw = success
+    })
+
+    test('Prop rounded — themed default radius resolves (non-zero) and prop overrides it', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Prop — rounded', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+
+        const defaultField = sandbox.locator('[data-cy="field-rounded-default"]')
+        const propField = sandbox.locator('[data-cy="field-rounded-prop"]')
+        await expect(defaultField).toBeVisible({ timeout: 5000 })
+        await expect(propField).toBeVisible({ timeout: 5000 })
+
+        const defaultRadius = await defaultField.evaluate(el => getComputedStyle(el).borderTopLeftRadius)
+        expect(defaultRadius).not.toBe('')
+        expect(defaultRadius).not.toBe('0px')
+
+        const mdRadius = await propField.evaluate(el => getComputedStyle(el).borderTopLeftRadius)
+        expect(mdRadius).not.toBe('')
+        expect(mdRadius).not.toBe('0px')
     })
 
     test('Playground — renders without errors', async ({ page }) => {

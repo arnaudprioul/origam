@@ -3,26 +3,29 @@
 			group="components"
 			title="ItemGroup/OrigamItemGroup"
 	>
-		<!-- ── Playground ───────────────────────────────────────────────── -->
 
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<{ multiple: boolean, mandatory: boolean }>({ multiple: false, mandatory: false })"
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IItemGroupProps>>({ multiple: false, mandatory: false, max: undefined, selectedClass: undefined })"
 		>
 			<template #default="{ state }">
 				<div class="ig-row">
 					<origam-item-group
-							v-model="playgroundModel"
+							v-model="functionalModel"
 							:multiple="state.multiple"
 							:mandatory="state.mandatory"
+							:disabled="state.disabled"
+							:max="state.max"
+							:selected-class="state.selectedClass || undefined"
+							:tag="state.tag"
 					>
 						<origam-item v-for="opt in plans" :key="opt.value" :value="opt.value">
-							<template #default="{ isSelected, toggle }">
+							<template #default="{ isSelected, toggle, disabled: itemDisabled }">
 								<origam-card
 										border
 										rounded="default"
-										:class="['ig-card', { 'ig-card--active': isSelected }]"
-										@click="toggle"
+										:class="['ig-card', { 'ig-card--active': isSelected, 'ig-card--disabled': itemDisabled }]"
+										@click="!itemDisabled && toggle()"
 								>
 									<div class="ig-card__icon">{{ opt.icon }}</div>
 									<div class="ig-card__title">{{ opt.label }}</div>
@@ -31,20 +34,33 @@
 							</template>
 						</origam-item>
 					</origam-item-group>
-					<div class="ig-status">selected = <strong>{{ JSON.stringify(playgroundModel) }}</strong></div>
+					<div class="ig-status">selected = <strong>{{ JSON.stringify(functionalModel) }}</strong></div>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.multiple"  title="multiple"/>
-				<HstCheckbox v-model="state.mandatory" title="mandatory"/>
+				<StoryGroup title="Selection">
+					<HstCheckbox v-model="state.multiple"  title="Multiple"/>
+					<HstCheckbox v-model="state.mandatory" title="Mandatory"/>
+					<HstNumber   v-model="state.max"       title="Max" :min="0" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
+				<StoryGroup title="Custom Class">
+					<HstText v-model="state.selectedClass" title="Selected Class"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Props ────────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — default (single selection)">
+		<Variant title="Events - update:modelValue">
 			<div class="ig-row">
-				<origam-item-group v-model="defaultModel">
+				<origam-item-group
+						v-model="emitModel"
+						@update:model-value="logEvent('update:modelValue', $event)"
+				>
 					<origam-item v-for="opt in plans" :key="opt.value" :value="opt.value">
 						<template #default="{ isSelected, toggle }">
 							<origam-card
@@ -53,21 +69,18 @@
 									:class="['ig-card', { 'ig-card--active': isSelected }]"
 									@click="toggle"
 							>
-								<div class="ig-card__icon">{{ opt.icon }}</div>
 								<div class="ig-card__title">{{ opt.label }}</div>
-								<div class="ig-card__desc">{{ opt.desc }}</div>
 							</origam-card>
 						</template>
 					</origam-item>
 				</origam-item-group>
-				<div class="ig-status" data-cy="ig-default-status">selected = <strong>{{ defaultModel }}</strong></div>
+				<div class="ig-status">selected = <strong>{{ JSON.stringify(emitModel) }}</strong></div>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — multiple (checkbox-style, many selected)">
-			<!-- multiple allows more than one value to be selected concurrently -->
+		<Variant title="Slots - Default">
 			<div class="ig-row">
-				<origam-item-group v-model="multipleModel" multiple>
+				<origam-item-group v-model="slotModel">
 					<origam-item v-for="opt in formats" :key="opt.value" :value="opt.value">
 						<template #default="{ isSelected, toggle }">
 							<origam-card
@@ -81,129 +94,49 @@
 						</template>
 					</origam-item>
 				</origam-item-group>
-				<div class="ig-status" data-cy="ig-multiple-status">selected = <strong>{{ multipleModel.join(', ') || '(empty)' }}</strong></div>
+				<div class="ig-status">selected = <strong>{{ slotModel }}</strong></div>
 			</div>
 		</Variant>
-
-		<Variant title="Prop — mandatory (always keeps one selected)">
-			<!-- mandatory prevents deselecting the last active item -->
-			<div class="ig-row">
-				<origam-item-group v-model="mandatoryModel" mandatory>
-					<origam-item v-for="opt in plans" :key="opt.value" :value="opt.value">
-						<template #default="{ isSelected, toggle }">
-							<origam-card
-									border
-									rounded="default"
-									:class="['ig-card', { 'ig-card--active': isSelected }]"
-									@click="toggle"
-							>
-								<div class="ig-card__title">{{ opt.label }}</div>
-								<div class="ig-card__desc">Always one selected — clicking the active one is a no-op.</div>
-							</origam-card>
-						</template>
-					</origam-item>
-				</origam-item-group>
-				<div class="ig-status">selected = <strong>{{ mandatoryModel }}</strong></div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — disabled item">
-			<!-- Items support a disabled prop that prevents selection -->
-			<div class="ig-row">
-				<origam-item-group v-model="disabledModel">
-					<origam-item v-for="opt in plansWithDisabled" :key="opt.value" :value="opt.value" :disabled="opt.disabled">
-						<template #default="{ isSelected, toggle, disabled }">
-							<origam-card
-									border
-									rounded="default"
-									:class="['ig-card', { 'ig-card--active': isSelected, 'ig-card--disabled': disabled }]"
-									@click="!disabled && toggle()"
-							>
-								<div class="ig-card__title">{{ opt.label }}</div>
-								<div class="ig-card__desc">{{ disabled ? 'Out of stock' : opt.desc }}</div>
-							</origam-card>
-						</template>
-					</origam-item>
-				</origam-item-group>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — selectedClass (custom active class)">
-			<!-- selectedClass lets you inject your own CSS class on active items -->
-			<div class="ig-row">
-				<origam-item-group v-model="customClassModel" selected-class="my-custom-active">
-					<origam-item v-for="opt in formats" :key="opt.value" :value="opt.value">
-						<template #default="{ isSelected, toggle }">
-							<origam-card
-									border
-									rounded="default"
-									:class="['ig-card ig-card--small', { 'my-custom-active': isSelected }]"
-									@click="toggle"
-							>
-								<div class="ig-card__title">{{ opt.label }}</div>
-							</origam-card>
-						</template>
-					</origam-item>
-				</origam-item-group>
-			</div>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<div class="ig-row" data-cy="ig-slot-default">
-				<origam-item-group v-model="defaultModel">
-					<origam-item v-for="opt in plans" :key="opt.value" :value="opt.value">
-						<template #default="{ isSelected, toggle }">
-							<origam-card
-									border
-									rounded="default"
-									:class="['ig-card', { 'ig-card--active': isSelected }]"
-									@click="toggle"
-							>
-								<div class="ig-card__title">{{ opt.label }}</div>
-							</origam-card>
-						</template>
-					</origam-item>
-				</origam-item-group>
-				<div class="ig-status" data-cy="ig-slot-default-status">selected = <strong>{{ defaultModel }}</strong></div>
-			</div>
-		</Variant>
-
-		<!-- ── Emits ────────────────────────────────────────────────────── -->
 
 		<Variant
-				title="Emit — update:modelValue"
-				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IItemGroupProps>>({ multiple: false, mandatory: false })"
 		>
 			<template #default="{ state }">
 				<div class="ig-row">
 					<origam-item-group
-							v-model="emitModel"
-							@update:model-value="(v: any) => {
-								state.log = [`update:modelValue → ${JSON.stringify(v)}`, ...state.log].slice(0, 6)
-							}"
+							v-model="playgroundModel"
+							v-bind="state"
 					>
 						<origam-item v-for="opt in plans" :key="opt.value" :value="opt.value">
-							<template #default="{ isSelected, toggle }">
+							<template #default="{ isSelected, toggle, disabled: itemDisabled }">
 								<origam-card
 										border
 										rounded="default"
-										:class="['ig-card', { 'ig-card--active': isSelected }]"
-										@click="toggle"
+										:class="['ig-card', { 'ig-card--active': isSelected, 'ig-card--disabled': itemDisabled }]"
+										@click="!itemDisabled && toggle()"
 								>
+									<div class="ig-card__icon">{{ opt.icon }}</div>
 									<div class="ig-card__title">{{ opt.label }}</div>
+									<div class="ig-card__desc">{{ opt.desc }}</div>
 								</origam-card>
 							</template>
 						</origam-item>
 					</origam-item-group>
-					<div class="ig-status">
-						<ul v-if="state.log.length" style="font-family: monospace; font-size: 0.8rem; margin: 0; padding-left: 16px;">
-							<li v-for="(l, i) in state.log" :key="i">{{ l }}</li>
-						</ul>
-						<span v-else>Click a card to see events.</span>
-					</div>
+					<div class="ig-status">selected = <strong>{{ JSON.stringify(playgroundModel) }}</strong></div>
 				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Selection">
+					<HstCheckbox v-model="state.multiple"  title="Multiple"/>
+					<HstCheckbox v-model="state.mandatory" title="Mandatory"/>
+					<HstNumber   v-model="state.max"       title="Max" :min="0" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+					<HstText     v-model="state.selectedClass" title="Selected Class"/>
+					<HstSelect   v-model="state.tag"      title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 	</Story>
@@ -214,21 +147,19 @@
 		setup
 >
 	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamCard, OrigamItem, OrigamItemGroup } from '@origam/components'
+	import type { IItemGroupProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import { TAG_OPTIONS } from '@stories/const'
 
 	const plans = [
 		{ value: 's', label: 'Small',  icon: '◔', desc: '~ 20 GB · 1 vCPU'  },
 		{ value: 'm', label: 'Medium', icon: '◑', desc: '~ 80 GB · 2 vCPU'  },
 		{ value: 'l', label: 'Large',  icon: '●', desc: '~ 320 GB · 4 vCPU' },
-	]
-
-	const plansWithDisabled = [
-		{ value: 's', label: 'Small',  desc: 'Standard',  disabled: false },
-		{ value: 'm', label: 'Medium', desc: 'Popular',   disabled: true  },
-		{ value: 'l', label: 'Large',  desc: 'Pro tier',  disabled: false },
 	]
 
 	const formats = [
@@ -237,13 +168,10 @@
 		{ value: 'underline', label: 'Underline' },
 	]
 
-	const defaultModel    = ref<string | undefined>('m')
-	const multipleModel   = ref<Array<string>>(['bold'])
-	const mandatoryModel  = ref<string>('s')
-	const disabledModel   = ref<string | undefined>('s')
-	const customClassModel = ref<string | undefined>('italic')
-	const playgroundModel = ref<any>('m')
-	const emitModel       = ref<string | undefined>(undefined)
+	const functionalModel  = ref<any>('m')
+	const emitModel        = ref<any>(undefined)
+	const slotModel        = ref<string | undefined>('bold')
+	const playgroundModel  = ref<any>('m')
 </script>
 
 <style scoped>
@@ -273,8 +201,7 @@
 	.ig-card__icon  { font-size: 1.75rem; line-height: 1; opacity: 0.6; }
 	.ig-card__title { font-weight: 600; font-size: 0.95rem; }
 	.ig-card__desc  { font-size: 0.8125rem; opacity: 0.66; }
-	.ig-card--active,
-	.ig-card.my-custom-active {
+	.ig-card--active {
 		border-color: var(--origam-color__action--primary---bg, rgb(124, 58, 237));
 		border-width: 2px;
 		box-shadow: 0 0 0 4px var(--origam-color__action--primary---bg-subtle, rgba(124, 58, 237, 0.1));

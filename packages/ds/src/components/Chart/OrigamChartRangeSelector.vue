@@ -47,8 +47,8 @@
 
 	const props = withDefaults(defineProps<{
 		buttons: Array<IChartRangeSelectorButton>
-		activeIndex: number
-		dataLength: number
+		activeIndex?: number
+		dataLength?: number
 	}>(), {
 		activeIndex: -1,
 		dataLength: 0

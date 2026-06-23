@@ -1,5 +1,6 @@
 import type {
     IBgColorProps,
+    IBorderProps,
     IColorProps,
     ICommonsComponentProps,
     IDensityProps,
@@ -25,7 +26,7 @@ import type { IBracketRound } from './bracket-round.interface'
  * data and re-render. No internal state is held about scores or
  * winners — the data passed in is the source of truth.
  */
-export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensityProps, IRoundedProps, IColorProps, IBgColorProps, IDimensionProps, IElevationProps, IMarginProps, IPaddingProps {
+export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensityProps, IRoundedProps, IColorProps, IBgColorProps, IBorderProps, IDimensionProps, IElevationProps, IMarginProps, IPaddingProps {
     /**
      * Required. Pre-ordered list of rounds. For single-elimination,
      * the rounds are laid out from earliest (e.g. round-of-16) to
@@ -75,4 +76,19 @@ export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensi
      * @default true
      */
     interactive?: boolean
+    /**
+     * Heading shown above the winner-bracket tree in a
+     * double-elimination layout. Pre-translate before passing — the
+     * component never calls `useT`.
+     *
+     * @default 'Winners bracket'
+     */
+    winnersLabel?: string
+    /**
+     * Heading shown above the loser-bracket tree in a
+     * double-elimination layout.
+     *
+     * @default 'Losers bracket'
+     */
+    losersLabel?: string
 }

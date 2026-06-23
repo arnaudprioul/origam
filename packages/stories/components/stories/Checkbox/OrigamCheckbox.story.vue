@@ -3,262 +3,185 @@
 			group="components"
 			title="Checkbox/OrigamCheckbox"
 	>
-		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<ICheckboxProps>({
-					label: 'Accept terms',
-					color: 'primary',
-					density: undefined,
-					rounded: undefined,
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<ICheckboxProps>>({ label: 'Checkbox', color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<origam-checkbox
+						v-model="designModel"
+						:color="state.color"
+						:padding="state.padding"
+						:margin="state.margin"
+						:density="state.density"
+						:true-icon="state.trueIcon || undefined"
+						:false-icon="state.falseIcon || undefined"
+						:prepend-icon="state.prependIcon || undefined"
+						:append-icon="state.appendIcon || undefined"
+						:width="state.width"
+						:height="state.height"
+						:label="state.label"
+						:inline="state.inline"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Icons">
+					<HstSelect v-model="state.trueIcon"    title="True Icon"    :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.falseIcon"   title="False Icon"   :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.prependIcon" title="Prepend Icon" :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.appendIcon"  title="Append Icon"  :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.inline" title="Inline"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="State"
+				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & IColorProps>({ color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<origam-checkbox
+						v-model="stateModel"
+						:color="state.color"
+						:hover="resolveHoverState(state.hover)"
+						:active="resolveActiveState(state.active)"
+						label="Checkbox"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Surface">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Interaction">
+					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
+					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<ICheckboxProps>>({
+					label: 'Checkbox',
 					disabled: false,
 					readonly: false,
+					required: false,
 					indeterminate: false,
+					multiple: false,
+					error: false,
+					errorMessages: 'This field is required',
+					hint: '',
+					persistentHint: false,
+					hideDetails: false,
 				})"
 		>
 			<template #default="{ state }">
 				<origam-checkbox
-						v-model="playgroundModel"
-						v-bind="state"
-						data-cy="checkbox-playground"
-				/>
-				<div data-cy="checkbox-playground-status">value = {{ playgroundModel }}</div>
-			</template>
-			<template #controls="{ state }">
-				<HstText     v-model="state.label"         title="label"/>
-				<HstSelect   v-model="state.color"         title="color"    :options="intentList"/>
-				<HstSelect   v-model="state.density"       title="density"  :options="densityList"/>
-				<HstSelect   v-model="state.rounded"       title="rounded"  :options="roundedList"/>
-				<HstCheckbox v-model="state.disabled"      title="disabled"/>
-				<HstCheckbox v-model="state.readonly"      title="readonly"/>
-				<HstCheckbox v-model="state.indeterminate" title="indeterminate"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ─────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — color & bgColor"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
-					<origam-checkbox
-							v-model="colorModel"
-							v-bind="state"
-							label="Colored checkbox (interactive)"
-							data-cy="checkbox-color"
-					/>
-					<div data-cy="checkbox-color-status">value = {{ colorModel }}</div>
-
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
-						<small>Showcase fixtures — channel separation:</small>
-						<origam-checkbox :model-value="true"
-						                 color="primary"
-						                 label='color="primary" only'
-						                 data-cy="checkbox-color-fixture-color-only"/>
-						<origam-checkbox :model-value="true"
-						                 bg-color="success"
-						                 label='bg-color="success" only'
-						                 data-cy="checkbox-color-fixture-bg-only"/>
-						<origam-checkbox :model-value="true"
-						                 color="warning" bg-color="primary"
-						                 label='color="warning" + bg-color="primary"'
-						                 data-cy="checkbox-color-fixture-combo"/>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
-				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — hover"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
-					<origam-checkbox
-							v-model="colorModel"
-							v-bind="state"
-							label="Colored checkbox (interactive)"
-							data-cy="checkbox-color"
-					/>
-					<div data-cy="checkbox-color-status">value = {{ colorModel }}</div>
-
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
-						<small>Showcase fixtures — channel separation:</small>
-						<origam-checkbox :model-value="true"
-						                 color="primary"
-						                 label='color="primary" only'
-						                 data-cy="checkbox-color-fixture-color-only"/>
-						<origam-checkbox :model-value="true"
-						                 bg-color="success"
-						                 label='bg-color="success" only'
-						                 data-cy="checkbox-color-fixture-bg-only"/>
-						<origam-checkbox :model-value="true"
-						                 color="warning" bg-color="primary"
-						                 label='color="warning" + bg-color="primary"'
-						                 data-cy="checkbox-color-fixture-combo"/>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-							<HstSelect
-							:model-value="state._hHover"
-							:options="hoverList"
-							title="hover"
-							@update:model-value="(v) => state._hHover = v"
-						/>
-</template>
-		</Variant>
-
-		<Variant
-				title="Prop — active"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
-					<origam-checkbox
-							v-model="colorModel"
-							v-bind="state"
-							label="Colored checkbox (interactive)"
-							data-cy="checkbox-color"
-					/>
-					<div data-cy="checkbox-color-status">value = {{ colorModel }}</div>
-
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
-						<small>Showcase fixtures — channel separation:</small>
-						<origam-checkbox :model-value="true"
-						                 color="primary"
-						                 label='color="primary" only'
-						                 data-cy="checkbox-color-fixture-color-only"/>
-						<origam-checkbox :model-value="true"
-						                 bg-color="success"
-						                 label='bg-color="success" only'
-						                 data-cy="checkbox-color-fixture-bg-only"/>
-						<origam-checkbox :model-value="true"
-						                 color="warning" bg-color="primary"
-						                 label='color="warning" + bg-color="primary"'
-						                 data-cy="checkbox-color-fixture-combo"/>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-							<HstSelect
-							:model-value="state._hActive"
-							:options="activeList"
-							title="active"
-							@update:model-value="(v) => state._hActive = v"
-						/>
-</template>
-		</Variant>
-
-		<Variant
-				title="Prop — density"
-				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
-		>
-			<template #default="{ state }">
-				<origam-checkbox
-						v-model="densityModel"
-						:density="state.density"
-						label="Density checkbox"
-						data-cy="checkbox-density"
-				/>
-				<div data-cy="checkbox-density-status">value = {{ densityModel }}</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — rounded"
-				:init-state="() => useStoryInitState<IRoundedProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-checkbox
-						v-model="roundedModel"
-						:rounded="state.rounded"
-						label="Rounded checkbox"
-						data-cy="checkbox-rounded"
-				/>
-				<div data-cy="checkbox-rounded-status">value = {{ roundedModel }}</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — disabled, readonly & indeterminate"
-				:init-state="() => useStoryInitState<{
-					disabled: boolean
-					readonly: boolean
-					indeterminate: boolean
-				}>({ disabled: false, readonly: false, indeterminate: false })"
-		>
-			<template #default="{ state }">
-				<origam-checkbox
-						v-model="statesModel"
+						v-model="functionalModel"
+						:label="state.label"
 						:disabled="state.disabled"
 						:readonly="state.readonly"
+						:required="state.required"
 						:indeterminate="state.indeterminate"
-						label="Stateful checkbox"
-						data-cy="checkbox-states"
-				/>
-				<div data-cy="checkbox-states-status">value = {{ statesModel }}</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.disabled"      title="disabled"/>
-				<HstCheckbox v-model="state.readonly"      title="readonly"/>
-				<HstCheckbox v-model="state.indeterminate" title="indeterminate"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — error & errorMessages"
-				:init-state="() => useStoryInitState<{ error: boolean, errorMessages: string }>({ error: false, errorMessages: 'This field is required' })"
-		>
-			<template #default="{ state }">
-				<origam-checkbox
-						v-model="errorModel"
+						:indeterminate-icon="state.indeterminateIcon || undefined"
+						:multiple="state.multiple"
+						:true-value="state.trueValue"
+						:false-value="state.falseValue"
 						:error="state.error"
 						:error-messages="state.error ? [state.errorMessages] : []"
-						label="Validate checkbox"
-						data-cy="checkbox-error"
+						:hint="state.hint"
+						:persistent-hint="state.persistentHint"
+						:hide-details="state.hideDetails"
 				/>
-				<div data-cy="checkbox-error-status">value = {{ errorModel }}</div>
+				<div>value = {{ functionalModel }}</div>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.error"         title="error"/>
-				<HstText     v-model="state.errorMessages" title="errorMessages"/>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
+					<HstCheckbox v-model="state.readonly"      title="Readonly"/>
+					<HstCheckbox v-model="state.required"      title="Required"/>
+					<HstCheckbox v-model="state.indeterminate" title="Indeterminate"/>
+					<HstSelect   v-model="state.indeterminateIcon" title="Indeterminate Icon" :options="ICON_OPTIONS"/>
+					<HstCheckbox v-model="state.multiple"      title="Multiple"/>
+				</StoryGroup>
+				<StoryGroup title="Data">
+					<HstText v-model="state.trueValue"  title="True Value"/>
+					<HstText v-model="state.falseValue" title="False Value"/>
+				</StoryGroup>
+				<StoryGroup title="Validation">
+					<HstCheckbox v-model="state.error"         title="Error"/>
+					<HstText     v-model="state.errorMessages" title="Error Messages"/>
+				</StoryGroup>
+				<StoryGroup title="Hints">
+					<HstText     v-model="state.hint"          title="Hint"/>
+					<HstCheckbox v-model="state.persistentHint" title="Persistent Hint"/>
+					<HstCheckbox v-model="state.hideDetails"   title="Hide Details"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Slots ─────────────────────────────────────────────── -->
+		<Variant title="Events - update:modelValue">
+			<origam-checkbox
+					v-model="emitModel"
+					label="Toggle me"
+					@update:model-value="logEvent('update:modelValue', $event)"
+			/>
+			<div>value = {{ emitModel }}</div>
+		</Variant>
 
-		<Variant title="Slot — default">
-			<origam-checkbox v-model="slotLabelModel" data-cy="checkbox-slot-default">
+		<Variant title="Events - focus & blur">
+			<origam-checkbox
+					v-model="emitFocusModel"
+					label="Focus & blur me"
+					@focus="logEvent('focus', $event)"
+					@blur="logEvent('blur', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - click:label">
+			<origam-checkbox
+					v-model="emitClickLabelModel"
+					label="Click the label"
+					@click:label="logEvent('click:label', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Slots - Default">
+			<origam-checkbox v-model="slotDefaultModel">
 				<span>Custom slot content</span>
 			</origam-checkbox>
 		</Variant>
 
-		<Variant title="Slot — label">
-			<origam-checkbox v-model="slotLabelModel" data-cy="checkbox-slot-label">
+		<Variant title="Slots - Label">
+			<origam-checkbox v-model="slotLabelModel">
 				<template #label>
 					<span style="font-style: italic; color: var(--origam-color__action--primary---bg);">
 						I agree to the <strong>terms of service</strong>
 					</span>
 				</template>
 			</origam-checkbox>
-			<div data-cy="checkbox-slot-label-status">value = {{ slotLabelModel }}</div>
+			<div>value = {{ slotLabelModel }}</div>
 		</Variant>
 
-		<Variant title="Slot — input">
-			<origam-checkbox v-model="slotInputModel" label="Custom input" data-cy="checkbox-slot-input">
+		<Variant title="Slots - Input">
+			<origam-checkbox v-model="slotInputModel" label="Custom input">
 				<template #input="{ props: inputProps, icon, model }">
 					<div
 							v-bind="inputProps"
@@ -269,38 +192,38 @@
 					</div>
 				</template>
 			</origam-checkbox>
-			<div data-cy="checkbox-slot-input-status">value = {{ slotInputModel }}</div>
+			<div>value = {{ slotInputModel }}</div>
 		</Variant>
 
-		<!-- ── Emits ─────────────────────────────────────────────── -->
-
-		<Variant title="Emit — update:modelValue">
-			<origam-checkbox
-					v-model="emitModel"
-					label="Toggle me"
-					data-cy="checkbox-emit-update"
-					@update:model-value="logEvent('update:modelValue', $event)"
-			/>
-			<div data-cy="checkbox-emit-status">value = {{ emitModel }}</div>
-		</Variant>
-
-		<Variant title="Emit — focus & blur">
-			<origam-checkbox
-					v-model="emitFocusModel"
-					label="Focus & blur me"
-					data-cy="checkbox-emit-focus"
-					@focus="logEvent('focus', $event)"
-					@blur="logEvent('blur', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Emit — click:label">
-			<origam-checkbox
-					v-model="emitClickLabelModel"
-					label="Click the label"
-					data-cy="checkbox-emit-click-label"
-					@click:label="logEvent('click:label', $event)"
-			/>
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<ICheckboxProps>({ label: 'Accept terms', color: 'primary' })"
+		>
+			<template #default="{ state }">
+				<origam-checkbox
+						v-model="playgroundModel"
+						v-bind="state"
+						@update:model-value="logEvent('update:modelValue', $event)"
+				/>
+				<div>value = {{ playgroundModel }}</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText   v-model="state.label"  title="Label"/>
+					<HstText   v-model="state.hint"   title="Hint"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect   v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
+					<HstCheckbox v-model="state.readonly"      title="Readonly"/>
+					<HstCheckbox v-model="state.indeterminate" title="Indeterminate"/>
+					<HstCheckbox v-model="state.error"         title="Error"/>
+					<HstCheckbox v-model="state.inline"        title="Inline"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -313,27 +236,35 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamCheckbox, OrigamIcon } from '@origam/components'
-	import { DENSITY } from '@origam/enums'
-	import type { ICheckboxProps, IColorProps, IDensityProps, IRoundedProps } from '@origam/interfaces'
+	import type {
+		IActiveProps,
+		ICheckboxProps,
+		IColorProps,
+		IHoverProps
+	} from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
-		activeList,
-		densityList, intentList, roundedList,
-		hoverList
+		ACTIVE_OPTIONS,
+		resolveActiveState,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		HOVER_OPTIONS,
+		resolveHoverState,
+		ICON_OPTIONS
 	} from '@stories/const'
 
-	const colorModel        = ref(false)
-	const densityModel      = ref(false)
-	const roundedModel      = ref(false)
-	const statesModel       = ref(false)
-	const errorModel        = ref(false)
-	const slotLabelModel    = ref(false)
-	const slotInputModel    = ref(false)
-	const emitModel         = ref(false)
-	const emitFocusModel    = ref(false)
+	const designModel         = ref(false)
+	const stateModel          = ref(false)
+	const functionalModel     = ref(false)
+	const emitModel           = ref(false)
+	const emitFocusModel      = ref(false)
 	const emitClickLabelModel = ref(false)
-	const playgroundModel   = ref(false)
+	const slotDefaultModel    = ref(false)
+	const slotLabelModel      = ref(false)
+	const slotInputModel      = ref(false)
+	const playgroundModel     = ref(false)
 </script>
 
 <docs lang="md" src="@docs/components/Checkbox/OrigamCheckbox.md"/>

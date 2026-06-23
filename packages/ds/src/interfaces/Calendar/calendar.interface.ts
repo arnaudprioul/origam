@@ -1,6 +1,15 @@
 import type {
+    IBgColorProps,
+    IBorderProps,
+    IColorProps,
     ICommonsComponentProps,
-    IEvent
+    IDensityProps,
+    IDimensionProps,
+    IElevationProps,
+    IEvent,
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps
 } from '../../interfaces'
 
 import type {
@@ -14,8 +23,23 @@ import type {
  * Props for `<OrigamCalendar>`. Two-way bindings on `view` and
  * `currentDate` so the parent can sync with router state or persist
  * across page reloads without owning a watcher.
+ *
+ * The full cross-cutting surface (color, bgColor, rounded, elevation,
+ * border, density, dimension, padding, margin) is inherited from the
+ * Commons interfaces and consumed via the standard composables, so the
+ * calendar paints / sizes / spaces like any other origam component.
  */
-export interface ICalendarProps extends ICommonsComponentProps {
+export interface ICalendarComponentProps
+    extends ICommonsComponentProps,
+        IColorProps,
+        IBgColorProps,
+        IRoundedProps,
+        IElevationProps,
+        IBorderProps,
+        IDensityProps,
+        IDimensionProps,
+        IPaddingProps,
+        IMarginProps {
     /** Active view mode. v-model:view. */
     view?: TCalendarView
     /** Anchor date. v-model:currentDate. */

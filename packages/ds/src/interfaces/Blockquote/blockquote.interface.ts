@@ -1,28 +1,48 @@
 import type {
+    IBgColorProps,
+    IBorderProps,
+    IColorProps,
     ICommonsComponentProps,
+    IElevationProps,
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps,
     ITagProps
 } from '../../interfaces'
 
 import type {
     TBlockquoteAlign,
     TBlockquoteLang,
-    TBlockquoteVariant,
-    TIntent
+    TBlockquoteVariant
 } from '../../types'
 
 /**
  * Props for `<OrigamBlockquote>` — typographic citation component.
  *
  * A thin layer on top of the native `<blockquote>` element. Adds five
- * visual variants, optional author/source attribution, locale-aware
- * decorative quote marks (for `variant="quoted"`) and an intent-driven
- * accent color (consumed by the accent bar / quote marks / author
- * label depending on the variant).
+ * visual variants, optional author/source attribution and locale-aware
+ * decorative quote marks (for `variant="quoted"`).
  *
- * The component never imposes a layout beyond what's required for the
- * variant — outer margins are the parent's responsibility.
+ * ## Colour model (two independent axes)
+ *
+ * - **`color`** drives the **citation text** itself (the body). Defaults
+ *   to `text-primary`. An intent resolves to its readable-on-light shade
+ *   (`fgSubtle`); a custom value is applied verbatim.
+ * - **`bgColor`** drives the **accent**: the decorative bar / pull rules
+ *   (the "borders"), the big background quote glyph and the author label.
+ *   Defaults to `primary`. It does NOT paint a surface fill — the
+ *   blockquote stays transparent (see ROADMAP: future rename to
+ *   `accentColor`).
+ *
+ * The two axes are meant to contrast: a dark body (`color`) reads against
+ * a coloured accent (`bgColor`).
+ *
+ * Standard cross-cutting surfaces (`rounded`, `elevation`, `border`,
+ * `padding`, `margin`) are inherited from the Commons interfaces and
+ * consumed via the matching composables. The component never imposes an
+ * outer margin unless `margin` is passed.
  */
-export interface IBlockquoteProps extends ICommonsComponentProps, ITagProps {
+export interface IBlockquoteProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IRoundedProps, IElevationProps, IBorderProps, IPaddingProps, IMarginProps {
     /**
      * Visual variant. See `TBlockquoteVariant` for the per-variant
      * typographic contract.
@@ -67,18 +87,6 @@ export interface IBlockquoteProps extends ICommonsComponentProps, ITagProps {
      * @default 'left'
      */
     align?: TBlockquoteAlign
-    /**
-     * Semantic accent color. Drives:
-     * - the left accent bar (`default`).
-     * - the decorative quote marks (`quoted`).
-     * - the author label and pull-quote top/bottom rules (`pull`).
-     *
-     * Maps to the `--origam-color__action--{intent}---bg` token. Pass
-     * one of the semantic intents (`'primary'`, `'secondary'`,
-     * `'success'`, `'danger'`, …) — raw hex/rgb values are NOT
-     * supported here on purpose (keeps the token contract clean).
-     */
-    color?: TIntent
 }
 
 /**

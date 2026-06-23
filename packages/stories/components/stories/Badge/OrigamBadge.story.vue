@@ -3,357 +3,131 @@
 			group="components"
 			title="Badge/OrigamBadge"
 	>
-		<!--
-			Playground — first by convention. Exposes every IBadgeProps knob.
-		-->
-		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IBadgeProps>({
-					modelValue: true,
-					content: 3,
-					dot: false,
-					floating: false,
-					inline: false,
-					location: 'top right',
-					bgColor: 'primary',
-					rounded: undefined,
-					elevation: undefined,
-					border: false,
-					status: undefined
-				})"
-		>
-			<template #default="{ state }">
-				<div class="demo-host">
-					<origam-badge v-bind="state">
-						<origam-avatar text="AP"/>
-					</origam-badge>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.modelValue" title="modelValue"/>
-				<HstText     v-model="state.content"    title="content"/>
-				<HstCheckbox v-model="state.dot"        title="dot"/>
-				<HstCheckbox v-model="state.floating"   title="floating"/>
-				<HstCheckbox v-model="state.inline"     title="inline"/>
-				<HstSelect   v-model="state.location"   title="location"   :options="locationList"/>
-				<HstSelect   v-model="state.bgColor"    title="bgColor"    :options="intentList"/>
-				<HstSelect   v-model="state.rounded"    title="rounded"    :options="roundedList"/>
-				<HstSelect   v-model="state.elevation"  title="elevation"  :options="elevationList"/>
-				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
-				<HstSelect   v-model="state.status"     title="status"     :options="statusList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
 
 		<Variant
-				title="Prop — modelValue"
-				:init-state="() => useStoryInitState<{ modelValue?: boolean }>({ modelValue: true })"
-		>
-			<template #default="{ state }">
-				<div class="demo-host">
-					<origam-badge :model-value="state.modelValue" :content="3" bg-color="primary">
-						<origam-avatar text="AP"/>
-					</origam-badge>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.modelValue" title="modelValue"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — content & max"
-				:init-state="() => useStoryInitState<{ content?: string | number, max?: number | string }>({
-					content: 5,
-					max: undefined
-				})"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IBadgeProps>>({ bgColor: 'primary', content: 3, modelValue: true, location: 'top right' })"
 		>
 			<template #default="{ state }">
 				<div class="demo-host">
 					<origam-badge
+							:model-value="state.modelValue"
 							:content="state.content"
-							:max="state.max"
-							:model-value="true"
+							:color="state.color"
+							:bg-color="state.bgColor"
+							:rounded="state.rounded"
+							:elevation="state.elevation"
+							:border="state.border"
+							:border-color="state.borderColor"
+							:border-style="state.borderStyle"
+							:status="state.status"
+							:status-icon-position="state.statusIconPosition"
+							:icon="state.icon || undefined"
+							:location="state.location"
+							:offset-x="state.offsetX"
+							:offset-y="state.offsetY"
 					>
-						<origam-avatar text="AP" bg-color="primary"/>
+						<origam-avatar text="AP"/>
 					</origam-badge>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstText   v-model="state.content" title="content"/>
-				<HstNumber v-model="state.max"     title="max"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Status">
+					<HstSelect v-model="state.status"             title="Status"          :options="STATUS_OPTIONS"/>
+					<HstSelect v-model="state.statusIconPosition" title="Status Position" :options="STATUS_POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Icons">
+					<HstSelect v-model="state.icon" title="Icon" :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Location">
+					<HstSelect v-model="state.location" title="Location" :options="LOCATION_OPTIONS"/>
+					<HstText   v-model="state.offsetX"  title="Offset X"/>
+					<HstText   v-model="state.offsetY"  title="Offset Y"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
 		<Variant
-				title="Prop — dot"
-				:init-state="() => useStoryInitState<{ dot?: boolean }>({ dot: true })"
-		>
-			<template #default="{ state }">
-				<div class="demo-host">
-					<origam-badge :dot="state.dot" :model-value="true" :content="1">
-						<origam-avatar text="AP" bg-color="primary"/>
-					</origam-badge>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.dot" title="dot"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — inline"
-				:init-state="() => useStoryInitState<{ inline?: boolean }>({ inline: true })"
-		>
-			<template #default="{ state }">
-				<p>
-					Status:
-					<origam-badge
-							:inline="state.inline"
-							:model-value="true"
-							content="active"
-							bg-color="success"
-					/>
-				</p>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.inline" title="inline"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — floating"
-				:init-state="() => useStoryInitState<{ floating?: boolean }>({ floating: true })"
-		>
-			<template #default="{ state }">
-				<div class="demo-host">
-					<origam-badge :floating="state.floating" :model-value="true" :content="3">
-						<origam-avatar text="AP" bg-color="primary"/>
-					</origam-badge>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.floating" title="floating"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — location"
-				:init-state="() => useStoryInitState<{ location?: string }>({ location: 'top right' })"
+				title="State"
+				:init-state="() => useStoryInitState<IHoverProps & IBgColorProps & { modelValue?: boolean }>({ bgColor: 'primary', modelValue: true })"
 		>
 			<template #default="{ state }">
 				<div class="demo-host">
 					<origam-badge
-							:location="state.location as any"
-							:model-value="true"
+							:model-value="state.modelValue"
+							:bg-color="state.bgColor"
+							:hover="resolveHoverState(state.hover)"
 							:content="3"
 					>
-						<origam-avatar text="AP" bg-color="primary"/>
-					</origam-badge>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.location" title="location" :options="locationList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — color & bgColor"
-				:init-state="() => useStoryInitState<IColorProps>({ bgColor: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; gap: 24px; padding: 16px;">
-					<origam-badge :model-value="true" :content="1" v-bind="state">
 						<origam-avatar text="AP"/>
 					</origam-badge>
-					<origam-badge :model-value="true" :content="1" bg-color="primary"><origam-avatar text="P"/></origam-badge>
-					<origam-badge :model-value="true" :content="2" bg-color="success"><origam-avatar text="S"/></origam-badge>
-					<origam-badge :model-value="true" :content="3" bg-color="warning"><origam-avatar text="W"/></origam-badge>
-					<origam-badge :model-value="true" :content="4" bg-color="danger"> <origam-avatar text="D"/></origam-badge>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
+				<StoryGroup title="Surface">
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Interaction">
+					<HstSelect v-model="state.hover" title="Hover" :options="HOVER_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
 		<Variant
-				title="Prop — status & statusIconPosition"
-				:init-state="() => useStoryInitState<{ status?: TStatus, statusIconPosition?: TStatusPosition, content?: string | number }>({
-					status: 'success',
-					statusIconPosition: 'prepend',
-					content: 1
-				})"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 24px;">
-					<div class="demo-host">
-						<origam-badge
-								:status="state.status"
-								:status-icon-position="state.statusIconPosition"
-								:content="state.content"
-								:model-value="true"
-						>
-							<origam-avatar text="AP"/>
-						</origam-badge>
-					</div>
-					<div style="display: flex; gap: 32px; flex-wrap: wrap;">
-						<div class="demo-cell">
-							<div class="demo-host">
-								<origam-badge status="success" status-icon-position="prepend" :content="1" :model-value="true">
-									<origam-avatar text="P"/>
-								</origam-badge>
-							</div>
-							<p class="demo-label">prepend</p>
-						</div>
-						<div class="demo-cell">
-							<div class="demo-host">
-								<origam-badge status="warning" status-icon-position="append" :content="1" :model-value="true">
-									<origam-avatar text="A"/>
-								</origam-badge>
-							</div>
-							<p class="demo-label">append</p>
-						</div>
-						<div class="demo-cell">
-							<div class="demo-host">
-								<origam-badge status="info" status-icon-position="both" :content="1" :model-value="true">
-									<origam-avatar text="B"/>
-								</origam-badge>
-							</div>
-							<p class="demo-label">both</p>
-						</div>
-						<div class="demo-cell">
-							<div class="demo-host">
-								<origam-badge status="error" status-icon-position="replace" :model-value="true">
-									<origam-avatar text="R"/>
-								</origam-badge>
-							</div>
-							<p class="demo-label">replace</p>
-						</div>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.status"             title="status"             :options="statusList"/>
-				<HstSelect v-model="state.statusIconPosition" title="statusIconPosition" :options="statusIconPositionList"/>
-				<HstText   v-model="state.content"            title="content"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — icon"
-				:init-state="() => useStoryInitState<{ icon?: string }>({ icon: 'mdi:mdi-heart' })"
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IBadgeProps>>({ modelValue: true, content: 3, dot: false, floating: false, inline: false })"
 		>
 			<template #default="{ state }">
 				<div class="demo-host">
-					<origam-badge :icon="state.icon" :model-value="true" bg-color="danger">
+					<origam-badge
+							:model-value="state.modelValue"
+							:content="state.content"
+							:max="state.max"
+							:dot="state.dot"
+							:floating="state.floating"
+							:inline="state.inline"
+							:label="state.label"
+							:tag="state.tag"
+							bg-color="primary"
+					>
 						<origam-avatar text="AP"/>
 					</origam-badge>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.icon" title="icon" :options="iconList"/>
+				<StoryGroup title="Visibility">
+					<HstCheckbox v-model="state.modelValue" title="Model Value (visible)"/>
+				</StoryGroup>
+				<StoryGroup title="Content">
+					<HstText   v-model="state.content" title="Content"/>
+					<HstNumber v-model="state.max"     title="Max"/>
+					<HstText   v-model="state.label"   title="Label (aria)"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.dot"      title="Dot"/>
+					<HstCheckbox v-model="state.floating" title="Floating"/>
+					<HstCheckbox v-model="state.inline"   title="Inline"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant
-				title="Prop — rounded"
-				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: 'default' })"
-		>
-			<template #default="{ state }">
-				<div class="demo-host">
-					<origam-badge :rounded="state.rounded" :model-value="true" :content="3" bg-color="primary">
-						<origam-avatar text="AP"/>
-					</origam-badge>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — elevation"
-				:init-state="() => useStoryInitState<{ elevation?: number }>({ elevation: 4 })"
-		>
-			<template #default="{ state }">
-				<div class="demo-host">
-					<origam-badge :elevation="state.elevation" :model-value="true" :content="3" bg-color="primary">
-						<origam-avatar text="AP"/>
-					</origam-badge>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.elevation" title="elevation" :options="elevationList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — border"
-				:init-state="() => useStoryInitState<{ border?: boolean }>({ border: true })"
-		>
-			<template #default="{ state }">
-				<div class="demo-host">
-					<origam-badge :border="state.border" :model-value="true" :content="3" bg-color="primary">
-						<origam-avatar text="AP"/>
-					</origam-badge>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect   v-model="state.border"      title="border"      :options="borderList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — append">
-			<div class="demo-host">
-				<origam-badge :model-value="true" :content="3" bg-color="primary" data-cy="badge-slot-append">
-					<origam-avatar text="AP"/>
-					<template #append>
-						<origam-icon :icon="MDI_ICONS.HEART" size="x-small"/>
-					</template>
-				</origam-badge>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — badge">
-			<div class="demo-host">
-				<origam-badge :model-value="true" bg-color="success">
-					<template #badge>
-						<span style="font-weight: bold;">!</span>
-					</template>
-					<origam-avatar text="AP"/>
-				</origam-badge>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — default">
-			<div class="demo-host">
-				<origam-badge :model-value="true" :content="3" bg-color="primary" data-cy="badge-slot-default">
-					<template #default>
-						<span>Custom slot content</span>
-					</template>
-				</origam-badge>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — prepend">
-			<div class="demo-host">
-				<origam-badge :model-value="true" :content="3" bg-color="primary" data-cy="badge-slot-prepend">
-					<origam-avatar text="AP"/>
-					<template #prepend>
-						<origam-icon :icon="MDI_ICONS.HEART" size="x-small"/>
-					</template>
-				</origam-badge>
-			</div>
-		</Variant>
-
-		<!-- ── Emits ────────────────────────────────────────────────── -->
-
-		<Variant title="Emit — update:hover">
+		<Variant title="Events - update:hover">
 			<div class="demo-host">
 				<origam-badge
 						:model-value="true"
@@ -364,7 +138,84 @@
 					<origam-avatar text="AP"/>
 				</origam-badge>
 			</div>
-			<p style="font: 0.8rem/1.4 system-ui; color: var(--origam-color__text---secondary);">Hover the badge — watch the Events panel.</p>
+		</Variant>
+
+		<Variant title="Slots - Default">
+			<div class="demo-host">
+				<origam-badge :model-value="true" :content="3" bg-color="primary">
+					<template #default>
+						<span>Custom slot content</span>
+					</template>
+				</origam-badge>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Badge">
+			<div class="demo-host">
+				<origam-badge :model-value="true" bg-color="success">
+					<template #badge>
+						<strong>!</strong>
+					</template>
+					<origam-avatar text="AP"/>
+				</origam-badge>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Prepend">
+			<div class="demo-host">
+				<origam-badge :model-value="true" :content="3" bg-color="primary">
+					<origam-avatar text="AP"/>
+					<template #prepend>
+						<origam-icon :icon="heartIcon" size="x-small"/>
+					</template>
+				</origam-badge>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Append">
+			<div class="demo-host">
+				<origam-badge :model-value="true" :content="3" bg-color="primary">
+					<origam-avatar text="AP"/>
+					<template #append>
+						<origam-icon :icon="heartIcon" size="x-small"/>
+					</template>
+				</origam-badge>
+			</div>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IBadgeProps>({ modelValue: true, content: 3, bgColor: 'primary', location: 'top right' })"
+		>
+			<template #default="{ state }">
+				<div class="demo-host">
+					<origam-badge v-bind="state" @update:hover="logEvent('update:hover', $event)">
+						<origam-avatar text="AP"/>
+					</origam-badge>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText   v-model="state.content" title="Content"/>
+					<HstNumber v-model="state.max"     title="Max"/>
+					<HstText   v-model="state.label"   title="Label (aria)"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.border"    title="Border"    :options="BORDER_OPTIONS"/>
+					<HstSelect v-model="state.status"    title="Status"    :options="STATUS_OPTIONS"/>
+					<HstSelect v-model="state.location"  title="Location"  :options="LOCATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.modelValue" title="Model Value"/>
+					<HstCheckbox v-model="state.dot"        title="Dot"/>
+					<HstCheckbox v-model="state.floating"   title="Floating"/>
+					<HstCheckbox v-model="state.inline"     title="Inline"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -376,39 +227,40 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamAvatar, OrigamBadge, OrigamIcon } from '@origam/components'
-	import { MDI_ICONS, STATUS, STATUS_POSITION } from '@origam/enums'
-	import type { IBadgeProps, IColorProps, IOptions, IRoundedProps } from '@origam/interfaces'
-	import type { TAnchor, TStatus, TStatusPosition } from '@origam/types'
+	import { MDI_ICONS } from '@origam/enums'
+	import type {
+		IBadgeProps,
+		IBgColorProps,
+		IHoverProps,
+		IOptions
+	} from '@origam/interfaces'
+	import type { TAnchor } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
-		borderList,
-		elevationList, iconList, intentList, roundedList
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		HOVER_OPTIONS,
+		resolveHoverState,
+		ICON_OPTIONS,
+		ROUNDED_OPTIONS,
+		STATUS_OPTIONS,
+		STATUS_POSITION_OPTIONS,
+		TAG_OPTIONS
 	} from '@stories/const'
 
-	const statusList: Array<IOptions<TStatus>> = [
-		{ label: '(none)', value: undefined },
-		{ label: 'Success', value: STATUS.SUCCESS },
-		{ label: 'Warning', value: STATUS.WARNING },
-		{ label: 'Error',   value: STATUS.ERROR },
-		{ label: 'Info',    value: STATUS.INFO }
-	]
+	const heartIcon = MDI_ICONS.HEART
 
-	const statusIconPositionList: Array<IOptions<TStatusPosition>> = [
-		{ label: '(none)',  value: undefined },
-		{ label: 'prepend', value: STATUS_POSITION.PREPEND },
-		{ label: 'append',  value: STATUS_POSITION.APPEND },
-		{ label: 'both',    value: STATUS_POSITION.BOTH },
-		{ label: 'replace', value: STATUS_POSITION.REPLACE }
-	]
-
-	const locationList: Array<IOptions<TAnchor>> = [
-		{ label: 'top right',    value: 'top right'    as TAnchor },
-		{ label: 'top left',     value: 'top left'     as TAnchor },
-		{ label: 'top center',   value: 'top center'   as TAnchor },
-		{ label: 'bottom right', value: 'bottom right' as TAnchor },
-		{ label: 'bottom left',  value: 'bottom left'  as TAnchor },
-		{ label: 'bottom center',value: 'bottom center'as TAnchor }
+	const LOCATION_OPTIONS: Array<IOptions<TAnchor>> = [
+		{ label: 'top right',     value: 'top right'     as TAnchor },
+		{ label: 'top left',      value: 'top left'      as TAnchor },
+		{ label: 'top center',    value: 'top center'    as TAnchor },
+		{ label: 'bottom right',  value: 'bottom right'  as TAnchor },
+		{ label: 'bottom left',   value: 'bottom left'   as TAnchor },
+		{ label: 'bottom center', value: 'bottom center' as TAnchor }
 	]
 </script>
 
@@ -416,19 +268,6 @@
 	.demo-host {
 		display: inline-flex;
 		padding: 16px;
-	}
-
-	.demo-cell {
-		display: inline-flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 4px;
-	}
-
-	.demo-label {
-		font: 0.75rem/1 system-ui;
-		color: var(--origam-color__text---secondary);
-		margin: 0;
 	}
 </style>
 

@@ -18,7 +18,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
     // your Histoire configuration
     setupFile: '/histoire.setup.ts',
-    outDir: 'dist',
+    // Built into the marketing site's public dir so Nuxt serves the static
+    // stories SPA at /stories (see vite.base below). One deployable origin —
+    // the marketing site — instead of a separate stories host. `histoire dev`
+    // is unaffected (base only applies to the production build).
+    outDir: '../marketing/public/stories',
     plugins: [
         HstVue()
     ],
@@ -27,6 +31,10 @@ export default defineConfig({
     // re-declared here, otherwise `<docs lang="md" src="@docs/...">` resolves
     // to nothing and Histoire renders "No documentation available".
     vite: {
+        // Serve the built stories SPA under /stories on the marketing origin.
+        // All hashed asset URLs are prefixed with this base so they resolve
+        // when Nuxt serves public/stories/** at /stories/**.
+        base: '/stories/',
         /*
          * Histoire spawns its own Vite. In a pnpm workspace, @vitejs/plugin-vue
          * is not always auto-loaded — declare it explicitly so .vue files
@@ -41,6 +49,15 @@ export default defineConfig({
             }
         },
         server: {
+            // pnpm stores @mdi/font under node_modules/@mdi/.ignored_font;
+            // its webfont files (materialdesignicons-webfont.woff2/woff/ttf)
+            // live outside Vite's default fs.allow root, so the dev server
+            // returned 403 for them and every `.mdi` glyph rendered as an
+            // empty box (font-family fell back to the body font). Allow the
+            // monorepo root so the font binaries are served.
+            fs: {
+                allow: [resolve(__dirname, '..', '..')]
+            },
             watch: {
                 // `.claude/worktrees/<agent-id>` holds throwaway git
                 // worktrees spawned by parallel agents — each carries a

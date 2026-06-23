@@ -3,99 +3,101 @@
 			group="components"
 			title="Icon/OrigamLigatureIcon"
 	>
-		<!--
-			Playground — first by convention. OrigamLigatureIcon renders
-			a Material Symbols / Material Icons ligature string inside a
-			<span> with the appropriate font class.
-		-->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IIconComponentProps>>({ icon: 'home', size: undefined })"
+		>
+			<template #default="{ state }">
+				<origam-ligature-icon
+						:icon="state.icon"
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:size="state.size"
+						:rounded="state.rounded"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
+						:width="state.width"
+						:height="state.height"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Icon">
+					<HstSelect v-model="state.icon" title="Icon (ligature)" :options="LIGATURE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.size" title="Size" :options="SIZE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded" title="Rounded" :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IIconComponentProps>>({ icon: 'home', tag: 'span' })"
+		>
+			<template #default="{ state }">
+				<origam-ligature-icon
+						:icon="state.icon"
+						:tag="state.tag"
+						:disabled="state.disabled"
+						:padding="state.padding"
+						:margin="state.margin"
+						size="large"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<IIconComponentProps>({
-					icon: 'home',
-					size: undefined,
-					tag: undefined,
-				})"
+				:init-state="() => useStoryInitState<IIconComponentProps>({ icon: 'home', tag: 'span' })"
 		>
 			<template #default="{ state }">
 				<origam-ligature-icon v-bind="state"/>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.icon" title="icon (ligature)" :options="ligatureList"/>
-				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
-				<HstSelect v-model="state.tag"  title="tag"  :options="tagList"/>
+				<StoryGroup title="Content">
+					<HstSelect v-model="state.icon" title="Icon (ligature)" :options="LIGATURE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.size"    title="Size"     :options="SIZE_OPTIONS"/>
+					<HstSelect v-model="state.rounded" title="Rounded"  :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect   v-model="state.tag"      title="Tag"      :options="TAG_OPTIONS"/>
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — icon (ligature name)"
-				:init-state="() => useStoryInitState<{ icon?: string }>({ icon: 'home' })"
-		>
-			<template #default="{ state }">
-				<origam-ligature-icon :icon="state.icon"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.icon" title="icon (ligature)" :options="ligatureList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — size"
-				:init-state="() => useStoryInitState<ISizeProps>({ size: undefined })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; gap: 16px; align-items: center;">
-					<origam-ligature-icon :size="state.size" icon="favorite"/>
-				</div>
-				<div style="display: flex; gap: 16px; align-items: center; margin-top: 16px;">
-					<origam-ligature-icon icon="home" size="x-small"/>
-					<origam-ligature-icon icon="home" size="small"/>
-					<origam-ligature-icon icon="home" size="default"/>
-					<origam-ligature-icon icon="home" size="large"/>
-					<origam-ligature-icon icon="home" size="x-large"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — tag"
-				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: undefined })"
-		>
-			<template #default="{ state }">
-				<origam-ligature-icon
-						:tag="state.tag"
-						icon="settings"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
-			</template>
-		</Variant>
-
-		<Variant title="Prop — size (numeric override)">
-			<div style="display: flex; gap: 16px; align-items: center;">
-				<origam-ligature-icon icon="star" :size="16"/>
-				<origam-ligature-icon icon="star" :size="24"/>
-				<origam-ligature-icon icon="star" :size="40"/>
-				<origam-ligature-icon icon="star" :size="64"/>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — icon (common ligature names showcase)">
-			<div style="display: flex; gap: 16px; flex-wrap: wrap; font-size: 24px;">
-				<origam-ligature-icon icon="home"/>
-				<origam-ligature-icon icon="favorite"/>
-				<origam-ligature-icon icon="settings"/>
-				<origam-ligature-icon icon="account_circle"/>
-				<origam-ligature-icon icon="search"/>
-				<origam-ligature-icon icon="close"/>
-				<origam-ligature-icon icon="menu"/>
-				<origam-ligature-icon icon="delete"/>
-			</div>
 		</Variant>
 	</Story>
 </template>
@@ -105,15 +107,20 @@
 		setup
 >
 	import { OrigamLigatureIcon } from '@origam/components'
-	import type { IIconComponentProps, IOptions, ISizeProps } from '@origam/interfaces'
+	import type { IIconComponentProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { sizeList, tagList } from '@stories/const'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		ROUNDED_OPTIONS,
+		SIZE_OPTIONS,
+		TAG_OPTIONS
+	} from '@stories/const'
 
-	// Material Symbols / Material Icons font ligatures — these are
-	// font-rendered character names, NOT MDI class names. Keep a
-	// curated list of the common ones consumers reach for.
-	const ligatureList: Array<IOptions<string>> = [
+	const LIGATURE_OPTIONS = [
 		{ label: 'home',           value: 'home' },
 		{ label: 'favorite',       value: 'favorite' },
 		{ label: 'settings',       value: 'settings' },

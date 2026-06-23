@@ -3,8 +3,9 @@
 			group="components"
 			title="EmptyState/OrigamEmptyState"
 	>
+
 		<Variant
-				title="Default"
+				title="Design"
 				:init-state="() => useStoryInitState<IEmptyStateProps>({
 					preset: 'no-data',
 					title: 'No items yet',
@@ -14,115 +15,73 @@
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="empty-state-playground"
-				>
+				<div class="story-shell">
 					<origam-empty-state
-							v-bind="state"
-							data-cy="empty-state-playground-host"
-					>
-						<template #actions>
-							<origam-btn
-									data-cy="empty-state-playground-cta"
-									@click="noop"
-							>
-								Create item
-							</origam-btn>
-						</template>
-					</origam-empty-state>
+							:preset="state.preset"
+							:size="state.size"
+							:align="state.align"
+							:icon-color="state.iconColor"
+							:icon="state.icon || undefined"
+							:title="state.title"
+							:description="state.description"
+					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.preset"
-						title="preset"
-						:options="presetOptions"
-				/>
-				<HstText
-						v-model="state.title"
-						title="title"
-				/>
-				<HstText
-						v-model="state.description"
-						title="description"
-				/>
-				<HstSelect
-						v-model="state.size"
-						title="size"
-						:options="sizeOptions"
-				/>
-				<HstSelect
-						v-model="state.align"
-						title="align"
-						:options="alignOptions"
-				/>
-				<HstSelect
-						v-model="state.iconColor"
-						title="iconColor"
-						:options="iconColorOptions"
-				/>
+				<StoryGroup title="Preset">
+					<HstSelect v-model="state.preset" title="Preset" :options="PRESET_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.size"  title="Size"  :options="EMPTY_SIZE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Align">
+					<HstSelect v-model="state.align" title="Align" :options="EMPTY_ALIGN_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Icon Color">
+					<HstSelect v-model="state.iconColor" title="Icon Color" :options="INTENT_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Icon Override">
+					<HstSelect v-model="state.icon" title="Icon" :options="ICON_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — preset">
-			<div
-					class="story-shell"
-					data-cy="empty-state-presets"
-			>
-				<div
-						v-for="entry in presetSamples"
-						:key="entry.preset"
-						class="story-col"
-				>
-					<strong>preset = {{ entry.preset }}</strong>
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<IEmptyStateProps>({
+					preset: 'no-data',
+					title: 'No items yet',
+					description: 'Create your first item to get started.',
+					tag: 'div'
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
 					<origam-empty-state
-							:preset="entry.preset"
-							:title="entry.title"
-							:description="entry.description"
-							:data-cy="`empty-state-preset-${entry.preset}`"
+							:preset="state.preset"
+							:tag="state.tag"
+							:title="state.title"
+							:description="state.description"
 					/>
 				</div>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"       title="Title"/>
+					<HstText v-model="state.description" title="Description"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<Variant title="Prop — size">
-			<div
-					class="story-shell"
-					data-cy="empty-state-sizes"
-			>
-				<div
-						v-for="size in sizes"
-						:key="size"
-						class="story-col"
-				>
-					<strong>size = {{ size }}</strong>
-					<origam-empty-state
-							preset="no-data"
-							:size="size"
-							title="No items yet"
-							description="Create your first item to get started."
-							:data-cy="`empty-state-size-${size}`"
-					/>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — icon (custom illustration)">
-			<div
-					class="story-shell"
-					data-cy="empty-state-icon-slot"
-			>
-				<p class="hint">
-					Replace the default `OrigamIcon` with any markup — SVG, `&lt;img&gt;`,
-					or an inline illustration. The slot inherits the `--icon-color`
-					token; SVGs that use `currentColor` will pick it up automatically.
-				</p>
+		<Variant title="Slots - Icon">
+			<div class="story-shell">
 				<origam-empty-state
 						preset="no-results"
 						title="No results found"
 						description="Try a different keyword or broaden the filters."
-						data-cy="empty-state-icon-slot-host"
 				>
 					<template #icon>
 						<svg
@@ -133,7 +92,6 @@
 								stroke-width="3"
 								stroke-linecap="round"
 								stroke-linejoin="round"
-								data-cy="empty-state-icon-slot-svg"
 								aria-hidden="true"
 						>
 							<circle cx="28" cy="28" r="18"/>
@@ -145,26 +103,43 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — actions (1 vs 2 buttons)">
-			<div
-					class="story-shell"
-					data-cy="empty-state-actions-slot"
-			>
+		<Variant title="Slots - Title">
+			<div class="story-shell">
+				<origam-empty-state
+						preset="no-data"
+						description="Create your first item to get started."
+				>
+					<template #title>
+						<strong>Custom <em>title</em> markup</strong>
+					</template>
+				</origam-empty-state>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Description">
+			<div class="story-shell">
+				<origam-empty-state
+						preset="no-data"
+						title="No items yet"
+				>
+					<template #description>
+						<span>Custom <strong>description</strong> with rich markup.</span>
+					</template>
+				</origam-empty-state>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Actions">
+			<div class="story-shell">
 				<div class="story-col">
 					<strong>1 action</strong>
 					<origam-empty-state
 							preset="no-data"
 							title="No projects yet"
 							description="Create a project to start tracking work."
-							data-cy="empty-state-actions-one"
 					>
 						<template #actions>
-							<origam-btn
-									data-cy="empty-state-actions-one-create"
-									@click="noop"
-							>
-								Create project
-							</origam-btn>
+							<origam-btn @click="noop">Create project</origam-btn>
 						</template>
 					</origam-empty-state>
 				</div>
@@ -175,46 +150,20 @@
 							preset="no-data"
 							title="No projects yet"
 							description="Create a new project or import from a CSV."
-							data-cy="empty-state-actions-two"
 					>
 						<template #actions>
-							<origam-btn
-									data-cy="empty-state-actions-two-create"
-									@click="noop"
-							>
-								Create project
-							</origam-btn>
-							<origam-btn
-									data-cy="empty-state-actions-two-import"
-									@click="noop"
-							>
-								Import CSV
-							</origam-btn>
+							<origam-btn @click="noop">Create project</origam-btn>
+							<origam-btn @click="noop">Import CSV</origam-btn>
 						</template>
 					</origam-empty-state>
 				</div>
 			</div>
 		</Variant>
 
-		<Variant title="Slot — default (fully custom)">
-			<div
-					class="story-shell"
-					data-cy="empty-state-default-slot"
-			>
-				<p class="hint">
-					When the default slot is provided, it replaces the entire
-					built-in layout — the consumer regains full control over the
-					placeholder markup. The `role="status"` + `aria-live` contract
-					still holds on the root.
-				</p>
-				<origam-empty-state
-						preset="no-data"
-						data-cy="empty-state-default-slot-host"
-				>
-					<div
-							class="story-custom"
-							data-cy="empty-state-default-slot-custom"
-					>
+		<Variant title="Slots - Default">
+			<div class="story-shell">
+				<origam-empty-state preset="no-data">
+					<div class="story-custom">
 						<span class="story-custom__eyebrow">Inbox zero</span>
 						<h3 class="story-custom__title">All caught up.</h3>
 						<p class="story-custom__body">
@@ -224,6 +173,38 @@
 				</origam-empty-state>
 			</div>
 		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IEmptyStateProps>({
+					preset: 'no-data',
+					title: 'No items yet',
+					description: 'Create your first item to get started.',
+					size: 'md',
+					align: 'center'
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<origam-empty-state v-bind="state"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText   v-model="state.title"       title="Title"/>
+					<HstText   v-model="state.description" title="Description"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.preset"    title="Preset"     :options="PRESET_OPTIONS"/>
+					<HstSelect v-model="state.size"      title="Size"       :options="EMPTY_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.align"     title="Align"      :options="EMPTY_ALIGN_OPTIONS"/>
+					<HstSelect v-model="state.iconColor" title="Icon Color" :options="INTENT_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
 	</Story>
 </template>
 
@@ -232,57 +213,21 @@
 		setup
 >
 	import { OrigamBtn, OrigamEmptyState } from '@origam/components'
-
 	import { EMPTY_STATE_ALIGNS, EMPTY_STATE_PRESETS, EMPTY_STATE_SIZES } from '@origam/consts'
-
 	import type { IEmptyStateProps, IOptions } from '@origam/interfaces'
+	import type { TEmptyStateAlign, TEmptyStatePreset, TEmptyStateSize } from '@origam/types'
 
-	import type { TEmptyStateAlign, TEmptyStatePreset, TEmptyStateSize, TIntent } from '@origam/types'
-
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		ICON_OPTIONS,
+		INTENT_OPTIONS,
+		TAG_OPTIONS
+	} from '@stories/const'
 
-	const presetOptions: Array<IOptions<TEmptyStatePreset>> = EMPTY_STATE_PRESETS.map(v => ({label: v, value: v}))
-	const sizeOptions: Array<IOptions<TEmptyStateSize>> = EMPTY_STATE_SIZES.map(v => ({label: v, value: v}))
-	const alignOptions: Array<IOptions<TEmptyStateAlign>> = EMPTY_STATE_ALIGNS.map(v => ({label: v, value: v}))
-
-	const iconColorIntents: ReadonlyArray<TIntent> = ['neutral', 'primary', 'secondary', 'success', 'warning', 'danger', 'info']
-	const iconColorOptions: Array<IOptions<TIntent>> = iconColorIntents.map(v => ({label: v, value: v}))
-
-	const sizes: ReadonlyArray<TEmptyStateSize> = EMPTY_STATE_SIZES
-
-	interface IPresetSample {
-		preset: TEmptyStatePreset
-		title: string
-		description: string
-	}
-
-	const presetSamples: ReadonlyArray<IPresetSample> = [
-		{
-			preset: 'no-data',
-			title: 'No items yet',
-			description: 'Create your first item to get started.'
-		},
-		{
-			preset: 'no-results',
-			title: 'No results found',
-			description: 'Try a different keyword or broaden the filters.'
-		},
-		{
-			preset: 'error',
-			title: 'Something went wrong',
-			description: 'We could not load this list. Retry in a few seconds.'
-		},
-		{
-			preset: 'offline',
-			title: 'You are offline',
-			description: 'Reconnect to refresh this list, or switch to offline mode.'
-		},
-		{
-			preset: 'locked',
-			title: 'Locked content',
-			description: 'Upgrade your plan or sign in to unlock this section.'
-		}
-	]
+	const PRESET_OPTIONS: Array<IOptions<TEmptyStatePreset>> = EMPTY_STATE_PRESETS.map(v => ({ label: v, value: v }))
+	const EMPTY_SIZE_OPTIONS: Array<IOptions<TEmptyStateSize>> = EMPTY_STATE_SIZES.map(v => ({ label: v, value: v }))
+	const EMPTY_ALIGN_OPTIONS: Array<IOptions<TEmptyStateAlign>> = EMPTY_STATE_ALIGNS.map(v => ({ label: v, value: v }))
 
 	const noop = () => {}
 </script>
@@ -307,12 +252,6 @@
 		color: var(--origam-color__text---secondary, #555);
 		text-transform: uppercase;
 		letter-spacing: 0.04em;
-	}
-
-	.hint {
-		margin: 0;
-		font: 0.875rem/1.4 system-ui, sans-serif;
-		color: var(--origam-color__text---secondary, #555);
 	}
 
 	.story-illustration {

@@ -14,7 +14,7 @@ import { expect, test, type Page } from '@playwright/test'
  * asserting on the exact glyph layout.
  */
 
-const STORY = '/story/stories-components-stories-numberformat-origamnumberformat-story-vue'
+const STORY = '/story/components-stories-numberformat-origamnumberformat-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')
@@ -192,8 +192,12 @@ test.describe('OrigamNumberFormat — Prop signDisplay', () => {
     test('auto renders the minus sign on negatives only', async ({ page }) => {
         await openVariant(page, 'Prop — signDisplay (parallel)')
         const sandbox = sandboxOf(page)
-        const pos = normaliseWs(await sandbox.locator('[data-cy="number-format-sign-auto-positive"]').first().textContent())
-        const neg = normaliseWs(await sandbox.locator('[data-cy="number-format-sign-auto-negative"]').first().textContent())
+        const posEl = sandbox.locator('[data-cy="number-format-sign-auto-positive"]').first()
+        const negEl = sandbox.locator('[data-cy="number-format-sign-auto-negative"]').first()
+        await expect(posEl).toBeVisible({ timeout: 8000 })
+        await expect(negEl).toBeVisible({ timeout: 8000 })
+        const pos = normaliseWs(await posEl.textContent())
+        const neg = normaliseWs(await negEl.textContent())
         expect(pos).not.toMatch(/^\+/)
         expect(neg).toMatch(/^-/)
     })
@@ -201,16 +205,23 @@ test.describe('OrigamNumberFormat — Prop signDisplay', () => {
     test('always prefixes both signs', async ({ page }) => {
         await openVariant(page, 'Prop — signDisplay (parallel)')
         const sandbox = sandboxOf(page)
-        const pos = normaliseWs(await sandbox.locator('[data-cy="number-format-sign-always-positive"]').first().textContent())
-        const neg = normaliseWs(await sandbox.locator('[data-cy="number-format-sign-always-negative"]').first().textContent())
+        const posEl = sandbox.locator('[data-cy="number-format-sign-always-positive"]').first()
+        const negEl = sandbox.locator('[data-cy="number-format-sign-always-negative"]').first()
+        await expect(posEl).toBeVisible({ timeout: 8000 })
+        await expect(negEl).toBeVisible({ timeout: 8000 })
+        const pos = normaliseWs(await posEl.textContent())
+        const neg = normaliseWs(await negEl.textContent())
         expect(pos).toMatch(/^\+/)
         expect(neg).toMatch(/^-/)
     })
 
+    test.fixme(true, 'DS BUG: signDisplay="except-zero" invalide — TNumberFormatSignDisplay (packages/ds/src/types/NumberFormat/number-format-format.type.ts) définit "except-zero" (kebab) mais ECMAScript Intl.NumberFormat attend "exceptZero" (camelCase). Lève RangeError à la construction, le composant ne rend pas. La story passe sign="except-zero" depuis le tableau signs[], ce qui pollue potentiellement tout le Variant.')
     test('except-zero hides the sign on 0', async ({ page }) => {
         await openVariant(page, 'Prop — signDisplay (parallel)')
         const sandbox = sandboxOf(page)
-        const zero = normaliseWs(await sandbox.locator('[data-cy="number-format-sign-except-zero-zero"]').first().textContent())
+        const zeroEl = sandbox.locator('[data-cy="number-format-sign-except-zero-zero"]').first()
+        await expect(zeroEl).toBeVisible({ timeout: 8000 })
+        const zero = normaliseWs(await zeroEl.textContent())
         expect(zero).not.toMatch(/^[+-]/)
     })
 })

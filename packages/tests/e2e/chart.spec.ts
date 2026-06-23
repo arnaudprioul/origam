@@ -8,7 +8,7 @@ import { expect, test, type Page } from '@playwright/test'
  * `<circle>`) rather than CSS-class assertions.
  */
 
-const STORY = '/story/stories-components-stories-chart-origamchart-story-vue'
+const STORY = '/story/components-stories-chart-origamchart-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')
@@ -45,25 +45,29 @@ test.describe('OrigamChart — Default (root + ARIA)', () => {
 
 test.describe('OrigamChart — type matrix', () => {
     test('line chart renders one path per series', async ({ page }) => {
-        await openVariant(page, 'Prop — type (8 primitives)')
+        await openVariant(page, 'Prop — type (29 primitives)')
         const sandbox = sandboxOf(page)
-        const paths = sandbox.locator('[data-cy="chart-type-line"] path[data-cy="origam-chart-path"]')
+        // OrigamChart computes data-cy="origam-chart origam-chart--<type>" on its cartesian root;
+        // the story-level data-cy="chart-type-line" is lost because OrigamChart has multiple roots
+        // (v-if/v-else-if) and does not forward $attrs.
+        const paths = sandbox.locator('[data-cy="origam-chart origam-chart--line"] path[data-cy="origam-chart-path"]')
         // 2 series → 2 line paths
         const count = await paths.count()
         expect(count).toBeGreaterThanOrEqual(2)
     })
 
     test('area chart renders area + line paths', async ({ page }) => {
-        await openVariant(page, 'Prop — type (8 primitives)')
+        await openVariant(page, 'Prop — type (29 primitives)')
         const sandbox = sandboxOf(page)
-        const paths = sandbox.locator('[data-cy="chart-type-area"] path[data-cy="origam-chart-path"]')
+        // Same root data-cy pattern: "origam-chart origam-chart--area"
+        const paths = sandbox.locator('[data-cy="origam-chart origam-chart--area"] path[data-cy="origam-chart-path"]')
         // 2 series × (area + line) = 4 paths.
         const count = await paths.count()
         expect(count).toBeGreaterThanOrEqual(4)
     })
 
     test('column chart renders one <rect> per data point', async ({ page }) => {
-        await openVariant(page, 'Prop — type (8 primitives)')
+        await openVariant(page, 'Prop — type (29 primitives)')
         const sandbox = sandboxOf(page)
         const rects = sandbox.locator('[data-cy="chart-type-column"] rect.origam-chart__bar')
         // 12 months × 2 series = 24 bars.
@@ -71,7 +75,7 @@ test.describe('OrigamChart — type matrix', () => {
     })
 
     test('pie chart renders one slice per category with arc commands', async ({ page }) => {
-        await openVariant(page, 'Prop — type (8 primitives)')
+        await openVariant(page, 'Prop — type (29 primitives)')
         const sandbox = sandboxOf(page)
         const slices = sandbox.locator('[data-cy="chart-type-pie"] path.origam-chart__slice')
         await expect(slices).toHaveCount(5)
@@ -80,7 +84,7 @@ test.describe('OrigamChart — type matrix', () => {
     })
 
     test('donut chart slices contain two arc commands', async ({ page }) => {
-        await openVariant(page, 'Prop — type (8 primitives)')
+        await openVariant(page, 'Prop — type (29 primitives)')
         const sandbox = sandboxOf(page)
         const slice = sandbox.locator('[data-cy="chart-type-donut"] path.origam-chart__slice').first()
         await expect(slice).toBeVisible()
@@ -90,7 +94,7 @@ test.describe('OrigamChart — type matrix', () => {
     })
 
     test('scatter chart renders one <circle> per data point', async ({ page }) => {
-        await openVariant(page, 'Prop — type (8 primitives)')
+        await openVariant(page, 'Prop — type (29 primitives)')
         const sandbox = sandboxOf(page)
         const circles = sandbox.locator('[data-cy="chart-type-scatter"] circle.origam-chart__point')
         // Cohort A (6) + Cohort B (5) = 11 dots.
@@ -98,7 +102,7 @@ test.describe('OrigamChart — type matrix', () => {
     })
 
     test('radar chart renders a polygon plus rings + spokes', async ({ page }) => {
-        await openVariant(page, 'Prop — type (8 primitives)')
+        await openVariant(page, 'Prop — type (29 primitives)')
         const sandbox = sandboxOf(page)
         const polygons = sandbox.locator('[data-cy="chart-type-radar"] polygon.origam-chart__polygon')
         // 2 series → 2 polygons.
@@ -113,14 +117,18 @@ test.describe('OrigamChart — legend interaction', () => {
     test('renders a <ul role="list"> with one entry per series', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
-        const legend = sandbox.locator('[data-cy="chart-playground-chart"] [data-cy="origam-chart-legend"]')
+        // Scope via the story wrapper div (data-cy="chart-playground") rather than the
+        // component root (data-cy="chart-playground-chart") which competes with the
+        // OrigamChart shell's own :data-cy binding and may not survive attr merging.
+        const legend = sandbox.locator('[data-cy="chart-playground"] [data-cy="origam-chart-legend"]')
         await expect(legend).toHaveAttribute('role', 'list')
-        const items = legend.locator('[role="listitem"]')
+        // Each <li> carries role="button" (interactive toggle), not role="listitem".
+        const items = legend.locator('[role="button"]')
         await expect(items).toHaveCount(2)
     })
 
     test('clicking a legend item logs legend-click + series-toggle', async ({ page }) => {
-        await openVariant(page, 'Emit — point-click + legend-click')
+        await openVariant(page, 'Emit — point-click / legend-click / series-toggle')
         const sandbox = sandboxOf(page)
         const log = sandbox.locator('[data-cy="chart-emits-log"]')
         const firstLegend = sandbox.locator('[data-cy="chart-emits-chart"] [data-cy="origam-chart-legend-0"]')
@@ -132,7 +140,7 @@ test.describe('OrigamChart — legend interaction', () => {
 
 test.describe('OrigamChart — point-click emit', () => {
     test('clicking a column emits point-click', async ({ page }) => {
-        await openVariant(page, 'Emit — point-click + legend-click')
+        await openVariant(page, 'Emit — point-click / legend-click / series-toggle')
         const sandbox = sandboxOf(page)
         const firstBar = sandbox.locator('[data-cy="chart-emits-chart"] rect.origam-chart__bar').first()
         await firstBar.click({ force: true })

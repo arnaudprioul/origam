@@ -183,10 +183,9 @@
 		font-size: 0.5rem;
 		padding: 0 5px;
 		background-color: var(--origam-switch__track---background-color, rgb(163, 163, 163));
-		border-radius: 9999px;
-		height: 14px;
-		opacity: 0.6;
-		min-width: 36px;
+		border-radius: var(--origam-switch__track---border-radius, 9999px);
+		height: var(--origam-switch__track---height, 14px);
+		min-width: var(--origam-switch__track---width, 36px);
 		cursor: pointer;
 		transition: 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -223,6 +222,7 @@
 
 		&--disabled {
 			cursor: default;
+			opacity: var(--origam-switch---opacity-disabled, 0.32);
 		}
 
 		&--dirty#{$this}--disabled {
@@ -237,10 +237,10 @@
 		}
 
 		&--inset {
-			border-radius: 9999px;
+			border-radius: var(--origam-switch__track---border-radius, 9999px);
 			font-size: 0.75rem;
-			height: 32px;
-			min-width: 52px;
+			height: var(--origam-switch__track--inset---height, 32px);
+			min-width: var(--origam-switch__track--inset---width, 52px);
 
 			@media (forced-colors: active) {
 				border-width: 2px;

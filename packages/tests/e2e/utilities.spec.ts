@@ -24,7 +24,7 @@ import { expect, test, type FrameLocator, type Page } from '@playwright/test'
  * → total assertion count documented at bottom of each describe block.
  */
 
-const STORY_BASE = '/story/stories-components-stories-utilities-origamutilities-story-vue'
+const STORY_BASE = '/story/components-stories-utilities-origamutilities-story-vue'
 
 // Variant titles exactly as declared in OrigamUtilities.story.vue
 const VARIANTS = {
@@ -58,7 +58,7 @@ async function gotoVariant(page: Page, variantTitle: string): Promise<FrameLocat
 }
 
 /** True when a computed style value represents "nothing" (0, transparent, none). */
-function isEmptyValue(v: string): boolean {
+function _isEmptyValue(v: string): boolean {
     return (
         v === '' ||
         v === 'none' ||

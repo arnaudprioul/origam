@@ -102,7 +102,7 @@ describe('built-in origam baseline (always injected, root-scoped)', () => {
         const light = document.getElementById('origam-theme')
         expect(light).not.toBeNull()
         expect(light!.textContent).toContain(':root {')
-        expect(light!.textContent).toContain('--origam-color__surface---default: #FFFFFF;')
+        expect(light!.textContent).toContain('--origam-color__surface---default: #ffffff;')
 
         // origamDark has no name but mode 'dark' → [data-mode="dark"], id `origam-theme-dark`.
         const dark = document.getElementById('origam-theme-dark')

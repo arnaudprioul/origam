@@ -1,8 +1,9 @@
 <template>
 	<nav
 			:id="id"
+			v-contrast
 			:class="stepperClasses"
-			aria-label="Progress steps"
+			:aria-label="t('origam.stepper.progressSteps', 'Progress steps')"
 	>
 		<slot name="default">
 			<template v-if="hasItems">
@@ -38,9 +39,11 @@
 	import { OrigamStepperItem } from '../../components'
 	import { ORIGAM_STEPPER_KEY } from '../../consts'
 	import { DENSITY, SIZES } from '../../enums'
+	import { vContrast } from '../../directives'
 	import {
 		useDensity,
 		useDimension,
+		useLocale,
 		useProps,
 		useSize,
 		useStateEffect,
@@ -62,6 +65,12 @@
 		density: DENSITY.DEFAULT,
 		size: SIZES.DEFAULT
 	})
+
+	/*********************************************************
+	 * Labels — localised through the DS i18n provider (`useLocale`).
+	 * Keys live under `origam.stepper.*` in the shipped locale messages.
+	 ********************************************************/
+	const { t } = useLocale()
 
 	const emit = defineEmits<{
 		(e: 'update:modelValue', value: number): void

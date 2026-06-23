@@ -6,7 +6,7 @@ import type { IRoundedProps } from '../../interfaces'
 
 import type { TRounded } from '../../types'
 
-import { convertToUnit, formatRoundedStylesVar, getCurrentInstanceName } from '../../utils'
+import { convertToUnit, formatRoundedStylesVar, getCurrentInstanceName, isCustomBorderRadius } from '../../utils'
 
 /**
  * Set of rounded values for which a global utility class exists in
@@ -111,6 +111,21 @@ export function useRounded (
         'x-large': 'var(--origam-radius---2xl, 24px)'
     }
 
+    // Fallback radius per utility rung. `none` has NO token (none = 0), so a
+    // bare `var(--origam-radius---none)` is an invalid declaration that gets
+    // dropped — and a component's hardcoded default radius then wins
+    // (`rounded="none"` looked slightly rounded on Audio). The fallback also
+    // protects themes that omit a rung.
+    const UTILITY_RADIUS_FALLBACK: Record<string, string> = {
+        none: '0',
+        xs:   '2px',
+        sm:   '4px',
+        md:   '8px',
+        lg:   '12px',
+        xl:   '16px',
+        full: '9999px'
+    }
+
     const roundedStyles = computed(() => {
         const rounded = isRef(props) ? props.value : props.rounded
         const styles: Array<string> = []
@@ -125,7 +140,7 @@ export function useRounded (
         // an inline-style companion so `useStyle` lands the radius at
         // `#id` (spec 1,0,0) and wins everywhere.
         if (isUtilityRounded(rounded)) {
-            styles.push(`border-radius: var(--origam-radius---${rounded})`)
+            styles.push(`border-radius: var(--origam-radius---${rounded}, ${UTILITY_RADIUS_FALLBACK[rounded]})`)
             return styles
         }
 
@@ -159,6 +174,15 @@ export function useRounded (
 
                     styles.push(...formatRoundedStylesVar(values))
                 })
+            } else if (isCustomBorderRadius(rounded)) {
+                // Free-form custom CSS value the literal `BORDER_RADIUS_REGEX`
+                // can't describe: a custom-property ref (`var(--origam-radius---card)`),
+                // a `calc(...)` expression, or any single CSS length the regex's
+                // fixed unit list doesn't cover (`vw`, `vmin`, `q`, …). Aligns
+                // `useRounded` with `convertToUnit`/`useDimension`, which already
+                // pass custom-property refs and computed lengths straight through.
+                // Emit the declaration verbatim — no warning, no drop.
+                styles.push(`border-radius: ${rounded.trim()}`)
             }
         } else if (typeof rounded === 'number') {
             styles.push(`border-radius: ${convertToUnit(rounded)}`)

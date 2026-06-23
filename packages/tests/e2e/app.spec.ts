@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-app-origamapp-story-vue'
+const STORY_PATH = '/story/components-stories-app-origamapp-story-vue'
 
 test.describe('OrigamApp', () => {
 	test('Default — app shell renders with toolbar and main', async ({ page }) => {
@@ -10,7 +10,7 @@ test.describe('OrigamApp', () => {
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const app = sandbox.locator('[data-cy="app-default-inner"]')
+		const app = sandbox.locator('[data-cy="app-playground"]')
 		await expect(app).toBeVisible({ timeout: 5000 })
 		await expect(app).toHaveClass(/origam-app/)
 	})
@@ -22,7 +22,7 @@ test.describe('OrigamApp', () => {
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const toolbar = sandbox.locator('[data-cy="app-default-toolbar"]')
+		const toolbar = sandbox.locator('[data-cy="app-playground-toolbar"]')
 		await expect(toolbar).toBeVisible({ timeout: 5000 })
 	})
 
@@ -33,14 +33,14 @@ test.describe('OrigamApp', () => {
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-		const main = sandbox.locator('[data-cy="app-default-main"]')
+		const main = sandbox.locator('[data-cy="app-playground-main"]')
 		await expect(main).toBeVisible({ timeout: 5000 })
 	})
 
 	test('With Drawer — drawer toggle button renders', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('With Drawer', { exact: true }).first().click()
+		await page.getByText('Prop — drawer (with Drawer child)', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -51,7 +51,7 @@ test.describe('OrigamApp', () => {
 	test('With Drawer — navigation drawer renders inside app', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('With Drawer', { exact: true }).first().click()
+		await page.getByText('Prop — drawer (with Drawer child)', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -62,7 +62,7 @@ test.describe('OrigamApp', () => {
 	test('Full height — app renders with fullHeight control', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Full height', { exact: true }).first().click()
+		await page.getByText('Prop — fullHeight', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

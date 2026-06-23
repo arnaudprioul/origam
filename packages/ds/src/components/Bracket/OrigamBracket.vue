@@ -63,8 +63,104 @@
 			</div>
 		</template>
 
+		<template v-else-if="variant === BRACKET_VARIANT.DOUBLE_ELIMINATION">
+			<div
+					ref="doubleRef"
+					class="origam-bracket__double"
+					data-cy="origam-bracket-double"
+			>
+				<svg
+						v-if="showConnectors"
+						:viewBox="connectorViewBox"
+						aria-hidden="true"
+						class="origam-bracket__connectors"
+						preserveAspectRatio="none"
+				>
+					<template
+							v-for="path in connectorPaths"
+							:key="path.key"
+					>
+						<slot
+								name="connector"
+								:from="path.from"
+								:to="path.to"
+						>
+							<path
+									:class="['origam-bracket__connector', { 'origam-bracket__connector--winner': path.winner }]"
+									:d="path.d"
+									fill="none"
+							/>
+						</slot>
+					</template>
+				</svg>
+
+				<section
+						v-for="section in doubleSections"
+						:key="section.key"
+						:class="['origam-bracket__de-section', `origam-bracket__de-section--${section.key}`]"
+						:data-cy="`origam-bracket-de-${section.key}`"
+				>
+					<h2
+							v-if="section.label"
+							class="origam-bracket__de-label"
+					>
+						{{ section.label }}
+					</h2>
+					<div class="origam-bracket__de-tree">
+						<origam-bracket-round
+								v-for="(round, index) in section.rounds"
+								:key="round.id"
+								:color="color"
+								:data-cy="`origam-bracket-${section.key}-round-${index}`"
+								:direction="DIRECTION.HORIZONTAL"
+								:index="index"
+								:interactive="interactive"
+								:round="round"
+								:show-round-title="showRoundTitles"
+								:show-scores="showScores"
+								:show-seed="showSeed"
+								:total-rounds="section.rounds.length"
+								class="origam-bracket__round"
+								@competitor-click="onCompetitorClick"
+								@match-click="onMatchClick"
+								@winner-click="onWinnerClick"
+						>
+							<template
+									v-if="$slots['round-title']"
+									#round-title="scope"
+							>
+								<slot
+										name="round-title"
+										v-bind="scope"
+								/>
+							</template>
+							<template
+									v-if="$slots.match"
+									#match="scope"
+							>
+								<slot
+										name="match"
+										v-bind="scope"
+								/>
+							</template>
+							<template
+									v-if="$slots.competitor"
+									#competitor="scope"
+							>
+								<slot
+										name="competitor"
+										v-bind="scope"
+								/>
+							</template>
+						</origam-bracket-round>
+					</div>
+				</section>
+			</div>
+		</template>
+
 		<template v-else>
 			<div
+					ref="treeRef"
 					:class="treeClasses"
 					data-cy="origam-bracket-tree"
 			>
@@ -149,19 +245,15 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue } from 'vue'
+	import { computed, nextTick, onBeforeUnmount, onMounted, ref, StyleValue, watch } from 'vue'
 
 	import OrigamBracketRound from './OrigamBracketRound.vue'
 
 	import {
-		useBackgroundColor,
 		useDimension,
-		useElevation,
 		useMargin,
 		usePadding,
-		useProps,
-		useRounded,
-		useTextColor
+		useProps
 	} from '../../composables'
 
 	import {
@@ -172,6 +264,14 @@
 	} from '../../consts'
 
 	import { BRACKET_VARIANT, DIRECTION } from '../../enums'
+
+	import {
+		bracketDashArray,
+		bracketSurfaceVars,
+		resolveBracketBorderColor,
+		resolveBracketBorderWidth,
+		resolveBracketForeground
+	} from '../../utils/Bracket/bracket-surface.util'
 
 	import type {
 		IBracketCompetitor,
@@ -191,7 +291,9 @@
 		showScores: true,
 		showSeed: false,
 		interactive: true,
-		color: 'primary'
+		color: 'primary',
+		winnersLabel: 'Winners bracket',
+		losersLabel: 'Losers bracket'
 	})
 
 	const emit = defineEmits<{
@@ -222,6 +324,36 @@
 		const grandFinals = props.rounds.filter(r => r.side === 'grand-final')
 
 		return [...winners, ...losers, ...grandFinals]
+	})
+
+	/*********************************************************
+	 * Double-elimination sections
+	 *
+	 * @description
+	 * A real double-elimination is two independent trees — the
+	 * Winner Bracket and the Loser Bracket — that converge on a
+	 * single Grand Final. The Winner Bracket champion carries a
+	 * one-round head start into that match (set via the match's
+	 * `advantage`, rendered as a `+N` badge on its competitor row).
+	 * Each section is rendered as its own tree; empty sections are
+	 * dropped.
+	 ********************************************************/
+	const winnerRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === 'winner' || r.side === undefined))
+	const loserRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === 'loser'))
+	const grandFinalRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === 'grand-final'))
+
+	type TDoubleSection = {
+		key: 'winners' | 'losers' | 'grand-final'
+		label: string
+		rounds: IBracketRound[]
+	}
+
+	const doubleSections = computed<TDoubleSection[]>(() => {
+		return [
+			{key: 'winners', label: props.winnersLabel, rounds: winnerRounds.value},
+			{key: 'losers', label: props.losersLabel, rounds: loserRounds.value},
+			{key: 'grand-final', label: '', rounds: grandFinalRounds.value}
+		].filter(section => section.rounds.length > 0)
 	})
 
 	/*********************************************************
@@ -352,7 +484,6 @@
 	 * connectors aligned with the cards while shrinking the layout.
 	 ********************************************************/
 	const verticalRoundThickness = 120
-	const roundThickness = computed<number>(() => isHorizontal.value ? matchWidth : verticalRoundThickness)
 
 	const showConnectors = computed<boolean>(() => {
 		if (props.variant === BRACKET_VARIANT.ROUND_ROBIN) return false
@@ -374,19 +505,9 @@
 		return maxMatchesInRound.value * (matchHeight + baseGap)
 	})
 
-	const totalWidth = computed<number>(() => {
-		const n = displayRounds.value.length
-
-		return n * roundThickness.value + (n - 1) * roundGap
-	})
-
-	const connectorViewBox = computed<string>(() => {
-		if (isHorizontal.value) {
-			return `0 0 ${totalWidth.value} ${totalHeight.value}`
-		}
-
-		return `0 0 ${totalHeight.value} ${totalWidth.value}`
-	})
+	const treeRef = ref<HTMLElement | null>(null)
+	const doubleRef = ref<HTMLElement | null>(null)
+	const connectorViewBox = ref<string>('0 0 0 0')
 
 	type TConnectorPath = {
 		key: string
@@ -396,73 +517,231 @@
 		winner: boolean
 	}
 
-	const matchYCenter = (_roundIndex: number, matchIndex: number, roundMatchCount: number): number => {
-		// Each round is vertically centered. Matches share the available
-		// height evenly.
-		const slot = totalHeight.value / roundMatchCount
+	/*********************************************************
+	 * Connector measurement (real DOM positions)
+	 *
+	 * @description
+	 * Connectors are drawn from the *measured* centre of each
+	 * match card rather than a computed grid. The flex layout
+	 * (space-around + gap) and the per-round title offset move
+	 * cards away from any formula-predicted position, so a
+	 * formula produced visibly off-centre, unbalanced links.
+	 * Measuring the live rects keeps every link anchored to the
+	 * exact middle of the card it leaves / enters, whatever the
+	 * title, density, scores or gap.
+	 ********************************************************/
+	const connectorPaths = ref<TConnectorPath[]>([])
 
-		return slot * matchIndex + slot / 2
+	/*********************************************************
+	 * Double-elimination connectors (id-driven)
+	 *
+	 * @description
+	 * The two trees + grand final converge in arbitrary positions,
+	 * so connectors are driven purely by `nextMatchId`: every match
+	 * that declares a downstream id draws a link to it, wherever that
+	 * card lands. Measured against the whole double-elim container so
+	 * WB-final → GF and LB-final → GF both resolve across the trees.
+	 ********************************************************/
+	const measureDoubleConnectors = (): void => {
+		const rootEl = doubleRef.value
+
+		if (!rootEl || !showConnectors.value) {
+			connectorPaths.value = []
+
+			return
+		}
+
+		const rootRect = rootEl.getBoundingClientRect()
+
+		connectorViewBox.value = `0 0 ${rootRect.width} ${rootRect.height}`
+
+		const rectById = new Map<string, DOMRect>()
+		rootEl.querySelectorAll<HTMLElement>('[data-match-id]').forEach((card) => {
+			rectById.set(String(card.dataset.matchId), card.getBoundingClientRect())
+		})
+
+		const paths: TConnectorPath[] = []
+
+		for (const round of props.rounds) {
+			for (const match of round.matches) {
+				if (match.nextMatchId == null) continue
+
+				const fromRect = rectById.get(String(match.id))
+				const toRect = rectById.get(String(match.nextMatchId))
+
+				if (!fromRect || !toRect) continue
+
+				const fromCenterY = (fromRect.top - rootRect.top) + fromRect.height / 2
+				const toCenterY = (toRect.top - rootRect.top) + toRect.height / 2
+				const startX = fromRect.right - rootRect.left
+				const endX = toRect.left - rootRect.left
+				const midX = (startX + endX) / 2
+
+				paths.push({
+					key: `${match.id}-${match.nextMatchId}`,
+					d: `M ${startX},${fromCenterY} L ${midX},${fromCenterY} L ${midX},${toCenterY} L ${endX},${toCenterY}`,
+					from: {matchId: match.id, x: startX, y: fromCenterY},
+					to: {matchId: match.nextMatchId, x: endX, y: toCenterY},
+					winner: match.winnerId != null
+				})
+			}
+		}
+
+		connectorPaths.value = paths
 	}
 
-	const matchXCenter = (roundIndex: number): number => {
-		const t = roundThickness.value
-		return roundIndex * (t + roundGap) + t / 2
-	}
+	const measureSingleConnectors = (): void => {
+		const treeEl = treeRef.value
 
-	const connectorPaths = computed<TConnectorPath[]>(() => {
-		if (!showConnectors.value) return []
+		if (!treeEl || !showConnectors.value) {
+			connectorPaths.value = []
 
+			return
+		}
+
+		const treeRect = treeEl.getBoundingClientRect()
+
+		connectorViewBox.value = `0 0 ${treeRect.width} ${treeRect.height}`
+
+		const roundEls = Array.from(treeEl.querySelectorAll<HTMLElement>('.origam-bracket__round'))
+		const cardsPerRound = roundEls.map((roundEl) => {
+			const matchesEl = roundEl.querySelector('.origam-bracket-round__matches')
+
+			return matchesEl
+				? Array.from(matchesEl.children).map(card => card.getBoundingClientRect())
+				: []
+		})
+
+		const horiz = isHorizontal.value
 		const paths: TConnectorPath[] = []
 
 		for (let r = 0; r < displayRounds.value.length - 1; r += 1) {
 			const round = displayRounds.value[r]
 			const nextRound = displayRounds.value[r + 1]
+			const fromCards = cardsPerRound[r] ?? []
+			const toCards = cardsPerRound[r + 1] ?? []
 
 			for (let i = 0; i < round.matches.length; i += 1) {
 				const match = round.matches[i]
-				let nextIndex = -1
-				let nextMatch: IBracketMatch | undefined
 
+				let nextIndex = -1
 				if (match.nextMatchId != null) {
 					nextIndex = nextRound.matches.findIndex(m => m.id === match.nextMatchId)
-					if (nextIndex !== -1) nextMatch = nextRound.matches[nextIndex]
 				}
+				if (nextIndex === -1) nextIndex = Math.floor(i / 2)
 
-				if (nextIndex === -1) {
-					// Positional fallback: i -> floor(i / 2)
-					nextIndex = Math.floor(i / 2)
-					nextMatch = nextRound.matches[nextIndex]
+				const nextMatch = nextRound.matches[nextIndex]
+				const fromRect = fromCards[i]
+				const toRect = toCards[nextIndex]
+
+				if (!nextMatch || !fromRect || !toRect) continue
+
+				const fromCenterX = (fromRect.left - treeRect.left) + fromRect.width / 2
+				const fromCenterY = (fromRect.top - treeRect.top) + fromRect.height / 2
+				const toCenterX = (toRect.left - treeRect.left) + toRect.width / 2
+				const toCenterY = (toRect.top - treeRect.top) + toRect.height / 2
+
+				let d: string
+				let from: TConnectorPath['from']
+				let to: TConnectorPath['to']
+
+				if (horiz) {
+					const startX = fromRect.right - treeRect.left
+					const endX = toRect.left - treeRect.left
+					const midX = (startX + endX) / 2
+
+					d = `M ${startX},${fromCenterY} L ${midX},${fromCenterY} L ${midX},${toCenterY} L ${endX},${toCenterY}`
+					from = {matchId: match.id, x: startX, y: fromCenterY}
+					to = {matchId: nextMatch.id, x: endX, y: toCenterY}
+				} else {
+					const startY = fromRect.bottom - treeRect.top
+					const endY = toRect.top - treeRect.top
+					const midY = (startY + endY) / 2
+
+					d = `M ${fromCenterX},${startY} L ${fromCenterX},${midY} L ${toCenterX},${midY} L ${toCenterX},${endY}`
+					from = {matchId: match.id, x: fromCenterX, y: startY}
+					to = {matchId: nextMatch.id, x: toCenterX, y: endY}
 				}
-
-				if (!nextMatch) continue
-
-				const fromXCenter = matchXCenter(r)
-				const toXCenter = matchXCenter(r + 1)
-				const fromX = fromXCenter + roundThickness.value / 2
-				const toX = toXCenter - roundThickness.value / 2
-				const fromY = matchYCenter(r, i, round.matches.length)
-				const toY = matchYCenter(r + 1, nextIndex, nextRound.matches.length)
-				const midX = (fromX + toX) / 2
-
-				const isWinnerPath = match.winnerId != null
-
-				const horiz = isHorizontal.value
-				const d = horiz
-					? `M ${fromX},${fromY} L ${midX},${fromY} L ${midX},${toY} L ${toX},${toY}`
-					: `M ${fromY},${fromX} L ${fromY},${midX} L ${toY},${midX} L ${toY},${toX}`
 
 				paths.push({
 					key: `${match.id}-${nextMatch.id}`,
 					d,
-					from: {matchId: match.id, x: fromX, y: fromY},
-					to: {matchId: nextMatch.id, x: toX, y: toY},
-					winner: isWinnerPath
+					from,
+					to,
+					winner: match.winnerId != null
 				})
 			}
 		}
 
-		return paths
+		connectorPaths.value = paths
+	}
+
+	const measureConnectors = (): void => {
+		if (props.variant === BRACKET_VARIANT.DOUBLE_ELIMINATION) {
+			measureDoubleConnectors()
+
+			return
+		}
+
+		if (props.variant === BRACKET_VARIANT.ROUND_ROBIN) {
+			connectorPaths.value = []
+
+			return
+		}
+
+		measureSingleConnectors()
+	}
+
+	const connectorContainer = (): HTMLElement | null => {
+		return props.variant === BRACKET_VARIANT.DOUBLE_ELIMINATION ? doubleRef.value : treeRef.value
+	}
+
+	let connectorResizeObserver: ResizeObserver | null = null
+
+	const attachConnectorObserver = (): void => {
+		connectorResizeObserver?.disconnect()
+
+		const el = connectorContainer()
+
+		if (typeof ResizeObserver !== 'undefined' && el) {
+			connectorResizeObserver = new ResizeObserver(() => measureConnectors())
+			connectorResizeObserver.observe(el)
+		}
+	}
+
+	onMounted(() => {
+		nextTick(() => {
+			attachConnectorObserver()
+			measureConnectors()
+		})
 	})
+
+	onBeforeUnmount(() => {
+		connectorResizeObserver?.disconnect()
+		connectorResizeObserver = null
+	})
+
+	watch(
+		() => props.variant,
+		() => nextTick(() => {
+			attachConnectorObserver()
+			measureConnectors()
+		}),
+		{flush: 'post'}
+	)
+
+	watch(
+		[
+			displayRounds,
+			isHorizontal,
+			() => props.showScores,
+			() => props.showSeed,
+			() => props.density,
+			() => props.showRoundTitles
+		],
+		() => nextTick(measureConnectors),
+		{flush: 'post'}
+	)
 
 	const roundStyleFor = (_index: number): StyleValue => {
 		const minHeight = `${totalHeight.value}px`
@@ -500,29 +779,135 @@
 		emit('competitor-click', competitor, match, event)
 	}
 
+	// Legible text for a painted surface. The intent → foreground tokens
+	// always pair white, which only contrasts a *dark* fill; on a light
+	// intent (warning, success, …) white is unreadable. Since the surface
+	// resolves to a theme var we cannot WCAG-test it in JS — so we measure
+	// the painted match card at runtime and pick the better of black /
+	// white. Reactive: re-measured on mount, on bgColor / variant change.
+	const autoTextColor = ref<string | null>(null)
+
+	const measureContrast = (): void => {
+		if (!props.bgColor) {
+			autoTextColor.value = null
+
+			return
+		}
+
+		const card = connectorContainer()?.querySelector<HTMLElement>('.origam-bracket-match')
+		if (!card) {
+			autoTextColor.value = null
+
+			return
+		}
+
+		const channels = getComputedStyle(card).backgroundColor.match(/\d+(?:\.\d+)?/g)
+		if (!channels || channels.length < 3) {
+			autoTextColor.value = null
+
+			return
+		}
+
+		// Pick the black / white that maximises the WCAG ratio against the
+		// rendered surface. Crossover is at a gamma-corrected relative
+		// luminance of ~0.179: darker fills (primary) take white, lighter
+		// ones (warning, success, info) take black.
+		const linear = (channel: number): number => {
+			const c = channel / 255
+
+			return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
+		}
+		const luminance = 0.2126 * linear(+channels[0]) + 0.7152 * linear(+channels[1]) + 0.0722 * linear(+channels[2])
+
+		autoTextColor.value = luminance < 0.179 ? '#ffffff' : '#000000'
+	}
+
+	/*********************************************************
+	 * Color / shape / border → CSS custom properties
+	 *
+	 * @description
+	 * `bgColor` / `rounded` / `elevation` / `border*` paint EACH match via
+	 * the shared `bracketSurfaceVars` resolver (single source of truth with
+	 * OrigamBracketMatch). `color` drives the match text (auto-contrast wins
+	 * when a surface is painted). The connector links follow the match
+	 * border (width + style + colour) so trees and links read as one.
+	 ********************************************************/
+	const colorVars = computed<Record<string, string>>(() => {
+		const vars: Record<string, string> = bracketSurfaceVars(props)
+
+		// Text foreground: a painted surface (`bgColor`) takes the measured
+		// black / white that actually passes WCAG against it; with no
+		// surface, `color` drives the text on the neutral background.
+		const foreground = autoTextColor.value ?? resolveBracketForeground(props.color)
+		if (foreground) vars['--origam-bracket---color'] = foreground
+
+		// Connector links mirror the match border. stroke-width is set
+		// explicitly (not just via the SCSS fallback) because a global
+		// `:root` default for it would otherwise always win.
+		const borderColor = resolveBracketBorderColor(props.borderColor)
+		if (borderColor) {
+			vars['--origam-bracket-connector---stroke-color'] = borderColor
+			vars['--origam-bracket-connector---stroke-color-winner'] = borderColor
+		}
+
+		const borderWidth = resolveBracketBorderWidth(props.border)
+		if (borderWidth) vars['--origam-bracket-connector---stroke-width'] = borderWidth
+
+		const dash = bracketDashArray(props.borderStyle)
+		if (dash.dasharray) vars['--origam-bracket-connector---stroke-dasharray'] = dash.dasharray
+		if (dash.linecap) vars['--origam-bracket-connector---stroke-linecap'] = dash.linecap
+
+		return vars
+	})
+
+	// Read the SETTLED surface: the match card animates its background
+	// (`transition: background-color 120ms`), so an immediate read sees the
+	// mid-transition colour and locks the wrong black / white. Wait past
+	// the transition before measuring.
+	const CONTRAST_SETTLE_MS = 200
+	let contrastTimer: ReturnType<typeof setTimeout> | null = null
+
+	const scheduleContrast = (): void => {
+		if (typeof window === 'undefined') return
+		if (contrastTimer) clearTimeout(contrastTimer)
+
+		contrastTimer = setTimeout(measureContrast, CONTRAST_SETTLE_MS)
+	}
+
+	watch(
+		[() => props.bgColor, () => props.variant, displayRounds],
+		scheduleContrast,
+		{flush: 'post'}
+	)
+
+	onMounted(scheduleContrast)
+
+	onBeforeUnmount(() => {
+		if (contrastTimer) clearTimeout(contrastTimer)
+		contrastTimer = null
+	})
+
 	/*********************************************************
 	 * Class & Style
+	 *
+	 * @description
+	 * `rounded`, `elevation` and `border*` are applied PER-MATCH via
+	 * `colorVars` (CSS custom properties the match cards consume), not on
+	 * the bracket root — so each card is shaped / elevated / bordered.
 	 ********************************************************/
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(props, 'bgColor')
-	const {textColorClasses, textColorStyles} = useTextColor(props, 'color')
 	const {dimensionStyles} = useDimension(props)
-	const {elevationClasses, elevationStyles} = useElevation(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 
 	const rootStyles = computed<StyleValue>(() => {
 		return [
-			roundedStyles.value,
-			backgroundColorStyles.value,
-			textColorStyles.value,
 			dimensionStyles.value,
-			elevationStyles.value,
 			marginStyles.value,
 			paddingStyles.value,
 			{
 				'--origam-bracket---round-gap': `${roundGap}px`,
-				'--origam-bracket---match-gap': `${baseGap}px`
+				'--origam-bracket---match-gap': `${baseGap}px`,
+				...colorVars.value
 			},
 			props.style
 		] as StyleValue
@@ -535,10 +920,6 @@
 			`origam-bracket--direction-${props.direction}`,
 			`origam-bracket--density-${props.density ?? 'default'}`,
 			`origam-bracket--color-${props.color}`,
-			roundedClasses.value,
-			backgroundColorClasses.value,
-			textColorClasses.value,
-			elevationClasses.value,
 			marginClasses.value,
 			paddingClasses.value,
 			props.class
@@ -602,6 +983,54 @@
 			z-index: 1;
 		}
 
+		&__double {
+			display: grid;
+			position: relative;
+			grid-template-columns: max-content max-content;
+			grid-template-areas:
+				"winners grand-final"
+				"losers  grand-final";
+			column-gap: var(--origam-bracket---round-gap, 48px);
+			row-gap: var(--origam-bracket-double---section-gap, 40px);
+			width: max-content;
+		}
+
+		&__de-section {
+			position: relative;
+			z-index: 1;
+
+			&--winners {
+				grid-area: winners;
+			}
+
+			&--losers {
+				grid-area: losers;
+			}
+
+			&--grand-final {
+				grid-area: grand-final;
+				align-self: center;
+			}
+		}
+
+		&__de-label {
+			margin: 0 0 var(--origam-bracket-double-label---margin-block-end, 12px);
+			color: var(--origam-bracket-double-label---color, var(--origam-color__text---primary, #1a1a1a));
+			font-size: var(--origam-bracket-double-label---font-size, 0.75rem);
+			font-weight: var(--origam-bracket-double-label---font-weight, 700);
+			letter-spacing: var(--origam-bracket-double-label---letter-spacing, 0.08em);
+			text-transform: var(--origam-bracket-double-label---text-transform, uppercase);
+		}
+
+		&__de-tree {
+			display: flex;
+			position: relative;
+			flex-direction: row;
+			align-items: stretch;
+			gap: var(--origam-bracket---round-gap, 48px);
+			width: max-content;
+		}
+
 		&__connectors {
 			position: absolute;
 			inset: 0;
@@ -613,12 +1042,14 @@
 		}
 
 		&__connector {
-			stroke: var(--origam-bracket-connector---stroke-color, var(--origam-color__border---default, rgba(0, 0, 0, 0.24)));
-			stroke-width: var(--origam-bracket-connector---stroke-width, 1px);
+			stroke: var(--origam-bracket-connector---stroke-color, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
+			stroke-width: var(--origam-bracket-connector---stroke-width, var(--origam-bracket-match---border-width, 1px));
+			stroke-dasharray: var(--origam-bracket-connector---stroke-dasharray, none);
+			stroke-linecap: var(--origam-bracket-connector---stroke-linecap, butt);
 
 			&--winner {
-				stroke: var(--origam-bracket-connector---stroke-color-winner, var(--origam-color__action--primary---bg, #1976d2));
-				stroke-width: calc(var(--origam-bracket-connector---stroke-width, 1px) + 1px);
+				stroke: var(--origam-bracket-connector---stroke-color-winner, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
+				stroke-width: var(--origam-bracket-connector---stroke-width, var(--origam-bracket-match---border-width, 1px));
 			}
 		}
 

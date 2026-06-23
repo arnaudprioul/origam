@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-textareafield-origamtextareafield-story-vue'
+const STORY_PATH = '/story/components-stories-textareafield-origamtextareafield-story-vue'
 
 const ARROW_TIMEOUT = 5000
 

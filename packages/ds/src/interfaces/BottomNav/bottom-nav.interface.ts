@@ -1,5 +1,6 @@
 import type {
     IActiveEmits,
+    IActiveProps,
     IBorderProps,
     IBtnProps,
     IBgColorProps,
@@ -20,12 +21,20 @@ import type {
     ITransitionComponentProps
 } from '../../interfaces'
 
-import type { TMode } from '../../types'
+import type { TBottomNavPosition, TMode } from '../../types'
 
-export interface IBottomNavProps extends ITagProps, ICommonsComponentProps, IColorProps, IBgColorProps, IPaddingProps, IBorderProps, IElevationProps, IMarginProps, IDimensionProps, IDensityProps, IRoundedProps, ILayoutItemProps, IGroupProps, IHoverProps, ITransitionComponentProps {
+export interface IBottomNavProps extends ITagProps, ICommonsComponentProps, IColorProps, IBgColorProps, IPaddingProps, IBorderProps, IElevationProps, IMarginProps, IDimensionProps, IDensityProps, IRoundedProps, ILayoutItemProps, IGroupProps, IHoverProps, IActiveProps, ITransitionComponentProps {
     grow?: boolean
     mode?: TMode
     items?: Array<IBtnProps>
+    /**
+     * Horizontal placement of the bar when it does not span the full width
+     * (e.g. a custom `width`): `'start'` (inline-start), `'center'` or
+     * `'end'` (inline-end).
+     *
+     * @default 'start'
+     */
+    position?: TBottomNavPosition
 }
 
 /** Emits fired by `<OrigamBottomNav>` — active item v-model + hover/active

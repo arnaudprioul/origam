@@ -3,191 +3,155 @@
 			group="components"
 			title="Chart/OrigamChartSunburst"
 	>
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<Record<string, unknown>>({
-					height: 400,
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IChartSunburstProps>>({
+					title: 'Budget Breakdown',
+					subtitle: 'Q1 2026',
 					innerRadius: 0.15,
 					ringPadding: 1,
-					animated: true,
-					showLabel: true,
+					legendPosition: 'bottom',
 					showLegend: true,
-					showTooltip: true,
-					legendPosition: 'bottom'
+					showLabel: true,
+					bgColor: undefined,
+					rounded: undefined,
+					elevation: undefined,
+					animated: true,
+					animationDuration: 600,
+					aspectRatio: undefined
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="sunburst-playground"
-				>
-					<origam-chart-sunburst
-							:series="FIXTURE_BUDGET_SERIES"
-							:height="Number(state.height)"
-							:inner-radius="Number(state.innerRadius)"
-							:ring-padding="Number(state.ringPadding)"
-							:animated="Boolean(state.animated)"
-							:show-label="Boolean(state.showLabel)"
-							:show-legend="Boolean(state.showLegend)"
-							:show-tooltip="Boolean(state.showTooltip)"
-							:legend-position="state.legendPosition"
-							title="Budget Breakdown"
-							subtitle="Q1 2026"
-							data-cy="sunburst-playground-chart"
-							@point-click="onPointClick"
-							@legend-click="onLegendClick"
-							@series-toggle="onSeriesToggle"
-					/>
-					<pre
-							class="story-log"
-							data-cy="sunburst-playground-log"
-					>{{ logLines.join('\n') }}</pre>
-				</div>
+				<origam-chart-sunburst
+						:series="FIXTURE_BUDGET_SERIES"
+						:title="state.title"
+						:subtitle="state.subtitle"
+						:inner-radius="state.innerRadius"
+						:ring-padding="state.ringPadding"
+						:legend-position="state.legendPosition"
+						:show-legend="state.showLegend"
+						:show-label="state.showLabel"
+						:bg-color="state.bgColor || undefined"
+						:rounded="state.rounded || undefined"
+						:elevation="state.elevation || undefined"
+						:animated="state.animated"
+						:animation-duration="state.animationDuration"
+						:aspect-ratio="state.aspectRatio || undefined"
+						:height="380"
+				/>
 			</template>
 			<template #controls="{ state }">
-				<HstNumber
-						v-model="state.height"
-						title="height (px)"
-				/>
-				<HstSlider
-						v-model="state.innerRadius"
-						title="innerRadius"
-						:min="0"
-						:max="0.6"
-						:step="0.05"
-				/>
-				<HstNumber
-						v-model="state.ringPadding"
-						title="ringPadding"
-				/>
-				<HstSelect
-						v-model="state.legendPosition"
-						title="legendPosition"
-						:options="LEGEND_POSITION_OPTIONS"
-				/>
-				<HstCheckbox
-						v-model="state.animated"
-						title="animated"
-				/>
-				<HstCheckbox
-						v-model="state.showLabel"
-						title="showLabel"
-				/>
-				<HstCheckbox
-						v-model="state.showLegend"
-						title="showLegend"
-				/>
-				<HstCheckbox
-						v-model="state.showTooltip"
-						title="showTooltip"
-				/>
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Chart Layout">
+					<HstSelect v-model="state.legendPosition" title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+					<HstCheckbox v-model="state.showLegend" title="Show Legend"/>
+					<HstCheckbox v-model="state.showLabel"  title="Show Label"/>
+					<HstText     v-model="state.aspectRatio" title="Aspect Ratio (e.g. 16/9)"/>
+				</StoryGroup>
+				<StoryGroup title="Geometry">
+					<HstNumber v-model="state.innerRadius"  title="Inner Radius" :min="0" :max="0.6" :step="0.05"/>
+					<HstNumber v-model="state.ringPadding"  title="Ring Padding" :min="0" :max="8"   :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Animation">
+					<HstCheckbox v-model="state.animated"          title="Animated"/>
+					<HstNumber   v-model="state.animationDuration" title="Animation Duration (ms)" :min="100" :max="2000" :step="100"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — innerRadius (pie vs donut)">
-			<div
-					class="story-shell"
-					data-cy="sunburst-inner-radius"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>innerRadius=0 (full pie)</strong>
-						<origam-chart-sunburst
-								:series="FIXTURE_BUDGET_SERIES"
-								:inner-radius="0"
-								:height="320"
-								title="Full Pie"
-								data-cy="sunburst-inner-0"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>innerRadius=0.4 (deep donut)</strong>
-						<origam-chart-sunburst
-								:series="FIXTURE_BUDGET_SERIES"
-								:inner-radius="0.4"
-								:height="320"
-								title="Deep Donut"
-								data-cy="sunburst-inner-04"
-						/>
-					</div>
-				</div>
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IChartSunburstProps>>({
+					showTooltip: true,
+					showLegend: true,
+					showLabel: true,
+					animated: true,
+					height: 380,
+					width: undefined,
+					minHeight: undefined,
+					maxHeight: undefined
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart-sunburst
+						:series="FIXTURE_BUDGET_SERIES"
+						:show-tooltip="state.showTooltip"
+						:show-legend="state.showLegend"
+						:show-label="state.showLabel"
+						:animated="state.animated"
+						:height="state.height"
+						:width="state.width || undefined"
+						:min-height="state.minHeight || undefined"
+						:max-height="state.maxHeight || undefined"
+						title="Budget Breakdown"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Visibility">
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+					<HstCheckbox v-model="state.showLegend"  title="Show Legend"/>
+					<HstCheckbox v-model="state.showLabel"   title="Show Label"/>
+					<HstCheckbox v-model="state.animated"    title="Animated"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstNumber v-model="state.height"    title="Height"/>
+					<HstText   v-model="state.width"     title="Width"/>
+					<HstText   v-model="state.minHeight" title="Min Height"/>
+					<HstText   v-model="state.maxHeight" title="Max Height"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Events - point-click">
+			<div class="story-shell">
+				<origam-chart-sunburst
+						:series="FIXTURE_BUDGET_SERIES"
+						:height="360"
+						title="Click a node"
+						@point-click="logEvent('point-click', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — ringPadding">
-			<div
-					class="story-shell"
-					data-cy="sunburst-ring-padding"
-			>
-				<div class="story-grid story-grid--3">
-					<div class="story-col">
-						<strong>ringPadding=0 (flush)</strong>
-						<origam-chart-sunburst
-								:series="FIXTURE_BUDGET_SERIES"
-								:ring-padding="0"
-								:height="280"
-								data-cy="sunburst-padding-0"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>ringPadding=1 (default)</strong>
-						<origam-chart-sunburst
-								:series="FIXTURE_BUDGET_SERIES"
-								:ring-padding="1"
-								:height="280"
-								data-cy="sunburst-padding-1"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>ringPadding=4 (wide gap)</strong>
-						<origam-chart-sunburst
-								:series="FIXTURE_BUDGET_SERIES"
-								:ring-padding="4"
-								:height="280"
-								data-cy="sunburst-padding-4"
-						/>
-					</div>
-				</div>
+		<Variant title="Events - legend-click">
+			<div class="story-shell">
+				<origam-chart-sunburst
+						:series="FIXTURE_BUDGET_SERIES"
+						:height="360"
+						title="Click a legend entry"
+						@legend-click="logEvent('legend-click', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — colorScheme">
-			<div
-					class="story-shell"
-					data-cy="sunburst-color-scheme"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>default intent cycle</strong>
-						<origam-chart-sunburst
-								:series="FIXTURE_FS_SERIES"
-								:height="320"
-								data-cy="sunburst-color-default"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>custom CSS ramp</strong>
-						<origam-chart-sunburst
-								:series="FIXTURE_FS_SERIES"
-								:color-scheme="['#6366f1', '#0ea5e9', '#10b981']"
-								:height="320"
-								data-cy="sunburst-color-custom"
-						/>
-					</div>
-				</div>
+		<Variant title="Events - series-toggle">
+			<div class="story-shell">
+				<origam-chart-sunburst
+						:series="FIXTURE_BUDGET_SERIES"
+						:height="360"
+						title="Toggle series via legend"
+						@series-toggle="logEvent('series-toggle', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Slot — tooltip">
-			<div
-					class="story-shell"
-					data-cy="sunburst-slot-tooltip"
-			>
+		<Variant title="Slots - Tooltip">
+			<div class="story-shell">
 				<origam-chart-sunburst
 						:series="FIXTURE_BUDGET_SERIES"
 						:height="380"
 						title="Custom tooltip"
-						data-cy="sunburst-slot-tooltip-chart"
 				>
 					<template #tooltip="{ node, path, point }">
 						<div class="custom-tooltip">
@@ -199,16 +163,12 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — empty">
-			<div
-					class="story-shell"
-					data-cy="sunburst-slot-empty"
-			>
+		<Variant title="Slots - Empty">
+			<div class="story-shell">
 				<origam-chart-sunburst
 						:series="[]"
 						:height="320"
 						title="Empty state"
-						data-cy="sunburst-slot-empty-chart"
 				>
 					<template #empty>
 						<div class="custom-empty">
@@ -219,25 +179,85 @@
 			</div>
 		</Variant>
 
-		<Variant title="Emit — point-click on node">
-			<div
-					class="story-shell"
-					data-cy="sunburst-emit"
-			>
+		<Variant title="Slots - Legend Item">
+			<div class="story-shell">
 				<origam-chart-sunburst
 						:series="FIXTURE_BUDGET_SERIES"
-						:height="360"
-						title="Click a node"
-						data-cy="sunburst-emit-chart"
-						@point-click="onPointClick"
-						@legend-click="onLegendClick"
-						@series-toggle="onSeriesToggle"
-				/>
-				<pre
-						class="story-log"
-						data-cy="sunburst-emit-log"
-				>{{ logLines.join('\n') }}</pre>
+						:height="380"
+						title="Custom legend item"
+				>
+					<template #legend-item="{ series, index, visible }">
+						<span :style="{ opacity: visible ? 1 : 0.4, fontStyle: 'italic' }">
+							{{ index + 1 }}. {{ series.name }}
+						</span>
+					</template>
+				</origam-chart-sunburst>
 			</div>
+		</Variant>
+
+		<Variant title="Slots - Title">
+			<div class="story-shell">
+				<origam-chart-sunburst
+						:series="FIXTURE_BUDGET_SERIES"
+						:height="380"
+				>
+					<template #title>
+						<div class="custom-title">
+							<strong>Custom Title</strong>
+							<em>with a rich subtitle</em>
+						</div>
+					</template>
+				</origam-chart-sunburst>
+			</div>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IChartSunburstProps>>({
+					title: 'Budget Breakdown',
+					subtitle: 'Q1 2026',
+					innerRadius: 0.15,
+					ringPadding: 1,
+					legendPosition: 'bottom',
+					showLegend: true,
+					showLabel: true,
+					showTooltip: true,
+					animated: true,
+					animationDuration: 600,
+					height: 400
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart-sunburst
+						v-bind="state"
+						:series="FIXTURE_BUDGET_SERIES"
+						@point-click="logEvent('point-click', $event)"
+						@legend-click="logEvent('legend-click', $event)"
+						@series-toggle="logEvent('series-toggle', $event)"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect   v-model="state.bgColor"         title="Bg Color"         :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.rounded"         title="Rounded"          :options="ROUNDED_OPTIONS"/>
+					<HstSelect   v-model="state.elevation"       title="Elevation"        :options="ELEVATION_OPTIONS"/>
+					<HstSelect   v-model="state.legendPosition"  title="Legend Position"  :options="LEGEND_POSITION_OPTIONS"/>
+					<HstNumber   v-model="state.innerRadius"     title="Inner Radius"     :min="0" :max="0.6" :step="0.05"/>
+					<HstNumber   v-model="state.ringPadding"     title="Ring Padding"     :min="0" :max="8"   :step="1"/>
+					<HstNumber   v-model="state.animationDuration" title="Animation (ms)" :min="100" :max="2000" :step="100"/>
+					<HstNumber   v-model="state.height"          title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+					<HstCheckbox v-model="state.showLegend"  title="Show Legend"/>
+					<HstCheckbox v-model="state.showLabel"   title="Show Label"/>
+					<HstCheckbox v-model="state.animated"    title="Animated"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -246,21 +266,24 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
-	import OrigamChartSunburst from '@origam/components/Chart/OrigamChartSunburst.vue'
+	import { OrigamChartSunburst } from '@origam/components'
+	import type { IChartSeries, IChartSunburstDatum, IChartSunburstProps } from '@origam/interfaces'
 
-	import type { IChartPoint, IChartSeries } from '@origam/interfaces'
-
-	import type { IChartSunburstDatum } from '@origam/interfaces/Chart/chart-sunburst.interface'
-
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
 
 	const LEGEND_POSITION_OPTIONS = [
-		{ value: 'top', label: 'top' },
-		{ value: 'bottom', label: 'bottom' },
-		{ value: 'left', label: 'left' },
-		{ value: 'right', label: 'right' }
+		{ value: 'top',    label: 'Top' },
+		{ value: 'bottom', label: 'Bottom' },
+		{ value: 'left',   label: 'Left' },
+		{ value: 'right',  label: 'Right' }
 	]
 
 	const BUDGET_DATA: Array<IChartSunburstDatum> = [
@@ -272,8 +295,8 @@
 					name: 'Frontend',
 					value: 20,
 					children: [
-						{ name: 'Vue', value: 8 },
-						{ name: 'React', value: 7 },
+						{ name: 'Vue',     value: 8 },
+						{ name: 'React',   value: 7 },
 						{ name: 'Tooling', value: 5 }
 					]
 				},
@@ -281,9 +304,9 @@
 					name: 'Backend',
 					value: 20,
 					children: [
-						{ name: 'Node', value: 10 },
+						{ name: 'Node',   value: 10 },
 						{ name: 'Python', value: 6 },
-						{ name: 'Go', value: 4 }
+						{ name: 'Go',     value: 4 }
 					]
 				},
 				{ name: 'DevOps', value: 10 }
@@ -294,59 +317,15 @@
 			value: 30,
 			children: [
 				{ name: 'Digital', value: 20 },
-				{ name: 'Print', value: 10 }
+				{ name: 'Print',   value: 10 }
 			]
 		},
 		{ name: 'Sales', value: 20 }
 	]
 
-	const FS_DATA: Array<IChartSunburstDatum> = [
-		{
-			name: 'src',
-			value: 1200,
-			children: [
-				{ name: 'components', value: 500 },
-				{ name: 'composables', value: 300 },
-				{ name: 'utils', value: 200 },
-				{ name: 'types', value: 200 }
-			]
-		},
-		{
-			name: 'tests',
-			value: 400,
-			children: [
-				{ name: 'unit', value: 250 },
-				{ name: 'e2e', value: 150 }
-			]
-		},
-		{ name: 'docs', value: 100 }
-	]
-
 	const FIXTURE_BUDGET_SERIES: Array<IChartSeries> = [
 		{ name: 'Budget', data: BUDGET_DATA as any }
 	]
-
-	const FIXTURE_FS_SERIES: Array<IChartSeries> = [
-		{ name: 'Filesystem', data: FS_DATA as any }
-	]
-
-	const logLines = ref<Array<string>>([])
-
-	const appendLog = (line: string) => {
-		logLines.value = [line, ...logLines.value].slice(0, 8)
-	}
-
-	const onPointClick = (point: IChartPoint) => {
-		appendLog(`point-click → x="${ point.x }" y=${ point.y }`)
-	}
-
-	const onLegendClick = (series: IChartSeries, index: number) => {
-		appendLog(`legend-click → ${ series.name } (index ${ index })`)
-	}
-
-	const onSeriesToggle = (series: IChartSeries, visible: boolean) => {
-		appendLog(`series-toggle → ${ series.name } now ${ visible ? 'visible' : 'hidden' }`)
-	}
 </script>
 
 <style scoped>
@@ -355,41 +334,6 @@
 		flex-direction: column;
 		gap: 12px;
 		padding: 16px;
-	}
-
-	.story-log {
-		font-size: 0.75rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-		min-height: 80px;
-		border: 1px solid var(--origam-color-border-subtle, #e5e7eb);
-		border-radius: 4px;
-		padding: 8px;
-		white-space: pre-wrap;
-	}
-
-	.story-grid {
-		display: grid;
-		gap: 16px;
-	}
-
-	.story-grid--2 {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	.story-grid--3 {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
-
-	.story-col {
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-		min-width: 0;
-	}
-
-	.story-col strong {
-		font-size: 0.8125rem;
-		color: var(--origam-color-text-secondary, #6b7280);
 	}
 
 	.custom-tooltip {
@@ -403,4 +347,15 @@
 		color: var(--origam-color-text-secondary, #6b7280);
 		font-style: italic;
 	}
+
+	.custom-title {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
 </style>
+
+<docs
+		lang="md"
+		src="@docs/components/Chart/OrigamChartSunburst.md"
+/>

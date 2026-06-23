@@ -2,11 +2,14 @@
 	<component
 			:is="tag"
 			:id="id"
+			ref="matchRef"
 			:aria-label="ariaLabel"
 			:class="matchClasses"
 			:style="matchStyles"
 			role="group"
 			@click="handleMatchClick"
+			@mouseenter="onMouseenter"
+			@mouseleave="onMouseleave"
 	>
 		<div
 				v-if="match.scheduledAt || resolvedStatus"
@@ -18,6 +21,15 @@
 			>
 				{{ statusLabel }}
 			</span>
+			<a
+					v-if="isLive && to"
+					:href="to"
+					class="origam-bracket-match__watch"
+					rel="noopener noreferrer"
+					target="_blank"
+			>
+				{{ watchLabel }}
+			</a>
 			<span
 					v-if="match.scheduledAt"
 					class="origam-bracket-match__schedule"
@@ -35,7 +47,8 @@
 					:side="'A'"
 			>
 				<origam-bracket-competitor
-						:color="color"
+						:advantage-rounds="advantageA"
+						:forfeit="isForfeitA"
 						:competitor="match.competitorA"
 						:interactive="interactive"
 						:is-loser="isLoserA"
@@ -48,7 +61,7 @@
 				/>
 			</slot>
 
-			<div class="origam-bracket-match__divider"/>
+			<origam-divider class="origam-bracket-match__divider"/>
 
 			<slot
 					name="competitor"
@@ -58,7 +71,8 @@
 					:side="'B'"
 			>
 				<origam-bracket-competitor
-						:color="color"
+						:advantage-rounds="advantageB"
+						:forfeit="isForfeitB"
 						:competitor="match.competitorB"
 						:interactive="interactive"
 						:is-loser="isLoserB"
@@ -78,11 +92,14 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue } from 'vue'
+	import { computed, onBeforeUnmount, onMounted, ref, StyleValue, watch } from 'vue'
 
 	import OrigamBracketCompetitor from './OrigamBracketCompetitor.vue'
+	import OrigamDivider from '../Divider/OrigamDivider.vue'
 
-	import { useProps } from '../../composables'
+	import { useActive, useDensity, useDimension, useHover, useMargin, usePadding, useProps } from '../../composables'
+
+	import { bracketSurfaceVars, resolveBracketForeground } from '../../utils/Bracket/bracket-surface.util'
 
 	import type { IBracketCompetitor, IBracketMatch, IBracketMatchProps } from '../../interfaces'
 
@@ -117,6 +134,8 @@
 
 		return STATUS_LABELS[resolvedStatus.value] ?? resolvedStatus.value
 	})
+
+	const watchLabel = 'Watch live'
 
 	const statusClasses = computed(() => {
 		return [
@@ -153,6 +172,22 @@
 		return props.match.competitorB.id !== props.match.winnerId
 	})
 
+	// On a forfeited match the LOSER (the side that didn't advance) is the
+	// one that forfeited — flag it so the row can show it.
+	const isForfeitA = computed<boolean>(() => resolvedStatus.value === 'forfeited' && isLoserA.value)
+	const isForfeitB = computed<boolean>(() => resolvedStatus.value === 'forfeited' && isLoserB.value)
+
+	const advantageFor = (competitor: IBracketCompetitor | null): number | undefined => {
+		const advantage = props.match.advantage
+		if (!advantage || !competitor) return undefined
+		if (advantage.competitorId !== competitor.id) return undefined
+
+		return advantage.rounds ?? 1
+	}
+
+	const advantageA = computed<number | undefined>(() => advantageFor(props.match.competitorA))
+	const advantageB = computed<number | undefined>(() => advantageFor(props.match.competitorB))
+
 	const ariaLabel = computed<string>(() => {
 		const a = props.match.competitorA?.name ?? 'TBD'
 		const b = props.match.competitorB?.name ?? 'TBD'
@@ -161,6 +196,8 @@
 	})
 
 	const handleMatchClick = (event: MouseEvent) => {
+		onActive(event)
+
 		const target = event.target as HTMLElement | null
 		if (target?.closest('.origam-bracket-competitor')) return
 
@@ -177,19 +214,115 @@
 		}
 	}
 
+	/*********************************************************
+	 * Cross-cutting surface — shared resolvers + composables
+	 *
+	 * @description
+	 * `bgColor` / `rounded` / `elevation` / `border*` paint the card through
+	 * the shared `bracketSurfaceVars` (same source of truth as OrigamBracket);
+	 * `density` / `dimension` / `padding` / `margin` ride the Commons
+	 * composables. `color` sets the card text — auto-contrast against the
+	 * painted surface wins when `bgColor` is set, so a standalone card stays
+	 * legible like it does inside a bracket.
+	 ********************************************************/
+	const matchRef = ref<HTMLElement | null>(null)
+
+	// Interaction state — `hover` / `active` paint the card surface from the
+	// hover / active state objects (same as everywhere). A `live` match IS
+	// the active state, so it picks up the active surface automatically.
+	const {hoverClasses, isHover, hoverState, onMouseenter, onMouseleave} = useHover(props)
+	const {activeClasses, isActive, activeState, onActive} = useActive(props)
+
+	const isLive = computed<boolean>(() => resolvedStatus.value === 'live')
+	const isActiveOrLive = computed<boolean>(() => isActive.value || isLive.value)
+
+	// Effective surface props: hover / active (incl. live) state objects
+	// override the resting props, then everything flows through the shared
+	// `bracketSurfaceVars` so the card repaints on state — exactly like a
+	// `useStateEffect`-driven component, but through the bracket's vars.
+	const surfaceInput = computed(() => {
+		// Hover wins over active (incl. live) — hovering a live match shows
+		// the hover surface. Mirrors useStateEffect's hover-first precedence.
+		if (isHover.value && hoverState.value) return {...props, ...hoverState.value}
+		if (isActiveOrLive.value && activeState.value) return {...props, ...activeState.value}
+
+		return props
+	})
+
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {dimensionStyles} = useDimension(props)
+	const {densityClasses} = useDensity(props, 'origam-bracket-match')
+
+	const autoTextColor = ref<string | null>(null)
+
+	const measureContrast = (): void => {
+		const el = matchRef.value
+		if (!props.bgColor || !el) {
+			autoTextColor.value = null
+
+			return
+		}
+
+		const channels = getComputedStyle(el).backgroundColor.match(/\d+(?:\.\d+)?/g)
+		if (!channels || channels.length < 3) {
+			autoTextColor.value = null
+
+			return
+		}
+
+		const linear = (channel: number): number => {
+			const c = channel / 255
+
+			return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
+		}
+		const luminance = 0.2126 * linear(+channels[0]) + 0.7152 * linear(+channels[1]) + 0.0722 * linear(+channels[2])
+
+		autoTextColor.value = luminance < 0.179 ? '#ffffff' : '#000000'
+	}
+
+	let contrastTimer: ReturnType<typeof setTimeout> | null = null
+
+	const scheduleContrast = (): void => {
+		if (typeof window === 'undefined') return
+		if (contrastTimer) clearTimeout(contrastTimer)
+
+		contrastTimer = setTimeout(measureContrast, 200)
+	}
+
+	watch([() => props.bgColor, () => props.match, isHover, isActiveOrLive], scheduleContrast, {flush: 'post'})
+	onMounted(scheduleContrast)
+	onBeforeUnmount(() => {
+		if (contrastTimer) clearTimeout(contrastTimer)
+		contrastTimer = null
+	})
+
 	const matchStyles = computed<StyleValue>(() => {
-		return [props.style] as StyleValue
+		const textColor = autoTextColor.value ?? resolveBracketForeground(props.color)
+
+		return [
+			bracketSurfaceVars(surfaceInput.value),
+			textColor ? {'--origam-bracket---color': textColor, color: textColor} : {},
+			paddingStyles.value,
+			marginStyles.value,
+			dimensionStyles.value,
+			props.style
+		] as StyleValue
 	})
 
 	const matchClasses = computed(() => {
 		return [
 			'origam-bracket-match',
-			`origam-bracket-match--color-${props.color}`,
 			{
 				'origam-bracket-match--final': props.isFinal,
 				'origam-bracket-match--interactive': props.interactive,
 				[`origam-bracket-match--status-${resolvedStatus.value}`]: !!resolvedStatus.value
 			},
+			hoverClasses.value,
+			activeClasses.value,
+			densityClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})
@@ -229,32 +362,58 @@
 		}
 
 		&__status {
+			display: inline-flex;
+			align-items: center;
+			gap: 5px;
 			text-transform: uppercase;
 			font-weight: 600;
 			letter-spacing: 0.04em;
 
+			&::before {
+				content: '';
+				width: 7px;
+				height: 7px;
+				border-radius: 50%;
+				background: currentColor;
+				flex: 0 0 auto;
+			}
+
+			&--pending {
+				color: var(--origam-color__text---tertiary, rgba(0, 0, 0, 0.5));
+			}
+
 			&--live {
-				color: var(--origam-color__feedback--danger---fg, #d32f2f);
-				display: inline-flex;
-				align-items: center;
-				gap: 4px;
+				color: var(--origam-color__feedback--danger---bg, #d32f2f);
 
 				&::before {
-					content: '';
-					width: 6px;
-					height: 6px;
-					border-radius: 50%;
-					background: currentColor;
-					animation: origam-bracket-pulse 1.2s infinite;
+					box-shadow: 0 0 0 0 currentColor;
+					animation: origam-bracket-blink 1s steps(1, end) infinite, origam-bracket-ping 1.4s ease-out infinite;
 				}
 			}
 
 			&--completed {
-				color: var(--origam-color__text---tertiary, rgba(0, 0, 0, 0.5));
+				color: var(--origam-color__feedback--success---bg, #2e7d32);
 			}
 
 			&--forfeited {
-				color: var(--origam-color__feedback--warning---fg, #ed6c02);
+				color: var(--origam-color__feedback--warning---bg, #ed6c02);
+			}
+		}
+
+		&__watch {
+			display: inline-flex;
+			align-items: center;
+			gap: 2px;
+			color: var(--origam-color__feedback--danger---bg, #d32f2f);
+			font-weight: 600;
+			text-decoration: none;
+
+			&::after {
+				content: '↗';
+			}
+
+			&:hover {
+				text-decoration: underline;
 			}
 		}
 
@@ -268,11 +427,6 @@
 			flex: 1 1 auto;
 		}
 
-		&__divider {
-			height: 1px;
-			background: var(--origam-color__border---subtle, rgba(0, 0, 0, 0.08));
-		}
-
 		&--interactive {
 			cursor: pointer;
 
@@ -282,31 +436,39 @@
 			}
 		}
 
-		&--final {
-			background-color: var(--origam-bracket-match--final---background-color, var(--origam-color__surface---elevated, #fafafa));
-			border-color: var(--origam-bracket-match--final---border-color, var(--origam-color__action--primary---bg, #1976d2));
-			box-shadow: var(--origam-bracket-match--final---box-shadow, 0 4px 12px rgba(0, 0, 0, 0.12));
-		}
-
 		&--status-completed {
 			opacity: 0.95;
 		}
+
+		&--density-compact {
+			--origam-bracket-match---min-height: 56px;
+			--origam-bracket-competitor---height: 28px;
+			--origam-bracket-competitor---padding-block: 2px;
+		}
+
+		&--density-comfortable {
+			--origam-bracket-match---min-height: 88px;
+			--origam-bracket-competitor---height: 44px;
+			--origam-bracket-competitor---padding-block: 8px;
+		}
 	}
 
-	@keyframes origam-bracket-pulse {
-		0%, 100% {
-			opacity: 1;
-			transform: scale(1);
-		}
-		50% {
-			opacity: 0.5;
-			transform: scale(1.4);
-		}
+	@keyframes origam-bracket-blink {
+		0%, 50% { opacity: 1; }
+		51%, 100% { opacity: 0.2; }
+	}
+
+	@keyframes origam-bracket-ping {
+		0% { box-shadow: 0 0 0 0 currentColor; }
+		70%, 100% { box-shadow: 0 0 0 5px transparent; }
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		@keyframes origam-bracket-pulse {
+		@keyframes origam-bracket-blink {
 			0%, 100% { opacity: 1; }
+		}
+		@keyframes origam-bracket-ping {
+			0%, 100% { box-shadow: none; }
 		}
 	}
 </style>

@@ -17,6 +17,29 @@ source attribution, and locale-aware decorative quote marks.
 </template>
 ```
 
+## Colour model
+
+The blockquote exposes **two independent colour axes** that are meant to
+contrast with each other:
+
+- **`color`** paints the **citation text** — both the body **and the
+  source** label. Default `text-primary` (body) / `text-secondary`
+  (source). An intent resolves to its readable shade (`fgSubtle`); when
+  `color` is left empty the source keeps its subdued default.
+- **`bgColor`** paints the **accent**: the decorative bar / pull rules
+  (the "borders"), the big background quote glyph (`variant="quoted"`) and
+  the author label. Default `primary`. It does **not** fill the surface —
+  the blockquote stays transparent.
+
+```vue
+<!-- dark body text, success-green accent bar + author -->
+<origam-blockquote color="neutral" bg-color="success" author="…">…</origam-blockquote>
+```
+
+> The `bgColor`-as-accent naming is a known wart — a future major will
+> rename it to `accentColor` (see ROADMAP). `bgColor` keeps painting a real
+> fill on every other component.
+
 ## Props
 
 | Prop      | Type                                                                   | Default        | Notes                                                                                  |
@@ -27,7 +50,9 @@ source attribution, and locale-aware decorative quote marks.
 | `cite`    | `string`                                                               | `undefined`    | URL the citation references. Maps to the HTML `cite` attribute.                        |
 | `lang`    | `'auto' \| 'fr' \| 'en' \| 'es' \| 'de'`                              | `'auto'`       | Locale for decorative quote marks (only consumed by `variant="quoted"`).               |
 | `align`   | `'left' \| 'center' \| 'right'`                                        | per-variant    | `'pull'` defaults to `'center'`; every other variant defaults to `'left'`.             |
-| `color`   | `TIntent`                                                              | `undefined`    | Semantic accent — drives accent bar (default), quote marks (quoted), pull rules.       |
+| `color`   | `TColor` (`TIntent` \| custom)                                         | `text-primary` | Colour of the citation **text** — body **and source**. An intent resolves to its readable-on-light shade (`fgSubtle`); a custom value is applied verbatim. The source keeps its subdued default when `color` is empty. |
+| `bgColor` | `TColor` (`TIntent` \| custom)                                         | `primary`      | **Accent** colour — drives the accent bar / pull rules ("borders"), the background quote glyph and the author label. Does **not** paint a surface fill (the blockquote stays transparent). See [Colour model](#colour-model). |
+| `rounded` / `elevation` / `border` (+ `borderColor`, `borderStyle`) / `padding` / `margin` | Commons surfaces | `undefined` | Standard cross-cutting props, consumed via the matching composables (`useRounded`, `useElevation`, `useBorder`, `usePadding`, `useMargin`). |
 | `tag`     | `string`                                                               | `'blockquote'` | Tag rendered for the root. Use `'div'` if you need to nest a blockquote inside one.    |
 
 ## Slots
@@ -46,9 +71,9 @@ of the rendered element (visible to assistive tech, not painted).
 | Variant   | When to reach for it                                                                                                               |
 |-----------|------------------------------------------------------------------------------------------------------------------------------------|
 | `default` | Left accent bar, comfortable padding. Neutral rhythm, fits most prose contexts.                                                    |
-| `elegant` | Serif italic with extra breathing room. Editorial long-form content (essays, articles, hero quotes inside marketing pages).       |
+| `elegant` | Serif italic with extra breathing room + a left accent bar. Editorial long-form content (essays, articles, hero quotes inside marketing pages). |
 | `quoted`  | Single oversized opening glyph rendered as a background watermark (absolute, behind the text). Locale-aware glyph — see [I18n quotes](#i18n-quotes). |
-| `minimal` | Bare italic with a small inline indent. Inline citations inside technical documentation where the visual should stay quiet.        |
+| `minimal` | Bare italic with a small inline indent + a thin left accent bar. Inline citations inside technical documentation where the visual should stay quiet. |
 | `pull`    | Pull quote — large body type, top + bottom rules, centred by default. Use sparingly (one per article maximum).                    |
 
 Each variant materialises through a `.origam-blockquote--variant-{name}`
@@ -104,7 +129,7 @@ swap is visually unobtrusive — no layout shift.
 
 <origam-blockquote
         variant="pull"
-        color="primary"
+        bg-color="primary"
 >
     The best way to predict the future is to invent it.
 </origam-blockquote>

@@ -3,117 +3,123 @@
 			group="components"
 			title="DataList/OrigamDataTitle"
 	>
-		<!--
-			Playground — first by convention. Wire all main IDataTitleProps
-			knobs via the sidebar.
-		-->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IDataTitleProps>({
-					text: 'Email',
-					prependIcon: undefined,
-					appendIcon: undefined,
-					prependAvatar: undefined,
-					appendAvatar: undefined,
-					density: DENSITY.DEFAULT,
-					color: undefined,
-					bgColor: undefined,
-				})"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IDataTitleProps>>({ text: 'Email', color: undefined, bgColor: undefined, density: undefined, padding: undefined, margin: undefined })"
 		>
 			<template #default="{ state }">
 				<dl style="margin: 24px;">
 					<origam-data-title
-							v-bind="state"
-							data-cy="data-title-playground"
-					/>
-				</dl>
-			</template>
-			<template #controls="{ state }">
-				<HstText     v-model="state.text"          title="text"/>
-				<HstSelect   v-model="state.prependIcon"   title="prependIcon"   :options="iconList"/>
-				<HstSelect   v-model="state.appendIcon"    title="appendIcon"    :options="iconList"/>
-				<HstSelect   v-model="state.density"       title="density"       :options="densityList"/>
-				<HstSelect   v-model="state.color"         title="color"         :options="intentList"/>
-				<HstSelect   v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — text (label)">
-			<dl style="margin: 24px;">
-				<origam-data-title
-						text="Email"
-						data-cy="data-title-default"
-				/>
-			</dl>
-		</Variant>
-
-		<Variant title="Prop — prependIcon">
-			<dl style="margin: 24px;">
-				<origam-data-title
-						text="Phone"
-						:prepend-icon="MDI_ICONS.PHONE"
-						data-cy="data-title-prepend-icon"
-				/>
-			</dl>
-		</Variant>
-
-		<Variant title="Prop — prependAvatar">
-			<dl style="margin: 24px;">
-				<origam-data-title
-						text="Author"
-						prepend-avatar="https://i.pravatar.cc/40?u=author"
-						data-cy="data-title-avatar"
-				/>
-			</dl>
-		</Variant>
-
-		<Variant
-				title="Prop — color & bgColor"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<dl style="margin: 24px;">
-					<origam-data-title
-							text="Tinted label"
-							v-bind="state"
-							data-cy="data-title-color"
-					/>
-				</dl>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"        title="color"        :options="intentList"/>
-				<HstSelect v-model="state.bgColor"      title="bgColor"      :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — density"
-				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
-		>
-			<template #default="{ state }">
-				<dl style="margin: 24px;">
-					<origam-data-title
-							text="Density-aware label"
+							:text="state.text"
+							:color="state.color"
+							:bg-color="state.bgColor"
 							:density="state.density"
-							data-cy="data-title-density"
+							:padding="state.padding"
+							:margin="state.margin"
+							:prepend-icon="state.prependIcon || undefined"
+							:append-icon="state.appendIcon || undefined"
+							:prepend-avatar="state.prependAvatar || undefined"
+							:append-avatar="state.appendAvatar || undefined"
 					/>
 				</dl>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Icons">
+					<HstSelect v-model="state.prependIcon" title="Prepend Icon" :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.appendIcon"  title="Append Icon"  :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Avatars">
+					<HstText v-model="state.prependAvatar" title="Prepend Avatar (URL)"/>
+					<HstText v-model="state.appendAvatar"  title="Append Avatar (URL)"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Slots ────────────────────────────────────────────────── -->
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IDataTitleProps>>({ text: 'Email' })"
+		>
+			<template #default="{ state }">
+				<dl style="margin: 24px;">
+					<origam-data-title
+							:text="state.text"
+							:margin="state.margin"
+							:margin-top="state.marginTop"
+							:margin-bottom="state.marginBottom"
+							:margin-left="state.marginLeft"
+							:margin-right="state.marginRight"
+							:margin-block="state.marginBlock"
+							:margin-inline="state.marginInline"
+							:padding="state.padding"
+							:padding-top="state.paddingTop"
+							:padding-bottom="state.paddingBottom"
+							:padding-left="state.paddingLeft"
+							:padding-right="state.paddingRight"
+							:padding-block="state.paddingBlock"
+							:padding-inline="state.paddingInline"
+					/>
+				</dl>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.text" title="Text"/>
+				</StoryGroup>
+				<StoryGroup title="Margin">
+					<HstText v-model="state.margin"       title="Margin"/>
+					<HstText v-model="state.marginTop"    title="Margin Top"/>
+					<HstText v-model="state.marginBottom" title="Margin Bottom"/>
+					<HstText v-model="state.marginLeft"   title="Margin Left"/>
+					<HstText v-model="state.marginRight"  title="Margin Right"/>
+					<HstText v-model="state.marginBlock"  title="Margin Block"/>
+					<HstText v-model="state.marginInline" title="Margin Inline"/>
+				</StoryGroup>
+				<StoryGroup title="Padding">
+					<HstText v-model="state.padding"        title="Padding"/>
+					<HstText v-model="state.paddingTop"     title="Padding Top"/>
+					<HstText v-model="state.paddingBottom"  title="Padding Bottom"/>
+					<HstText v-model="state.paddingLeft"    title="Padding Left"/>
+					<HstText v-model="state.paddingRight"   title="Padding Right"/>
+					<HstText v-model="state.paddingBlock"   title="Padding Block"/>
+					<HstText v-model="state.paddingInline"  title="Padding Inline"/>
+				</StoryGroup>
+			</template>
+		</Variant>
 
-		<Variant title="Slot — default (with bound text)">
+		<Variant title="Events - click:prepend">
 			<dl style="margin: 24px;">
 				<origam-data-title
-						text="Customer"
-						data-cy="data-title-slot-default"
-				>
+						text="Click the icon"
+						:prepend-icon="emailIcon"
+						@click:prepend="logEvent('click:prepend', $event)"
+				/>
+			</dl>
+		</Variant>
+
+		<Variant title="Events - click:append">
+			<dl style="margin: 24px;">
+				<origam-data-title
+						text="Click the icon"
+						:append-icon="arrowIcon"
+						@click:append="logEvent('click:append', $event)"
+				/>
+			</dl>
+		</Variant>
+
+		<Variant title="Slots - Default">
+			<dl style="margin: 24px;">
+				<origam-data-title text="Customer">
 					<template #default="{ text }">
 						<span style="font-variant: small-caps; letter-spacing: 0.08em;">
 							{{ text }}
@@ -123,37 +129,57 @@
 			</dl>
 		</Variant>
 
-		<Variant title="Slot — append">
+		<Variant title="Slots - Prepend">
 			<dl style="margin: 24px;">
-				<origam-data-title text="With append slot" data-cy="data-title-slot-append">
-					<template #append>
-						<origam-icon :icon="MDI_ICONS.HEART"/>
-					</template>
-				</origam-data-title>
-			</dl>
-		</Variant>
-
-		<Variant title="Slot — prepend">
-			<dl style="margin: 24px;">
-				<origam-data-title text="With prepend slot" data-cy="data-title-slot-prepend">
+				<origam-data-title text="With prepend slot">
 					<template #prepend>
-						<origam-icon :icon="MDI_ICONS.HEART"/>
+						<origam-icon :icon="emailIcon"/>
 					</template>
 				</origam-data-title>
 			</dl>
 		</Variant>
 
-		<Variant title="Slot — paired with OrigamDataText (semantic dl/dt/dd)">
-			<dl style="margin: 24px; max-width: 360px;">
-				<origam-data-title text="Email"   :prepend-icon="MDI_ICONS.EMAIL"/>
-				<origam-data-text  text="arnaud@example.com"/>
-
-				<origam-data-title text="Phone"   :prepend-icon="MDI_ICONS.PHONE"/>
-				<origam-data-text  text="+33 6 12 34 56 78"/>
-
-				<origam-data-title text="Country" :prepend-icon="MDI_ICONS.MAP"/>
-				<origam-data-text  text="France"/>
+		<Variant title="Slots - Append">
+			<dl style="margin: 24px;">
+				<origam-data-title text="With append slot">
+					<template #append>
+						<origam-icon :icon="arrowIcon"/>
+					</template>
+				</origam-data-title>
 			</dl>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IDataTitleProps>({ text: 'Email' })"
+		>
+			<template #default="{ state }">
+				<dl style="margin: 24px;">
+					<origam-data-title
+							v-bind="state"
+							@click:prepend="logEvent('click:prepend', $event)"
+							@click:append="logEvent('click:append', $event)"
+					/>
+				</dl>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText   v-model="state.text"          title="Text"/>
+					<HstSelect v-model="state.prependIcon"   title="Prepend Icon"   :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.appendIcon"    title="Append Icon"    :options="ICON_OPTIONS"/>
+					<HstText   v-model="state.prependAvatar" title="Prepend Avatar (URL)"/>
+					<HstText   v-model="state.appendAvatar"  title="Append Avatar (URL)"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.density" title="Density"  :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstText v-model="state.margin"  title="Margin"/>
+					<HstText v-model="state.padding" title="Padding"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -162,12 +188,22 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataText, OrigamDataTitle, OrigamIcon } from '@origam/components'
-	import { DENSITY, MDI_ICONS } from '@origam/enums'
-	import type { IColorProps, IDataTitleProps, IDensityProps } from '@origam/interfaces'
+	import { logEvent } from 'histoire/client'
 
+	import { OrigamDataTitle, OrigamIcon } from '@origam/components'
+	import { MDI_ICONS } from '@origam/enums'
+	import type { IDataTitleProps } from '@origam/interfaces'
+
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, iconList, intentList } from '@stories/const'
+	import {
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ICON_OPTIONS
+	} from '@stories/const'
+
+	const emailIcon = MDI_ICONS.EMAIL
+	const arrowIcon = MDI_ICONS.ARROW_RIGHT
 </script>
 
 <docs lang="md" src="@docs/components/DataList/OrigamDataTitle.md"/>

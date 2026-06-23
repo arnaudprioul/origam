@@ -1,12 +1,12 @@
 import type {
     IActiveProps,
     IBgColorProps,
-    IColorProps, ICommonsComponentEmits, ICommonsComponentProps, ISelectionControlGroupProps,
+    IColorProps, ICommonsComponentEmits, ICommonsComponentProps, IDensityProps, ISelectionControlGroupProps,
     IHoverProps
 } from '../../interfaces'
 import type { TIcon } from '../../types'
 
-export interface ISelectionControlProps extends ICommonsComponentProps, Partial<Omit<ISelectionControlGroupProps, 'items'>>, IColorProps, IBgColorProps, IActiveProps, IHoverProps {
+export interface ISelectionControlProps extends ICommonsComponentProps, Partial<Omit<ISelectionControlGroupProps, 'items'>>, IColorProps, IBgColorProps, IActiveProps, IHoverProps, IDensityProps {
     label?: string
     trueValue?: any
     falseValue?: any

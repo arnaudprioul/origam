@@ -3,55 +3,138 @@
 			group="components"
 			title="DataTable/OrigamDataTableColumnCell"
 	>
-		<!--
-			Playground — demonstrates the single body cell through the
-			parent table. OrigamDataTableColumnCell is internal; use the
-			parent table slots to customise cells.
-		-->
-		<Variant title="Default">
-			<origam-data-table :headers="headers" :items="items" data-cy="column-cell-default"/>
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IDataTableColumnProps>>({ align: ALIGN.START, tag: 'td' })"
+		>
+			<template #default="{ state }">
+				<table>
+					<tbody>
+						<tr>
+							<origam-data-table-column-cell
+									:align="state.align"
+									:tag="state.tag"
+									:width="state.width"
+									:height="state.height"
+									:max-width="state.maxWidth"
+									:max-height="state.maxHeight"
+									:min-width="state.minWidth"
+									:min-height="state.minHeight"
+									:padding="state.padding"
+									:padding-top="state.paddingTop"
+									:padding-bottom="state.paddingBottom"
+									:padding-left="state.paddingLeft"
+									:padding-right="state.paddingRight"
+									:padding-block="state.paddingBlock"
+									:padding-inline="state.paddingInline"
+							>
+								Cell content
+							</origam-data-table-column-cell>
+						</tr>
+					</tbody>
+				</table>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Align">
+					<HstSelect v-model="state.align" title="Align" :options="ALIGN_COLUMN_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"     title="Width"/>
+					<HstText v-model="state.height"    title="Height"/>
+					<HstText v-model="state.maxWidth"  title="Max Width"/>
+					<HstText v-model="state.maxHeight" title="Max Height"/>
+					<HstText v-model="state.minWidth"  title="Min Width"/>
+					<HstText v-model="state.minHeight" title="Min Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding"       title="Padding"/>
+					<HstText v-model="state.paddingTop"    title="Padding Top"/>
+					<HstText v-model="state.paddingBottom" title="Padding Bottom"/>
+					<HstText v-model="state.paddingLeft"   title="Padding Left"/>
+					<HstText v-model="state.paddingRight"  title="Padding Right"/>
+					<HstText v-model="state.paddingBlock"  title="Padding Block"/>
+					<HstText v-model="state.paddingInline" title="Padding Inline"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — align (start / center / end)">
-			<!--
-				Column-level align is defined on the header object.
-				start = left-aligned, center = centred, end = right-aligned.
-			-->
-			<origam-data-table :headers="alignedHeaders" :items="items" data-cy="column-cell-aligned"/>
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IDataTableColumnProps>>({ tag: 'td', fixed: false, lastFixed: false, nowrap: false })"
+		>
+			<template #default="{ state }">
+				<table style="width: 400px; border-collapse: collapse;">
+					<tbody>
+						<tr>
+							<origam-data-table-column-cell
+									:tag="state.tag"
+									:fixed="state.fixed"
+									:fixed-offset="state.fixedOffset || undefined"
+									:last-fixed="state.lastFixed"
+									:nowrap="state.nowrap"
+							>
+								Cell with functional props
+							</origam-data-table-column-cell>
+						</tr>
+					</tbody>
+				</table>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Fixed">
+					<HstCheckbox v-model="state.fixed"     title="Fixed"/>
+					<HstText     v-model="state.fixedOffset" title="Fixed Offset"/>
+					<HstCheckbox v-model="state.lastFixed" title="Last Fixed"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.nowrap" title="No Wrap"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<origam-data-table :headers="headers" :items="items" data-cy="column-cell-slot-default">
-				<template #default>
-					<span>Custom slot content</span>
-				</template>
-			</origam-data-table>
+		<Variant title="Slots - Default">
+			<table>
+				<tbody>
+					<tr>
+						<origam-data-table-column-cell tag="td">
+							<strong>Custom</strong> cell content
+						</origam-data-table-column-cell>
+					</tr>
+				</tbody>
+			</table>
 		</Variant>
 
-		<Variant title="Slot — item.{key} (custom cell render)">
-			<!--
-				Use the item.{key} slot of the parent table to override how
-				a cell's value is rendered — here `commits` is shown as a
-				colour-coded pill.
-			-->
-			<origam-data-table :headers="headers" :items="items" data-cy="column-cell-slot">
-				<template #item.commits="{ value }">
-					<span :style="{
-						display: 'inline-block',
-						padding: '2px 8px',
-						borderRadius: '999px',
-						fontSize: '0.75rem',
-						background: value > 100 ? 'var(--origam-color__action--primary---bg)' : 'var(--origam-color__surface---overlay)',
-						color: value > 100 ? 'var(--origam-color__action--primary---fg)' : 'var(--origam-color__text---secondary)',
-					}">
-						{{ value }}
-					</span>
-				</template>
-			</origam-data-table>
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IDataTableColumnProps>({ align: ALIGN.START, tag: 'td' })"
+		>
+			<template #default="{ state }">
+				<table>
+					<tbody>
+						<tr>
+							<origam-data-table-column-cell v-bind="state">
+								Cell content
+							</origam-data-table-column-cell>
+						</tr>
+					</tbody>
+				</table>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.align" title="Align" :options="ALIGN_COLUMN_OPTIONS"/>
+					<HstText   v-model="state.width"  title="Width"/>
+					<HstText   v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect   v-model="state.tag"       title="Tag"         :options="TAG_OPTIONS"/>
+					<HstCheckbox v-model="state.fixed"     title="Fixed"/>
+					<HstCheckbox v-model="state.lastFixed" title="Last Fixed"/>
+					<HstCheckbox v-model="state.nowrap"    title="No Wrap"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -60,25 +143,17 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataTable } from '@origam/components'
+	import { ALIGN } from '@origam/enums'
+	import { OrigamDataTableColumnCell } from '@origam/components'
+	import type { IDataTableColumnProps } from '@origam/interfaces'
 
-	const headers = [
-		{ title: 'Name',    key: 'name'    },
-		{ title: 'Team',    key: 'team'    },
-		{ title: 'Commits', key: 'commits', align: 'end' },
-	]
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
+	import { useStoryInitState } from '@stories/composables'
+	import { ALIGN_OPTIONS, TAG_OPTIONS } from '@stories/const'
 
-	const alignedHeaders = [
-		{ title: 'Start',  key: 'name',    align: 'start' },
-		{ title: 'Center', key: 'team',    align: 'center' },
-		{ title: 'End',    key: 'commits', align: 'end' },
-	]
-
-	const items = [
-		{ name: 'Alice', team: 'Frontend', commits: 142 },
-		{ name: 'Bob',   team: 'Backend',  commits: 98  },
-		{ name: 'Carol', team: 'Design',   commits: 31  },
-	]
+	const ALIGN_COLUMN_OPTIONS = ALIGN_OPTIONS.filter(
+		(o) => o.value === undefined || o.value === ALIGN.START || o.value === ALIGN.END || o.value === ALIGN.CENTER
+	)
 </script>
 
 <docs lang="md" src="@docs/components/DataTable/OrigamDataTableColumnCell.md"/>

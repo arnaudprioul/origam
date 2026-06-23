@@ -97,11 +97,13 @@ function pickEffective<T> (
     key: keyof IHoverState,
 ): ComputedRef<T | undefined> {
     return computed(() => {
-        if (isActive.value && activeState.value?.[key] != null) {
-            return activeState.value[key] as unknown as T
-        }
+        // Display priority: normal → active → HOVER. Hover wins over active,
+        // so hovering a pressed / selected element shows the hover surface.
         if (isHover.value && hoverState.value?.[key] != null) {
             return hoverState.value[key] as unknown as T
+        }
+        if (isActive.value && activeState.value?.[key] != null) {
+            return activeState.value[key] as unknown as T
         }
         return rest()
     })
@@ -137,9 +139,30 @@ export function useStateEffect (
      */
     flat: Ref<boolean> | ComputedRef<boolean> = noopRef,
 ) {
+    // ── Status overrides color/bgColor (non-overridable by props) ────
+    // A `status` ('success' | 'info' | 'warning' | 'error') carries its
+    // own semantic surface: it forces the matching feedback intent on the
+    // color axis and WINS over any `color` / `bgColor` the consumer passed
+    // — otherwise the status would be cosmetically pointless. `error` maps
+    // to the `danger` intent (TStatus uses `error`, TIntent uses `danger`).
+    const statusToIntent: Record<string, TColor> = {
+        success: 'success',
+        info: 'info',
+        warning: 'warning',
+        error: 'danger'
+    }
+    const statusIntent = computed<TColor | undefined>(() => {
+        const status = (props as TStateEffectProps & { status?: string }).status
+        return status ? (statusToIntent[status] ?? (status as TColor)) : undefined
+    })
+
     // ── Effective per-axis values (computed, swap on state) ──────────
-    const color    = pickEffective<TColor>(() => props.color, isHover, isActive, hoverState, activeState, 'color')
-    const bgColor  = pickEffective<TColor>(() => props.bgColor, isHover, isActive, hoverState, activeState, 'bgColor')
+    const baseColor   = pickEffective<TColor>(() => props.color, isHover, isActive, hoverState, activeState, 'color')
+    const baseBgColor = pickEffective<TColor>(() => props.bgColor, isHover, isActive, hoverState, activeState, 'bgColor')
+    // When a status is active, drop the consumer's foreground so the bg
+    // intent auto-pairs its own contrasting text, and force the bg intent.
+    const color    = computed<TColor | undefined>(() => statusIntent.value ? undefined : baseColor.value)
+    const bgColor  = computed<TColor | undefined>(() => statusIntent.value ?? baseBgColor.value)
     const border   = pickEffective(() => props.border, isHover, isActive, hoverState, activeState, 'border')
     const rounded  = pickEffective(() => props.rounded, isHover, isActive, hoverState, activeState, 'rounded')
     const elevation = pickEffective(() => props.elevation, isHover, isActive, hoverState, activeState, 'elevation')
@@ -175,14 +198,15 @@ export function useStateEffect (
     const colorStyles = computed<string[]>(() => {
         void isDisabled.value // accepted for API symmetry; disabled is an opacity veil, not a token swap
 
-        // Roles per axis — `active` takes precedence over `hover` so a
-        // simultaneous press+hover lands on `bgActive`/`bgHover` correctly.
+        // Display priority: normal → active → HOVER. Hover takes precedence
+        // over active, so a simultaneous press+hover lands on the hover
+        // surface (matches `pickEffective`).
         const hoverHasOwnBg  = hoverState.value?.bgColor != null && !sameIntent(hoverState.value.bgColor, props.bgColor)
         const activeHasOwnBg = activeState.value?.bgColor != null && !sameIntent(activeState.value.bgColor, props.bgColor)
 
         const bgRole: TBgFgRole =
-            isActive.value && !activeHasOwnBg ? 'active' :
             isHover.value && !hoverHasOwnBg ? 'hover' :
+            isActive.value && !activeHasOwnBg ? 'active' :
             'default'
 
         let bgDecl: string | null = null
@@ -242,7 +266,19 @@ export function useStateEffect (
     void intentBgExpr
 
     // ── Other axes — delegate to existing composables via Ref overloads
-    const { borderClasses, borderStyles }       = useBorder(border)
+    // Border goes through the props-object overload (not the bare Ref) so
+    // the standalone `borderColor` / `borderStyle` props are honoured in
+    // addition to the state-resolved `border` shorthand. The shorthand
+    // stays state-aware via the reactive getter (same pattern as
+    // padding / margin); `borderColor` / `borderStyle` are not
+    // state-swappable, so they read straight from the base props.
+    const { borderClasses, borderStyles }       = useBorder(
+        reactive({
+            get border () { return border.value },
+            get borderColor () { return props.borderColor },
+            get borderStyle () { return props.borderStyle },
+        }) as IBorderProps,
+    )
     const { roundedClasses, roundedStyles }     = useRounded(rounded)
     const { elevationClasses, elevationStyles } = useElevation(
         elevation as Ref<number | string | undefined>,

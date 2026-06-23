@@ -381,6 +381,8 @@
 
 	.origam-menu__content {
 		background: var(--origam-menu---background, var(--origam-color__surface---raised));
+		backdrop-filter: var(--origam-menu---backdrop-filter, none);
+		-webkit-backdrop-filter: var(--origam-menu---backdrop-filter, none);
 		color: var(--origam-menu---color, var(--origam-color__text---primary));
 		border-radius: var(--origam-menu---border-radius, 8px);
 		box-shadow: var(--origam-menu---box-shadow);

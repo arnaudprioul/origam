@@ -3,18 +3,272 @@
 			group="components"
 			title="Grids/OrigamCol"
 	>
-		<!--
-			Playground — first variant by convention. Surfaces every
-			IColProps knob via the sidebar controls.
-		-->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IColProps>>({
+					cols: '6',
+					color: undefined,
+					bgColor: undefined,
+					border: false,
+					borderColor: undefined,
+					borderStyle: undefined,
+					padding: undefined,
+					margin: undefined,
+					align: undefined,
+					tag: 'div'
+				})"
+		>
+			<template #default="{ state }">
+				<origam-container>
+					<origam-row>
+						<origam-col
+								:cols="state.cols"
+								:color="state.color"
+								:bg-color="state.bgColor"
+								:border="state.border"
+								:border-color="state.borderColor"
+								:border-style="state.borderStyle"
+								:padding="state.padding"
+								:margin="state.margin"
+								:align="state.align"
+								:tag="state.tag"
+						>
+							<div class="demo-cell">col A</div>
+						</origam-col>
+						<origam-col
+								:cols="state.cols"
+								:color="state.color"
+								:bg-color="state.bgColor"
+								:border="state.border"
+								:border-color="state.borderColor"
+								:border-style="state.borderStyle"
+								:padding="state.padding"
+								:margin="state.margin"
+								:align="state.align"
+								:tag="state.tag"
+						>
+							<div class="demo-cell">col B</div>
+						</origam-col>
+						<origam-col
+								:cols="state.cols"
+								:color="state.color"
+								:bg-color="state.bgColor"
+								:border="state.border"
+								:border-color="state.borderColor"
+								:border-style="state.borderStyle"
+								:padding="state.padding"
+								:margin="state.margin"
+								:align="state.align"
+								:tag="state.tag"
+						>
+							<div class="demo-cell">col C</div>
+						</origam-col>
+					</origam-row>
+				</origam-container>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Grid">
+					<HstSelect v-model="state.cols" title="Cols" :options="COLS_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
+				<StoryGroup title="Align">
+					<HstSelect v-model="state.align" title="Align (self)" :options="ALIGN_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<{
+					cols?: TCols
+					sm?: TCols
+					md?: TCols
+					lg?: TCols
+					xl?: TCols
+					xxl?: TCols
+					offset?: TCols
+					offsetSm?: TCols
+					offsetMd?: TCols
+					offsetLg?: TCols
+					offsetXl?: TCols
+					offsetXxl?: TCols
+					order?: number
+					orderSm?: number
+					orderMd?: number
+					orderLg?: number
+					orderXl?: number
+					orderXxl?: number
+					alignSm?: TAlign
+					alignMd?: TAlign
+					alignLg?: TAlign
+					alignXl?: TAlign
+					alignXxl?: TAlign
+				}>({ cols: '4', sm: '6', md: '4', lg: '3' })"
+		>
+			<template #default="{ state }">
+				<origam-container>
+					<origam-row>
+						<origam-col
+								:cols="state.cols"
+								:sm="state.sm"
+								:md="state.md"
+								:lg="state.lg"
+								:xl="state.xl"
+								:xxl="state.xxl"
+								:offset="state.offset"
+								:offset-sm="state.offsetSm"
+								:offset-md="state.offsetMd"
+								:offset-lg="state.offsetLg"
+								:offset-xl="state.offsetXl"
+								:offset-xxl="state.offsetXxl"
+								:order="state.order"
+								:order-sm="state.orderSm"
+								:order-md="state.orderMd"
+								:order-lg="state.orderLg"
+								:order-xl="state.orderXl"
+								:order-xxl="state.orderXxl"
+								:align-sm="state.alignSm"
+								:align-md="state.alignMd"
+								:align-lg="state.alignLg"
+								:align-xl="state.alignXl"
+								:align-xxl="state.alignXxl"
+						>
+							<div class="demo-cell">col A</div>
+						</origam-col>
+						<origam-col
+								:cols="state.cols"
+								:sm="state.sm"
+								:md="state.md"
+								:lg="state.lg"
+								:xl="state.xl"
+								:xxl="state.xxl"
+								:offset="state.offset"
+								:offset-sm="state.offsetSm"
+								:offset-md="state.offsetMd"
+								:offset-lg="state.offsetLg"
+								:offset-xl="state.offsetXl"
+								:offset-xxl="state.offsetXxl"
+								:order="state.order"
+								:order-sm="state.orderSm"
+								:order-md="state.orderMd"
+								:order-lg="state.orderLg"
+								:order-xl="state.orderXl"
+								:order-xxl="state.orderXxl"
+								:align-sm="state.alignSm"
+								:align-md="state.alignMd"
+								:align-lg="state.alignLg"
+								:align-xl="state.alignXl"
+								:align-xxl="state.alignXxl"
+						>
+							<div class="demo-cell">col B</div>
+						</origam-col>
+						<origam-col
+								:cols="state.cols"
+								:sm="state.sm"
+								:md="state.md"
+								:lg="state.lg"
+								:xl="state.xl"
+								:xxl="state.xxl"
+								:offset="state.offset"
+								:offset-sm="state.offsetSm"
+								:offset-md="state.offsetMd"
+								:offset-lg="state.offsetLg"
+								:offset-xl="state.offsetXl"
+								:offset-xxl="state.offsetXxl"
+								:order="state.order"
+								:order-sm="state.orderSm"
+								:order-md="state.orderMd"
+								:order-lg="state.orderLg"
+								:order-xl="state.orderXl"
+								:order-xxl="state.orderXxl"
+								:align-sm="state.alignSm"
+								:align-md="state.alignMd"
+								:align-lg="state.alignLg"
+								:align-xl="state.alignXl"
+								:align-xxl="state.alignXxl"
+						>
+							<div class="demo-cell">col C</div>
+						</origam-col>
+					</origam-row>
+				</origam-container>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Breakpoints">
+					<HstSelect v-model="state.cols" title="Cols (default)" :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.sm"   title="sm (≥600px)"   :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.md"   title="md (≥960px)"   :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.lg"   title="lg (≥1280px)"  :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.xl"   title="xl (≥1920px)"  :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.xxl"  title="xxl (≥2560px)" :options="COLS_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Offset">
+					<HstSelect v-model="state.offset"    title="Offset (default)"  :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.offsetSm"  title="Offset sm"         :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.offsetMd"  title="Offset md"         :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.offsetLg"  title="Offset lg"         :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.offsetXl"  title="Offset xl"         :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.offsetXxl" title="Offset xxl"        :options="COLS_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Order">
+					<HstNumber v-model="state.order"    title="Order (default)" :min="0" :max="12" :step="1"/>
+					<HstNumber v-model="state.orderSm"  title="Order sm"        :min="0" :max="12" :step="1"/>
+					<HstNumber v-model="state.orderMd"  title="Order md"        :min="0" :max="12" :step="1"/>
+					<HstNumber v-model="state.orderLg"  title="Order lg"        :min="0" :max="12" :step="1"/>
+					<HstNumber v-model="state.orderXl"  title="Order xl"        :min="0" :max="12" :step="1"/>
+					<HstNumber v-model="state.orderXxl" title="Order xxl"       :min="0" :max="12" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Align (responsive)">
+					<HstSelect v-model="state.alignSm"  title="Align sm"  :options="ALIGN_OPTIONS"/>
+					<HstSelect v-model="state.alignMd"  title="Align md"  :options="ALIGN_OPTIONS"/>
+					<HstSelect v-model="state.alignLg"  title="Align lg"  :options="ALIGN_OPTIONS"/>
+					<HstSelect v-model="state.alignXl"  title="Align xl"  :options="ALIGN_OPTIONS"/>
+					<HstSelect v-model="state.alignXxl" title="Align xxl" :options="ALIGN_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Slots - Default">
+			<origam-container>
+				<origam-row>
+					<origam-col cols="6">
+						<div class="demo-cell">
+							<strong>Custom default slot</strong>
+							<p>Anything goes here.</p>
+						</div>
+					</origam-col>
+				</origam-row>
+			</origam-container>
+		</Variant>
+
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<IColProps>({
+				:init-state="() => useStoryInitState<Partial<IColProps>>({
 					cols: '6',
-					md: '4',
-					lg: '3',
+					sm: undefined,
+					md: undefined,
+					lg: undefined,
+					xl: undefined,
+					xxl: undefined,
 					offset: undefined,
 					order: undefined,
+					color: undefined,
+					bgColor: undefined,
 					align: undefined,
 					tag: 'div'
 				})"
@@ -38,170 +292,25 @@
 				</origam-container>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.cols"   title="cols"   :options="colsList"/>
-				<HstSelect v-model="state.sm"     title="sm"     :options="colsList"/>
-				<HstSelect v-model="state.md"     title="md"     :options="colsList"/>
-				<HstSelect v-model="state.lg"     title="lg"     :options="colsList"/>
-				<HstSelect v-model="state.xl"     title="xl"     :options="colsList"/>
-				<HstSelect v-model="state.offset" title="offset" :options="colsList"/>
-				<HstNumber v-model="state.order"  title="order"/>
-				<HstSelect v-model="state.align"  title="align"  :options="alignList"/>
-				<HstSelect v-model="state.tag"    title="tag"    :options="tagList"/>
+				<StoryGroup title="Grid">
+					<HstSelect v-model="state.cols"   title="Cols (default)"  :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.sm"     title="sm (≥600px)"     :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.md"     title="md (≥960px)"     :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.lg"     title="lg (≥1280px)"    :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.xl"     title="xl (≥1920px)"    :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.xxl"    title="xxl (≥2560px)"   :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.offset" title="Offset"          :options="COLS_OPTIONS"/>
+					<HstNumber v-model="state.order"  title="Order" :min="0" :max="12" :step="1"/>
+					<HstSelect v-model="state.align"  title="Align (self)"    :options="ALIGN_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — cols"
-				:init-state="() => useStoryInitState<{ cols?: TCols }>({ cols: '6' })"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row :justify="JUSTIFY.SPACE_BETWEEN">
-						<origam-col
-								v-for="n in (Number(state.cols) > 0 ? Math.floor(12 / Number(state.cols)) : 3)"
-								:key="n"
-								:cols="state.cols"
-						>
-							<div class="demo-cell">cols={{ state.cols }} ({{ n }})</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.cols" title="cols" :options="colsList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — sm, md, lg (breakpoints)"
-				:init-state="() => useStoryInitState<{
-					cols?: TCols
-					sm?: TCols
-					md?: TCols
-					lg?: TCols
-				}>({ cols: '12', sm: '6', md: '4', lg: '3' })"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row>
-						<origam-col v-bind="state">
-							<div class="demo-cell">card</div>
-						</origam-col>
-						<origam-col v-bind="state">
-							<div class="demo-cell">card</div>
-						</origam-col>
-						<origam-col v-bind="state">
-							<div class="demo-cell">card</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.cols" title="cols" :options="colsList"/>
-				<HstSelect v-model="state.sm"   title="sm"   :options="colsList"/>
-				<HstSelect v-model="state.md"   title="md"   :options="colsList"/>
-				<HstSelect v-model="state.lg"   title="lg"   :options="colsList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — offset"
-				:init-state="() => useStoryInitState<{ cols?: TCols, offset?: TCols }>({ cols: '4', offset: '2' as TCols })"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row>
-						<origam-col :cols="state.cols" :offset="state.offset as Omit<TCols, '12'>">
-							<div class="demo-cell">offset</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.cols"   title="cols"   :options="colsList"/>
-				<HstSelect v-model="state.offset" title="offset" :options="colsList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — order"
-				:init-state="() => useStoryInitState<{ orderA?: number, orderB?: number }>({ orderA: 2, orderB: 1 })"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row>
-						<origam-col cols="6" :order="state.orderA">
-							<div class="demo-cell">A (order={{ state.orderA }})</div>
-						</origam-col>
-						<origam-col cols="6" :order="state.orderB">
-							<div class="demo-cell">B (order={{ state.orderB }})</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.orderA" title="orderA"/>
-				<HstNumber v-model="state.orderB" title="orderB"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — align (align-self)"
-				:init-state="() => useStoryInitState<IAlignProps>({})"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row align="start" style="min-height: 120px; background: var(--origam-color__surface---overlay, #ececec);">
-						<origam-col cols="4">
-							<div class="demo-cell">parent (align=start)</div>
-						</origam-col>
-						<origam-col cols="4" :align="state.align">
-							<div class="demo-cell">align={{ state.align ?? '(unset)' }}</div>
-						</origam-col>
-						<origam-col cols="4">
-							<div class="demo-cell">parent</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.align" title="align" :options="alignList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — tag"
-				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: 'div' })"
-		>
-			<template #default="{ state }">
-				<origam-container>
-					<origam-row>
-						<origam-col cols="12" :tag="state.tag">
-							<div class="demo-cell">tag={{ state.tag }}</div>
-						</origam-col>
-					</origam-row>
-				</origam-container>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<origam-container>
-				<origam-row>
-					<origam-col cols="6">
-						<div class="demo-cell">
-							<strong>Custom default slot</strong>
-							<p>Anything goes.</p>
-						</div>
-					</origam-col>
-				</origam-row>
-			</origam-container>
 		</Variant>
 	</Story>
 </template>
@@ -211,15 +320,18 @@
 		setup
 >
 	import { OrigamCol, OrigamContainer, OrigamRow } from '@origam/components'
-	import { JUSTIFY } from '@origam/enums'
-	import type { IAlignProps, IColProps } from '@origam/interfaces'
-	import type { TCols } from '@origam/types'
+	import type { IColProps } from '@origam/interfaces'
+	import type { TAlign, TCols } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
-		alignList,
-		colsList,
-		tagList
+		ALIGN_OPTIONS,
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		COLS_OPTIONS,
+		TAG_OPTIONS
 	} from '@stories/const'
 </script>
 

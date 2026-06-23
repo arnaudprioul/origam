@@ -58,24 +58,38 @@ export function useDefaults<T extends Record<string, any>> (
     if (!propNames.length) return props
 
     // Determine which props were explicitly passed by the parent template.
-    // `vnode.props` only carries attributes the parent actually wrote, so
-    // any prop missing from there is eligible for default substitution.
-    const vnodeProps = vm.vnode.props || {}
-    const passedKeys = new Set<string>()
-
-    for (const k of Object.keys(vnodeProps)) {
-        passedKeys.add(k)
-        passedKeys.add(camelize(k))
+    // `vnode.props` only carries attributes the parent actually wrote.
+    //
+    // This MUST be re-read on every resolution, NOT captured once at setup:
+    // a parent that binds props through a dynamic `v-bind` whose object is
+    // empty on the first render — e.g. `v-bind="childRef?.filterProps(...)"`
+    // where `childRef` is null until mounted — fills `vnode.props` only on a
+    // later render. Capturing `passedKeys` once would permanently mark those
+    // props as "not passed", so the theme/global default would override the
+    // value the parent actually forwards (the SelectionControl density/color
+    // race). Reading `vm.vnode.props` inside the computed keeps it current.
+    const wasPropPassed = (key: string): boolean => {
+        const vnodeProps = vm.vnode.props || {}
+        for (const k in vnodeProps) {
+            if (k === key || camelize(k) === key) return true
+        }
+        return false
     }
 
     const result = {} as Record<string, any>
 
     for (const key of propNames) {
-        const wasPassed = passedKeys.has(key)
-
         const c = computed(() => {
+            // Read the component's own prop value EAGERLY so it is always a
+            // tracked dependency of this computed. Without this, a prop that
+            // starts "not passed" (resolves via the provider branch below)
+            // would never re-evaluate when the parent later forwards it
+            // through a dynamic `v-bind` — the computed would have tracked
+            // only `defaults.value`, not `props[key]`, and stay stale.
+            const ownValue = (props as any)[key]
+
             // Parent override always wins.
-            if (wasPassed) return (props as any)[key]
+            if (wasPropPassed(key)) return ownValue
 
             // Otherwise, resolve from the closest DefaultsProvider.
             const componentDefs = defaults.value?.[name] as Record<string, unknown> | undefined
@@ -85,7 +99,7 @@ export function useDefaults<T extends Record<string, any>> (
             if (globalDefs?.[key] !== undefined) return globalDefs[key]
 
             // Fall through to the value baked in by `withDefaults()`.
-            return (props as any)[key]
+            return ownValue
         })
 
         Object.defineProperty(result, key, {

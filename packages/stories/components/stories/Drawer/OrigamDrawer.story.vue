@@ -3,38 +3,34 @@
 			group="components"
 			title="Drawer/OrigamDrawer"
 	>
-		<!--
-			Playground — first variant by convention. Surfaces every
-			IDrawerProps knob via the sidebar controls. Histoire doesn't
-			auto-select by variant name (only when there's a single
-			variant), so the user has to click — but we keep Playground
-			at the top so it's the prominent default.
-		-->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IDrawerProps & { push: boolean | null, clipped: boolean | null }>({
-					permanent: true,
-					temporary: false,
-					modelValue: true,
-					rail: false,
-					railWidth: 56,
-					floating: false,
-					scrim: true,
-					width: 256,
-					location: 'left',
-					push: null,
-					clipped: null
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IDrawerProps>>({
+					color: undefined,
+					bgColor: undefined,
+					elevation: undefined,
+					rounded: undefined,
+					border: undefined,
+					density: undefined
 				})"
 		>
 			<template #default="{ state }">
-				<div style="height: 360px; border: 1px solid var(--origam-color__border---subtle, #ccc);" data-cy="drawer-playground">
+				<div style="height: 320px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
-						<origam-app-bar title="My App">
-							<template #prepend>
-								<origam-btn :icon="MDI_ICONS.MENU" aria-label="Menu"/>
-							</template>
-						</origam-app-bar>
-						<origam-drawer v-bind="state">
+						<origam-drawer
+								permanent
+								:color="state.color"
+								:padding="state.padding"
+								:margin="state.margin"
+								:bg-color="state.bgColor"
+								:elevation="state.elevation"
+								:rounded="state.rounded"
+								:border="state.border"
+								:border-color="state.borderColor"
+								:border-style="state.borderStyle"
+								:density="state.density"
+						>
 							<div style="padding: 16px;">Drawer content</div>
 						</origam-drawer>
 						<origam-main>
@@ -44,80 +40,194 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.permanent"  title="permanent"/>
-				<HstCheckbox v-model="state.temporary"  title="temporary"/>
-				<HstCheckbox v-model="state.modelValue" title="modelValue"/>
-				<HstCheckbox v-model="state.rail"       title="rail"/>
-				<HstNumber   v-model="state.railWidth"  title="railWidth"/>
-				<HstCheckbox v-model="state.floating"   title="floating"/>
-				<HstCheckbox v-model="state.scrim"      title="scrim"/>
-				<HstNumber   v-model="state.width"      title="width"/>
-				<HstSelect
-						v-model="state.location"
-						title="location"
-						:options="[
-							{ label: 'left',   value: 'left' },
-							{ label: 'right',  value: 'right' },
-							{ label: 'top',    value: 'top' },
-							{ label: 'bottom', value: 'bottom' }
-						]"
-				/>
-				<HstSelect
-						v-model="state.push"
-						title="push"
-						:options="[
-							{ label: 'auto (permanent → push, else overlay)', value: null },
-							{ label: 'true — drawer pushes content',          value: true },
-							{ label: 'false — drawer overlays content',       value: false }
-						]"
-				/>
-				<HstSelect
-						v-model="state.clipped"
-						title="clipped"
-						:options="[
-							{ label: 'auto (HTML order — AppBar before → below)', value: null },
-							{ label: 'true — drawer slots BELOW the AppBar',      value: true },
-							{ label: 'false — drawer extends full height',        value: false }
-						]"
-				/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — permanent">
-			<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
-				<origam-app :full-height="false">
-					<origam-drawer permanent>
-						<div style="padding: 16px;">Permanent drawer — always visible, pushes the main content.</div>
-					</origam-drawer>
-					<origam-main>
-						<p style="padding: 16px;">Main content beside the drawer.</p>
-					</origam-main>
-				</origam-app>
-			</div>
+		<Variant
+				title="State"
+				:init-state="() => useStoryInitState<Partial<IDrawerProps>>({ bgColor: undefined })"
+		>
+			<template #default="{ state }">
+				<div style="height: 320px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
+					<origam-app :full-height="false">
+						<origam-drawer
+								permanent
+								:bg-color="state.bgColor"
+								:hover="resolveHoverState(state.hover)"
+								:active="resolveActiveState(state.active)"
+						>
+							<div style="padding: 16px;">Drawer content</div>
+						</origam-drawer>
+						<origam-main>
+							<p style="padding: 16px;">Main content</p>
+						</origam-main>
+					</origam-app>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Surface">
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Interaction">
+					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
+					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
 		<Variant
-				title="Prop — temporary"
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IDrawerProps> & { open: boolean }>({
+					open: true,
+					permanent: true,
+					temporary: false,
+					rail: false,
+					railWidth: 56,
+					floating: false,
+					scrim: true,
+					expandOnHover: false,
+					touchless: false,
+					sticky: false,
+					disableResizeWatcher: false,
+					disableRouteWatcher: false,
+					width: 256,
+					location: 'left',
+					push: null,
+					clipped: null,
+					tag: undefined
+				})"
+		>
+			<template #default="{ state }">
+				<div style="height: 360px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
+					<origam-app :full-height="false">
+						<origam-app-bar title="My App">
+							<template #prepend>
+								<origam-btn
+										:icon="MDI_ICONS.MENU"
+										aria-label="Toggle"
+										@click="state.open = !state.open"
+								/>
+							</template>
+						</origam-app-bar>
+						<origam-drawer
+								:model-value="state.open"
+								:permanent="state.permanent"
+								:temporary="state.temporary"
+								:rail="state.rail"
+								:rail-width="state.railWidth"
+								:floating="state.floating"
+								:scrim="state.scrim"
+								:expand-on-hover="state.expandOnHover"
+								:touchless="state.touchless"
+								:sticky="state.sticky"
+								:disable-resize-watcher="state.disableResizeWatcher"
+								:disable-route-watcher="state.disableRouteWatcher"
+								:width="state.width"
+								:location="state.location"
+								:push="state.push"
+								:clipped="state.clipped"
+								:tag="state.tag"
+								@update:model-value="(v: boolean) => state.open = v"
+						>
+							<div style="padding: 16px;">Drawer content</div>
+						</origam-drawer>
+						<origam-main>
+							<p style="padding: 16px;">Main content</p>
+						</origam-main>
+					</origam-app>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Mode">
+					<HstCheckbox v-model="state.permanent" title="Permanent"/>
+					<HstCheckbox v-model="state.temporary" title="Temporary"/>
+					<HstCheckbox v-model="state.open"      title="Open (modelValue)"/>
+				</StoryGroup>
+				<StoryGroup title="Rail">
+					<HstCheckbox v-model="state.rail"      title="Rail"/>
+					<HstNumber   v-model="state.railWidth" title="Rail Width" :min="40" :max="120" :step="4"/>
+					<HstCheckbox v-model="state.expandOnHover" title="Expand on Hover"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstNumber v-model="state.width" title="Width" :min="64" :max="480"/>
+					<HstSelect
+							v-model="state.location"
+							title="Location"
+							:options="DRAWER_LOCATION_OPTIONS"
+					/>
+					<HstSelect
+							v-model="state.push"
+							title="Push"
+							:options="DRAWER_PUSH_OPTIONS"
+					/>
+					<HstSelect
+							v-model="state.clipped"
+							title="Clipped"
+							:options="DRAWER_CLIPPED_OPTIONS"
+					/>
+				</StoryGroup>
+				<StoryGroup title="Behaviour">
+					<HstCheckbox v-model="state.floating"             title="Floating"/>
+					<HstCheckbox v-model="state.scrim"                title="Scrim"/>
+					<HstCheckbox v-model="state.touchless"            title="Touchless"/>
+					<HstCheckbox v-model="state.sticky"               title="Sticky"/>
+					<HstCheckbox v-model="state.disableResizeWatcher" title="Disable Resize Watcher"/>
+					<HstCheckbox v-model="state.disableRouteWatcher"  title="Disable Route Watcher"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Events - update:modelValue"
 				:init-state="() => useStoryInitState<{ open: boolean }>({ open: false })"
 		>
 			<template #default="{ state }">
-				<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
+				<div style="height: 320px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
-						<origam-app-bar title="Click ≡ to toggle">
+						<origam-app-bar title="Watch update:modelValue">
 							<template #prepend>
-								<origam-btn :icon="MDI_ICONS.MENU" aria-label="Toggle" @click="state.open = !state.open"/>
+								<origam-btn
+										:icon="MDI_ICONS.MENU"
+										aria-label="Toggle"
+										@click="state.open = !state.open"
+								/>
 							</template>
 						</origam-app-bar>
-						<origam-drawer v-model="state.open" temporary>
+						<origam-drawer
+								:model-value="state.open"
+								temporary
+								@update:model-value="(v: boolean) => { state.open = v; logEvent('update:modelValue', v) }"
+						>
 							<div style="padding: 16px;">
-								<p>Temporary drawer.</p>
+								<p>Drawer open.</p>
 								<origam-btn text="Close" @click="state.open = false"/>
 							</div>
 						</origam-drawer>
 						<origam-main>
-							<p style="padding: 16px;">Main content. Click ≡ — drawer slides in over the content.</p>
+							<p style="padding: 16px;">Click the menu icon to toggle the drawer and watch the event log.</p>
 						</origam-main>
 					</origam-app>
 				</div>
@@ -125,206 +235,40 @@
 		</Variant>
 
 		<Variant
-				title="Prop — rail (collapsed permanent)"
+				title="Events - update:rail"
 				:init-state="() => useStoryInitState<{ rail: boolean }>({ rail: true })"
 		>
 			<template #default="{ state }">
 				<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 					<origam-app :full-height="false">
-						<origam-drawer :rail="state.rail" permanent>
+						<origam-drawer
+								:rail="state.rail"
+								permanent
+								expand-on-hover
+								@update:rail="(v: boolean) => { state.rail = v; logEvent('update:rail', v) }"
+						>
 							<div style="padding: 8px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
-								<origam-btn :icon="MDI_ICONS.HOME" aria-label="Home"/>
+								<origam-btn :icon="MDI_ICONS.HOME"    aria-label="Home"/>
 								<origam-btn :icon="MDI_ICONS.ACCOUNT" aria-label="Account"/>
-								<origam-btn :icon="MDI_ICONS.COG" aria-label="Settings"/>
 							</div>
 						</origam-drawer>
 						<origam-main>
-							<p style="padding: 16px;">Toggle "rail" to see the drawer collapse.</p>
+							<p style="padding: 16px;">Hover the drawer (expand-on-hover) to trigger update:rail.</p>
 						</origam-main>
 					</origam-app>
 				</div>
 			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.rail" title="rail"/>
-			</template>
 		</Variant>
 
-		<Variant
-				title="Prop — location (left / right / top / bottom)"
-				:init-state="() => useStoryInitState<{ location: 'left' | 'right' | 'top' | 'bottom' }>({ location: 'left' })"
-		>
-			<template #default="{ state }">
-				<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
-					<origam-app :full-height="false">
-						<origam-drawer :location="state.location" permanent>
-							<div style="padding: 16px;">location: <b>{{ state.location }}</b></div>
-						</origam-drawer>
-						<origam-main>
-							<p style="padding: 16px;">Main content. Try every location.</p>
-						</origam-main>
-					</origam-app>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.location"
-						title="location"
-						:options="[
-							{ label: 'left',   value: 'left' },
-							{ label: 'right',  value: 'right' },
-							{ label: 'top',    value: 'top' },
-							{ label: 'bottom', value: 'bottom' }
-						]"
-				/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — width"
-				:init-state="() => useStoryInitState<{ width: number }>({ width: 256 })"
-		>
-			<template #default="{ state }">
-				<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
-					<origam-app :full-height="false">
-						<origam-drawer :width="state.width" permanent>
-							<div style="padding: 16px;">width: <b>{{ state.width }}px</b></div>
-						</origam-drawer>
-						<origam-main>
-							<p style="padding: 16px;">Main content offsets dynamically.</p>
-						</origam-main>
-					</origam-app>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.width" title="width" :min="64" :max="480"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — push (auto / true / false)"
-				:init-state="() => useStoryInitState<{ push: boolean | null }>({ push: null })"
-		>
-			<template #default="{ state }">
-				<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
-					<origam-app :full-height="false">
-						<origam-drawer permanent :push="state.push">
-							<div style="padding: 16px;">push: <b>{{ String(state.push) }}</b></div>
-						</origam-drawer>
-						<origam-main>
-							<p style="padding: 16px;">
-								<b>push: true</b> → drawer reserves space, main offsets.
-								<br><b>push: false</b> → drawer paints over the main content (overlay).
-								<br><b>push: null</b> (default) → derived from `permanent`.
-							</p>
-						</origam-main>
-					</origam-app>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.push"
-						title="push"
-						:options="[
-							{ label: 'auto (derived from permanent)', value: null },
-							{ label: 'true (force push)',             value: true },
-							{ label: 'false (force overlay)',         value: false }
-						]"
-				/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — clipped (auto / true / false)"
-				:init-state="() => useStoryInitState<{ clipped: boolean | null }>({ clipped: null })"
-		>
-			<template #default="{ state }">
-				<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
-					<origam-app :full-height="false">
-						<origam-app-bar title="App"/>
-						<origam-drawer permanent :clipped="state.clipped">
-							<div style="padding: 16px;">clipped: <b>{{ String(state.clipped) }}</b></div>
-						</origam-drawer>
-						<origam-main>
-							<p style="padding: 16px;">
-								<b>clipped: true</b> → drawer below the AppBar.
-								<br><b>clipped: false</b> → drawer full-height, AppBar pushed.
-								<br><b>clipped: null</b> (default) → HTML order decides
-								(AppBar first → below).
-							</p>
-						</origam-main>
-					</origam-app>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.clipped"
-						title="clipped"
-						:options="[
-							{ label: 'auto (HTML order)',     value: null },
-							{ label: 'true (below AppBar)',   value: true },
-							{ label: 'false (full height)',   value: false }
-						]"
-				/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — floating"
-				:init-state="() => useStoryInitState<{ floating: boolean }>({ floating: true })"
-		>
-			<template #default="{ state }">
-				<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
-					<origam-app :full-height="false">
-						<origam-drawer permanent :floating="state.floating">
-							<div style="padding: 16px;">floating: removes the drawer's edge border so it reads as part of the surface.</div>
-						</origam-drawer>
-						<origam-main>
-							<p style="padding: 16px;">Toggle the control to see the border appear / disappear.</p>
-						</origam-main>
-					</origam-app>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.floating" title="floating"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — scrim (temporary drawer only)"
-				:init-state="() => useStoryInitState<{ open: boolean, scrim: boolean }>({ open: true, scrim: true })"
-		>
-			<template #default="{ state }">
-				<div style="height: 280px; position: relative; border: 1px solid var(--origam-color__border---subtle, #ccc);">
-					<origam-app :full-height="false">
-						<origam-drawer v-model="state.open" temporary :scrim="state.scrim">
-							<div style="padding: 16px;">
-								<p>scrim: <b>{{ state.scrim }}</b></p>
-								<origam-btn text="Close" @click="state.open = false"/>
-							</div>
-						</origam-drawer>
-						<origam-main>
-							<p style="padding: 16px;">Toggle the scrim to see / hide the dim overlay behind the drawer.</p>
-						</origam-main>
-					</origam-app>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.open"  title="open"/>
-				<HstCheckbox v-model="state.scrim" title="scrim"/>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
+		<Variant title="Slots - Default">
 			<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 				<origam-app :full-height="false">
 					<origam-drawer permanent>
 						<div style="padding: 16px; display: flex; flex-direction: column; gap: 6px;">
-							<span>· Inbox</span>
-							<span>· Sent</span>
-							<span>· Drafts</span>
-							<span>· Archive</span>
+							<span>Inbox</span>
+							<span>Sent</span>
+							<span>Drafts</span>
+							<span>Archive</span>
 						</div>
 					</origam-drawer>
 					<origam-main>
@@ -334,33 +278,32 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — prepend (header)">
+		<Variant title="Slots - Prepend">
 			<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 				<origam-app :full-height="false">
 					<origam-drawer permanent>
 						<template #prepend>
 							<div style="padding: 16px; font-weight: 700; border-bottom: 1px solid var(--origam-color__border---subtle, #ddd); display: flex; align-items: center; gap: 8px;">
-								<span style="font-size: 1.25rem;">⬡</span>
 								<span>App Logo</span>
 							</div>
 						</template>
-						<div style="padding: 16px;">Default content (after the prepend slot).</div>
+						<div style="padding: 16px;">Body content (after prepend slot).</div>
 					</origam-drawer>
 					<origam-main>
-						<p style="padding: 16px;">Prepend slot — typically used for an app logo / brand.</p>
+						<p style="padding: 16px;">Prepend slot — typically used for a logo or brand header.</p>
 					</origam-main>
 				</origam-app>
 			</div>
 		</Variant>
 
-		<Variant title="Slot — append (footer)">
+		<Variant title="Slots - Append">
 			<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 				<origam-app :full-height="false">
 					<origam-drawer permanent>
 						<div style="padding: 16px;">Default content.</div>
 						<template #append>
 							<div style="padding: 16px; border-top: 1px solid var(--origam-color__border---subtle, #ddd); font-size: 0.75rem; color: var(--origam-color__text---secondary);">
-								v1.0.0 — user@example.com
+								v1.0.0
 							</div>
 						</template>
 					</origam-drawer>
@@ -371,7 +314,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — wrapper (replace the drawer's inner skeleton)">
+		<Variant title="Slots - Wrapper">
 			<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 				<origam-app :full-height="false">
 					<origam-drawer permanent>
@@ -383,85 +326,114 @@
 						</template>
 					</origam-drawer>
 					<origam-main>
-						<p style="padding: 16px;">Use this slot when you need full control over the drawer's inner layout.</p>
+						<p style="padding: 16px;">Wrapper slot — full control over the drawer's inner layout.</p>
 					</origam-main>
 				</origam-app>
 			</div>
 		</Variant>
 
-		<!-- ── Emits ────────────────────────────────────────────────── -->
-
 		<Variant
-				title="Emit — update:modelValue"
-				:init-state="() => useStoryInitState<{ open: boolean, log: string[] }>({ open: false, log: [] })"
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IDrawerProps> & { open: boolean }>({
+					open: true,
+					permanent: true,
+					temporary: false,
+					rail: false,
+					railWidth: 56,
+					floating: false,
+					scrim: true,
+					expandOnHover: false,
+					width: 256,
+					location: 'left',
+					push: null,
+					clipped: null,
+					color: undefined,
+					bgColor: undefined,
+					elevation: undefined,
+					rounded: undefined,
+					border: undefined,
+					density: undefined
+				})"
 		>
 			<template #default="{ state }">
-				<div style="height: 320px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
+				<div style="height: 360px; border: 1px solid var(--origam-color__border---subtle, #ccc);" data-cy="drawer-playground">
 					<origam-app :full-height="false">
-						<origam-app-bar title="Watch update:modelValue">
+						<origam-app-bar title="My App">
 							<template #prepend>
-								<origam-btn :icon="MDI_ICONS.MENU" aria-label="Toggle" @click="state.open = !state.open"/>
+								<origam-btn
+										:icon="MDI_ICONS.MENU"
+										aria-label="Menu"
+										@click="state.open = !state.open"
+								/>
 							</template>
 						</origam-app-bar>
 						<origam-drawer
 								:model-value="state.open"
-								temporary
-								@update:model-value="(v: boolean) => {
-									state.open = v
-									state.log = [`update:modelValue → ${v}`, ...state.log].slice(0, 6)
-								}"
+								:permanent="state.permanent"
+								:temporary="state.temporary"
+								:rail="state.rail"
+								:rail-width="state.railWidth"
+								:floating="state.floating"
+								:scrim="state.scrim"
+								:expand-on-hover="state.expandOnHover"
+								:width="state.width"
+								:location="state.location"
+								:push="state.push"
+								:clipped="state.clipped"
+								:color="state.color"
+								:bg-color="state.bgColor"
+								:elevation="state.elevation"
+								:rounded="state.rounded"
+								:border="state.border"
+								:density="state.density"
+								@update:model-value="(v: boolean) => state.open = v"
+								@update:rail="(v: boolean) => logEvent('update:rail', v)"
 						>
-							<div style="padding: 16px;">
-								<p>Drawer open.</p>
-								<origam-btn text="Close" @click="state.open = false"/>
-							</div>
+							<div style="padding: 16px;">Drawer content</div>
 						</origam-drawer>
 						<origam-main>
-							<div style="padding: 16px;">
-								<p>Last events emitted:</p>
-								<ul style="font-family: monospace; font-size: 0.8rem;">
-									<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
-								</ul>
-								<p v-if="state.log.length === 0" style="color: var(--origam-color__text---secondary);">
-									Click ≡ to toggle the drawer.
-								</p>
-							</div>
+							<p style="padding: 16px;">Main content</p>
 						</origam-main>
 					</origam-app>
 				</div>
 			</template>
-		</Variant>
-
-		<Variant
-				title="Emit — update:rail"
-				:init-state="() => useStoryInitState<{ rail: boolean, log: string[] }>({ rail: true, log: [] })"
-		>
-			<template #default="{ state }">
-				<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
-					<origam-app :full-height="false">
-						<origam-drawer
-								:rail="state.rail"
-								permanent
-								expand-on-hover
-								@update:rail="(v: boolean) => {
-									state.log = [`update:rail → ${v}`, ...state.log].slice(0, 6)
-								}"
-						>
-							<div style="padding: 8px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
-								<origam-btn :icon="MDI_ICONS.HOME" aria-label="Home"/>
-								<origam-btn :icon="MDI_ICONS.ACCOUNT" aria-label="Account"/>
-							</div>
-						</origam-drawer>
-						<origam-main>
-							<div style="padding: 16px;">
-								<p>Hover the drawer (expand-on-hover) to see update:rail fire.</p>
-								<ul style="font-family: monospace; font-size: 0.8rem;">
-									<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
-								</ul>
-							</div>
-						</origam-main>
-					</origam-app>
-				</div>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstCheckbox v-model="state.open" title="Open (modelValue)"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.border"    title="Border"    :options="BORDER_OPTIONS"/>
+					<HstSelect v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.permanent"     title="Permanent"/>
+					<HstCheckbox v-model="state.temporary"     title="Temporary"/>
+					<HstCheckbox v-model="state.rail"          title="Rail"/>
+					<HstNumber   v-model="state.railWidth"     title="Rail Width" :min="40" :max="120" :step="4"/>
+					<HstCheckbox v-model="state.floating"      title="Floating"/>
+					<HstCheckbox v-model="state.scrim"         title="Scrim"/>
+					<HstCheckbox v-model="state.expandOnHover" title="Expand on Hover"/>
+					<HstNumber   v-model="state.width"         title="Width" :min="64" :max="480"/>
+					<HstSelect
+							v-model="state.location"
+							title="Location"
+							:options="DRAWER_LOCATION_OPTIONS"
+					/>
+					<HstSelect
+							v-model="state.push"
+							title="Push"
+							:options="DRAWER_PUSH_OPTIONS"
+					/>
+					<HstSelect
+							v-model="state.clipped"
+							title="Clipped"
+							:options="DRAWER_CLIPPED_OPTIONS"
+					/>
+				</StoryGroup>
 			</template>
 		</Variant>
 	</Story>
@@ -471,11 +443,46 @@
 		lang="ts"
 		setup
 >
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamApp, OrigamAppBar, OrigamBtn, OrigamDrawer, OrigamMain } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 	import type { IDrawerProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		ACTIVE_OPTIONS,
+		resolveActiveState,
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
+		HOVER_OPTIONS,
+		resolveHoverState,
+		ROUNDED_OPTIONS,
+		TAG_OPTIONS
+	} from '@stories/const'
+
+	const DRAWER_LOCATION_OPTIONS = [
+		{ label: 'left',   value: 'left' },
+		{ label: 'right',  value: 'right' },
+		{ label: 'top',    value: 'top' },
+		{ label: 'bottom', value: 'bottom' }
+	]
+
+	const DRAWER_PUSH_OPTIONS = [
+		{ label: 'auto (derived from permanent)', value: null },
+		{ label: 'true — drawer pushes content',  value: true },
+		{ label: 'false — drawer overlays content', value: false }
+	]
+
+	const DRAWER_CLIPPED_OPTIONS = [
+		{ label: 'auto (HTML order)',       value: null },
+		{ label: 'true — below AppBar',     value: true },
+		{ label: 'false — full height',     value: false }
+	]
 </script>
 
 <docs lang="md" src="@docs/components/Drawer/OrigamDrawer.md"/>

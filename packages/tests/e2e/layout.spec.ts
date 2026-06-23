@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test'
 
-const SHEET_PATH = '/story/stories-components-stories-sheet-origamsheet-story-vue'
-const RESPONSIVE_PATH = '/story/stories-components-stories-responsive-origamresponsive-story-vue'
-const SYSTEMBAR_PATH = '/story/stories-components-stories-systembar-origamsystembar-story-vue'
-const MAIN_PATH = '/story/stories-components-stories-main-origammain-story-vue'
+const SHEET_PATH = '/story/components-stories-sheet-origamsheet-story-vue'
+const RESPONSIVE_PATH = '/story/components-stories-responsive-origamresponsive-story-vue'
+const SYSTEMBAR_PATH = '/story/components-stories-systembar-origamsystembar-story-vue'
+const MAIN_PATH = '/story/components-stories-main-origammain-story-vue'
 
 /**
  * Layout components — OrigamSheet / OrigamResponsive / OrigamSystemBar / OrigamMain
@@ -17,7 +17,7 @@ test.describe('OrigamSheet', () => {
     test('elevation class applies box-shadow', async ({ page }) => {
         await page.goto(SHEET_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Elevation', { exact: true }).first().click()
+        await page.getByText('Prop — elevation', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -36,7 +36,7 @@ test.describe('OrigamSheet', () => {
     test('rounded variant sets border-radius', async ({ page }) => {
         await page.goto(SHEET_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Rounded', { exact: true }).first().click()
+        await page.getByText('Prop — rounded', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -58,7 +58,7 @@ test.describe('OrigamSheet', () => {
     test('position=absolute applies position:absolute', async ({ page }) => {
         await page.goto(SHEET_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Position', { exact: true }).first().click()
+        await page.getByText('Prop — position', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -75,7 +75,7 @@ test.describe('OrigamSheet', () => {
     test('color prop applies background-color via useBothColor', async ({ page }) => {
         await page.goto(SHEET_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Color', { exact: true }).first().click()
+        await page.getByText('Prop — color & bgColor', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -97,7 +97,7 @@ test.describe('OrigamResponsive', () => {
     test('aspect-ratio sizer generates correct padding-block-end', async ({ page }) => {
         await page.goto(RESPONSIVE_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Aspect ratio', { exact: true }).first().click()
+        await page.getByText('Prop — aspectRatio', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -113,7 +113,7 @@ test.describe('OrigamResponsive', () => {
     test('inline modifier changes display to inline-flex', async ({ page }) => {
         await page.goto(RESPONSIVE_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Inline', { exact: true }).first().click()
+        await page.getByText('Prop — inline', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -136,7 +136,7 @@ test.describe('OrigamSystemBar', () => {
     test('renders with correct default height (24px)', async ({ page }) => {
         await page.goto(SYSTEMBAR_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Window mode', { exact: true }).first().click()
+        await page.getByText('Prop — window', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -152,7 +152,7 @@ test.describe('OrigamSystemBar', () => {
     test('window mode applies 32px height', async ({ page }) => {
         await page.goto(SYSTEMBAR_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Window mode', { exact: true }).first().click()
+        await page.getByText('Prop — window', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -177,7 +177,7 @@ test.describe('OrigamSystemBar', () => {
     test('box-sizing is border-box', async ({ page }) => {
         await page.goto(SYSTEMBAR_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Window mode', { exact: true }).first().click()
+        await page.getByText('Prop — window', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -197,7 +197,7 @@ test.describe('OrigamMain', () => {
         await page.goto(MAIN_PATH)
         await page.waitForLoadState('networkidle')
         // Must click a variant to load the sandbox iframe
-        await page.getByText('Basic usage', { exact: true }).first().click()
+        await page.getByText('Prop — default layout', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -212,7 +212,7 @@ test.describe('OrigamMain', () => {
         await page.goto(MAIN_PATH)
         await page.waitForLoadState('networkidle')
         // Must click a variant to load the sandbox iframe
-        await page.getByText('Basic usage', { exact: true }).first().click()
+        await page.getByText('Prop — default layout', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

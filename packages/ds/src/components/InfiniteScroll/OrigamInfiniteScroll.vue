@@ -16,7 +16,7 @@
 						name="empty"
 						v-bind="{side: INFINITE_SCROLL_SIDE.START, props: { onClick: () => intersecting(INFINITE_SCROLL_SIDE.START), color }}"
 				>
-					<span>No more</span>
+					<span>{{ t(emptyText) }}</span>
 				</slot>
 
 				<template v-if="isManualMode">

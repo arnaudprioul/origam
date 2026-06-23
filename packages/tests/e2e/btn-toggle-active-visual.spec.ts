@@ -22,14 +22,14 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.waitForTimeout(800)
 }
 
-const STORY = '/story/stories-components-stories-btn-origambtntoggle-story-vue'
+const STORY = '/story/components-stories-btn-origambtntoggle-story-vue'
 
 test('active button overlay opacity > non-active sibling opacity', async ({ page }) => {
-    await openVariant(page, STORY, 'Default')
+    await openVariant(page, STORY, 'Prop — modelValue (single selection)')
     const sandbox = sandboxOf(page)
     await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 
-    // Story default: `center` is selected.
+    // Story default: `center` is selected (defaultValue = ref('center')).
     const activeOverlayOpacity = await sandbox
         .locator('.origam-btn--active .origam-btn__overlay')
         .first()
@@ -52,7 +52,7 @@ test('active button overlay opacity > non-active sibling opacity', async ({ page
 })
 
 test('active button overlay > hover overlay (selected reads as "more present")', async ({ page }) => {
-    await openVariant(page, STORY, 'Default')
+    await openVariant(page, STORY, 'Prop — modelValue (single selection)')
     const sandbox = sandboxOf(page)
     await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 

@@ -1,5 +1,6 @@
 <template>
 	<kbd
+			v-contrast
 			:class="kbdClasses"
 			:style="kbdStyles"
 	>
@@ -27,6 +28,8 @@
 		lang="ts"
 		setup
 >
+	import { vContrast } from '../../directives'
+
 	import {
 		useBorder,
 		useBothColor,

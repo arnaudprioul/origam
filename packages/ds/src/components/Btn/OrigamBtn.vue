@@ -3,6 +3,8 @@
 			:is="link.tag"
 			:id="id"
 			v-ripple="isRipple"
+			v-contrast
+			:data-origam-color-locked="colorLocked"
 			:class="btnClasses"
 			:disabled="isDisabled || undefined"
 			:aria-disabled="link.tag === 'a' && isDisabled ? 'true' : undefined"
@@ -22,13 +24,6 @@
 				class="origam-btn__underlay"
 		/>
 
-		<!--
-			Overlay loaders (line / circular) — rendered as direct children
-			of the btn root so they can be absolutely positioned relative
-			to the btn box. Putting them INSIDE the OrigamLoader's
-			default-slot grid would make them claim a `prepend`-slot cell
-			and shove the label off-centre.
-		-->
 		<origam-progress
 				v-if="isOverlayLoading"
 				ref="origamProgressRef"
@@ -158,7 +153,7 @@
 
 	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts'
 
-	import { vRipple } from '../../directives'
+	import { vContrast, vRipple } from '../../directives'
 
 	import { DENSITY, PROGRESS_TYPE, SIZES } from '../../enums'
 
@@ -190,6 +185,10 @@
 	// override semantics: parent `??` item, instead of item-wins).
 	const props = useDefaults(_props)
 
+	// When the consumer explicitly picks a foreground `color`, mark the element
+	// so `v-contrast` doesn't override that intentional colour for legibility.
+	const colorLocked = computed(() => (props.color ? 'true' : undefined))
+
 	defineEmits<IBtnEmits>()
 
 	const {filterProps} = useProps<IBtnProps>(props)
@@ -209,15 +208,32 @@
 	const {isActive: active, activeState} = useActive(props)
 
 	const isActive = computed(() => {
-		if (active.value !== undefined) {
-			return active.value
+		// An explicitly FORCED active (`active=true` or `{ enabled: true }`)
+		// wins everywhere — incl. inside a group (e.g. OrigamBottomNav
+		// diffuses a forced active to every button).
+		const a = props.active
+		const forcedActive = a === true || (!!a && typeof a === 'object' && (a as { enabled?: boolean }).enabled === true)
+
+		if (forcedActive) {
+			return true
+		}
+
+		// Otherwise, inside a toggle group the SELECTION owns the active
+		// state — only the selected item is active. A styling-only `active`
+		// config still customises that item's surface (via `activeState`),
+		// but it must not activate every button. (Previously this read
+		// `active.value`, which `useActive` always resolves to a boolean —
+		// never `undefined` — so the `group.isSelected` fallback was dead
+		// code and toggle selection never highlighted the chosen item.)
+		if (group) {
+			return group.isSelected.value
 		}
 
 		if (link.isLink.value) {
 			return link.isActive?.value
 		}
 
-		return group?.isSelected.value
+		return active.value
 	})
 	/*********************************************************
 	 * Disabled
@@ -596,8 +612,7 @@
 		}
 
 		&:hover,
-		&:focus-visible,
-		&:focus {
+		&:focus-visible {
 			> #{$this}__overlay {
 				--origam-btn__overlay---opacity: var(--origam-btn---overlay-opacity-hover, 0.12);
 			}
@@ -610,8 +625,7 @@
 			}
 
 			&:hover,
-			&:focus-visible,
-			&:focus {
+			&:focus-visible {
 				> #{$this}__overlay {
 					--origam-btn__overlay---opacity: var(--origam-btn---overlay-opacity-active-hover, 0.28);
 				}
@@ -669,7 +683,7 @@
 			background-color: transparent !important;
 			border-width: var(--origam-btn---border-width-outlined, var(--origam-border__width---thin));
 			border-style: solid;
-			border-color: currentColor;
+			border-color: var(--origam-btn---border-color, currentColor);
 			box-shadow: none;
 		}
 

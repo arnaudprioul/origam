@@ -22,7 +22,7 @@ afterEach(() => {
 // passed by the parent — exactly the OrigamBtn case. Its instance name is set
 // so `useDefaults` reads `defaults['origam-btn']`.
 const FakeBtn = defineComponent({
-    name: 'origam-btn',
+    name: 'OrigamBtn',
     props: { color: { type: String, default: 'neutral' } },
     setup (props) {
         const resolved = useDefaults(props, 'origam-btn')
@@ -80,10 +80,16 @@ describe('createOrigam — component defaults from theme.component', () => {
         expect(wrapper.find('span').text()).toBe('success')
     })
 
-    it('a bare install seeds the built-in sobre component defaults (global density)', () => {
+    it('a bare install ships NO global density override (component defaults win)', () => {
         const origam = createOrigam({})
-        // sobre ships `component: { global: { density: 'comfortable' } }`.
-        expect(origam._defaultsRef.value.global).toEqual({ density: 'comfortable' })
+        // The base `origam` theme intentionally ships NO `component.global.density`.
+        // A global density default shadows every component's own
+        // `withDefaults(density: 'default')` AND, combined with the
+        // `childRef?.filterProps(...)` first-render race in SelectionControl-based
+        // components (Checkbox / Radio / Switch), permanently overrides the
+        // explicit `density` prop — making the control appear non-functional.
+        // Bare components therefore resolve their own 'default' density.
+        expect(origam._defaultsRef.value.global?.density).toBeUndefined()
     })
 })
 

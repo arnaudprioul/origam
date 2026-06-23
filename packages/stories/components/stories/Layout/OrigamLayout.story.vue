@@ -3,50 +3,28 @@
 			group="components"
 			title="Layout/OrigamLayout"
 	>
-		<!--
-			Playground — first variant by convention. Surfaces every
-			ILayoutProps knob via the sidebar controls.
-		-->
-		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<ILayoutProps>({
-					fullHeight: false,
-					overlaps: []
-				})"
-		>
-			<template #default="{ state }">
-				<origam-layout v-bind="state" style="height: 280px; border: 1px dashed var(--origam-color__border---default, #ccc);">
-					<div class="demo-stack">
-						<div class="demo-bar">AppBar</div>
-						<div class="demo-main">Main</div>
-					</div>
-				</origam-layout>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.fullHeight" title="fullHeight"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — default layout">
-			<origam-layout style="height: 320px; border: 1px dashed var(--origam-color__border---default, #ccc);">
-				<div class="demo-stack">
-					<div class="demo-bar">SystemBar (mock)</div>
-					<div class="demo-bar">AppBar (mock)</div>
-					<div class="demo-main">Main content</div>
-				</div>
-			</origam-layout>
-		</Variant>
 
 		<Variant
-				title="Prop — fullHeight"
-				:init-state="() => useStoryInitState<{ fullHeight?: boolean }>({ fullHeight: false })"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<ILayoutProps>>({})"
 		>
 			<template #default="{ state }">
 				<origam-layout
-						:full-height="state.fullHeight"
-						style="border: 1px dashed var(--origam-color__border---default, #ccc); min-height: 200px;"
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
+						:width="state.width"
+						:height="state.height || '280px'"
+						:min-height="state.minHeight"
+						:min-width="state.minWidth"
+						:max-height="state.maxHeight"
+						:max-width="state.maxWidth"
+						:margin="state.margin"
+						:padding="state.padding"
 				>
 					<div class="demo-stack">
 						<div class="demo-bar">AppBar (mock)</div>
@@ -55,39 +33,100 @@
 				</origam-layout>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.fullHeight" title="fullHeight"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"     title="Width"/>
+					<HstText v-model="state.height"    title="Height"/>
+					<HstText v-model="state.minWidth"  title="Min Width"/>
+					<HstText v-model="state.minHeight" title="Min Height"/>
+					<HstText v-model="state.maxWidth"  title="Max Width"/>
+					<HstText v-model="state.maxHeight" title="Max Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.margin"  title="Margin"/>
+					<HstText v-model="state.padding" title="Padding"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
 		<Variant
-				title="Prop — overlaps"
-				:init-state="() => useStoryInitState<{ overlaps?: string }>({ overlaps: 'AppBar:Drawer' })"
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<ILayoutProps> & { overlapsRaw: string }>({ fullHeight: false, overlaps: [], overlapsRaw: '' })"
 		>
 			<template #default="{ state }">
 				<origam-layout
-						:overlaps="state.overlaps ? [state.overlaps] : []"
+						:full-height="state.fullHeight"
+						:overlaps="state.overlapsRaw ? [state.overlapsRaw] : []"
 						style="height: 280px; border: 1px dashed var(--origam-color__border---default, #ccc);"
 				>
 					<div class="demo-stack">
-						<div class="demo-bar">AppBar (mock — id="AppBar")</div>
+						<div class="demo-bar">AppBar (mock)</div>
 						<div class="demo-row">
-							<div class="demo-drawer">Drawer (mock — id="Drawer")</div>
+							<div class="demo-drawer">Drawer (mock)</div>
 							<div class="demo-main">Main content</div>
 						</div>
 					</div>
 				</origam-layout>
 			</template>
 			<template #controls="{ state }">
-				<HstText v-model="state.overlaps" title="overlaps (single pair, e.g. AppBar:Drawer)"/>
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.fullHeight" title="Full Height"/>
+				</StoryGroup>
+				<StoryGroup title="Overlaps">
+					<HstText v-model="state.overlapsRaw" title="Overlaps (pair, e.g. AppBar:Drawer)"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<origam-layout style="height: 240px;">
+		<Variant title="Slots - Default">
+			<origam-layout style="height: 240px; border: 1px dashed var(--origam-color__border---default, #ccc);">
 				<div class="demo-main">Custom slot content</div>
 			</origam-layout>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<ILayoutProps>({ fullHeight: false, overlaps: [] })"
+		>
+			<template #default="{ state }">
+				<origam-layout
+						v-bind="state"
+						style="height: 280px;"
+				>
+					<div class="demo-stack">
+						<div class="demo-bar">AppBar (mock)</div>
+						<div class="demo-main">Main content</div>
+					</div>
+				</origam-layout>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.border"    title="Border"    :options="BORDER_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.fullHeight" title="Full Height"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -99,7 +138,15 @@
 	import { OrigamLayout } from '@origam/components'
 	import type { ILayoutProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
 </script>
 
 <style scoped>

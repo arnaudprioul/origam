@@ -86,3 +86,6 @@ package-lock.json
 yarn.lock
 .yarn/
 .pnp.*
+
+# Test coverage output (generated; consumed by SonarQube in CI)
+coverage/

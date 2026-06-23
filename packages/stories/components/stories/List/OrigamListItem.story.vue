@@ -3,169 +3,203 @@
 			group="components"
 			title="List/OrigamListItem"
 	>
-		<!-- ── Playground ───────────────────────────────────────────────── -->
 
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IListItemProps>({
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IListItemProps>>({
 					title: 'List item',
 					subtitle: 'Subtitle text',
-					density: undefined,
 					color: undefined,
 					bgColor: undefined,
+					density: undefined,
 					rounded: undefined,
+					elevation: undefined,
+					border: undefined,
+					borderColor: undefined,
+					borderStyle: undefined,
 					prependIcon: undefined,
 					appendIcon: undefined,
-					active: false,
-					disabled: false,
-					nav: false,
-					slim: false,
 					lines: undefined,
+					width: undefined,
+					height: undefined,
 				})"
 		>
 			<template #default="{ state }">
 				<origam-list>
-					<origam-list-item v-bind="state" data-cy="list-item-playground"/>
-				</origam-list>
-			</template>
-			<template #controls="{ state }">
-				<HstText     v-model="state.title"       title="title"/>
-				<HstText     v-model="state.subtitle"    title="subtitle"/>
-				<HstSelect   v-model="state.density"     title="density"     :options="densityList"/>
-				<HstSelect   v-model="state.color"       title="color"       :options="intentList"/>
-				<HstSelect   v-model="state.bgColor"     title="bgColor"     :options="intentList"/>
-				<HstSelect   v-model="state.rounded"     title="rounded"     :options="roundedList"/>
-				<HstSelect   v-model="state.prependIcon" title="prependIcon" :options="iconList"/>
-				<HstSelect   v-model="state.appendIcon"  title="appendIcon"  :options="iconList"/>
-				<HstSelect   v-model="state.lines"       title="lines"       :options="linesList"/>
-				<HstCheckbox v-model="state.active"      title="active"/>
-				<HstCheckbox v-model="state.disabled"    title="disabled"/>
-				<HstCheckbox v-model="state.nav"         title="nav"/>
-				<HstCheckbox v-model="state.slim"        title="slim"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — adjacent (prependIcon / appendIcon)"
-				:init-state="() => useStoryInitState<IAdjacentProps & { title?: string }>({ title: 'List item' })"
-		>
-			<template #default="{ state }">
-				<origam-list>
-					<origam-list-item v-bind="state" data-cy="list-item-adjacent"/>
-				</origam-list>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.prependIcon"   title="prependIcon"   :options="iconList"/>
-				<HstSelect v-model="state.appendIcon"    title="appendIcon"    :options="iconList"/>
-				<HstText   v-model="state.prependAvatar" title="prependAvatar (URL)"/>
-				<HstText   v-model="state.appendAvatar"  title="appendAvatar (URL)"/>
-				<HstText   v-model="state.title"         title="title"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — density"
-				:init-state="() => useStoryInitState<IDensityProps>({ density: DENSITY.DEFAULT })"
-		>
-			<template #default="{ state }">
-				<origam-list>
-					<origam-list-item :density="state.density" title="Dense item" data-cy="list-item-density"/>
-				</origam-list>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.density" title="density" :options="densityList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — color"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<origam-list>
-					<origam-list-item v-bind="state" title="Colored item" data-cy="list-item-color"/>
-				</origam-list>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"   title="color"   :options="intentList"/>
-				<HstSelect v-model="state.bgColor" title="bgColor" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — rounded"
-				:init-state="() => useStoryInitState<IRoundedProps>({ rounded: true })"
-		>
-			<template #default="{ state }">
-				<origam-list>
-					<origam-list-item :rounded="state.rounded" title="Rounded item" data-cy="list-item-rounded"/>
-				</origam-list>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.rounded" title="rounded" :options="roundedList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — lines"
-				:init-state="() => useStoryInitState<{ lines?: TLines }>({ lines: LINES.TWO })"
-		>
-			<template #default="{ state }">
-				<origam-list>
 					<origam-list-item
+							:title="state.title"
+							:padding="state.padding"
+							:margin="state.margin"
+							:subtitle="state.subtitle"
+							:color="state.color"
+							:bg-color="state.bgColor"
+							:density="state.density"
+							:rounded="state.rounded"
+							:elevation="state.elevation"
+							:border="state.border"
+							:border-color="state.borderColor"
+							:border-style="state.borderStyle"
+							:prepend-icon="state.prependIcon || undefined"
+							:append-icon="state.appendIcon || undefined"
 							:lines="state.lines"
-							title="Multi-line item"
-							subtitle="This subtitle wraps depending on the lines value"
-							data-cy="list-item-lines"
+							:width="state.width"
+							:height="state.height"
 					/>
 				</origam-list>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.lines" title="lines" :options="linesList"/>
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+					<HstSelect v-model="state.lines"   title="Lines"   :options="LINES_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Icons">
+					<HstSelect v-model="state.prependIcon" title="Prepend Icon" :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.appendIcon"  title="Append Icon"  :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
 		<Variant
-				title="Prop — active / disabled / nav / slim"
-				:init-state="() => useStoryInitState<{ active: boolean, disabled: boolean, nav: boolean, slim: boolean }>({ active: false, disabled: false, nav: false, slim: false })"
+				title="State"
+				:init-state="() => useStoryInitState<IHoverProps & IBgColorProps & { active?: boolean | object }>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-list>
 					<origam-list-item
-							:active="state.active"
+							:bg-color="state.bgColor"
+							:hover="resolveHoverState(state.hover)"
+							:active="resolveActiveState(state.active)"
+							title="Stateful item"
+							subtitle="Hover or activate"
+					/>
+				</origam-list>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Surface">
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Interaction">
+					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
+					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IListItemProps>>({
+					title: 'List item',
+					disabled: false,
+					nav: false,
+					slim: false,
+					link: false,
+					tag: undefined,
+					href: undefined,
+					value: undefined,
+					activeClass: undefined,
+				})"
+		>
+			<template #default="{ state }">
+				<origam-list>
+					<origam-list-item
+							:title="state.title"
 							:disabled="state.disabled"
 							:nav="state.nav"
 							:slim="state.slim"
-							title="Stateful item"
-							subtitle="With subtitle"
-							:prepend-icon="MDI_ICONS.ACCOUNT"
-							data-cy="list-item-states"
+							:link="state.link"
+							:tag="state.tag"
+							:href="state.href"
+							:value="state.value"
+							:active-class="state.activeClass"
+							:prepend-icon="prependIcon"
 					/>
 				</origam-list>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.active"   title="active"/>
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-				<HstCheckbox v-model="state.nav"      title="nav"/>
-				<HstCheckbox v-model="state.slim"     title="slim"/>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+					<HstCheckbox v-model="state.nav"      title="Nav"/>
+					<HstCheckbox v-model="state.slim"     title="Slim"/>
+					<HstCheckbox v-model="state.link"     title="Link (clickable)"/>
+				</StoryGroup>
+				<StoryGroup title="Link">
+					<HstSelect v-model="state.tag"  title="Tag"  :options="TAG_OPTIONS"/>
+					<HstText   v-model="state.href" title="Href (tag=a)"/>
+				</StoryGroup>
+				<StoryGroup title="Data">
+					<HstText v-model="state.value"       title="Value"/>
+					<HstText v-model="state.activeClass" title="Active Class"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Slots ────────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
+		<Variant title="Events - click">
 			<origam-list>
-				<origam-list-item data-cy="list-item-slot-default">
-					<span style="font-style: italic; color: var(--origam-color__action--primary---bg);">Custom default slot content</span>
+				<origam-list-item
+						link
+						title="Click me"
+						:prepend-icon="MDI_ICONS.CURSOR_DEFAULT_CLICK"
+						@click="logEvent('click', $event)"
+				/>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Events - click:prepend">
+			<origam-list>
+				<origam-list-item
+						title="Click the prepend icon"
+						:prepend-icon="MDI_ICONS.HEART"
+						@click:prepend="logEvent('click:prepend', $event)"
+				/>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Events - click:append">
+			<origam-list>
+				<origam-list-item
+						title="Click the append icon"
+						:append-icon="MDI_ICONS.CHEVRON_RIGHT"
+						@click:append="logEvent('click:append', $event)"
+				/>
+			</origam-list>
+		</Variant>
+
+		<Variant title="Slots - Default">
+			<origam-list>
+				<origam-list-item>
+					<em>Custom default slot content</em>
 				</origam-list-item>
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — title">
+		<Variant title="Slots - Title">
 			<origam-list>
-				<origam-list-item data-cy="list-item-slot-title">
+				<origam-list-item>
 					<template #title="{ title }">
 						<strong>{{ title ?? 'Custom Title' }}</strong>
 					</template>
@@ -173,29 +207,29 @@
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — subtitle">
+		<Variant title="Slots - Subtitle">
 			<origam-list>
-				<origam-list-item title="Main title" data-cy="list-item-slot-subtitle">
+				<origam-list-item title="Main title">
 					<template #subtitle>
-						<em style="opacity: 0.7;">Custom subtitle slot</em>
+						<em>Custom subtitle slot</em>
 					</template>
 				</origam-list-item>
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — prepend">
+		<Variant title="Slots - Prepend">
 			<origam-list>
-				<origam-list-item title="Item with custom prepend" data-cy="list-item-slot-prepend">
+				<origam-list-item title="Item with custom prepend">
 					<template #prepend>
-						<origam-icon :icon="MDI_ICONS.HEART" style="color: var(--origam-color__feedback--danger---bg);"/>
+						<origam-icon :icon="MDI_ICONS.HEART"/>
 					</template>
 				</origam-list-item>
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — append">
+		<Variant title="Slots - Append">
 			<origam-list>
-				<origam-list-item title="Item with custom append" data-cy="list-item-slot-append">
+				<origam-list-item title="Item with custom append">
 					<template #append>
 						<origam-icon :icon="MDI_ICONS.CHEVRON_RIGHT"/>
 					</template>
@@ -203,55 +237,55 @@
 			</origam-list>
 		</Variant>
 
-		<Variant title="Slot — wrapper">
+		<Variant title="Slots - Wrapper">
 			<origam-list>
-				<origam-list-item data-cy="list-item-slot-wrapper">
+				<origam-list-item>
 					<template #wrapper>
-						<div style="display: flex; align-items: center; gap: 12px; padding: 8px 16px;">
+						<span style="display: flex; align-items: center; gap: 12px; padding: 8px 16px;">
 							<origam-icon :icon="MDI_ICONS.STAR"/>
 							<span>Full wrapper override</span>
-						</div>
+						</span>
 					</template>
 				</origam-list-item>
 			</origam-list>
 		</Variant>
 
-		<!-- ── Emits ────────────────────────────────────────────────────── -->
-
-		<Variant title="Emit — click">
-			<origam-list>
-				<origam-list-item
-						link
-						title="Click me"
-						:prepend-icon="MDI_ICONS.CURSOR_DEFAULT_CLICK"
-						data-cy="list-item-emit-click"
-						@click="logEvent('click', $event)"
-				/>
-			</origam-list>
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IListItemProps>({
+					title: 'List item',
+					subtitle: 'Subtitle text',
+				})"
+		>
+			<template #default="{ state }">
+				<origam-list>
+					<origam-list-item v-bind="state" @click="logEvent('click', $event)"/>
+				</origam-list>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText   v-model="state.title"       title="Title"/>
+					<HstText   v-model="state.subtitle"    title="Subtitle"/>
+					<HstSelect v-model="state.prependIcon" title="Prepend Icon" :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.appendIcon"  title="Append Icon"  :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.lines"       title="Lines"        :options="LINES_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.active"   title="Active"/>
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+					<HstCheckbox v-model="state.nav"      title="Nav"/>
+					<HstCheckbox v-model="state.slim"     title="Slim"/>
+					<HstCheckbox v-model="state.link"     title="Link (clickable)"/>
+				</StoryGroup>
+			</template>
 		</Variant>
-
-		<Variant title="Emit — click:prepend">
-			<origam-list>
-				<origam-list-item
-						title="Click the prepend icon"
-						:prepend-icon="MDI_ICONS.HEART"
-						data-cy="list-item-emit-click-prepend"
-						@click:prepend="logEvent('click:prepend', $event)"
-				/>
-			</origam-list>
-		</Variant>
-
-		<Variant title="Emit — click:append">
-			<origam-list>
-				<origam-list-item
-						title="Click the append icon"
-						:append-icon="MDI_ICONS.CHEVRON_RIGHT"
-						data-cy="list-item-emit-click-append"
-						@click:append="logEvent('click:append', $event)"
-				/>
-			</origam-list>
-		</Variant>
-
 	</Story>
 </template>
 
@@ -262,24 +296,38 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamIcon, OrigamList, OrigamListItem } from '@origam/components'
-	import { DENSITY, LINES, MDI_ICONS } from '@origam/enums'
+	import { LINES, MDI_ICONS } from '@origam/enums'
 	import type {
-		IAdjacentProps,
-		IColorProps,
-		IDensityProps,
+		IBgColorProps,
+		IHoverProps,
 		IListItemProps,
 		IOptions,
-		IRoundedProps
 	} from '@origam/interfaces'
 	import type { TLines } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { densityList, iconList, intentList, roundedList } from '@stories/const'
+	import {
+		ACTIVE_OPTIONS,
+		resolveActiveState,
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
+		HOVER_OPTIONS,
+		resolveHoverState,
+		ICON_OPTIONS,
+		ROUNDED_OPTIONS,
+		TAG_OPTIONS,
+	} from '@stories/const'
 
-	const linesList: Array<IOptions<TLines | undefined>> = [
-		{ label: '(none)', value: undefined   },
-		{ label: 'One',    value: LINES.ONE   },
-		{ label: 'Two',    value: LINES.TWO   },
-		{ label: 'Three',  value: LINES.THREE },
+	const prependIcon = MDI_ICONS.ACCOUNT
+
+	const LINES_OPTIONS: Array<IOptions<TLines | undefined>> = [
+		{ label: '(none)',  value: undefined    },
+		{ label: 'One',     value: LINES.ONE    },
+		{ label: 'Two',     value: LINES.TWO    },
+		{ label: 'Three',   value: LINES.THREE  },
 	]
 </script>

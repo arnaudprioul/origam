@@ -3,107 +3,92 @@
 			group="components"
 			title="DatePicker/OrigamDatePickerMonths"
 	>
-		<!--
-			Playground — the 4×3 month-name grid shown when clicking the
-			year heading. Can be embedded in the parent picker or used
-			standalone.
-		-->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<{ color: string; min: string; max: string }>({
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IDatePickerMonthsProps>>({
 					color: 'primary',
-					min: '2026-01-01',
-					max: '2026-12-31',
+					month: 4,
+					year: 2026,
 				})"
 		>
 			<template #default="{ state }">
 				<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
 					<origam-date-picker-months
-							:month="4"
-							:year="2026"
 							:color="state.color"
-							:min="state.min"
-							:max="state.max"
-							data-cy="dp-months-playground"
+							:month="state.month"
+							:year="state.year"
+							:width="state.width"
+							:height="state.height"
+							:min-width="state.minWidth"
+							:max-width="state.maxWidth"
+							:min-height="state.minHeight"
+							:max-height="state.maxHeight"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.color" title="color" :options="intentList"/>
-				<HstText   v-model="state.min"   title="min (YYYY-MM-DD)"/>
-				<HstText   v-model="state.max"   title="max (YYYY-MM-DD)"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"     title="Width"/>
+					<HstText v-model="state.height"    title="Height"/>
+					<HstText v-model="state.minWidth"  title="Min Width"/>
+					<HstText v-model="state.maxWidth"  title="Max Width"/>
+					<HstText v-model="state.minHeight" title="Min Height"/>
+					<HstText v-model="state.maxHeight" title="Max Height"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — realistic wiring (embedded in DatePicker, month view)">
-			<div style="padding: 24px; display: flex; justify-content: center;">
-				<origam-date-picker v-model="defaultValue" view-mode="months" data-cy="dp-months-default"/>
-			</div>
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IDatePickerMonthsProps>>({
+					month: 4,
+					year: 2026,
+					min: '2026-03-01',
+					max: '2026-09-30',
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
+					<origam-date-picker-months
+							:month="state.month"
+							:year="state.year"
+							:min="state.min"
+							:max="state.max"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Data">
+					<HstNumber v-model="state.month" title="Month (0–11)" :min="0" :max="11" :step="1"/>
+					<HstNumber v-model="state.year"  title="Year"         :min="2000" :max="2100" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Bounds">
+					<HstText v-model="state.min" title="Min (YYYY-MM-DD)"/>
+					<HstText v-model="state.max" title="Max (YYYY-MM-DD)"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<Variant title="Prop — month & year (standalone, May 2026)">
+		<Variant title="Events - update:month">
 			<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
 				<origam-date-picker-months
-						:month="4"
+						:month="emitMonth"
 						:year="2026"
-						data-cy="dp-months-standalone"
+						@update:month="logEvent('update:month', $event); emitMonth = $event"
 				/>
+				<p style="margin-top: 8px; font-size: 0.75rem;">month = {{ emitMonth }}</p>
 			</div>
 		</Variant>
 
-		<Variant
-				title="Prop — min & max (bounds disable out-of-range months)"
-				:init-state="() => useStoryInitState<{ min: string; max: string }>({ min: '2026-03-01', max: '2026-09-30' })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
-					<origam-date-picker-months
-							:month="4"
-							:year="2026"
-							:min="state.min"
-							:max="state.max"
-							data-cy="dp-months-bounds"
-					/>
-					<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary); margin-top: 8px;">
-						Months outside the [min .. max] range render disabled.
-					</p>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstText v-model="state.min" title="min (YYYY-MM-DD)"/>
-				<HstText v-model="state.max" title="max (YYYY-MM-DD)"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — color"
-				:init-state="() => useStoryInitState<{ color: string }>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
-					<origam-date-picker-months
-							:month="4"
-							:year="2026"
-							:color="state.color"
-							data-cy="dp-months-color"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color" title="color" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — month">
+		<Variant title="Slots - month">
 			<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
 				<origam-date-picker-months
 						:month="4"
 						:year="2026"
-						data-cy="dp-months-slot-month"
 				>
 					<template #month="{ month, year }">
 						<div style="text-align: center; font-weight: 600; padding: 6px; cursor: pointer;">
@@ -114,20 +99,37 @@
 			</div>
 		</Variant>
 
-		<!-- ── Emits ────────────────────────────────────────────────── -->
-
-		<Variant title="Emit — update:month">
-			<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
-				<origam-date-picker-months
-						:month="emitMonth"
-						:year="2026"
-						data-cy="dp-months-emit-update"
-						@update:month="logEvent('update:month', $event); emitMonth = $event"
-				/>
-				<p style="font-size: 0.75rem; color: var(--origam-color__text---secondary); margin-top: 8px;">
-					month = {{ emitMonth }}
-				</p>
-			</div>
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IDatePickerMonthsProps>({
+					month: 4,
+					year: 2026,
+					color: 'primary',
+				})"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px; max-width: 320px; margin: 0 auto;">
+					<origam-date-picker-months
+							v-bind="state"
+							@update:month="logEvent('update:month', $event)"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstNumber v-model="state.month" title="Month (0–11)" :min="0" :max="11" :step="1"/>
+					<HstNumber v-model="state.year"  title="Year"         :min="2000" :max="2100" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+					<HstText   v-model="state.width"  title="Width"/>
+					<HstText   v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstText v-model="state.min" title="Min (YYYY-MM-DD)"/>
+					<HstText v-model="state.max" title="Max (YYYY-MM-DD)"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -139,12 +141,13 @@
 	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamDatePicker, OrigamDatePickerMonths } from '@origam/components'
+	import { OrigamDatePickerMonths } from '@origam/components'
+	import type { IDatePickerMonthsProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { intentList } from '@stories/const'
+	import { COLOR_OPTIONS } from '@stories/const'
 
-	const defaultValue = ref('2026-05-08')
 	const emitMonth = ref(4)
 </script>
 

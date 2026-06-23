@@ -3,328 +3,188 @@
 			group="components"
 			title="Chart/OrigamChartPictorial"
 	>
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<Record<string, unknown>>({
-					height: 400,
-					animated: true,
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IChartPictorialProps>>({
+					series: FIXTURE_SATISFACTION,
+					categories: FIXTURE_SATISFACTION_CATEGORIES,
+					height: '360',
+					mode: CHART_PICTORIAL_MODE.STACK,
+					direction: CHART_PICTORIAL_DIRECTION.VERTICAL,
+					iconsPerUnit: 5,
+					icon: undefined,
+					iconColor: undefined,
+					emptyIconColor: undefined,
+					colorScheme: undefined,
+					legendPosition: 'bottom',
+					title: 'Customer satisfaction',
+					subtitle: '',
 					showLegend: true,
 					showTooltip: true,
 					showLabel: true,
 					showAxis: true,
-					legendPosition: 'bottom',
-					direction: 'vertical',
-					iconsPerUnit: 10,
-					mode: CHART_PICTORIAL_MODE.FILL
+					animated: true
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="pictorial-playground"
-				>
-					<origam-chart-pictorial
-							:series="FIXTURE_BEER"
-							:categories="FIXTURE_BEER_CATEGORIES"
-							:height="Number(state.height)"
-							:animated="Boolean(state.animated)"
-							:show-legend="Boolean(state.showLegend)"
-							:show-tooltip="Boolean(state.showTooltip)"
-							:show-label="Boolean(state.showLabel)"
-							:show-axis="Boolean(state.showAxis)"
-							:legend-position="state.legendPosition"
-							:direction="state.direction"
-							:icons-per-unit="Number(state.iconsPerUnit)"
-							:mode="state.mode"
-							:icon="PICTORIAL_ICON_BEER_MUG"
-							title="Beer consumption per capita (litres)"
-							subtitle="Top 8 countries"
-							data-cy="pictorial-playground-chart"
-							@point-click="onPointClick"
-							@legend-click="onLegendClick"
-							@series-toggle="onSeriesToggle"
-					/>
-					<pre
-							class="story-log"
-							data-cy="pictorial-playground-log"
-					>{{ logLines.join('\n') }}</pre>
-				</div>
+				<origam-chart-pictorial
+						:series="state.series ?? FIXTURE_SATISFACTION"
+						:categories="state.categories ?? FIXTURE_SATISFACTION_CATEGORIES"
+						:height="state.height"
+						:mode="state.mode"
+						:direction="state.direction"
+						:icons-per-unit="state.iconsPerUnit"
+						:icon="state.icon || undefined"
+						:icon-color="state.iconColor || undefined"
+						:empty-icon-color="state.emptyIconColor || undefined"
+						:color-scheme="state.colorScheme || undefined"
+						:legend-position="state.legendPosition"
+						:title="state.title"
+						:subtitle="state.subtitle || undefined"
+						:show-legend="state.showLegend"
+						:show-tooltip="state.showTooltip"
+						:show-label="state.showLabel"
+						:show-axis="state.showAxis"
+						:animated="state.animated"
+				/>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.mode"
-						title="mode"
-						:options="MODE_OPTIONS"
-				/>
-				<HstSelect
-						v-model="state.direction"
-						title="direction"
-						:options="DIRECTION_OPTIONS"
-				/>
-				<HstNumber
-						v-model="state.height"
-						title="height (px)"
-				/>
-				<HstNumber
-						v-model="state.iconsPerUnit"
-						title="iconsPerUnit"
-				/>
-				<HstSelect
-						v-model="state.legendPosition"
-						title="legendPosition"
-						:options="LEGEND_POSITION_OPTIONS"
-				/>
-				<HstCheckbox
-						v-model="state.animated"
-						title="animated"
-				/>
-				<HstCheckbox
-						v-model="state.showLegend"
-						title="showLegend"
-				/>
-				<HstCheckbox
-						v-model="state.showTooltip"
-						title="showTooltip"
-				/>
-				<HstCheckbox
-						v-model="state.showLabel"
-						title="showLabel"
-				/>
-				<HstCheckbox
-						v-model="state.showAxis"
-						title="showAxis"
-				/>
+				<StoryGroup title="Mode">
+					<HstSelect v-model="state.mode"      title="Mode"      :options="MODE_OPTIONS"/>
+					<HstSelect v-model="state.direction" title="Direction" :options="DIRECTION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Icon">
+					<HstSelect v-model="state.icon"           title="Icon"             :options="PICTORIAL_ICON_OPTIONS"/>
+					<HstSelect v-model="state.iconColor"      title="Icon Color"       :options="INTENT_OPTIONS"/>
+					<HstText   v-model="state.emptyIconColor" title="Empty Icon Color"/>
+				</StoryGroup>
+				<StoryGroup title="Data">
+					<HstNumber v-model="state.iconsPerUnit" title="Icons Per Unit" :min="1" :max="100" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Legend">
+					<HstSelect   v-model="state.legendPosition" title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+					<HstCheckbox v-model="state.showLegend"     title="Show Legend"/>
+				</StoryGroup>
+				<StoryGroup title="Labels & Axis">
+					<HstCheckbox v-model="state.showLabel" title="Show Label"/>
+					<HstCheckbox v-model="state.showAxis"  title="Show Axis"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Animation">
+					<HstCheckbox v-model="state.animated" title="Animated"/>
+				</StoryGroup>
+				<StoryGroup title="Title">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Tooltip">
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — mode (stack vs fill)">
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IChartPictorialProps>>({
+					series: FIXTURE_SATISFACTION,
+					categories: FIXTURE_SATISFACTION_CATEGORIES,
+					height: '360',
+					iconsPerUnit: 5,
+					showLegend: true,
+					showTooltip: true,
+					showLabel: true,
+					showAxis: true,
+					animated: true
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart-pictorial
+						:series="state.series ?? FIXTURE_SATISFACTION"
+						:categories="state.categories ?? FIXTURE_SATISFACTION_CATEGORIES"
+						:height="state.height"
+						:icons-per-unit="state.iconsPerUnit"
+						:show-legend="state.showLegend"
+						:show-tooltip="state.showTooltip"
+						:show-label="state.showLabel"
+						:show-axis="state.showAxis"
+						:animated="state.animated"
+						title="Functional controls"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Display">
+					<HstCheckbox v-model="state.showLegend"  title="Show Legend"/>
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+					<HstCheckbox v-model="state.showLabel"   title="Show Label"/>
+					<HstCheckbox v-model="state.showAxis"    title="Show Axis"/>
+				</StoryGroup>
+				<StoryGroup title="Animation">
+					<HstCheckbox v-model="state.animated" title="Animated"/>
+				</StoryGroup>
+				<StoryGroup title="Data">
+					<HstNumber v-model="state.iconsPerUnit" title="Icons Per Unit" :min="1" :max="100" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Events - point-click">
 			<div
 					class="story-shell"
-					data-cy="pictorial-mode"
+					data-cy="pictorial-emit-point-click"
 			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>mode="stack" (classic isotype)</strong>
-						<origam-chart-pictorial
-								:series="FIXTURE_SATISFACTION"
-								:categories="FIXTURE_SATISFACTION_CATEGORIES"
-								:icons-per-unit="5"
-								:height="360"
-								mode="stack"
-								title="Customer satisfaction"
-								data-cy="pictorial-mode-stack"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>mode="fill" (glass fill / thermometer)</strong>
-						<origam-chart-pictorial
-								:series="FIXTURE_BEER"
-								:categories="FIXTURE_BEER_CATEGORIES"
-								:height="360"
-								mode="fill"
-								:icon="PICTORIAL_ICON_BEER_MUG"
-								title="Beer consumption per capita"
-								data-cy="pictorial-mode-fill"
-						/>
-					</div>
-				</div>
+				<origam-chart-pictorial
+						:series="FIXTURE_SATISFACTION"
+						:categories="FIXTURE_SATISFACTION_CATEGORIES"
+						:icons-per-unit="5"
+						:height="360"
+						title="Click a column"
+						data-cy="pictorial-emit-point-click-chart"
+						@point-click="logEvent('point-click', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — icon (person / beer / heart / star / dollar)">
+		<Variant title="Events - legend-click">
 			<div
 					class="story-shell"
-					data-cy="pictorial-icons"
+					data-cy="pictorial-emit-legend-click"
 			>
-				<div class="story-grid story-grid--3">
-					<div class="story-col">
-						<strong>person (stack, default)</strong>
-						<origam-chart-pictorial
-								:series="FIXTURE_SATISFACTION"
-								:categories="FIXTURE_SATISFACTION_CATEGORIES"
-								:icons-per-unit="5"
-								:height="300"
-								title="Satisfaction"
-								data-cy="pictorial-icon-person"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>beer (fill mode)</strong>
-						<origam-chart-pictorial
-								:series="FIXTURE_BEER"
-								:categories="FIXTURE_BEER_CATEGORIES"
-								:height="300"
-								mode="fill"
-								:icon="PICTORIAL_ICON_BEER_MUG"
-								title="Beer consumption"
-								data-cy="pictorial-icon-beer"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>heart (fill mode)</strong>
-						<origam-chart-pictorial
-								:series="FIXTURE_SATISFACTION"
-								:categories="FIXTURE_SATISFACTION_CATEGORIES"
-								:height="300"
-								mode="fill"
-								:icon="PICTORIAL_ICON_HEART"
-								icon-color="danger"
-								title="Satisfaction"
-								data-cy="pictorial-icon-heart"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>star (stack)</strong>
-						<origam-chart-pictorial
-								:series="FIXTURE_RATINGS"
-								:categories="FIXTURE_RATINGS_CATEGORIES"
-								:icons-per-unit="10"
-								:height="300"
-								:icon="PICTORIAL_ICON_STAR"
-								icon-color="warning"
-								title="Ratings"
-								data-cy="pictorial-icon-star"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>dollar (fill mode)</strong>
-						<origam-chart-pictorial
-								:series="FIXTURE_SATISFACTION"
-								:categories="FIXTURE_SATISFACTION_CATEGORIES"
-								:height="300"
-								mode="fill"
-								:icon="PICTORIAL_ICON_DOLLAR"
-								icon-color="success"
-								title="Budget"
-								data-cy="pictorial-icon-dollar"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>house (fill mode)</strong>
-						<origam-chart-pictorial
-								:series="FIXTURE_SATISFACTION"
-								:categories="FIXTURE_SATISFACTION_CATEGORIES"
-								:height="300"
-								mode="fill"
-								:icon="PICTORIAL_ICON_HOUSE"
-								icon-color="info"
-								title="Occupancy"
-								data-cy="pictorial-icon-house"
-						/>
-					</div>
-				</div>
+				<origam-chart-pictorial
+						:series="FIXTURE_RATINGS"
+						:categories="FIXTURE_RATINGS_CATEGORIES"
+						:icons-per-unit="10"
+						:height="360"
+						title="Click a legend entry"
+						data-cy="pictorial-emit-legend-click-chart"
+						@legend-click="logEvent('legend-click', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — direction (vertical / horizontal)">
+		<Variant title="Events - series-toggle">
 			<div
 					class="story-shell"
-					data-cy="pictorial-direction"
+					data-cy="pictorial-emit-series-toggle"
 			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>vertical (default)</strong>
-						<origam-chart-pictorial
-								:series="FIXTURE_SATISFACTION"
-								:categories="FIXTURE_SATISFACTION_CATEGORIES"
-								:icons-per-unit="5"
-								:height="360"
-								direction="vertical"
-								title="Vertical"
-								data-cy="pictorial-direction-vertical"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>horizontal</strong>
-						<origam-chart-pictorial
-								:series="FIXTURE_SATISFACTION"
-								:categories="FIXTURE_SATISFACTION_CATEGORIES"
-								:icons-per-unit="5"
-								:height="360"
-								direction="horizontal"
-								title="Horizontal"
-								data-cy="pictorial-direction-horizontal"
-						/>
-					</div>
-				</div>
+				<origam-chart-pictorial
+						:series="FIXTURE_RATINGS"
+						:categories="FIXTURE_RATINGS_CATEGORIES"
+						:icons-per-unit="10"
+						:height="360"
+						title="Toggle a series"
+						data-cy="pictorial-emit-series-toggle-chart"
+						@series-toggle="logEvent('series-toggle', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — iconsPerUnit (1 vs 10)">
-			<div
-					class="story-shell"
-					data-cy="pictorial-icons-per-unit"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>iconsPerUnit=1 (65 icons total for promoters)</strong>
-						<origam-chart-pictorial
-								:series="FIXTURE_SATISFACTION"
-								:categories="FIXTURE_SATISFACTION_CATEGORIES"
-								:icons-per-unit="1"
-								:height="360"
-								title="Fine granularity"
-								data-cy="pictorial-ipu-1"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>iconsPerUnit=5 (13 icons total for promoters)</strong>
-						<origam-chart-pictorial
-								:series="FIXTURE_SATISFACTION"
-								:categories="FIXTURE_SATISFACTION_CATEGORIES"
-								:icons-per-unit="5"
-								:height="360"
-								title="Coarse granularity"
-								data-cy="pictorial-ipu-5"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — colorScheme">
-			<div
-					class="story-shell"
-					data-cy="pictorial-color-scheme"
-			>
-				<div class="story-grid story-grid--3">
-					<div class="story-col">
-						<strong>default palette (intent cycle)</strong>
-						<origam-chart-pictorial
-								:series="FIXTURE_RATINGS"
-								:categories="FIXTURE_RATINGS_CATEGORIES"
-								:icons-per-unit="10"
-								:height="280"
-								data-cy="pictorial-color-default"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>custom CSS colors</strong>
-						<origam-chart-pictorial
-								:series="FIXTURE_RATINGS"
-								:categories="FIXTURE_RATINGS_CATEGORIES"
-								:icons-per-unit="10"
-								:color-scheme="['#6366f1','#8b5cf6','#a78bfa','#c4b5fd','#ddd6fe']"
-								:height="280"
-								data-cy="pictorial-color-custom"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>iconColor = 'success' (single override)</strong>
-						<origam-chart-pictorial
-								:series="FIXTURE_SATISFACTION"
-								:categories="FIXTURE_SATISFACTION_CATEGORIES"
-								:icons-per-unit="5"
-								:height="280"
-								icon-color="success"
-								data-cy="pictorial-color-intent"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — tooltip">
+		<Variant title="Slots - Tooltip">
 			<div
 					class="story-shell"
 					data-cy="pictorial-slot-tooltip"
@@ -347,7 +207,7 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — empty">
+		<Variant title="Slots - Empty">
 			<div
 					class="story-shell"
 					data-cy="pictorial-slot-empty"
@@ -368,27 +228,116 @@
 			</div>
 		</Variant>
 
-		<Variant title="Emit — point-click">
+		<Variant title="Slots - Legend-Item">
 			<div
 					class="story-shell"
-					data-cy="pictorial-emit"
+					data-cy="pictorial-slot-legend-item"
 			>
 				<origam-chart-pictorial
-						:series="FIXTURE_SATISFACTION"
-						:categories="FIXTURE_SATISFACTION_CATEGORIES"
-						:icons-per-unit="5"
+						:series="FIXTURE_RATINGS"
+						:categories="FIXTURE_RATINGS_CATEGORIES"
+						:icons-per-unit="10"
 						:height="360"
-						title="Click a column"
-						data-cy="pictorial-emit-chart"
-						@point-click="onPointClick"
-						@legend-click="onLegendClick"
-						@series-toggle="onSeriesToggle"
-				/>
-				<pre
-						class="story-log"
-						data-cy="pictorial-emit-log"
-				>{{ logLines.join('\n') }}</pre>
+						title="Custom legend item"
+						data-cy="pictorial-slot-legend-item-chart"
+				>
+					<template #legend-item="{ series, index, visible }">
+						<span :style="{ opacity: visible ? 1 : 0.4, fontWeight: 'bold' }">
+							{{ index + 1 }}. {{ series.name }}
+						</span>
+					</template>
+				</origam-chart-pictorial>
 			</div>
+		</Variant>
+
+		<Variant title="Slots - Title">
+			<div
+					class="story-shell"
+					data-cy="pictorial-slot-title"
+			>
+				<origam-chart-pictorial
+						:series="FIXTURE_BEER"
+						:categories="FIXTURE_BEER_CATEGORIES"
+						:height="360"
+						mode="fill"
+						:icon="PICTORIAL_ICON_BEER_MUG"
+						data-cy="pictorial-slot-title-chart"
+				>
+					<template #title>
+						<div class="custom-title">
+							<strong>Beer consumption</strong>
+							<em>per capita (litres)</em>
+						</div>
+					</template>
+				</origam-chart-pictorial>
+			</div>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IChartPictorialProps>>({
+					height: '400',
+					animated: true,
+					showLegend: true,
+					showTooltip: true,
+					showLabel: true,
+					showAxis: true,
+					legendPosition: 'bottom',
+					direction: CHART_PICTORIAL_DIRECTION.VERTICAL,
+					iconsPerUnit: 10,
+					mode: CHART_PICTORIAL_MODE.FILL,
+					title: 'Beer consumption per capita (litres)',
+					subtitle: 'Top 8 countries'
+				})"
+		>
+			<template #default="{ state }">
+				<div
+						class="story-shell"
+						data-cy="pictorial-playground"
+				>
+					<origam-chart-pictorial
+							:series="FIXTURE_BEER"
+							:categories="FIXTURE_BEER_CATEGORIES"
+							:height="state.height"
+							:animated="state.animated"
+							:show-legend="state.showLegend"
+							:show-tooltip="state.showTooltip"
+							:show-label="state.showLabel"
+							:show-axis="state.showAxis"
+							:legend-position="state.legendPosition"
+							:direction="state.direction"
+							:icons-per-unit="state.iconsPerUnit"
+							:mode="state.mode"
+							:icon="PICTORIAL_ICON_BEER_MUG"
+							:title="state.title"
+							:subtitle="state.subtitle || undefined"
+							data-cy="pictorial-playground-chart"
+							@point-click="logEvent('point-click', $event)"
+							@legend-click="logEvent('legend-click', $event)"
+							@series-toggle="logEvent('series-toggle', $event)"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.mode"           title="Mode"            :options="MODE_OPTIONS"/>
+					<HstSelect v-model="state.direction"      title="Direction"       :options="DIRECTION_OPTIONS"/>
+					<HstSelect v-model="state.legendPosition" title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+					<HstText   v-model="state.height"         title="Height"/>
+					<HstNumber v-model="state.iconsPerUnit"   title="Icons Per Unit"  :min="1" :max="100" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.animated"    title="Animated"/>
+					<HstCheckbox v-model="state.showLegend"  title="Show Legend"/>
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+					<HstCheckbox v-model="state.showLabel"   title="Show Label"/>
+					<HstCheckbox v-model="state.showAxis"    title="Show Axis"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -397,39 +346,49 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamChartPictorial } from '@origam/components'
-
-	import type { IChartPoint, IChartSeries } from '@origam/interfaces'
-
 	import {
 		PICTORIAL_ICON_BEER_MUG,
 		PICTORIAL_ICON_DOLLAR,
 		PICTORIAL_ICON_HEART,
 		PICTORIAL_ICON_HOUSE,
+		PICTORIAL_ICON_PERSON,
 		PICTORIAL_ICON_STAR
 	} from '@origam/consts'
+	import { CHART_PICTORIAL_DIRECTION, CHART_PICTORIAL_MODE } from '@origam/enums'
+	import type { IChartPictorialProps, IChartSeries } from '@origam/interfaces'
 
-	import { CHART_PICTORIAL_MODE } from '@origam/enums'
-
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import { INTENT_OPTIONS } from '@stories/const'
 
 	const MODE_OPTIONS = [
 		{ value: CHART_PICTORIAL_MODE.STACK, label: 'stack' },
-		{ value: CHART_PICTORIAL_MODE.FILL, label: 'fill' }
+		{ value: CHART_PICTORIAL_MODE.FILL,  label: 'fill' }
 	]
 
 	const DIRECTION_OPTIONS = [
-		{ value: 'vertical', label: 'vertical' },
-		{ value: 'horizontal', label: 'horizontal' }
+		{ value: CHART_PICTORIAL_DIRECTION.VERTICAL,   label: 'vertical' },
+		{ value: CHART_PICTORIAL_DIRECTION.HORIZONTAL, label: 'horizontal' }
 	]
 
 	const LEGEND_POSITION_OPTIONS = [
-		{ value: 'top', label: 'top' },
+		{ value: 'top',    label: 'top' },
 		{ value: 'bottom', label: 'bottom' },
-		{ value: 'left', label: 'left' },
-		{ value: 'right', label: 'right' }
+		{ value: 'left',   label: 'left' },
+		{ value: 'right',  label: 'right' }
+	]
+
+	const PICTORIAL_ICON_OPTIONS = [
+		{ value: undefined,               label: '(default — person)' },
+		{ value: PICTORIAL_ICON_PERSON,   label: 'person' },
+		{ value: PICTORIAL_ICON_BEER_MUG, label: 'beer mug' },
+		{ value: PICTORIAL_ICON_HEART,    label: 'heart' },
+		{ value: PICTORIAL_ICON_STAR,     label: 'star' },
+		{ value: PICTORIAL_ICON_DOLLAR,   label: 'dollar' },
+		{ value: PICTORIAL_ICON_HOUSE,    label: 'house' }
 	]
 
 	const FIXTURE_BEER_CATEGORIES = [
@@ -458,24 +417,6 @@
 	const FIXTURE_RATINGS: Array<IChartSeries> = [
 		{ name: 'Ratings', data: [4, 12, 28, 55, 78] }
 	]
-
-	const logLines = ref<Array<string>>([])
-
-	const appendLog = (line: string) => {
-		logLines.value = [line, ...logLines.value].slice(0, 8)
-	}
-
-	const onPointClick = (point: IChartPoint) => {
-		appendLog(`point-click → x="${ point.x }" y=${ point.y }`)
-	}
-
-	const onLegendClick = (series: IChartSeries, index: number) => {
-		appendLog(`legend-click → ${ series.name } (index ${ index })`)
-	}
-
-	const onSeriesToggle = (series: IChartSeries, visible: boolean) => {
-		appendLog(`series-toggle → ${ series.name } now ${ visible ? 'visible' : 'hidden' }`)
-	}
 </script>
 
 <style scoped>
@@ -484,45 +425,6 @@
 		flex-direction: column;
 		gap: 12px;
 		padding: 16px;
-	}
-
-	.story-log {
-		font-size: 0.75rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-		min-height: 80px;
-		border: 1px solid var(--origam-color-border-subtle, #e5e7eb);
-		border-radius: 4px;
-		padding: 8px;
-		white-space: pre-wrap;
-	}
-
-	.story-grid {
-		display: grid;
-		gap: 16px;
-	}
-
-	.story-grid--2 {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	.story-grid--3 {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
-
-	.story-grid--4 {
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-	}
-
-	.story-col {
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-		min-width: 0;
-	}
-
-	.story-col strong {
-		font-size: 0.8125rem;
-		color: var(--origam-color-text-secondary, #6b7280);
 	}
 
 	.custom-tooltip {
@@ -536,4 +438,15 @@
 		color: var(--origam-color-text-secondary, #6b7280);
 		font-style: italic;
 	}
+
+	.custom-title {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
 </style>
+
+<docs
+		lang="md"
+		src="@docs/components/Chart/OrigamChartPictorial.md"
+/>

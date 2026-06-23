@@ -71,7 +71,27 @@ export function useBorder (props: IBorderProps | Ref<boolean | number | string |
                 })
             }
         } else if (typeof border === 'number') {
+            // A bare numeric width paints nothing: `border-style` defaults to
+            // `none`, so `border-width: 4px` alone is invisible. Mirror the
+            // string path's defaults (solid / currentColor) so a numeric border
+            // actually renders. The standalone `borderStyle` / `borderColor`
+            // props below still override these (pushed after).
             styles.push(`border-width: ${convertToUnit(border)}`)
+            styles.push('border-style: solid')
+            styles.push('border-color: currentColor')
+        }
+
+        // Additive surface for the standalone `borderColor` / `borderStyle`
+        // props declared on `IBorderProps`. The Ref overload only carries
+        // the `border` shorthand value, so these are only consulted when
+        // `props` is the props object (not a Ref). Each is emitted only
+        // when the consumer supplied a non-empty value, so components that
+        // never pass them keep their existing output untouched.
+        if (!isRef(props)) {
+            const {borderColor, borderStyle} = props
+
+            if (!isEmpty(borderColor)) styles.push(`border-color: ${borderColor}`)
+            if (!isEmpty(borderStyle)) styles.push(`border-style: ${borderStyle}`)
         }
 
         return styles

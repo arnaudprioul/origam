@@ -1,65 +1,72 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-datepicker-origamdatepicker-story-vue'
+const STORY_PATH = '/story/components-stories-datepicker-origamdatepicker-story-vue'
 
+/**
+ * OrigamDatePicker — e2e spec.
+ *
+ * Each test navigates to the matching Variant via sidebar click, then waits
+ * for the data-cy anchor already present on the story root before asserting.
+ * The 800 ms fixed wait was insufficient when the iframe sandbox was still
+ * rendering the component chain (DatePicker → Picker → Sheet).  Waiting on
+ * the known data-cy element instead gives an accurate "sandbox ready" signal
+ * with a generous 10 s budget.
+ */
 test.describe('OrigamDatePicker', () => {
     test('Single date variant — calendar grid is visible', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Single date', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.getByText('Prop — modelValue (single date)', { exact: true }).first().click()
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('.origam-date-picker').first()).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.locator('[data-cy="date-picker-single"]').first()).toBeVisible({ timeout: 10000 })
     })
 
     test('Range variant — picker renders in range mode', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Range', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.getByText('Prop — range', { exact: true }).first().click()
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('.origam-date-picker').first()).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.locator('[data-cy="date-picker-range"]').first()).toBeVisible({ timeout: 10000 })
     })
 
     test('Multiple variant — picker renders in multiple mode', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Multiple', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.getByText('Prop — multiple', { exact: true }).first().click()
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('.origam-date-picker').first()).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.locator('[data-cy="date-picker-multiple"]').first()).toBeVisible({ timeout: 10000 })
     })
 
     test('Constraints variant — picker renders with min/max', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Constraints (min / max)', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.getByText('Prop — min & max (date constraints)', { exact: true }).first().click()
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('.origam-date-picker').first()).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.locator('[data-cy="date-picker-constraints"]').first()).toBeVisible({ timeout: 10000 })
     })
 
     test('Show week numbers — picker has show-week class', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Show week numbers', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.getByText('Prop — showWeek', { exact: true }).first().click()
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('.origam-date-picker--show-week').first()).toBeVisible({ timeout: 5000 })
+        const picker = sandbox.locator('[data-cy="date-picker-show-week"]').first()
+        await expect(picker).toBeVisible({ timeout: 10000 })
+        await expect(picker).toHaveClass(/origam-date-picker--show-week/)
     })
 
     test('Slot — actions renders action buttons', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Slot — actions', { exact: true }).first().click()
-        await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        await expect(sandbox.locator('[data-cy="date-picker-slot-actions"]').first()).toBeVisible({ timeout: 10000 })
         await expect(sandbox.getByRole('button', { name: /ok/i })).toBeVisible({ timeout: 5000 })
     })
 
@@ -67,19 +74,17 @@ test.describe('OrigamDatePicker', () => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Emit — update:modelValue', { exact: true }).first().click()
-        await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('.origam-date-picker').first()).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.locator('[data-cy="date-picker-emit-model-value"]').first()).toBeVisible({ timeout: 10000 })
     })
 
     test('Playground — picker renders and allows date selection', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Default', { exact: true }).first().click()
-        await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('.origam-date-picker').first()).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.locator('[data-cy="date-picker-playground"]').first()).toBeVisible({ timeout: 10000 })
     })
 })

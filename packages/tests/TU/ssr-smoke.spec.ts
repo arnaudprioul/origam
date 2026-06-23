@@ -52,6 +52,13 @@ function exitSSRMode () {
     savedWindow = savedDocument = savedCSS = undefined
 }
 
+// Safety net: if any in-SSR-mode test throws before reaching its inline
+// `exitSSRMode()`, the stripped globals would leak into the next test
+// (a deleted `document` then crashes the first test that mounts). This
+// guarantees restoration after every test; it is a no-op when already
+// restored.
+afterEach(exitSSRMode)
+
 describe('SSR safety — module-level import does not touch DOM', () => {
     it('useCssSupport module can be imported without a window', () => {
         enterSSRMode()
@@ -102,14 +109,14 @@ describe('SSR safety — module-level import does not touch DOM', () => {
     it('applyTheme is a no-op (returns null) without document', () => {
         enterSSRMode()
         let result: string | null = 'unset'
-        expect(() => { result = applyTheme({ name: 'brand-a', vars: { '--origam-radius---md': '0.5rem' } }) }).not.toThrow()
+        expect(() => { result = applyTheme({ name: 'brand-a', cssVars: { '--origam-radius---md': '0.5rem' } }) }).not.toThrow()
         expect(result).toBeNull()
         exitSSRMode()
     })
 
     it('themeToCss is pure — serialises without touching the DOM', () => {
         enterSSRMode()
-        const css = themeToCss({ name: 'brand-a', vars: { '--origam-radius---md': '0.5rem' } })
+        const css = themeToCss({ name: 'brand-a', cssVars: { '--origam-radius---md': '0.5rem' } })
         expect(css).toContain('[data-theme="brand-a"]')
         expect(css).toContain('--origam-radius---md: 0.5rem;')
         exitSSRMode()

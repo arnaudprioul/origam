@@ -3,227 +3,115 @@
 			group="components"
 			title="Pagination/OrigamPagination"
 	>
-		<!-- ── Playground ───────────────────────────────────────────────── -->
 
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<{
-					length?: number
-					totalVisible?: number
-					showFirstLastPage?: boolean
-					disabled?: boolean
-					color?: string
-				}>({
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IPaginationProps>>({
+					color: 'primary',
+					length: 10,
+					totalVisible: 7
+				})"
+		>
+			<template #default="{ state }">
+				<origam-pagination
+						v-model="page"
+						:color="state.color"
+						:padding="state.padding"
+						:margin="state.margin"
+						:bg-color="state.bgColor"
+						:size="state.size"
+						:density="state.density"
+						:elevation="state.elevation"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
+						:length="state.length"
+						:total-visible="state.totalVisible"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.size"    title="Size"    :options="SIZE_OPTIONS"/>
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Pagination">
+					<HstNumber v-model="state.length"       title="Length"        :min="1" :max="100"/>
+					<HstNumber v-model="state.totalVisible" title="Total Visible" :min="3" :max="15"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IPaginationProps>>({
 					length: 15,
 					totalVisible: 7,
 					showFirstLastPage: false,
 					disabled: false,
-					color: undefined
+					compact: false,
+					withInfo: false,
+					total: 200,
+					perPage: 20
 				})"
-		>
-			<template #default="{ state }">
-				<origam-pagination v-model="page" v-bind="state" data-cy="pagination-playground"/>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber   v-model="state.length"            title="length" :min="1"/>
-				<HstNumber   v-model="state.totalVisible"      title="totalVisible" :min="3"/>
-				<HstCheckbox v-model="state.showFirstLastPage" title="showFirstLastPage"/>
-				<HstCheckbox v-model="state.disabled"          title="disabled"/>
-				<HstSelect   v-model="state.color"             title="color" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — length & totalVisible">
-			<origam-pagination v-model="page" :length="10"/>
-		</Variant>
-
-		<Variant
-				title="Length and total visible"
-				:init-state="() => useStoryInitState<{ length?: number; totalVisible?: number }>({ length: 20, totalVisible: 7 })"
 		>
 			<template #default="{ state }">
 				<origam-pagination
 						v-model="page"
 						:length="state.length"
 						:total-visible="state.totalVisible"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.length"       title="length"       :min="1" :max="100"/>
-				<HstNumber v-model="state.totalVisible" title="totalVisible" :min="3" :max="15"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="First / last page buttons"
-				:init-state="() => useStoryInitState<{ showFirstLastPage?: boolean }>({ showFirstLastPage: true })"
-		>
-			<template #default="{ state }">
-				<origam-pagination
-						v-model="page"
-						:length="20"
 						:show-first-last-page="state.showFirstLastPage"
+						:disabled="state.disabled"
+						:compact="state.compact"
+						:with-info="state.withInfo"
+						:total="state.total"
+						:per-page="state.perPage"
+						:tag="state.tag"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.showFirstLastPage" title="showFirstLastPage"/>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.showFirstLastPage" title="Show First/Last Page"/>
+					<HstCheckbox v-model="state.compact"           title="Compact"/>
+				</StoryGroup>
+				<StoryGroup title="Info">
+					<HstCheckbox v-model="state.withInfo" title="With Info"/>
+					<HstNumber   v-model="state.total"    title="Total Items"    :min="0"/>
+					<HstNumber   v-model="state.perPage"  title="Per Page"       :min="1" :max="100"/>
+				</StoryGroup>
+				<StoryGroup title="Link">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant
-				title="Prop — color & bgColor"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
-					<origam-pagination v-model="page" :length="10" v-bind="state" data-cy="pagination-color"/>
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
-						<small>Showcase fixtures — channel separation:</small>
-						<origam-pagination :model-value="3" :length="6"
-						                   color="primary"
-						                   data-cy="pagination-color-fixture-color-only"/>
-						<origam-pagination :model-value="3" :length="6"
-						                   bg-color="success"
-						                   data-cy="pagination-color-fixture-bg-only"/>
-						<origam-pagination :model-value="3" :length="6"
-						                   color="warning" bg-color="primary"
-						                   hover-color="info" hover-bg-color="info"
-						                   active-color="danger" active-bg-color="danger"
-						                   data-cy="pagination-color-fixture-combo"/>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
-				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-			</template>
+		<Variant title="Events - update:modelValue">
+			<origam-pagination
+					v-model="page"
+					:length="10"
+					@update:model-value="logEvent('update:modelValue', $event)"
+			/>
 		</Variant>
 
-		<Variant
-				title="Prop — hover"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
-					<origam-pagination v-model="page" :length="10" v-bind="state" data-cy="pagination-color"/>
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
-						<small>Showcase fixtures — channel separation:</small>
-						<origam-pagination :model-value="3" :length="6"
-						                   color="primary"
-						                   data-cy="pagination-color-fixture-color-only"/>
-						<origam-pagination :model-value="3" :length="6"
-						                   bg-color="success"
-						                   data-cy="pagination-color-fixture-bg-only"/>
-						<origam-pagination :model-value="3" :length="6"
-						                   color="warning" bg-color="primary"
-						                   hover-color="info" hover-bg-color="info"
-						                   active-color="danger" active-bg-color="danger"
-						                   data-cy="pagination-color-fixture-combo"/>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-							<HstSelect
-							:model-value="state._hHover"
-							:options="hoverList"
-							title="hover"
-							@update:model-value="(v) => state._hHover = v"
-						/>
-</template>
-		</Variant>
-
-		<Variant
-				title="Prop — active"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
-					<origam-pagination v-model="page" :length="10" v-bind="state" data-cy="pagination-color"/>
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
-						<small>Showcase fixtures — channel separation:</small>
-						<origam-pagination :model-value="3" :length="6"
-						                   color="primary"
-						                   data-cy="pagination-color-fixture-color-only"/>
-						<origam-pagination :model-value="3" :length="6"
-						                   bg-color="success"
-						                   data-cy="pagination-color-fixture-bg-only"/>
-						<origam-pagination :model-value="3" :length="6"
-						                   color="warning" bg-color="primary"
-						                   hover-color="info" hover-bg-color="info"
-						                   active-color="danger" active-bg-color="danger"
-						                   data-cy="pagination-color-fixture-combo"/>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-							<HstSelect
-							:model-value="state._hActive"
-							:options="activeList"
-							title="active"
-							@update:model-value="(v) => state._hActive = v"
-						/>
-</template>
-		</Variant>
-
-		<Variant title="Prop — disabled">
-			<origam-pagination v-model="page" :length="10" disabled/>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — first">
-			<origam-pagination v-model="page" :length="10" show-first-last-page>
-				<template #first>
-					<span>Custom slot content</span>
-				</template>
-			</origam-pagination>
-		</Variant>
-
-		<Variant title="Slot — info">
-			<origam-pagination v-model="page" :length="10" with-info :total="200" :per-page="20">
-				<template #info>
-					<span>Custom slot content</span>
-				</template>
-			</origam-pagination>
-		</Variant>
-
-		<Variant title="Slot — item">
-			<origam-pagination v-model="page" :length="5">
-				<template #item>
-					<span style="padding: 0 4px; cursor: pointer;">•</span>
-				</template>
-			</origam-pagination>
-		</Variant>
-
-		<Variant title="Slot — last">
-			<origam-pagination v-model="page" :length="10" show-first-last-page>
-				<template #last>
-					<span>Custom slot content</span>
-				</template>
-			</origam-pagination>
-		</Variant>
-
-		<Variant title="Slot — next">
-			<origam-pagination v-model="page" :length="10">
-				<template #next>
-					<span>Custom slot content</span>
-				</template>
-			</origam-pagination>
-		</Variant>
-
-		<Variant title="Slot — prev">
-			<origam-pagination v-model="page" :length="10">
-				<template #prev>
-					<span>Custom slot content</span>
-				</template>
-			</origam-pagination>
-		</Variant>
-
-		<!-- ── Emits ────────────────────────────────────────────────────── -->
-
-		<Variant title="Emit — first">
+		<Variant title="Events - first">
 			<origam-pagination
 					v-model="page"
 					:length="10"
@@ -232,7 +120,23 @@
 			/>
 		</Variant>
 
-		<Variant title="Emit — last">
+		<Variant title="Events - prev">
+			<origam-pagination
+					v-model="page"
+					:length="10"
+					@prev="logEvent('prev', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - next">
+			<origam-pagination
+					v-model="page"
+					:length="10"
+					@next="logEvent('next', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - last">
 			<origam-pagination
 					v-model="page"
 					:length="10"
@@ -241,106 +145,89 @@
 			/>
 		</Variant>
 
-		<Variant title="Emit — next">
-			<origam-pagination
-					v-model="page"
-					:length="10"
-					@next="logEvent('next', $event)"
-			/>
+		<Variant title="Slots - First">
+			<origam-pagination v-model="page" :length="10" show-first-last-page>
+				<template #first>
+					<span>|&lt;</span>
+				</template>
+			</origam-pagination>
 		</Variant>
 
-		<Variant title="Emit — prev">
-			<origam-pagination
-					v-model="page"
-					:length="10"
-					@prev="logEvent('prev', $event)"
-			/>
+		<Variant title="Slots - Last">
+			<origam-pagination v-model="page" :length="10" show-first-last-page>
+				<template #last>
+					<span>&gt;|</span>
+				</template>
+			</origam-pagination>
 		</Variant>
 
-		<Variant title="Emit — update:modelValue">
-			<origam-pagination
-					v-model="page"
-					:length="10"
-					@update:model-value="logEvent('update:modelValue', $event)"
-			/>
+		<Variant title="Slots - Prev">
+			<origam-pagination v-model="page" :length="10">
+				<template #prev>
+					<span>&lt; Prev</span>
+				</template>
+			</origam-pagination>
+		</Variant>
+
+		<Variant title="Slots - Next">
+			<origam-pagination v-model="page" :length="10">
+				<template #next>
+					<span>Next &gt;</span>
+				</template>
+			</origam-pagination>
+		</Variant>
+
+		<Variant title="Slots - Item">
+			<origam-pagination v-model="page" :length="5">
+				<template #item="{ page: p }">
+					<button style="padding: 0 8px; cursor: pointer; font-weight: bold;">{{ p }}</button>
+				</template>
+			</origam-pagination>
+		</Variant>
+
+		<Variant title="Slots - Info">
+			<origam-pagination v-model="page" :length="10" with-info :total="200" :per-page="20">
+				<template #info="{ start, end, total: t }">
+					<em>Records {{ start }}–{{ end }} of {{ t }}</em>
+				</template>
+			</origam-pagination>
 		</Variant>
 
 		<Variant
-				title="Compact"
-				:init-state="() => useStoryInitState<{ compact?: boolean }>({ compact: true })"
+				title="Default"
+				:init-state="() => useStoryInitState<IPaginationProps>({
+					length: 15,
+					totalVisible: 7,
+					color: 'primary'
+				})"
 		>
 			<template #default="{ state }">
 				<origam-pagination
 						v-model="page"
-						:length="12"
-						:compact="state.compact"
-						data-cy="pagination-compact"
+						v-bind="state"
+						@update:model-value="logEvent('update:modelValue', $event)"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstCheckbox v-model="state.compact" title="compact"/>
+				<StoryGroup title="Content">
+					<HstNumber v-model="state.length"       title="Length"        :min="1" :max="100"/>
+					<HstNumber v-model="state.totalVisible" title="Total Visible" :min="3" :max="15"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.size"      title="Size"      :options="SIZE_OPTIONS"/>
+					<HstSelect v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.showFirstLastPage" title="Show First/Last Page"/>
+					<HstCheckbox v-model="state.compact"           title="Compact"/>
+					<HstCheckbox v-model="state.disabled"          title="Disabled"/>
+					<HstCheckbox v-model="state.withInfo"          title="With Info"/>
+				</StoryGroup>
 			</template>
 		</Variant>
-
-		<Variant title="Compact + showFirstLastPage">
-			<origam-pagination v-model="page" :length="12" compact show-first-last-page data-cy="pagination-compact-first-last"/>
-		</Variant>
-
-		<Variant title="Color — default vs primary">
-			<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
-				<div>
-					<small style="display: block; margin-bottom: 8px; color: #666;">
-						Default — subtle text-only, transparent surface
-					</small>
-					<origam-pagination
-							:model-value="3"
-							:length="6"
-							data-cy="pagination-default-look"
-					/>
-				</div>
-				<div>
-					<small style="display: block; margin-bottom: 8px; color: #666;">
-						color="primary" — filled "stylé" look from the PDF
-					</small>
-					<origam-pagination
-							:model-value="3"
-							:length="6"
-							color="primary"
-							data-cy="pagination-primary-look"
-					/>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant
-				title="With info"
-				:init-state="() => useStoryInitState<{ total?: number; perPage?: number; withInfo?: boolean }>({ total: 248, perPage: 20, withInfo: true })"
-		>
-			<template #default="{ state }">
-				<origam-pagination
-						v-model="page"
-						:length="Math.ceil((state.total ?? 0) / (state.perPage ?? 10))"
-						:total="state.total"
-						:per-page="state.perPage"
-						:with-info="state.withInfo"
-						data-cy="pagination-with-info"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.withInfo" title="withInfo"/>
-				<HstNumber   v-model="state.total"   title="total"   :min="0"/>
-				<HstNumber   v-model="state.perPage" title="perPage" :min="1" :max="100"/>
-			</template>
-		</Variant>
-
-		<Variant title="Prop — size (small / default / large)">
-			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
-				<origam-pagination v-model="page" :length="3" size="small" data-cy="pagination-size-small"/>
-				<origam-pagination v-model="page" :length="3" size="default" data-cy="pagination-size-default"/>
-				<origam-pagination v-model="page" :length="3" size="large" data-cy="pagination-size-large"/>
-			</div>
-		</Variant>
-
 	</Story>
 </template>
 
@@ -348,17 +235,23 @@
 		lang="ts"
 		setup
 >
-	import { logEvent } from 'histoire/client'
 	import { ref } from 'vue'
 
-	import { OrigamPagination } from '@origam/components'
-	import type { IColorProps } from '@origam/interfaces'
+	import { logEvent } from 'histoire/client'
 
+	import { OrigamPagination } from '@origam/components'
+	import type { IPaginationProps } from '@origam/interfaces'
+
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
-		activeList,
-		hoverList,
-		intentList
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
+		SIZE_OPTIONS,
+		TAG_OPTIONS
 	} from '@stories/const'
 
 	const page = ref(1)

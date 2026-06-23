@@ -29,9 +29,9 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.waitForTimeout(900)
 }
 
-const BTN_GROUP = '/story/stories-components-stories-btn-origambtngroup-story-vue'
-const BTN_TOGGLE = '/story/stories-components-stories-btn-origambtntoggle-story-vue'
-const CHIP_GROUP = '/story/stories-components-stories-chip-origamchipgroup-story-vue'
+const BTN_GROUP = '/story/components-stories-btn-origambtngroup-story-vue'
+const BTN_TOGGLE = '/story/components-stories-btn-origambtntoggle-story-vue'
+const CHIP_GROUP = '/story/components-stories-chip-origamchipgroup-story-vue'
 
 // ─── BtnGroup → OrigamBtn ──────────────────────────────────────────────────
 
@@ -44,7 +44,7 @@ test.describe('OrigamBtnGroup → OrigamBtn propagation', () => {
         // initial provideDefaults fix: `color` was painting backgrounds
         // (because `useColorEffect` auto-paired bg from intent). The
         // colour composable was patched to drop that auto-pair.
-        await openVariant(page, BTN_GROUP, 'Color (intent)')
+        await openVariant(page, BTN_GROUP, 'Prop — color & bgColor')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-group').first()).toBeVisible({ timeout: 8000 })
 
@@ -73,7 +73,7 @@ test.describe('OrigamBtnGroup → OrigamBtn propagation', () => {
     })
 
     test('group density forwards to children passed via items prop', async ({ page }) => {
-        await openVariant(page, BTN_GROUP, 'Items prop')
+        await openVariant(page, BTN_GROUP, 'Prop — items')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-group').first()).toBeVisible({ timeout: 8000 })
 
@@ -93,7 +93,7 @@ test.describe('OrigamBtnGroup → OrigamBtn propagation', () => {
 
 test.describe('OrigamBtnToggle → OrigamBtn propagation', () => {
     test('toggle density forwards to children', async ({ page }) => {
-        await openVariant(page, BTN_TOGGLE, 'Density')
+        await openVariant(page, BTN_TOGGLE, 'Prop — density')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 
@@ -107,7 +107,7 @@ test.describe('OrigamBtnToggle → OrigamBtn propagation', () => {
 
     test('toggle color forwards: children TEXT colour shifts; background stays neutral', async ({ page }) => {
         // Same contract as the BtnGroup test above — `color` is fg-only.
-        await openVariant(page, BTN_TOGGLE, 'Color (intent)')
+        await openVariant(page, BTN_TOGGLE, 'Prop — color & bgColor')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 
@@ -142,7 +142,7 @@ test.describe('OrigamBtn — color/bgColor semantics (universal contract)', () =
      * (which is a custom Vue component, not a native <select>).
      */
     test('color flows fg-only across propagation: text shifts, bg stays neutral', async ({ page }) => {
-        await openVariant(page, BTN_GROUP, 'Color (intent)')
+        await openVariant(page, BTN_GROUP, 'Prop — color & bgColor')
         const sandbox = sandboxOf(page)
         const firstBtn = sandbox.locator('.origam-btn-group .origam-btn').first()
         await expect(firstBtn).toBeVisible({ timeout: 8000 })

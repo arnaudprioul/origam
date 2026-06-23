@@ -1,5 +1,6 @@
 <template>
   <div
+    v-contrast
     :aria-atomic="true"
     :aria-live="resolvedAriaLive"
     :class="itemClasses"
@@ -43,32 +44,29 @@
       class="origam-snackbar-item__actions"
     >
       <slot name="actions">
-        <button
+        <origam-btn
           v-for="(action, index) in actions"
           :key="index"
-          :class="actionClasses(action)"
+          :color="action.intent ?? 'primary'"
           :data-cy="`${dataCy}-action-${index}`"
-          type="button"
+          :text="action.label"
+          class="origam-snackbar-item__action"
+          variant="text"
           @click="handleActionClick(action)"
-        >
-          {{ action.label }}
-        </button>
+        />
       </slot>
     </div>
 
-    <button
+    <origam-btn
       v-if="dismissible !== false"
       :aria-label="dismissLabel"
       :data-cy="`${dataCy}-dismiss`"
+      :icon="MDI_ICONS.CLOSE"
       class="origam-snackbar-item__dismiss"
-      type="button"
+      size="x-small"
+      variant="text"
       @click="emit('dismiss')"
-    >
-      <origam-icon
-        :icon="MDI_ICONS.CLOSE"
-        :size="18"
-      />
-    </button>
+    />
   </div>
 </template>
 
@@ -78,9 +76,11 @@
 >
   import { computed, useSlots } from 'vue'
 
-  import { OrigamIcon } from '../../components'
+  import { OrigamBtn, OrigamIcon } from '../../components'
 
-  import { useProps } from '../../composables'
+  import { useLocale, useProps } from '../../composables'
+
+  import { vContrast } from '../../directives'
 
   import { MDI_ICONS } from '../../enums'
 
@@ -98,8 +98,17 @@
   const props = withDefaults(defineProps<ISnackbarItemProps>(), {
     intent: 'info',
     dismissible: true,
-    dismissLabel: 'Dismiss notification'
+    dismissLabel: undefined
   })
+
+  /*********************************************************
+   * Labels — localised through the DS i18n provider (`useLocale`).
+   * Keys live under `origam.snackbar.*` in the shipped locale messages.
+   * The `dismissLabel` prop is kept for back-compat (explicit override wins).
+   ********************************************************/
+  const { t } = useLocale()
+
+  const dismissLabel = computed<string>(() => props.dismissLabel ?? t('origam.snackbar.dismiss', 'Dismiss notification'))
 
   const { filterProps } = useProps<ISnackbarItemProps>(props)
 
@@ -158,15 +167,6 @@
     // via the `actions` slot (e.g. OrigamSnackbar's #action slot forwarding).
     return (Array.isArray(props.actions) && props.actions.length > 0) || !!slots['actions']
   })
-
-  const actionClasses = (action: ISnackbarGroupItemAction): Array<string> => {
-    const intent: TIntent = action.intent ?? 'primary'
-
-    return [
-      'origam-snackbar-item__action',
-      `origam-snackbar-item__action--intent-${intent}`
-    ]
-  }
 
   /*********************************************************
    * Event handlers

@@ -3,264 +3,259 @@
 			group="components"
 			title="Chart/OrigamChartVariwide"
 	>
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<Record<string, unknown>>({
-					height: 400,
-					animated: true,
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IChartVariwideProps>>({
+					title: 'GDP × Population (2023)',
+					subtitle: 'Width = population (M) · Height = GDP (T$)',
+					bgColor: undefined,
+					rounded: undefined,
+					elevation: undefined,
+					height: 360,
+					width: undefined,
+					legendPosition: 'bottom',
 					showLegend: false,
-					showTooltip: true,
+					showLabel: true,
 					showAxis: true,
 					showGrid: true,
-					showLabel: true,
+					barGap: 2,
+					colorScheme: undefined,
+					aspectRatio: undefined
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart-variwide
+						:series="FIXTURE_GDP_POP"
+						:title="state.title"
+						:subtitle="state.subtitle"
+						:bg-color="state.bgColor"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:height="state.height"
+						:width="state.width"
+						:legend-position="state.legendPosition"
+						:show-legend="state.showLegend"
+						:show-label="state.showLabel"
+						:show-axis="state.showAxis"
+						:show-grid="state.showGrid"
+						:bar-gap="state.barGap"
+						:aspect-ratio="state.aspectRatio || undefined"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Title">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstNumber v-model="state.height" title="Height (px)" :min="100" :max="800" :step="10"/>
+					<HstText   v-model="state.width"  title="Width"/>
+					<HstText   v-model="state.aspectRatio" title="Aspect Ratio (e.g. 16/9)"/>
+				</StoryGroup>
+				<StoryGroup title="Legend">
+					<HstCheckbox v-model="state.showLegend"      title="Show Legend"/>
+					<HstSelect   v-model="state.legendPosition"  title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Chart Display">
+					<HstCheckbox v-model="state.showLabel" title="Show Label"/>
+					<HstCheckbox v-model="state.showAxis"  title="Show Axis"/>
+					<HstCheckbox v-model="state.showGrid"  title="Show Grid"/>
+					<HstNumber   v-model="state.barGap"    title="Bar Gap (px)" :min="0" :max="20" :step="1"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IChartVariwideProps>>({
+					showTooltip: true,
+					animated: true,
+					animationDuration: 600,
+					yMin: undefined,
+					yMax: undefined
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart-variwide
+						:series="FIXTURE_GDP_POP"
+						:height="320"
+						title="Functional controls"
+						:show-tooltip="state.showTooltip"
+						:animated="state.animated"
+						:animation-duration="state.animationDuration"
+						:y-min="state.yMin"
+						:y-max="state.yMax"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Tooltip">
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+				</StoryGroup>
+				<StoryGroup title="Animation">
+					<HstCheckbox v-model="state.animated"          title="Animated"/>
+					<HstNumber   v-model="state.animationDuration" title="Animation Duration (ms)" :min="100" :max="2000" :step="100"/>
+				</StoryGroup>
+				<StoryGroup title="Y Scale">
+					<HstNumber v-model="state.yMin" title="Y Min override"/>
+					<HstNumber v-model="state.yMax" title="Y Max override"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Events - point-click">
+			<origam-chart-variwide
+					:series="FIXTURE_GDP_POP"
+					:height="320"
+					title="Click a column"
+					@point-click="logEvent('point-click', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - legend-click">
+			<origam-chart-variwide
+					:series="FIXTURE_GDP_POP"
+					:height="320"
+					:show-legend="true"
+					title="Click a legend item"
+					@legend-click="logEvent('legend-click', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - series-toggle">
+			<origam-chart-variwide
+					:series="FIXTURE_GDP_POP"
+					:height="320"
+					:show-legend="true"
+					title="Toggle series visibility via legend"
+					@series-toggle="logEvent('series-toggle', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Slots - tooltip">
+			<origam-chart-variwide
+					:series="FIXTURE_GDP_POP"
+					:height="360"
+					title="Custom tooltip — hover a column"
+			>
+				<template #tooltip="{ category, value, widthValue, formattedValue, formattedWidth, color }">
+					<div class="custom-tooltip">
+						<div
+								class="custom-tooltip__swatch"
+								:style="{ background: color }"
+						></div>
+						<div class="custom-tooltip__content">
+							<strong class="custom-tooltip__title">{{ category }}</strong>
+							<dl class="custom-tooltip__data">
+								<dt>GDP</dt>
+								<dd>{{ formattedValue }} T$</dd>
+								<dt>Population</dt>
+								<dd>{{ widthValue }} M</dd>
+							</dl>
+						</div>
+					</div>
+				</template>
+			</origam-chart-variwide>
+		</Variant>
+
+		<Variant title="Slots - empty">
+			<origam-chart-variwide
+					:series="[]"
+					:height="300"
+					title="Empty state"
+			>
+				<template #empty>
+					<div class="custom-empty">
+						No data available for the selected period.
+					</div>
+				</template>
+			</origam-chart-variwide>
+		</Variant>
+
+		<Variant title="Slots - legend-item">
+			<origam-chart-variwide
+					:series="FIXTURE_GDP_POP"
+					:height="320"
+					:show-legend="true"
+					title="Custom legend item"
+			>
+				<template #legend-item="{ series, index, visible }">
+					<span :style="{ opacity: visible ? 1 : 0.4, fontStyle: 'italic' }">
+						{{ index + 1 }}. {{ series.name }}
+					</span>
+				</template>
+			</origam-chart-variwide>
+		</Variant>
+
+		<Variant title="Slots - title">
+			<origam-chart-variwide
+					:series="FIXTURE_GDP_POP"
+					:height="320"
+			>
+				<template #title>
+					<div class="custom-title">
+						<strong>Custom Title Block</strong>
+						<em>with custom subtitle markup</em>
+					</div>
+				</template>
+			</origam-chart-variwide>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IChartVariwideProps>({
+					series: FIXTURE_GDP_POP,
+					title: 'GDP × Population (2023)',
+					subtitle: 'Width = population (M) · Height = GDP (T$)',
+					height: 400,
+					showLegend: false,
 					legendPosition: 'bottom',
+					showTooltip: true,
+					animated: true,
+					animationDuration: 600,
+					showLabel: true,
+					showAxis: true,
+					showGrid: true,
 					barGap: 2
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="variwide-playground"
-				>
-					<origam-chart-variwide
-							:series="FIXTURE_GDP_POP"
-							:height="Number(state.height)"
-							:animated="Boolean(state.animated)"
-							:show-legend="Boolean(state.showLegend)"
-							:show-tooltip="Boolean(state.showTooltip)"
-							:show-axis="Boolean(state.showAxis)"
-							:show-grid="Boolean(state.showGrid)"
-							:show-label="Boolean(state.showLabel)"
-							:legend-position="state.legendPosition"
-							:bar-gap="Number(state.barGap)"
-							title="GDP × Population (2023)"
-							subtitle="Width = population (M) · Height = GDP (T$)"
-							data-cy="variwide-playground-chart"
-							@point-click="onPointClick"
-							@legend-click="onLegendClick"
-							@series-toggle="onSeriesToggle"
-					/>
-					<pre
-							class="story-log"
-							data-cy="variwide-playground-log"
-					>{{ logLines.join('\n') }}</pre>
-				</div>
+				<origam-chart-variwide
+						v-bind="state"
+						@point-click="logEvent('point-click', $event)"
+						@legend-click="logEvent('legend-click', $event)"
+						@series-toggle="logEvent('series-toggle', $event)"
+				/>
 			</template>
 			<template #controls="{ state }">
-				<HstNumber
-						v-model="state.height"
-						title="height (px)"
-				/>
-				<HstNumber
-						v-model="state.barGap"
-						title="barGap (px)"
-				/>
-				<HstSelect
-						v-model="state.legendPosition"
-						title="legendPosition"
-						:options="LEGEND_POSITION_OPTIONS"
-				/>
-				<HstCheckbox
-						v-model="state.animated"
-						title="animated"
-				/>
-				<HstCheckbox
-						v-model="state.showLabel"
-						title="showLabel"
-				/>
-				<HstCheckbox
-						v-model="state.showAxis"
-						title="showAxis"
-				/>
-				<HstCheckbox
-						v-model="state.showGrid"
-						title="showGrid"
-				/>
-				<HstCheckbox
-						v-model="state.showLegend"
-						title="showLegend"
-				/>
-				<HstCheckbox
-						v-model="state.showTooltip"
-						title="showTooltip"
-				/>
+				<StoryGroup title="Content">
+					<HstText v-model="state.title"    title="Title"/>
+					<HstText v-model="state.subtitle" title="Subtitle"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect   v-model="state.bgColor"        title="Bg Color"        :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.rounded"        title="Rounded"         :options="ROUNDED_OPTIONS"/>
+					<HstSelect   v-model="state.elevation"      title="Elevation"       :options="ELEVATION_OPTIONS"/>
+					<HstNumber   v-model="state.height"         title="Height (px)"     :min="100" :max="800" :step="10"/>
+					<HstNumber   v-model="state.barGap"         title="Bar Gap (px)"    :min="0"   :max="20"  :step="1"/>
+					<HstCheckbox v-model="state.showLegend"     title="Show Legend"/>
+					<HstSelect   v-model="state.legendPosition" title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.showLabel"   title="Show Label"/>
+					<HstCheckbox v-model="state.showAxis"    title="Show Axis"/>
+					<HstCheckbox v-model="state.showGrid"    title="Show Grid"/>
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+					<HstCheckbox v-model="state.animated"    title="Animated"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<Variant title="Prop — barGap (0 vs 8)">
-			<div
-					class="story-shell"
-					data-cy="variwide-bargap"
-			>
-				<div class="story-grid story-grid--2">
-					<div class="story-col">
-						<strong>barGap = 0 (flush columns)</strong>
-						<origam-chart-variwide
-								:series="FIXTURE_GDP_POP"
-								:bar-gap="0"
-								:height="300"
-								title="barGap = 0"
-								data-cy="variwide-bargap-0"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>barGap = 8 (spaced columns)</strong>
-						<origam-chart-variwide
-								:series="FIXTURE_GDP_POP"
-								:bar-gap="8"
-								:height="300"
-								title="barGap = 8"
-								data-cy="variwide-bargap-8"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — showLabel / showAxis / showGrid">
-			<div
-					class="story-shell"
-					data-cy="variwide-labels"
-			>
-				<div class="story-grid story-grid--3">
-					<div class="story-col">
-						<strong>showLabel = true (default)</strong>
-						<origam-chart-variwide
-								:series="FIXTURE_GDP_POP"
-								:show-label="true"
-								:height="260"
-								data-cy="variwide-label-on"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>showLabel = false</strong>
-						<origam-chart-variwide
-								:series="FIXTURE_GDP_POP"
-								:show-label="false"
-								:height="260"
-								data-cy="variwide-label-off"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>showAxis + showGrid = false</strong>
-						<origam-chart-variwide
-								:series="FIXTURE_GDP_POP"
-								:show-axis="false"
-								:show-grid="false"
-								:height="260"
-								data-cy="variwide-noaxis"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — colorScheme">
-			<div
-					class="story-shell"
-					data-cy="variwide-color-scheme"
-			>
-				<div class="story-grid story-grid--3">
-					<div class="story-col">
-						<strong>default intent cycle</strong>
-						<origam-chart-variwide
-								:series="FIXTURE_GDP_POP_NO_COLOR"
-								:height="260"
-								data-cy="variwide-color-default"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>custom hex palette</strong>
-						<origam-chart-variwide
-								:series="FIXTURE_GDP_POP_NO_COLOR"
-								:color-scheme="['#6366f1','#8b5cf6','#a78bfa','#f59e0b','#10b981','#ef4444']"
-								:height="260"
-								data-cy="variwide-color-custom"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>per-datum color override</strong>
-						<origam-chart-variwide
-								:series="FIXTURE_REVENUE_MARKET_SHARE"
-								:height="260"
-								data-cy="variwide-color-per-datum"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — tooltip (custom card showing both encodings)">
-			<div
-					class="story-shell"
-					data-cy="variwide-slot-tooltip"
-			>
-				<origam-chart-variwide
-						:series="FIXTURE_GDP_POP"
-						:height="360"
-						title="Custom tooltip — hover a column"
-						data-cy="variwide-slot-tooltip-chart"
-				>
-					<template #tooltip="{ category, value, widthValue, formattedValue, formattedWidth, color }">
-						<div class="custom-tooltip">
-							<div
-									class="custom-tooltip__swatch"
-									:style="{ background: color }"
-							></div>
-							<div class="custom-tooltip__content">
-								<strong class="custom-tooltip__title">{{ category }}</strong>
-								<dl class="custom-tooltip__data">
-									<dt>GDP</dt>
-									<dd>{{ formattedValue }} T$</dd>
-									<dt>Population</dt>
-									<dd>{{ widthValue }} M</dd>
-								</dl>
-							</div>
-						</div>
-					</template>
-				</origam-chart-variwide>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — empty">
-			<div
-					class="story-shell"
-					data-cy="variwide-slot-empty"
-			>
-				<origam-chart-variwide
-						:series="[]"
-						:height="300"
-						title="Empty state"
-						data-cy="variwide-slot-empty-chart"
-				>
-					<template #empty>
-						<div class="custom-empty">
-							No data available for the selected period.
-						</div>
-					</template>
-				</origam-chart-variwide>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — point-click on column">
-			<div
-					class="story-shell"
-					data-cy="variwide-emit"
-			>
-				<origam-chart-variwide
-						:series="FIXTURE_GDP_POP"
-						:height="360"
-						title="Click a column"
-						data-cy="variwide-emit-chart"
-						@point-click="onPointClick"
-						@legend-click="onLegendClick"
-						@series-toggle="onSeriesToggle"
-				/>
-				<pre
-						class="story-log"
-						data-cy="variwide-emit-log"
-				>{{ logLines.join('\n') }}</pre>
-			</div>
 		</Variant>
 	</Story>
 </template>
@@ -269,19 +264,28 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamChartVariwide } from '@origam/components'
+	import type {
+		IChartSeries,
+		IChartVariwideDatum,
+		IChartVariwideProps
+	} from '@origam/interfaces'
 
-	import type { IChartPoint, IChartSeries, IChartVariwideDatum } from '@origam/interfaces'
-
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
 
 	const LEGEND_POSITION_OPTIONS = [
-		{ value: 'top', label: 'top' },
-		{ value: 'bottom', label: 'bottom' },
-		{ value: 'left', label: 'left' },
-		{ value: 'right', label: 'right' }
+		{ value: 'top', label: 'Top' },
+		{ value: 'bottom', label: 'Bottom' },
+		{ value: 'left', label: 'Left' },
+		{ value: 'right', label: 'Right' }
 	]
 
 	const GDP_POP_DATA: Array<IChartVariwideDatum> = [
@@ -296,85 +300,9 @@
 	const FIXTURE_GDP_POP: Array<IChartSeries> = [
 		{ name: 'GDP × Population', data: GDP_POP_DATA as unknown as Array<number> }
 	]
-
-	const FIXTURE_GDP_POP_NO_COLOR: Array<IChartSeries> = [
-		{ name: 'GDP × Population', data: GDP_POP_DATA as unknown as Array<number> }
-	]
-
-	const REVENUE_DATA: Array<IChartVariwideDatum> = [
-		{ category: 'Phone', value: 120, width: 38, color: 'primary' },
-		{ category: 'Laptop', value: 95, width: 22, color: 'success' },
-		{ category: 'Tablet', value: 42, width: 15, color: 'warning' },
-		{ category: 'Watch', value: 28, width: 14, color: 'danger' },
-		{ category: 'Earbuds', value: 18, width: 11, color: 'info' }
-	]
-
-	const FIXTURE_REVENUE_MARKET_SHARE: Array<IChartSeries> = [
-		{ name: 'Revenue × Market share', data: REVENUE_DATA as unknown as Array<number> }
-	]
-
-	const logLines = ref<Array<string>>([])
-
-	const appendLog = (line: string) => {
-		logLines.value = [line, ...logLines.value].slice(0, 8)
-	}
-
-	const onPointClick = (point: IChartPoint) => {
-		appendLog(`point-click → x="${ point.x }" y=${ point.y }`)
-	}
-
-	const onLegendClick = (series: IChartSeries, index: number) => {
-		appendLog(`legend-click → ${ series.name } (index ${ index })`)
-	}
-
-	const onSeriesToggle = (series: IChartSeries, visible: boolean) => {
-		appendLog(`series-toggle → ${ series.name } now ${ visible ? 'visible' : 'hidden' }`)
-	}
 </script>
 
 <style scoped>
-	.story-shell {
-		display: flex;
-		flex-direction: column;
-		gap: 12px;
-		padding: 16px;
-	}
-
-	.story-log {
-		font-size: 0.75rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-		min-height: 80px;
-		border: 1px solid var(--origam-color-border-subtle, #e5e7eb);
-		border-radius: 4px;
-		padding: 8px;
-		white-space: pre-wrap;
-	}
-
-	.story-grid {
-		display: grid;
-		gap: 16px;
-	}
-
-	.story-grid--2 {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	.story-grid--3 {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
-
-	.story-col {
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-		min-width: 0;
-	}
-
-	.story-col strong {
-		font-size: 0.8125rem;
-		color: var(--origam-color-text-secondary, #6b7280);
-	}
-
 	.custom-tooltip {
 		display: flex;
 		gap: 10px;
@@ -421,4 +349,15 @@
 		color: var(--origam-color-text-secondary, #6b7280);
 		font-style: italic;
 	}
+
+	.custom-title {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
 </style>
+
+<docs
+		lang="md"
+		src="@docs/components/Chart/OrigamChartVariwide.md"
+/>

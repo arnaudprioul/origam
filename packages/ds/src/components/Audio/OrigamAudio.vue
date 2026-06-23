@@ -247,6 +247,7 @@
 	import {
 		useBorder,
 		useColorEffect,
+		useDimension,
 		useElevation,
 		useLocale,
 		useMargin,
@@ -593,6 +594,18 @@
 	}, { immediate: true })
 
 	/*********************************************************
+	 * Reactive autoplay — the native `autoplay` attribute only acts at load
+	 * time, so flipping the prop after the element mounted (e.g. ticking the
+	 * control) would do nothing. React to `resolvedAutoplay` going truthy and
+	 * actually start playback. It plays muted (`resolvedMuted`, browser policy)
+	 * and stays suppressed under `prefers-reduced-motion` (a11y) since
+	 * `resolvedAutoplay` already accounts for it.
+	 ********************************************************/
+	watch(resolvedAutoplay, (on) => {
+		if (on) void methods.play()
+	})
+
+	/*********************************************************
 	 * Native event handlers — forward to the parent emit pipeline.
 	 ********************************************************/
 	function onTimeUpdate (event: Event): void {
@@ -890,6 +903,7 @@
 	const { marginClasses, marginStyles } = useMargin(props)
 	const { elevationClasses, elevationStyles } = useElevation(props)
 	const { positionClasses, positionStyles } = usePosition(props)
+	const { dimensionStyles } = useDimension(props)
 
 	/*********************************************************
 	 * Class & Style — Strategy A: classes win for tokenised values,
@@ -933,6 +947,7 @@
 		paddingStyles.value,
 		marginStyles.value,
 		elevationStyles.value,
+		dimensionStyles.value,
 		props.style
 	] as StyleValue)
 
@@ -962,7 +977,8 @@
 	.origam-audio {
 		$this: &;
 
-		display: block;
+		display: flex;
+		flex-direction: column;
 		position: var(--origam-audio---position, static);
 		padding: var(--origam-audio---padding, 16px);
 		border-radius: var(--origam-audio---border-radius, var(--origam-radius---lg, 12px));
@@ -971,6 +987,36 @@
 		accent-color: var(--origam-audio---accent-color, var(--origam-color__action--primary---bg));
 		border: var(--origam-audio---border-width, 1px) solid var(--origam-audio---border-color, var(--origam-color__border---subtle));
 		box-shadow: var(--origam-audio---box-shadow, 0px 1px 3px 0px rgba(0, 0, 0, 0.06), 0px 1px 2px -1px rgba(0, 0, 0, 0.06));
+
+		&--rounded-shaped {
+			border-start-start-radius: var(--origam-audio---border-radius, var(--origam-radius---lg, 12px));
+			border-start-end-radius: 0;
+			border-end-start-radius: 0;
+			border-end-end-radius: var(--origam-audio---border-radius, var(--origam-radius---lg, 12px));
+		}
+
+		&--rounded-shaped-invert {
+			border-start-start-radius: 0;
+			border-start-end-radius: var(--origam-audio---border-radius, var(--origam-radius---lg, 12px));
+			border-end-start-radius: var(--origam-audio---border-radius, var(--origam-radius---lg, 12px));
+			border-end-end-radius: 0;
+		}
+
+		&__controller {
+			flex: 1 1 auto;
+			min-height: 0;
+
+			:deep(.origam-media-controller__progress-row) {
+				flex: 1 1 auto;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+
+			:deep(.origam-media-controller__buttons-row) {
+				margin-block-start: auto;
+			}
+		}
 
 		:deep(.origam-slider-field--bare) {
 			color: inherit !important;
@@ -1007,6 +1053,13 @@
 			box-shadow:
 				0 4px 12px rgba(0, 0, 0, 0.28),
 				inset 0 0 0 1px rgba(0, 0, 0, 0.4);
+
+			/*
+			 * Vinyl body fallback — a fixed dark disc behind the album art so a
+			 * transparent / not-yet-loaded image never lets the surface colour
+			 * bleed through the record.
+			 */
+			background: var(--origam-audio__cover---background, #18181b);
 
 			/*
 			 * Spindle hole — a real transparent dot punched THROUGH the
@@ -1556,7 +1609,14 @@
 			--origam-audio---position: relative;
 			overflow: hidden;
 
-			#{$this}__cover-img {
+			/*
+			 * Size the DISC (not the inner image) for compact. Sizing only
+			 * `__cover-img` left the disc at its base 96px with a 48px image
+			 * centred inside, so the exposed outer ring rendered as a large
+			 * "floating grooves" disc (and bled the surface colour through).
+			 * The image fills the disc via its base `width/height: 100%`.
+			 */
+			#{$this}__cover {
 				width: var(--origam-audio--compact__cover---size, 48px);
 				height: var(--origam-audio--compact__cover---size, 48px);
 			}

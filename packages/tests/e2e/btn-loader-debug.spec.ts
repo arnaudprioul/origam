@@ -1,11 +1,11 @@
 import { test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-btn-origambtn-story-vue'
+const STORY_PATH = '/story/components-stories-btn-origambtn-story-vue'
 
 test('DEBUG btn loader — inspect line / circular / skeleton DOM + styles', async ({ page }) => {
     await page.goto(STORY_PATH)
     await page.waitForLoadState('networkidle')
-    await page.getByText('Loading shapes', { exact: true }).last().click({ timeout: 5000 })
+    await page.getByText('Prop — loading (interactive)', { exact: true }).last().click({ timeout: 5000 })
     await page.waitForTimeout(800)
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -14,7 +14,7 @@ test('DEBUG btn loader — inspect line / circular / skeleton DOM + styles', asy
         const btn = sandbox.locator(`[data-cy="${dataCy}"]`).first()
         await btn.scrollIntoViewIfNeeded()
         const report = await btn.evaluate((el) => {
-            const cs = getComputedStyle(el)
+            const _cs = getComputedStyle(el)
             const rect = el.getBoundingClientRect()
             const progress = el.querySelector('.origam-btn__progress')
             const progressCs = progress ? getComputedStyle(progress as Element) : null

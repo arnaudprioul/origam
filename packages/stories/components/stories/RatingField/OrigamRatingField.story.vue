@@ -3,271 +3,223 @@
 			group="components"
 			title="RatingField/OrigamRatingField"
 	>
-		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<{
-					length?: number
-					halfIncrements?: boolean
-					hover?: boolean
-					clearable?: boolean
-					disabled?: boolean
-					readonly?: boolean
-					size?: string
-				}>({
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IRatingFieldProps>>({
+					color: 'primary',
+					length: 5,
+					size: undefined,
+					density: undefined,
+					rounded: undefined,
+					elevation: undefined
+				})"
+		>
+			<template #default="{ state }">
+				<origam-rating-field
+						v-model="ratingDesign"
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:size="state.size"
+						:density="state.density"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
+						:empty-icon="state.emptyIcon || undefined"
+						:full-icon="state.fullIcon || undefined"
+						:width="state.width"
+						:height="state.height"
+						:length="state.length"
+						:item-label-position="state.itemLabelPosition"
+						label="Rating"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.size"    title="Size"    :options="SIZE_OPTIONS"/>
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Icons">
+					<HstSelect v-model="state.emptyIcon" title="Empty Icon" :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.fullIcon"  title="Full Icon"  :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Label">
+					<HstSelect v-model="state.itemLabelPosition" title="Item Label Position" :options="ITEM_LABEL_POSITION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstNumber v-model="state.length" title="Length" :min="1" :max="20"/>
+					<HstText   v-model="state.width"  title="Width"/>
+					<HstText   v-model="state.height" title="Height"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IRatingFieldProps>>({
 					length: 5,
 					halfIncrements: false,
 					hover: false,
 					clearable: false,
 					disabled: false,
 					readonly: false,
-					size: undefined
+					ripple: true,
+					label: 'Rating',
+					hint: '',
+					persistentHint: false,
+					hideDetails: false,
+					error: false
 				})"
 		>
 			<template #default="{ state }">
-				<origam-rating-field v-model="rating" v-bind="state"/>
+				<origam-rating-field
+						v-model="ratingFunctional"
+						:length="state.length"
+						:half-increments="state.halfIncrements"
+						:hover="state.hover"
+						:clearable="state.clearable"
+						:disabled="state.disabled"
+						:readonly="state.readonly"
+						:ripple="state.ripple"
+						:label="state.label"
+						:hint="state.hint"
+						:persistent-hint="state.persistentHint"
+						:hide-details="state.hideDetails"
+						:error="state.error"
+				/>
 			</template>
 			<template #controls="{ state }">
-				<HstNumber   v-model="state.length"         title="length" :min="1" :max="20"/>
-				<HstCheckbox v-model="state.halfIncrements" title="halfIncrements"/>
-				<HstCheckbox v-model="state.hover"          title="hover"/>
-				<HstCheckbox v-model="state.clearable"      title="clearable"/>
-				<HstCheckbox v-model="state.disabled"       title="disabled"/>
-				<HstCheckbox v-model="state.readonly"       title="readonly"/>
-				<HstSelect   v-model="state.size"           title="size" :options="sizeList"/>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled"  title="Disabled"/>
+					<HstCheckbox v-model="state.readonly"  title="Readonly"/>
+					<HstCheckbox v-model="state.error"     title="Error"/>
+				</StoryGroup>
+				<StoryGroup title="Behaviour">
+					<HstNumber   v-model="state.length"         title="Length" :min="1" :max="20"/>
+					<HstCheckbox v-model="state.halfIncrements" title="Half Increments"/>
+					<HstCheckbox v-model="state.hover"          title="Hover highlight"/>
+					<HstCheckbox v-model="state.clearable"      title="Clearable"/>
+					<HstCheckbox v-model="state.ripple"         title="Ripple"/>
+				</StoryGroup>
+				<StoryGroup title="Label / Hint">
+					<HstText     v-model="state.label"          title="Label"/>
+					<HstText     v-model="state.hint"           title="Hint"/>
+					<HstCheckbox v-model="state.persistentHint" title="Persistent Hint"/>
+					<HstCheckbox v-model="state.hideDetails"    title="Hide Details"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Props ─────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — length"
-				:init-state="() => useStoryInitState<{ length?: number }>({ length: 5 })"
-		>
-			<template #default="{ state }">
-				<origam-rating-field v-model="rating" :length="state.length"/>
-			</template>
-			<template #controls="{ state }">
-				<HstNumber v-model="state.length" title="length" :min="1" :max="20"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — halfIncrements"
-				:init-state="() => useStoryInitState<{ halfIncrements?: boolean }>({ halfIncrements: true })"
-		>
-			<template #default="{ state }">
-				<origam-rating-field v-model="halfRating" :half-increments="state.halfIncrements"/>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.halfIncrements" title="halfIncrements"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — hover"
-				:init-state="() => useStoryInitState<{ hover?: boolean }>({ hover: true })"
-		>
-			<template #default="{ state }">
-				<origam-rating-field v-model="rating" :hover="state.hover"/>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.hover" title="hover"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — disabled, readonly & clearable"
-				:init-state="() => useStoryInitState<{
-					disabled?: boolean
-					readonly?: boolean
-					clearable?: boolean
-				}>({ disabled: false, readonly: false, clearable: false })"
-		>
-			<template #default="{ state }">
-				<origam-rating-field v-model="rating" v-bind="state"/>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.disabled"  title="disabled"/>
-				<HstCheckbox v-model="state.readonly"  title="readonly"/>
-				<HstCheckbox v-model="state.clearable" title="clearable"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — size"
-				:init-state="() => useStoryInitState<{ size?: string }>({ size: undefined })"
-		>
-			<template #default="{ state }">
-				<origam-rating-field v-model="rating" :size="state.size"/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
-			</template>
-		</Variant>
-
-		<Variant title="Prop — itemLabels">
+		<Variant title="Events - update:modelValue">
 			<origam-rating-field
-					v-model="rating"
-					:item-labels="['Terrible', 'Bad', 'OK', 'Good', 'Excellent']"
-					item-label-position="top"
+					v-model="ratingEmit"
+					label="Rate this"
+					@update:model-value="logEvent('update:modelValue', $event)"
 			/>
 		</Variant>
 
-		<Variant
-				title="Prop — color & bgColor"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
-					<origam-rating-field
-							v-model="colorRating"
-							v-bind="state"
-							data-cy="rating-color"
-					/>
-					<div data-cy="rating-color-status">value = {{ colorRating }}</div>
-
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
-						<small>Showcase fixtures — channel separation:</small>
-						<origam-rating-field :model-value="3"
-						                     color="primary"
-						                     data-cy="rating-color-fixture-color-only"/>
-						<origam-rating-field :model-value="3"
-						                     color="success"
-						                     data-cy="rating-color-fixture-success"/>
-						<origam-rating-field :model-value="3"
-						                     color="warning" hover-color="danger"
-						                     data-cy="rating-color-fixture-hover"/>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color"         title="color"         :options="intentList"/>
-				<HstSelect v-model="state.bgColor"       title="bgColor"       :options="intentList"/>
-			</template>
+		<Variant title="Slots - Default">
+			<origam-rating-field v-model="ratingSlot">
+				<span>Custom default slot content</span>
+			</origam-rating-field>
 		</Variant>
 
-		<Variant
-				title="Prop — hover"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
-					<origam-rating-field
-							v-model="colorRating"
-							v-bind="state"
-							data-cy="rating-color"
-					/>
-					<div data-cy="rating-color-status">value = {{ colorRating }}</div>
-
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
-						<small>Showcase fixtures — channel separation:</small>
-						<origam-rating-field :model-value="3"
-						                     color="primary"
-						                     data-cy="rating-color-fixture-color-only"/>
-						<origam-rating-field :model-value="3"
-						                     color="success"
-						                     data-cy="rating-color-fixture-success"/>
-						<origam-rating-field :model-value="3"
-						                     color="warning" hover-color="danger"
-						                     data-cy="rating-color-fixture-hover"/>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-							<HstSelect
-							:model-value="state._hHover"
-							:options="hoverList"
-							title="hover"
-							@update:model-value="(v) => state._hHover = v"
-						/>
-</template>
-		</Variant>
-
-		<Variant
-				title="Prop — active"
-				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
-					<origam-rating-field
-							v-model="colorRating"
-							v-bind="state"
-							data-cy="rating-color"
-					/>
-					<div data-cy="rating-color-status">value = {{ colorRating }}</div>
-
-					<div style="border-top: 1px dashed #ccc; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
-						<small>Showcase fixtures — channel separation:</small>
-						<origam-rating-field :model-value="3"
-						                     color="primary"
-						                     data-cy="rating-color-fixture-color-only"/>
-						<origam-rating-field :model-value="3"
-						                     color="success"
-						                     data-cy="rating-color-fixture-success"/>
-						<origam-rating-field :model-value="3"
-						                     color="warning" hover-color="danger"
-						                     data-cy="rating-color-fixture-hover"/>
-					</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-							<HstSelect
-							:model-value="state._hActive"
-							:options="activeList"
-							title="active"
-							@update:model-value="(v) => state._hActive = v"
-						/>
-</template>
-		</Variant>
-
-		<!-- ── Slots ─────────────────────────────────────────────── -->
-
-		<Variant title="Slot — append">
-			<origam-rating-field v-model="rating">
-				<template #append>
-					<origam-icon :icon="MDI_ICONS.HEART"/>
+		<Variant title="Slots - Prepend">
+			<origam-rating-field v-model="ratingSlot" label="Rating">
+				<template #prepend>
+					<origam-icon :icon="heartIcon"/>
 				</template>
 			</origam-rating-field>
 		</Variant>
 
-		<Variant title="Slot — default">
-			<origam-rating-field v-model="rating">
-				<span>Custom slot content</span>
+		<Variant title="Slots - Append">
+			<origam-rating-field v-model="ratingSlot" label="Rating">
+				<template #append>
+					<origam-icon :icon="starIcon"/>
+				</template>
 			</origam-rating-field>
 		</Variant>
 
-		<Variant title="Slot — details">
-			<origam-rating-field v-model="rating">
+		<Variant title="Slots - Label">
+			<origam-rating-field v-model="ratingSlot">
+				<template #label>
+					<strong>Rate this product</strong>
+				</template>
+			</origam-rating-field>
+		</Variant>
+
+		<Variant title="Slots - Details">
+			<origam-rating-field v-model="ratingSlot" label="Rating">
 				<template #details>
 					<span>Custom details area</span>
 				</template>
 			</origam-rating-field>
 		</Variant>
 
-		<Variant title="Slot — itemLabel">
-			<origam-rating-field v-model="rating" :item-labels="['Terrible', 'Bad', 'OK', 'Good', 'Excellent']" item-label-position="top">
+		<Variant title="Slots - ItemLabel">
+			<origam-rating-field
+					v-model="ratingSlot"
+					:item-labels="itemLabels"
+					item-label-position="top"
+			>
 				<template #itemLabel="{ label }">
 					<strong>{{ label }}</strong>
 				</template>
 			</origam-rating-field>
 		</Variant>
 
-		<Variant title="Slot — label">
-			<origam-rating-field v-model="rating">
-				<template #label>
-					<span style="font-weight: bold;">Rate us</span>
-				</template>
-			</origam-rating-field>
-		</Variant>
-
-		<!-- ── Emits ─────────────────────────────────────────────── -->
-
-		<Variant title="Emit — update:modelValue">
-			<origam-rating-field
-					v-model="rating"
-					@update:model-value="logEvent('update:modelValue', $event)"
-			/>
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IRatingFieldProps>({
+					color: 'primary',
+					length: 5,
+					label: 'Rating',
+					modelValue: 3
+				})"
+		>
+			<template #default="{ state }">
+				<origam-rating-field
+						v-bind="state"
+						@update:model-value="logEvent('update:modelValue', $event)"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstNumber   v-model="state.length"         title="Length" :min="1" :max="20"/>
+					<HstText     v-model="state.label"          title="Label"/>
+					<HstCheckbox v-model="state.halfIncrements" title="Half Increments"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.size"      title="Size"      :options="SIZE_OPTIONS"/>
+					<HstSelect v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.hover"      title="Hover highlight"/>
+					<HstCheckbox v-model="state.clearable"  title="Clearable"/>
+					<HstCheckbox v-model="state.disabled"   title="Disabled"/>
+					<HstCheckbox v-model="state.readonly"   title="Readonly"/>
+					<HstCheckbox v-model="state.ripple"     title="Ripple"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -280,19 +232,36 @@
 	import { ref } from 'vue'
 
 	import { OrigamIcon, OrigamRatingField } from '@origam/components'
-	import { MDI_ICONS } from '@origam/enums'
-	import type { IColorProps } from '@origam/interfaces'
+	import { BLOCK, MDI_ICONS } from '@origam/enums'
+	import type { IRatingFieldProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
-		activeList,
-		hoverList,
-		intentList, sizeList
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
+		ICON_OPTIONS,
+		ROUNDED_OPTIONS,
+		SIZE_OPTIONS
 	} from '@stories/const'
 
-	const rating = ref(3)
-	const halfRating = ref(2.5)
-	const colorRating = ref(3)
+	const ratingDesign = ref(3)
+	const ratingFunctional = ref(3)
+	const ratingEmit = ref(3)
+	const ratingSlot = ref(3)
+
+	const heartIcon = MDI_ICONS.HEART
+	const starIcon = MDI_ICONS.STAR
+
+	const itemLabels = ['Terrible', 'Bad', 'OK', 'Good', 'Excellent']
+
+	const ITEM_LABEL_POSITION_OPTIONS = [
+		{ label: 'Top', value: BLOCK.TOP },
+		{ label: 'Bottom', value: BLOCK.BOTTOM }
+	]
 </script>
 
 <docs lang="md" src="@docs/components/RatingField/OrigamRatingField.md"/>

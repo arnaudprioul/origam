@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-colorpicker-origamcolorpicker-story-vue'
+const STORY_PATH = '/story/components-stories-colorpicker-origamcolorpicker-story-vue'
 
 test.describe('OrigamColorPicker', () => {
     test('Canvas variant — picker renders with canvas area', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Canvas', { exact: true }).first().click()
+        await page.getByText('Prop — hideCanvas', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -17,7 +17,7 @@ test.describe('OrigamColorPicker', () => {
     test('Canvas variant — hideCanvas removes the canvas element', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Canvas', { exact: true }).first().click()
+        await page.getByText('Prop — hideCanvas', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -29,7 +29,7 @@ test.describe('OrigamColorPicker', () => {
     test('Mode variant — picker renders with mode controls', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Mode', { exact: true }).first().click()
+        await page.getByText('Prop — mode', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -40,7 +40,7 @@ test.describe('OrigamColorPicker', () => {
     test('Sliders and inputs variant — picker renders', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Sliders and inputs', { exact: true }).first().click()
+        await page.getByText('Prop — hideSliders & hideInputs', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -51,7 +51,7 @@ test.describe('OrigamColorPicker', () => {
     test('Swatches variant — picker renders with showSwatches=true', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Swatches', { exact: true }).first().click()
+        await page.getByText('Prop — showSwatches & swatchesMaxHeight', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

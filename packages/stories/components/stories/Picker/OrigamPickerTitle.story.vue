@@ -3,76 +3,75 @@
 			group="components"
 			title="Picker/OrigamPickerTitle"
 	>
-		<!--
-			Playground — first by convention. All IPickerTitleProps knobs
-			wired via the sidebar.
-		-->
-		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IPickerTitleProps>({
-					title: 'Playground',
-					tag: 'div'
-				})"
-		>
-			<template #default="{ state }">
-				<origam-picker-title v-bind="state" data-cy="picker-title-playground"/>
-			</template>
-			<template #controls="{ state }">
-				<HstText   v-model="state.title" title="title"/>
-				<HstSelect v-model="state.tag"   title="tag" :options="tagList"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — title">
-			<origam-picker-title
-					title="Pick a date"
-					data-cy="picker-title-default"
-			/>
-		</Variant>
 
 		<Variant
-				title="Prop — title (editable)"
-				:init-state="() => useStoryInitState<{ title: string }>({ title: 'Custom title' })"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IPickerTitleProps>>({ title: 'Pick a date', color: undefined, bgColor: undefined, tag: 'div' })"
 		>
 			<template #default="{ state }">
 				<origam-picker-title
 						:title="state.title"
-						data-cy="picker-title-prop"
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:tag="state.tag"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstText v-model="state.title" title="title"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
 		<Variant
-				title="Prop — tag (polymorphic element)"
-				:init-state="() => useStoryInitState<{ tag: string }>({ tag: 'h2' })"
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IPickerTitleProps>>({ title: 'Custom title', tag: 'div' })"
 		>
 			<template #default="{ state }">
 				<origam-picker-title
+						:title="state.title"
 						:tag="state.tag"
-						title="Polymorphic"
-						data-cy="picker-title-tag"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect
-						v-model="state.tag"
-						title="tag"
-						:options="tagList"
-				/>
+				<StoryGroup title="Content">
+					<HstText   v-model="state.title" title="Title"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default (rich content)">
-			<origam-picker-title data-cy="picker-title-slot">
-				Custom <strong data-cy="picker-title-slot-strong">rich</strong> content
+		<Variant title="Slots - Default">
+			<origam-picker-title>
+				Custom <strong>rich</strong> content
 			</origam-picker-title>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IPickerTitleProps>({ title: 'Pick a date', tag: 'div' })"
+		>
+			<template #default="{ state }">
+				<origam-picker-title v-bind="state"/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.title" title="Title"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -84,8 +83,12 @@
 	import { OrigamPickerTitle } from '@origam/components'
 	import type { IPickerTitleProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { tagList } from '@stories/const'
+	import {
+		COLOR_OPTIONS,
+		TAG_OPTIONS
+	} from '@stories/const'
 </script>
 
 <docs lang="md" src="@docs/components/Picker/OrigamPickerTitle.md"/>

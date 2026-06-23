@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/stories-components-stories-table-origamtable-story-vue'
+const STORY_PATH = '/story/components-stories-table-origamtable-story-vue'
 
 /**
  * OrigamTable — runtime behaviour specs.
@@ -70,7 +70,7 @@ test.describe('OrigamTable fixed-header', () => {
     test('fixed-header class makes thead sticky', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Fixed header', { exact: true }).first().click()
+        await page.getByText('Prop — fixedHeader (sticky header on scroll)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -91,7 +91,7 @@ test.describe('OrigamTable fixed-header', () => {
     test('wrapper overflow-y is auto when fixed-header is active', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Fixed header', { exact: true }).first().click()
+        await page.getByText('Prop — fixedHeader (sticky header on scroll)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -113,7 +113,7 @@ test.describe('OrigamTable visual variants', () => {
     test('rounded class applies border-radius', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Rounded', { exact: true }).first().click()
+        await page.getByText('Prop — rounded', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

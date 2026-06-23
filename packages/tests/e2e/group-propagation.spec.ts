@@ -26,20 +26,20 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
 
 // ─── Story URL constants ───────────────────────────────────────────────────
 
-const AVATAR_GROUP = '/story/stories-components-stories-avatar-origamavatargroup-story-vue'
-const BREADCRUMB   = '/story/stories-components-stories-breadcrumb-origambreadcrumb-story-vue'
-const BOTTOM_NAV   = '/story/stories-components-stories-bottomnav-origambottomnav-story-vue'
-const LIST         = '/story/stories-components-stories-list-origamlist-story-vue'
-const EXPANSION    = '/story/stories-components-stories-expansionpanel-origamexpansionpanels-story-vue'
-const SELECTION    = '/story/stories-components-stories-selectioncontrol-origamselectioncontrolgroup-story-vue'
+const AVATAR_GROUP = '/story/components-stories-avatar-origamavatargroup-story-vue'
+const BREADCRUMB   = '/story/components-stories-breadcrumb-origambreadcrumb-story-vue'
+const BOTTOM_NAV   = '/story/components-stories-bottomnav-origambottomnav-story-vue'
+const LIST         = '/story/components-stories-list-origamlist-story-vue'
+const EXPANSION    = '/story/components-stories-expansionpanel-origamexpansionpanels-story-vue'
+const SELECTION    = '/story/components-stories-selectioncontrol-origamselectioncontrolgroup-story-vue'
 
 // ─── 1. OrigamAvatarGroup → OrigamAvatar ──────────────────────────────────
 
 test.describe('OrigamAvatarGroup → OrigamAvatar propagation', () => {
     test('forwarded size class lands on every child avatar (Forwarded props)', async ({ page }) => {
-        // The "Forwarded props" variant sets `size: "small"` on the group.
+        // The "Prop — size, rounded, border (forwarded)" variant sets `size: "small"` on the group.
         // After propagation each child should carry origam-avatar--size-small.
-        await openVariant(page, AVATAR_GROUP, 'Forwarded props')
+        await openVariant(page, AVATAR_GROUP, 'Prop — size, rounded, border (forwarded)')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-avatar-group').first()).toBeVisible({ timeout: 8000 })
 
@@ -52,9 +52,9 @@ test.describe('OrigamAvatarGroup → OrigamAvatar propagation', () => {
         }
     })
 
-    test('children render without errors in Basic usage variant', async ({ page }) => {
+    test('children render without errors in Default variant', async ({ page }) => {
         // Smoke-test: group renders without crashing after useDefaults wiring.
-        await openVariant(page, AVATAR_GROUP, 'Basic usage')
+        await openVariant(page, AVATAR_GROUP, 'Default')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-avatar-group').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('.origam-avatar-group .origam-avatar').count()
@@ -66,7 +66,7 @@ test.describe('OrigamAvatarGroup → OrigamAvatar propagation', () => {
 
 test.describe('OrigamBreadcrumb → OrigamBreadcrumbItem propagation', () => {
     test('density class lands on breadcrumb items (Density)', async ({ page }) => {
-        await openVariant(page, BREADCRUMB, 'Density')
+        await openVariant(page, BREADCRUMB, 'Prop — density')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-breadcrumb').first()).toBeVisible({ timeout: 8000 })
 
@@ -80,7 +80,7 @@ test.describe('OrigamBreadcrumb → OrigamBreadcrumbItem propagation', () => {
     })
 
     test('default variant renders items without errors', async ({ page }) => {
-        await openVariant(page, BREADCRUMB, 'Color')
+        await openVariant(page, BREADCRUMB, 'Prop — color')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-breadcrumb').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('.origam-breadcrumb-item').count()
@@ -92,7 +92,7 @@ test.describe('OrigamBreadcrumb → OrigamBreadcrumbItem propagation', () => {
 
 test.describe('OrigamBottomNav → OrigamBtn propagation', () => {
     test('density class lands on btn children (Density)', async ({ page }) => {
-        await openVariant(page, BOTTOM_NAV, 'Density')
+        await openVariant(page, BOTTOM_NAV, 'Prop — density')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-bottom-nav').first()).toBeVisible({ timeout: 8000 })
 
@@ -109,7 +109,7 @@ test.describe('OrigamBottomNav → OrigamBtn propagation', () => {
         // Per the universal contract — `color` is fg-only, never paints
         // the surface. We assert the text colour shifts off the default
         // near-black; the background stays neutral.
-        await openVariant(page, BOTTOM_NAV, 'Color')
+        await openVariant(page, BOTTOM_NAV, 'Prop — color & bgColor')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-bottom-nav').first()).toBeVisible({ timeout: 8000 })
 
@@ -133,7 +133,7 @@ test.describe('OrigamBottomNav → OrigamBtn propagation', () => {
 
 test.describe('OrigamList → OrigamListItem propagation', () => {
     test('density class lands on list items (Density)', async ({ page }) => {
-        await openVariant(page, LIST, 'Density')
+        await openVariant(page, LIST, 'Prop — density')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-list').first()).toBeVisible({ timeout: 8000 })
 
@@ -149,7 +149,7 @@ test.describe('OrigamList → OrigamListItem propagation', () => {
     })
 
     test('default variant renders list items without errors', async ({ page }) => {
-        await openVariant(page, LIST, 'Color')
+        await openVariant(page, LIST, 'Prop — color')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-list').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('.origam-list-item').count()
@@ -161,7 +161,7 @@ test.describe('OrigamList → OrigamListItem propagation', () => {
 
 test.describe('OrigamExpansionPanels → OrigamExpansionPanel propagation', () => {
     test('density class lands on panels (Density)', async ({ page }) => {
-        await openVariant(page, EXPANSION, 'Density')
+        await openVariant(page, EXPANSION, 'Prop — density')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-expansion-panels').first()).toBeVisible({ timeout: 8000 })
 
@@ -177,7 +177,7 @@ test.describe('OrigamExpansionPanels → OrigamExpansionPanel propagation', () =
     })
 
     test('default variant renders panels without errors', async ({ page }) => {
-        await openVariant(page, EXPANSION, 'Color')
+        await openVariant(page, EXPANSION, 'Prop — color & bgColor')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-expansion-panels').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('.origam-expansion-panel').count()
@@ -189,7 +189,7 @@ test.describe('OrigamExpansionPanels → OrigamExpansionPanel propagation', () =
 
 test.describe('OrigamSelectionControlGroup → OrigamSelectionControl propagation', () => {
     test('density class lands on controls (Density)', async ({ page }) => {
-        await openVariant(page, SELECTION, 'Density')
+        await openVariant(page, SELECTION, 'Prop — density')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-selection-control-group').first()).toBeVisible({ timeout: 8000 })
 
@@ -205,7 +205,7 @@ test.describe('OrigamSelectionControlGroup → OrigamSelectionControl propagatio
     })
 
     test('default variant renders controls without errors', async ({ page }) => {
-        await openVariant(page, SELECTION, 'Color')
+        await openVariant(page, SELECTION, 'Prop — color')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-selection-control-group').first()).toBeVisible({ timeout: 8000 })
         const count = await sandbox.locator('.origam-selection-control').count()

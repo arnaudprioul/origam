@@ -3,577 +3,289 @@
 			group="components"
 			title="Video/OrigamVideo"
 	>
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<Record<string, unknown>>({
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IVideoProps>>({
 					src: BIG_BUCK_BUNNY,
 					poster: BUNNY_POSTER,
-					autoplay: false,
-					muted: false,
-					loop: false,
-					controls: 'custom',
-					playsInline: true,
-					preload: 'metadata',
 					aspectRatio: '16/9',
-					crossorigin: undefined,
-					disablePictureInPicture: false,
-					skipSeconds: 30,
-					playbackRate: 1,
 					inset: true,
-					allowRemotePlayback: true,
-					doubleTapToSkip: true,
-					downloadable: false,
-					downloadFilename: ''
+					rounded: undefined,
+					elevation: undefined,
+					border: undefined,
+					borderColor: undefined,
+					borderStyle: undefined,
+					color: undefined,
+					bgColor: undefined,
+					width: undefined,
+					height: undefined
 				})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="video-default"
-				>
+				<div class="story-shell">
 					<origam-video
 							:src="state.src"
+							:padding="state.padding"
+							:margin="state.margin"
 							:poster="state.poster"
-							:autoplay="Boolean(state.autoplay)"
-							:muted="Boolean(state.muted)"
-							:loop="Boolean(state.loop)"
-							:controls="state.controls"
-							:plays-inline="Boolean(state.playsInline)"
-							:preload="state.preload"
 							:aspect-ratio="state.aspectRatio"
-							:crossorigin="state.crossorigin || undefined"
-							:disable-picture-in-picture="Boolean(state.disablePictureInPicture)"
-							:skip-seconds="Number(state.skipSeconds)"
-							:playback-rate="Number(state.playbackRate)"
-							:inset="Boolean(state.inset)"
-							:allow-remote-playback="Boolean(state.allowRemotePlayback)"
-							:double-tap-to-skip="Boolean(state.doubleTapToSkip)"
-							:downloadable="Boolean(state.downloadable)"
-							:download-filename="state.downloadFilename || undefined"
+							:inset="state.inset"
+							:rounded="state.rounded"
+							:elevation="state.elevation"
+							:border="state.border"
+							:border-color="state.borderColor"
+							:border-style="state.borderStyle"
+							:color="state.color"
+							:bg-color="state.bgColor"
+							:width="state.width"
+							:height="state.height"
 							class="story-video"
-							data-cy="video-default-player"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstText
-						v-model="state.src"
-						title="src"
-				/>
-				<HstText
-						v-model="state.poster"
-						title="poster"
-				/>
-				<HstSelect
-						v-model="state.controls"
-						title="controls"
-						:options="controlsOptions"
-				/>
-				<HstSelect
-						v-model="state.aspectRatio"
-						title="aspectRatio"
-						:options="aspectRatioOptions"
-				/>
-				<HstSelect
-						v-model="state.preload"
-						title="preload"
-						:options="preloadOptions"
-				/>
-				<HstSelect
-						v-model="state.crossorigin"
-						title="crossorigin"
-						:options="crossoriginOptions"
-				/>
-				<HstNumber
-						v-model="state.skipSeconds"
-						title="skipSeconds"
-				/>
-				<HstNumber
-						v-model="state.playbackRate"
-						title="playbackRate"
-				/>
-				<HstText
-						v-model="state.downloadFilename"
-						title="downloadFilename"
-				/>
-				<HstCheckbox
-						v-model="state.autoplay"
-						title="autoplay"
-				/>
-				<HstCheckbox
-						v-model="state.muted"
-						title="muted"
-				/>
-				<HstCheckbox
-						v-model="state.loop"
-						title="loop"
-				/>
-				<HstCheckbox
-						v-model="state.playsInline"
-						title="playsInline"
-				/>
-				<HstCheckbox
-						v-model="state.inset"
-						title="inset"
-				/>
-				<HstCheckbox
-						v-model="state.allowRemotePlayback"
-						title="allowRemotePlayback"
-				/>
-				<HstCheckbox
-						v-model="state.doubleTapToSkip"
-						title="doubleTapToSkip"
-				/>
-				<HstCheckbox
-						v-model="state.disablePictureInPicture"
-						title="disablePictureInPicture"
-				/>
-				<HstCheckbox
-						v-model="state.downloadable"
-						title="downloadable"
-				/>
+				<StoryGroup title="Layout">
+					<HstSelect v-model="state.aspectRatio" title="Aspect Ratio" :options="ASPECT_RATIO_OPTIONS"/>
+					<HstCheckbox v-model="state.inset"     title="Inset (toolbar overlay)"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — src (single URL vs multi-source array)">
-			<div
-					class="story-shell"
-					data-cy="video-src-modes"
-			>
-				<p class="hint">
-					`src` accepts a single URL or an array of &lt;source&gt; descriptors.
-					The browser walks the array top-down and picks the first source
-					whose `type` it can decode.
-				</p>
-				<div class="story-grid">
-					<div class="story-col">
-						<strong>src = string</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:poster="BUNNY_POSTER"
-								class="story-video"
-								data-cy="video-src-string"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>src = Array (mp4 + webm)</strong>
-						<origam-video
-								:src="MULTI_SOURCES"
-								:poster="BUNNY_POSTER"
-								class="story-video"
-								data-cy="video-src-array"
-						/>
-					</div>
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IVideoProps>>({
+					src: BIG_BUCK_BUNNY,
+					poster: BUNNY_POSTER,
+					controls: 'custom',
+					preload: 'metadata',
+					crossorigin: undefined,
+					autoplay: false,
+					muted: false,
+					loop: false,
+					playsInline: true,
+					showCenterControls: true,
+					disablePictureInPicture: false,
+					allowRemotePlayback: true,
+					doubleTapToSkip: true,
+					skipSeconds: 30,
+					playbackRate: 1,
+					downloadable: false,
+					downloadFilename: undefined
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<origam-video
+							:src="state.src"
+							:poster="state.poster"
+							:controls="state.controls"
+							:preload="state.preload"
+							:crossorigin="state.crossorigin || undefined"
+							:autoplay="state.autoplay"
+							:muted="state.muted"
+							:loop="state.loop"
+							:plays-inline="state.playsInline"
+							:show-center-controls="state.showCenterControls"
+							:disable-picture-in-picture="state.disablePictureInPicture"
+							:allow-remote-playback="state.allowRemotePlayback"
+							:double-tap-to-skip="state.doubleTapToSkip"
+							:skip-seconds="state.skipSeconds"
+							:playback-rate="state.playbackRate"
+							:downloadable="state.downloadable"
+							:download-filename="state.downloadFilename || undefined"
+							class="story-video"
+					/>
 				</div>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Media Source">
+					<HstText v-model="state.src"    title="Src (URL)"/>
+					<HstText v-model="state.poster" title="Poster (URL)"/>
+				</StoryGroup>
+				<StoryGroup title="Controls">
+					<HstSelect v-model="state.controls" title="Controls" :options="CONTROLS_OPTIONS"/>
+					<HstCheckbox v-model="state.showCenterControls" title="Show Center Controls"/>
+				</StoryGroup>
+				<StoryGroup title="Buffering">
+					<HstSelect v-model="state.preload"     title="Preload"     :options="PRELOAD_OPTIONS"/>
+					<HstSelect v-model="state.crossorigin" title="Cross Origin" :options="CROSSORIGIN_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Playback Flags">
+					<HstCheckbox v-model="state.autoplay"    title="Autoplay"/>
+					<HstCheckbox v-model="state.muted"       title="Muted"/>
+					<HstCheckbox v-model="state.loop"        title="Loop"/>
+					<HstCheckbox v-model="state.playsInline" title="Plays Inline"/>
+				</StoryGroup>
+				<StoryGroup title="Skip / Speed">
+					<HstNumber v-model="state.skipSeconds"   title="Skip Seconds" :min="0" :max="60" :step="5"/>
+					<HstNumber v-model="state.playbackRate"  title="Playback Rate" :min="0.25" :max="4" :step="0.25"/>
+				</StoryGroup>
+				<StoryGroup title="Features">
+					<HstCheckbox v-model="state.doubleTapToSkip"        title="Double Tap to Skip"/>
+					<HstCheckbox v-model="state.allowRemotePlayback"    title="Allow Remote Playback"/>
+					<HstCheckbox v-model="state.disablePictureInPicture" title="Disable Picture-in-Picture"/>
+				</StoryGroup>
+				<StoryGroup title="Download">
+					<HstCheckbox v-model="state.downloadable"     title="Downloadable"/>
+					<HstText     v-model="state.downloadFilename" title="Download Filename"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<Variant title="Prop — controls (custom / native / none)">
-			<div
-					class="story-shell"
-					data-cy="video-controls-modes"
-			>
-				<p class="hint">
-					Three controls modes: a custom in-house toolbar, the browser's native
-					bar, or no UI at all (consumer drives playback through the `#controls`
-					slot or programmatically). Hover the mute icon on the `custom` toolbar
-					to reveal the vertical `OrigamMediaScrubber` volume slider (drag up
-					to un-mute, down to 0 to mute).
-				</p>
-				<p class="hint">
-					The progress scrubber and the volume slider now share the same
-					`&lt;OrigamMediaScrubber&gt;` implementation — same drag logic, keyboard
-					contract and ARIA.
-				</p>
-				<p class="hint">
-					The custom controls bar is now provided by `&lt;OrigamMediaController&gt;`,
-					a reusable shell. The captions / PiP / fullscreen buttons are injected
-					by `&lt;OrigamVideo&gt;` via the `#extraControlsRight` slot.
-				</p>
-				<div class="story-grid">
-					<div class="story-col">
-						<strong>controls = 'custom'</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:poster="BUNNY_POSTER"
-								controls="custom"
-								class="story-video"
-								data-cy="video-controls-custom"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>controls = 'native'</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:poster="BUNNY_POSTER"
-								controls="native"
-								class="story-video"
-								data-cy="video-controls-native"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>controls = 'none'</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:poster="BUNNY_POSTER"
-								controls="none"
-								class="story-video"
-								data-cy="video-controls-none"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — aspectRatio (16/9 / 4/3 / 1/1 / 21/9 / 9/16)">
-			<div
-					class="story-shell"
-					data-cy="video-aspect-ratios"
-			>
-				<p class="hint">
-					Aspect ratio is applied via the CSS `aspect-ratio` property on the
-					wrapper, so the page reserves space before metadata loads.
-				</p>
-				<div class="story-grid">
-					<div
-							v-for="ratio in aspectRatios"
-							:key="ratio"
-							class="story-col"
-					>
-						<strong>aspectRatio = {{ ratio }}</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:poster="BUNNY_POSTER"
-								:aspect-ratio="ratio"
-								class="story-video"
-								:data-cy="`video-aspect-${ratio.replace('/', '-')}`"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — preload (none / metadata / auto)">
-			<div
-					class="story-shell"
-					data-cy="video-preload"
-			>
-				<p class="hint">
-					Buffering hint forwarded to the native &lt;video preload&gt;. `'metadata'`
-					(default) loads just enough to compute the duration; `'none'` defers
-					everything until the user presses play; `'auto'` lets the browser
-					pre-buffer.
-				</p>
-				<div class="story-grid">
-					<div
-							v-for="preloadValue in preloadValues"
-							:key="preloadValue"
-							class="story-col"
-					>
-						<strong>preload = {{ preloadValue }}</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:poster="BUNNY_POSTER"
-								:preload="preloadValue"
-								class="story-video"
-								:data-cy="`video-preload-${preloadValue}`"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — autoplay / muted / loop">
-			<div
-					class="story-shell"
-					data-cy="video-playback-flags"
-			>
-				<p class="hint">
-					`autoplay` is suppressed by `prefers-reduced-motion: reduce`. The
-					browser also forces `muted` to be true when `autoplay` is enabled.
-					`loop` restarts at 0 when the player reaches `ended`.
-				</p>
-				<div class="story-grid">
-					<div class="story-col">
-						<strong>autoplay (auto-muted)</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:autoplay="true"
-								class="story-video"
-								data-cy="video-flag-autoplay"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>muted</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:poster="BUNNY_POSTER"
-								:muted="true"
-								class="story-video"
-								data-cy="video-flag-muted"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>loop</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:poster="BUNNY_POSTER"
-								:loop="true"
-								class="story-video"
-								data-cy="video-flag-loop"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — tracks (captions on/off, language switch)">
-			<div
-					class="story-shell"
-					data-cy="video-tracks"
-			>
-				<p class="hint">
-					Captions are declared as &lt;track&gt; children. The toolbar exposes a
-					CC button that flips the active track between the declared `default`
-					and `disabled`.
-				</p>
+		<Variant title="Events - play / pause / ended">
+			<div class="story-shell">
 				<origam-video
 						:src="BIG_BUCK_BUNNY"
 						:poster="BUNNY_POSTER"
-						:tracks="trackFixtures"
 						class="story-video"
-						data-cy="video-tracks-player"
+						@play="logEvent('play', $event)"
+						@pause="logEvent('pause', $event)"
+						@ended="logEvent('ended', $event)"
 				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — skipSeconds (skip step, double-tap step)">
-			<div
-					class="story-shell"
-					data-cy="video-skip-seconds"
-			>
-				<p class="hint">
-					Skip step shared by the keyboard, the cog menu, and the double-tap
-					gesture. Set to `0` to disable the skip feature entirely.
-				</p>
-				<div class="story-grid">
-					<div
-							v-for="value in skipValues"
-							:key="value"
-							class="story-col"
-					>
-						<strong>skipSeconds = {{ value }}</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:poster="BUNNY_POSTER"
-								:skip-seconds="value"
-								class="story-video"
-								:data-cy="`video-skip-${value}`"
-						/>
-					</div>
-				</div>
+		<Variant title="Events - timeupdate">
+			<div class="story-shell">
+				<origam-video
+						:src="BIG_BUCK_BUNNY"
+						:poster="BUNNY_POSTER"
+						class="story-video"
+						@timeupdate="logEvent('timeupdate', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — playbackRates / playbackRate (speed menu)">
-			<div
-					class="story-shell"
-					data-cy="video-playback-rates"
-			>
-				<p class="hint">
-					`playbackRates` lists the values exposed via the cog menu;
-					`playbackRate` is the initial value. The runtime value is emitted via
-					`update:playbackRate` whenever the viewer picks a different speed.
-				</p>
-				<div class="story-grid">
-					<div class="story-col">
-						<strong>default rates · initial = 1</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:poster="BUNNY_POSTER"
-								class="story-video"
-								data-cy="video-playback-rate-default"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>custom rates · initial = 1.5</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:poster="BUNNY_POSTER"
-								:playback-rates="[0.5, 1, 1.5, 2]"
-								:playback-rate="1.5"
-								class="story-video"
-								data-cy="video-playback-rate-custom"
-						/>
-					</div>
-				</div>
+		<Variant title="Events - volumechange">
+			<div class="story-shell">
+				<origam-video
+						:src="BIG_BUCK_BUNNY"
+						:poster="BUNNY_POSTER"
+						class="story-video"
+						@volumechange="logEvent('volumechange', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — quality switcher (multi-source with quality)">
-			<div
-					class="story-shell"
-					data-cy="video-quality-switcher"
-			>
-				<p class="hint">
-					When `src` is an array with `quality` and `label` fields, the cog
-					menu exposes a Quality drill-down row. Picking a new quality calls
-					`video.load()` and resumes from the previous position. The active
-					quality is emitted via `quality-change`.
-				</p>
+		<Variant title="Events - loadedmetadata">
+			<div class="story-shell">
+				<origam-video
+						:src="BIG_BUCK_BUNNY"
+						:poster="BUNNY_POSTER"
+						class="story-video"
+						@loadedmetadata="logEvent('loadedmetadata', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - skip">
+			<div class="story-shell">
+				<origam-video
+						:src="BIG_BUCK_BUNNY"
+						:poster="BUNNY_POSTER"
+						class="story-video"
+						@skip="logEvent('skip', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - update:playbackRate">
+			<div class="story-shell">
+				<origam-video
+						:src="BIG_BUCK_BUNNY"
+						:poster="BUNNY_POSTER"
+						class="story-video"
+						@update:playback-rate="logEvent('update:playbackRate', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - quality-change">
+			<div class="story-shell">
 				<origam-video
 						:src="QUALITY_SOURCES"
 						:poster="BUNNY_POSTER"
 						class="story-video"
-						data-cy="video-quality-switcher-player"
-						@quality-change="logEmit('quality-change', $event)"
+						@quality-change="logEvent('quality-change', $event)"
 				/>
-				<pre
-						class="story-log"
-						data-cy="video-quality-log"
-				>{{ logLines.join('\n') }}</pre>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — inset (auto-hide toolbar vs always visible)">
-			<div
-					class="story-shell"
-					data-cy="video-inset"
-			>
-				<p class="hint">
-					`inset = true` (default) overlays the toolbar at the bottom edge and
-					auto-hides it while playing once the cursor leaves the player.
-					`inset = false` always paints the toolbar.
-				</p>
-				<div class="story-grid">
-					<div class="story-col">
-						<strong>inset = true</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:poster="BUNNY_POSTER"
-								:inset="true"
-								class="story-video"
-								data-cy="video-inset-true"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>inset = false</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:poster="BUNNY_POSTER"
-								:inset="false"
-								class="story-video"
-								data-cy="video-inset-false"
-						/>
-					</div>
-				</div>
+		<Variant title="Events - download">
+			<div class="story-shell">
+				<origam-video
+						:src="BIG_BUCK_BUNNY"
+						:poster="BUNNY_POSTER"
+						:downloadable="true"
+						class="story-video"
+						@download="logEvent('download', $event)"
+				/>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — doubleTapToSkip / disablePictureInPicture / allowRemotePlayback">
-			<div
-					class="story-shell"
-					data-cy="video-feature-flags"
-			>
-				<p class="hint">
-					Behavioural switches. `doubleTapToSkip` enables the YouTube-style
-					double-tap-to-skip gesture (single click toggles play/pause via a
-					280ms deferred handler). `disablePictureInPicture` hides the PIP
-					button. `allowRemotePlayback` shows a cast button when at least one
-					remote device is detected.
-				</p>
-				<div class="story-grid">
-					<div class="story-col">
-						<strong>doubleTapToSkip = false</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:poster="BUNNY_POSTER"
-								:double-tap-to-skip="false"
-								class="story-video"
-								data-cy="video-flag-doubletap-off"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>disablePictureInPicture</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:poster="BUNNY_POSTER"
-								:disable-picture-in-picture="true"
-								class="story-video"
-								data-cy="video-flag-pip-off"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>allowRemotePlayback = false</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:poster="BUNNY_POSTER"
-								:allow-remote-playback="false"
-								class="story-video"
-								data-cy="video-flag-cast-off"
-						/>
-					</div>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — downloadable / downloadFilename">
-			<div
-					class="story-shell"
-					data-cy="video-download"
-			>
-				<p class="hint">
-					Setting `downloadable` adds a Download row to the cog menu. Clicking
-					it triggers the browser's standard download dialog. Override the
-					destination file name via `downloadFilename`.
-				</p>
-				<div class="story-grid">
-					<div class="story-col">
-						<strong>downloadable = true</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:poster="BUNNY_POSTER"
-								:downloadable="true"
-								class="story-video"
-								data-cy="video-downloadable"
-								@download="logEmit('download', $event)"
-						/>
-					</div>
-					<div class="story-col">
-						<strong>custom downloadFilename</strong>
-						<origam-video
-								:src="BIG_BUCK_BUNNY"
-								:poster="BUNNY_POSTER"
-								:downloadable="true"
-								download-filename="origam-trailer.mp4"
-								class="story-video"
-								data-cy="video-downloadable-filename"
-								@download="logEmit('download', $event)"
-						/>
-					</div>
-				</div>
-				<pre
-						class="story-log"
-						data-cy="video-download-log"
-				>{{ logLines.join('\n') }}</pre>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — controls (timestamp-only minimal bar)">
-			<div
-					class="story-shell"
-					data-cy="video-slot-controls"
-			>
-				<p class="hint">
-					The default toolbar can be entirely replaced via the `#controls`
-					scoped slot. The slot receives the runtime state + an imperative
-					`methods` object.
-				</p>
+		<Variant title="Events - enterfullscreen / exitfullscreen">
+			<div class="story-shell">
 				<origam-video
 						:src="BIG_BUCK_BUNNY"
 						:poster="BUNNY_POSTER"
 						class="story-video"
-						data-cy="video-slot-controls-player"
+						@enterfullscreen="logEvent('enterfullscreen', null)"
+						@exitfullscreen="logEvent('exitfullscreen', null)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - enterpip / exitpip">
+			<div class="story-shell">
+				<origam-video
+						:src="BIG_BUCK_BUNNY"
+						:poster="BUNNY_POSTER"
+						class="story-video"
+						@enterpip="logEvent('enterpip', null)"
+						@exitpip="logEvent('exitpip', null)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - error">
+			<div class="story-shell">
+				<origam-video
+						src="https://invalid.example.com/missing-video.mp4"
+						:poster="BUNNY_POSTER"
+						class="story-video"
+						@error="logEvent('error', ($event as Error).message || 'media error')"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Controls">
+			<div class="story-shell">
+				<origam-video
+						:src="BIG_BUCK_BUNNY"
+						:poster="BUNNY_POSTER"
+						class="story-video"
 				>
 					<template #controls="{ playing, currentTime, duration, methods }">
 						<div class="story-custom-controls">
@@ -581,7 +293,6 @@
 									type="button"
 									class="story-custom-controls__btn"
 									:aria-label="playing ? 'Pause' : 'Play'"
-									data-cy="video-slot-controls-play"
 									@click="playing ? methods.pause() : methods.play()"
 							>{{ playing ? 'Pause' : 'Play' }}</button>
 							<span class="story-custom-controls__time">
@@ -593,26 +304,15 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — poster (custom overlay)">
-			<div
-					class="story-shell"
-					data-cy="video-slot-poster"
-			>
-				<p class="hint">
-					The `#poster` slot replaces the default overlay shown before
-					playback starts.
-				</p>
+		<Variant title="Slots - Poster">
+			<div class="story-shell">
 				<origam-video
 						:src="BIG_BUCK_BUNNY"
 						:poster="BUNNY_POSTER"
 						class="story-video"
-						data-cy="video-slot-poster-player"
 				>
 					<template #poster>
-						<div
-								class="story-custom-poster"
-								data-cy="video-slot-poster-overlay"
-						>
+						<div class="story-custom-poster">
 							<span class="story-custom-poster__label">Click to watch</span>
 						</div>
 					</template>
@@ -620,27 +320,15 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — loading (custom spinner)">
-			<div
-					class="story-shell"
-					data-cy="video-slot-loading"
-			>
-				<p class="hint">
-					The `#loading` slot replaces the default spinner shown between
-					`loadstart` and `loadedmetadata`. Hard to capture statically — open
-					DevTools, throttle the network to Slow 3G and reload to see it.
-				</p>
+		<Variant title="Slots - Loading">
+			<div class="story-shell">
 				<origam-video
 						:src="BIG_BUCK_BUNNY"
 						:poster="BUNNY_POSTER"
 						class="story-video"
-						data-cy="video-slot-loading-player"
 				>
 					<template #loading>
-						<div
-								class="story-custom-loading"
-								data-cy="video-slot-loading-overlay"
-						>
+						<div class="story-custom-loading">
 							<span class="story-custom-loading__label">Decoding…</span>
 						</div>
 					</template>
@@ -648,26 +336,15 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — error (custom error overlay)">
-			<div
-					class="story-shell"
-					data-cy="video-slot-error"
-			>
-				<p class="hint">
-					Forcing a 404 URL surfaces the `#error` slot — the slot receives the
-					`MediaError | Error` payload via its bindings.
-				</p>
+		<Variant title="Slots - Error">
+			<div class="story-shell">
 				<origam-video
 						src="https://invalid.example.com/missing-video.mp4"
 						:poster="BUNNY_POSTER"
 						class="story-video"
-						data-cy="video-slot-error-player"
 				>
 					<template #error="{ error }">
-						<div
-								class="story-custom-error"
-								data-cy="video-slot-error-overlay"
-						>
+						<div class="story-custom-error">
 							<strong>Cannot play this video</strong>
 							<small>{{ (error as Error).message || 'Unknown media error' }}</small>
 						</div>
@@ -676,259 +353,65 @@
 			</div>
 		</Variant>
 
-		<Variant title="Prop — showCenterControls (center play/skip overlay)">
-			<div
-					class="story-shell"
-					data-cy="video-show-center-controls"
-			>
-				<p class="hint">
-					Toggles the centred play/pause + skip-backward + skip-forward
-					overlay that appears on hover and while paused. With
-					<code>showCenterControls=false</code>, only the YouTube-style chrome
-					bar at the bottom is exposed.
-				</p>
-				<div class="story-col">
-					<strong>showCenterControls = true (default)</strong>
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IVideoProps>({
+					src: BIG_BUCK_BUNNY,
+					poster: BUNNY_POSTER,
+					controls: 'custom',
+					aspectRatio: '16/9',
+					inset: true,
+					autoplay: false,
+					muted: false,
+					loop: false,
+					playsInline: true,
+					preload: 'metadata',
+					showCenterControls: true,
+					skipSeconds: 30,
+					playbackRate: 1,
+					disablePictureInPicture: false,
+					allowRemotePlayback: true,
+					doubleTapToSkip: true,
+					downloadable: false
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
 					<origam-video
-							:src="BIG_BUCK_BUNNY"
-							:poster="BUNNY_POSTER"
-							:show-center-controls="true"
+							v-bind="state"
 							class="story-video"
-							data-cy="video-center-on"
+							@play="logEvent('play', $event)"
+							@pause="logEvent('pause', $event)"
+							@ended="logEvent('ended', $event)"
 					/>
 				</div>
-				<div class="story-col">
-					<strong>showCenterControls = false</strong>
-					<origam-video
-							:src="BIG_BUCK_BUNNY"
-							:poster="BUNNY_POSTER"
-							:show-center-controls="false"
-							class="story-video"
-							data-cy="video-center-off"
-					/>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Slot — controls (full toolbar override)">
-			<div
-					class="story-shell"
-					data-cy="video-slot-controls-override"
-			>
-				<p class="hint">
-					The <code>#controls</code> slot fully replaces the chrome bar AND the
-					built-in config menu. Use it when you want to ship your own
-					skin or your own cog popover. The slot receives the
-					<code>IVideoScopedSlotBindings</code> object — state snapshot +
-					imperative <code>methods</code>. Since the MediaController extraction
-					(commit <code>2cbb9618</code>) this is the canonical way to
-					customise the cog menu; the legacy <code>#config</code> slot was
-					removed.
-				</p>
-				<origam-video
-						:src="BIG_BUCK_BUNNY"
-						:poster="BUNNY_POSTER"
-						class="story-video"
-						data-cy="video-slot-controls-override-player"
-				>
-					<template #controls="{ playing, currentTime, duration, methods, playbackRate }">
-						<div class="story-custom-controls">
-							<button
-									type="button"
-									class="story-custom-controls__btn"
-									:aria-label="playing ? 'Pause' : 'Play'"
-									data-cy="video-custom-toggle"
-									@click="methods.toggle()"
-							>{{ playing ? '❚❚' : '▶' }}</button>
-							<span class="story-custom-controls__time">
-								{{ Math.round(currentTime) }}s / {{ Math.round(duration) }}s
-							</span>
-							<div class="story-custom-controls__rates">
-								<button
-										v-for="rate in [0.75, 1, 1.5]"
-										:key="rate"
-										type="button"
-										class="story-custom-controls__rate"
-										:class="{ 'story-custom-controls__rate--active': Math.abs(playbackRate - rate) < 0.01 }"
-										:data-cy="`video-custom-rate-${rate}`"
-										@click="methods.setPlaybackRate(rate)"
-								>{{ rate === 1 ? 'Normal' : `${rate}×` }}</button>
-							</div>
-						</div>
-					</template>
-				</origam-video>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — play / pause / ended (counters)">
-			<div
-					class="story-shell"
-					data-cy="video-emit-lifecycle"
-			>
-				<p class="hint">
-					Counters increment on each emit. Click the player surface or use the
-					toolbar buttons to trigger them.
-				</p>
-				<origam-video
-						:src="BIG_BUCK_BUNNY"
-						:poster="BUNNY_POSTER"
-						class="story-video"
-						data-cy="video-emit-lifecycle-player"
-						@play="counters.play++"
-						@pause="counters.pause++"
-						@ended="counters.ended++"
-				/>
-				<dl class="story-counters">
-					<div>
-						<dt>play</dt>
-						<dd data-cy="video-emit-count-play">{{ counters.play }}</dd>
-					</div>
-					<div>
-						<dt>pause</dt>
-						<dd data-cy="video-emit-count-pause">{{ counters.pause }}</dd>
-					</div>
-					<div>
-						<dt>ended</dt>
-						<dd data-cy="video-emit-count-ended">{{ counters.ended }}</dd>
-					</div>
-				</dl>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — timeupdate / volumechange / loadedmetadata">
-			<div
-					class="story-shell"
-					data-cy="video-emit-runtime"
-			>
-				<p class="hint">
-					`timeupdate` fires roughly every 250ms during playback;
-					`volumechange` covers both slider drag and mute toggle;
-					`loadedmetadata` carries the resolved `duration` payload.
-				</p>
-				<origam-video
-						:src="BIG_BUCK_BUNNY"
-						:poster="BUNNY_POSTER"
-						class="story-video"
-						data-cy="video-emit-runtime-player"
-						@timeupdate="counters.timeupdate++"
-						@volumechange="counters.volumechange++"
-						@loadedmetadata="onLoadedMetadata"
-				/>
-				<dl class="story-counters">
-					<div>
-						<dt>timeupdate</dt>
-						<dd data-cy="video-emit-count-timeupdate">{{ counters.timeupdate }}</dd>
-					</div>
-					<div>
-						<dt>volumechange</dt>
-						<dd data-cy="video-emit-count-volumechange">{{ counters.volumechange }}</dd>
-					</div>
-					<div>
-						<dt>loadedmetadata.duration</dt>
-						<dd data-cy="video-emit-loadedmetadata">{{ lastDuration }}</dd>
-					</div>
-				</dl>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — skip (positive forward / negative backward)">
-			<div
-					class="story-shell"
-					data-cy="video-emit-skip"
-			>
-				<p class="hint">
-					Double-tap the left or right half of the player to trigger a skip.
-					The emit payload is the signed delta in seconds — positive forward,
-					negative backward.
-				</p>
-				<origam-video
-						:src="BIG_BUCK_BUNNY"
-						:poster="BUNNY_POSTER"
-						class="story-video"
-						data-cy="video-emit-skip-player"
-						@skip="logEmit('skip', $event)"
-				/>
-				<pre
-						class="story-log"
-						data-cy="video-emit-skip-log"
-				>{{ logLines.join('\n') }}</pre>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — update:playbackRate / quality-change / download">
-			<div
-					class="story-shell"
-					data-cy="video-emit-config"
-			>
-				<p class="hint">
-					Pick a different speed, quality or click Download in the cog menu
-					to drive these emits.
-				</p>
-				<origam-video
-						:src="QUALITY_SOURCES"
-						:poster="BUNNY_POSTER"
-						:downloadable="true"
-						class="story-video"
-						data-cy="video-emit-config-player"
-						@update:playback-rate="logEmit('update:playbackRate', $event)"
-						@quality-change="logEmit('quality-change', $event)"
-						@download="logEmit('download', $event)"
-				/>
-				<pre
-						class="story-log"
-						data-cy="video-emit-config-log"
-				>{{ logLines.join('\n') }}</pre>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — enterfullscreen / exitfullscreen / enterpip / exitpip">
-			<div
-					class="story-shell"
-					data-cy="video-emit-window"
-			>
-				<p class="hint">
-					Click the fullscreen / PIP buttons in the toolbar to trigger these
-					emits. PIP requires `document.pictureInPictureEnabled` (Chromium,
-					Firefox, desktop Safari).
-				</p>
-				<origam-video
-						:src="BIG_BUCK_BUNNY"
-						:poster="BUNNY_POSTER"
-						class="story-video"
-						data-cy="video-emit-window-player"
-						@enterfullscreen="logEmit('enterfullscreen', null)"
-						@exitfullscreen="logEmit('exitfullscreen', null)"
-						@enterpip="logEmit('enterpip', null)"
-						@exitpip="logEmit('exitpip', null)"
-				/>
-				<pre
-						class="story-log"
-						data-cy="video-emit-window-log"
-				>{{ logLines.join('\n') }}</pre>
-			</div>
-		</Variant>
-
-		<Variant title="Emit — error (forced 404 URL)">
-			<div
-					class="story-shell"
-					data-cy="video-emit-error"
-			>
-				<p class="hint">
-					An invalid `src` triggers the native `error` event. The wrapper
-					forwards the `MediaError | Error` payload through the `error` emit.
-				</p>
-				<origam-video
-						src="https://invalid.example.com/missing-video.mp4"
-						:poster="BUNNY_POSTER"
-						class="story-video"
-						data-cy="video-emit-error-player"
-						@error="logEmit('error', ($event as Error).message || 'media error')"
-				/>
-				<pre
-						class="story-log"
-						data-cy="video-emit-error-log"
-				>{{ logLines.join('\n') }}</pre>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.src"    title="Src (URL)"/>
+					<HstText v-model="state.poster" title="Poster (URL)"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect   v-model="state.aspectRatio" title="Aspect Ratio" :options="ASPECT_RATIO_OPTIONS"/>
+					<HstCheckbox v-model="state.inset"       title="Inset"/>
+					<HstSelect   v-model="state.rounded"     title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect   v-model="state.elevation"   title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstSelect   v-model="state.color"       title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.bgColor"     title="Bg Color"  :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect   v-model="state.controls"              title="Controls"           :options="CONTROLS_OPTIONS"/>
+					<HstSelect   v-model="state.preload"               title="Preload"            :options="PRELOAD_OPTIONS"/>
+					<HstCheckbox v-model="state.autoplay"              title="Autoplay"/>
+					<HstCheckbox v-model="state.muted"                 title="Muted"/>
+					<HstCheckbox v-model="state.loop"                  title="Loop"/>
+					<HstCheckbox v-model="state.showCenterControls"    title="Show Center Controls"/>
+					<HstCheckbox v-model="state.downloadable"          title="Downloadable"/>
+					<HstCheckbox v-model="state.doubleTapToSkip"       title="Double Tap to Skip"/>
+					<HstCheckbox v-model="state.disablePictureInPicture" title="Disable PiP"/>
+					<HstCheckbox v-model="state.allowRemotePlayback"   title="Allow Remote Playback"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -937,95 +420,64 @@
 		lang="ts"
 		setup
 >
-	import { reactive, ref } from 'vue'
+	import { logEvent } from 'histoire/client'
 
 	import { OrigamVideo } from '@origam/components'
-
 	import type {
-		IVideoSource,
-		IVideoTrack
+		IVideoProps,
+		IVideoSource
 	} from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS
+	} from '@stories/const'
 
-	// Wikimedia Commons mirror — same Big Buck Bunny payload re-encoded
-	// in WebM/VP9 (supported on every evergreen browser). The CDN
-	// returns `Access-Control-Allow-Origin: *`, so the force-download
-	// blob path in `<OrigamMediaController>` actually works
-	// end-to-end in Histoire.
-	// Alternative URLs tested but discarded :
-	//   • commondatastorage.googleapis.com/.../BigBuckBunny.mp4 → 403
-	//   • download.blender.org/.../BigBuckBunny_320x180.mp4 → no CORS
-	//   • cdn.plyr.io / w3schools / media.w3.org → no CORS
 	const BIG_BUCK_BUNNY = 'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c0/Big_Buck_Bunny_4K.webm/Big_Buck_Bunny_4K.webm.720p.vp9.webm'
 	const BUNNY_POSTER = 'https://peach.blender.org/wp-content/uploads/title_anouncement.jpg'
-
-	const MULTI_SOURCES: Array<IVideoSource> = [
-		{ src: 'https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4', type: 'video/mp4' },
-		{ src: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c0/Big_Buck_Bunny_4K.webm/Big_Buck_Bunny_4K.webm.360p.webm', type: 'video/webm' }
-	]
 
 	const QUALITY_SOURCES: Array<IVideoSource> = [
 		{ src: 'https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4', type: 'video/mp4', quality: '180p', label: '180p (SD)' },
 		{ src: 'https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_640x360.mp4', type: 'video/mp4', quality: '360p', label: '360p' }
 	]
 
-	const VTT_EN = 'data:text/vtt;base64,V0VCVlRUCgowMDowMDowMC4wMDAgLS0+IDAwOjAwOjA0LjAwMApUaGUgYmlnIGJ1Y2sgYnVubnkgcHJlcGFyZXMgZm9yIGl0cyBlbmVtaWVzLgoKMDA6MDA6MDQuMDAwIC0tPiAwMDowMDowOC4wMDAKRW5nbGlzaCBjYXB0aW9uIHRyYWNrLgo='
-	const VTT_FR = 'data:text/vtt;base64,V0VCVlRUCgowMDowMDowMC4wMDAgLS0+IDAwOjAwOjA0LjAwMApMZSBncm9zIGxhcGluIHByw6lwYXJlIGRlcyBwacOoZ2VzLgoKMDA6MDA6MDQuMDAwIC0tPiAwMDowMDowOC4wMDAKUGlzdGUgZGUgc291cy10aXRyZXMgZnJhbsOnYWlzZS4K'
-
-	const trackFixtures: Array<IVideoTrack> = [
-		{ kind: 'captions', src: VTT_EN, srclang: 'en', label: 'English', default: true },
-		{ kind: 'captions', src: VTT_FR, srclang: 'fr', label: 'Français' }
-	]
-
-	const aspectRatios = ['16/9', '4/3', '1/1', '21/9', '9/16']
-	const preloadValues: Array<'none' | 'metadata' | 'auto'> = ['none', 'metadata', 'auto']
-	const skipValues = [5, 15, 30, 60]
-
-	const controlsOptions = [
+	const CONTROLS_OPTIONS = [
 		{ value: 'custom', label: 'custom' },
 		{ value: 'native', label: 'native' },
 		{ value: 'none', label: 'none' }
 	]
 
-	const aspectRatioOptions = aspectRatios.map((ratio) => ({ value: ratio, label: ratio }))
+	const ASPECT_RATIO_OPTIONS = [
+		{ value: '16/9', label: '16/9' },
+		{ value: '4/3', label: '4/3' },
+		{ value: '1/1', label: '1/1' },
+		{ value: '21/9', label: '21/9' },
+		{ value: '9/16', label: '9/16' }
+	]
 
-	const preloadOptions = preloadValues.map((value) => ({ value, label: value }))
+	const PRELOAD_OPTIONS = [
+		{ value: 'metadata', label: 'metadata' },
+		{ value: 'none', label: 'none' },
+		{ value: 'auto', label: 'auto' }
+	]
 
-	const crossoriginOptions = [
-		{ value: '', label: '(none)' },
+	const CROSSORIGIN_OPTIONS = [
+		{ value: undefined, label: '(none)' },
 		{ value: 'anonymous', label: 'anonymous' },
 		{ value: 'use-credentials', label: 'use-credentials' }
 	]
-
-	const counters = reactive({
-		play: 0,
-		pause: 0,
-		ended: 0,
-		timeupdate: 0,
-		volumechange: 0
-	})
-
-	const lastDuration = ref<string>('--')
-
-	function onLoadedMetadata (payload: { duration: number }): void {
-		lastDuration.value = Number.isFinite(payload.duration) ? payload.duration.toFixed(2) : '--'
-	}
-
-	const logLines = ref<Array<string>>([])
-
-	function logEmit (name: string, payload: unknown): void {
-		const safe = typeof payload === 'string' || typeof payload === 'number'
-			? String(payload)
-			: JSON.stringify(payload)
-		logLines.value = [`${name} → ${safe}`, ...logLines.value].slice(0, 8)
-	}
 
 	function formatTimestamp (seconds: number): string {
 		if (!Number.isFinite(seconds) || seconds < 0) return '--:--'
 		const total = Math.floor(seconds)
 		const m = Math.floor(total / 60)
 		const s = total % 60
+
 		return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
 	}
 </script>
@@ -1037,29 +489,6 @@
 		gap: 16px;
 		padding: 16px;
 		max-width: 960px;
-	}
-
-	.hint {
-		margin: 0;
-		font: 0.875rem/1.4 system-ui, sans-serif;
-		color: var(--origam-color__text---secondary, #555);
-	}
-
-	.story-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-		gap: 16px;
-	}
-
-	.story-col {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-	}
-
-	.story-col strong {
-		font: 600 0.75rem/1.2 ui-monospace, monospace;
-		color: var(--origam-color__text---primary, #171717);
 	}
 
 	.story-video {
@@ -1096,26 +525,6 @@
 
 	.story-custom-controls__time {
 		font-family: ui-monospace, monospace;
-	}
-
-	.story-custom-controls__rates {
-		display: flex;
-		gap: 4px;
-	}
-
-	.story-custom-controls__rate {
-		background: rgba(255, 255, 255, 0.15);
-		color: #ffffff;
-		border: 0;
-		padding: 2px 8px;
-		border-radius: 4px;
-		cursor: pointer;
-		font: 0.8rem/1.2 ui-monospace, monospace;
-	}
-
-	.story-custom-controls__rate--active {
-		background: rgba(255, 255, 255, 0.4);
-		font-weight: 700;
 	}
 
 	.story-custom-poster {
@@ -1163,43 +572,6 @@
 
 	.story-custom-error small {
 		opacity: 0.85;
-	}
-
-	.story-counters {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 16px;
-		margin: 0;
-		padding: 12px;
-		background: var(--origam-color__surface---raised, #f3f4f6);
-		border-radius: 8px;
-	}
-
-	.story-counters > div {
-		display: flex;
-		flex-direction: column;
-		gap: 2px;
-	}
-
-	.story-counters dt {
-		font: 0.75rem/1.2 ui-monospace, monospace;
-		color: var(--origam-color__text---secondary, #555);
-	}
-
-	.story-counters dd {
-		margin: 0;
-		font: 600 1rem/1.2 system-ui, sans-serif;
-	}
-
-	.story-log {
-		margin: 0;
-		padding: 8px 12px;
-		background-color: rgba(0, 0, 0, 0.04);
-		border-radius: 6px;
-		font-size: 0.75rem;
-		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-		white-space: pre-wrap;
-		min-height: 80px;
 	}
 </style>
 

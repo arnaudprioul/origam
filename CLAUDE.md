@@ -154,23 +154,44 @@ user's debugging cycle.
 ### Story file structure (canonical)
 
 Every `packages/stories/components/stories/{Name}/Origam{Name}.story.vue`
-MUST follow this exact section order:
+MUST follow this exact section order. The reference implementation is
+`Btn/OrigamBtn.story.vue` — mirror it. Props are grouped **by type**,
+and the story is organised so a user can test the component's design,
+then its state, then its behaviour, then its events and slots.
 
-1. **`<Variant title="Default">`** — the playground. Renders the
-   component with every reactive control wired into the
-   `#controls` block. Use `useStoryInitState({...})` for the
-   state. Never name this `"Playground"` — the canonical title
-   is `"Default"`.
-2. **Props Variants** grouped by semantic theme (Visual /
-   Behaviour / Layout / Accessibility / Data / …). Pick the
-   grouping that tells the prop story best, keep group order
-   stable. Each title starts with `Prop — ` followed by the
-   prop name(s).
-3. **Slot Variants** — one per slot, with a custom snippet that
-   visibly differs from the default render. Title `Slot — {name}`.
-4. **Emit Variants** — one per emit (or one per logical cluster
-   when they make sense to demo together). Each Variant surfaces
-   a live counter or log of fires. Title `Emit — {names}`.
+1. **DESIGN** — a single `<Variant title="Design">` whose `#default`
+   renders the component driven by its **visual** props (variant,
+   color/bgColor, size, density, rounded, elevation, border(+color/
+   style), dimension, status, icons, align/justify/position…). The
+   `#controls` block is split into labelled **parts** via the shared
+   `<StoryGroup title="…">` (fieldset/legend) so linked props sit
+   together (e.g. Color, Sizing, Shape, Border, Status, Icons,
+   Dimension).
+2. **ÉTAT (design + functional)** — a `<Variant title="State">` for
+   `hover` / `active` (and the surface they paint), when the component
+   exposes them. Parts: Surface / Interaction. Omit if absent.
+3. **FONCTIONNEL** — a `<Variant title="Functional">` driven by the
+   **behaviour** props (disabled, loading, readonly, modelValue/value,
+   block/slim/stacked, tag/href/to, data…), `#controls` split into
+   `<StoryGroup>` parts (States, Layout, Loading, Link, Data…).
+4. **EMITS** — one Variant per emit, title `Events - {name}`, wiring
+   `@{name}="logEvent('{name}', $event)"`.
+5. **SLOTS** — one Variant per slot, title `Slots - {Name}`, with a
+   custom snippet that visibly differs from the default render.
+6. **PLAYGROUND** — `<Variant title="Default">` **LAST**: `v-bind="state"`
+   plus a full `#controls` panel (parts: Content / Design / Functional).
+
+Rules that hold for every story:
+- Every prop Variant types its state: `:init-state="() => useStoryInitState<IXxxProps>({…})"`
+  with the matching Commons interface.
+- Controls use `HstSelect :options="XXX_OPTIONS"` (SCREAMING_SNAKE sets
+  from `@stories/const`), `HstText` (string), `HstNumber` (number),
+  `HstCheckbox` (boolean). For an enum/union prop without an existing
+  `*_OPTIONS`, build the options inline from the **real** enum
+  (`@origam/enums`) — never invent values.
+- Use the real component API only (read the interface); never fabricate
+  props/emits/slots. Omit a section the component doesn't have.
+- `group="components"` on `<Story>`, and keep `<docs lang="md" src="@docs/…">`.
 
 ### Doc file structure (canonical)
 
@@ -187,10 +208,10 @@ MUST follow this exact section order:
 ### Pre-commit sanity
 
 Before committing, eyeball:
-- every prop in the `.vue` has a control in the Default Variant
-  AND a row in the doc's Props table
-- every emit in the `.vue` has at least one Variant
-- every slot in the `.vue` is exercised by at least one Variant
+- every prop in the `.vue` has a control somewhere (Design / State /
+  Functional / Default) AND a row in the doc's Props table
+- every emit in the `.vue` has an `Events - {name}` Variant
+- every slot in the `.vue` has a `Slots - {Name}` Variant
 
 If you're spawning an agent on a component, **the agent prompt
 MUST include this rule explicitly** so the deliverable lands

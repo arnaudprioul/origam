@@ -70,6 +70,13 @@ export interface IPaginationProps extends ICommonsComponentProps, ITagProps, ICo
      * (`"Next"` in English).
      */
     nextText?: string
+    /**
+     * aria-label for the compact mode page number `<input>`. Falls back to
+     * the `origam.pagination.ariaLabel.pageNumber` i18n key.
+     *
+     * @default 'origam.pagination.ariaLabel.pageNumber'
+     */
+    pageNumberAriaLabel?: string
 }
 
 /** Emits fired by `<OrigamPagination>` — current page v-model + the four

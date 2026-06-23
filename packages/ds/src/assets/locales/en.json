@@ -58,7 +58,20 @@
     },
     "calendar": {
       "moreEvents": "{0} more",
-      "today": "Today"
+      "today": "Today",
+      "previous": "Previous",
+      "next": "Next",
+      "viewSwitcher": "View",
+      "monthGrid": "Month grid",
+      "ariaLabel": "Calendar",
+      "toolbar": "Calendar toolbar",
+      "empty": "No events to display",
+      "view": {
+        "month": "Month",
+        "week": "Week",
+        "day": "Day",
+        "agenda": "Agenda"
+      }
     },
     "input": {
       "clear": "Clear {0}",
@@ -103,9 +116,28 @@
       "next": "Next",
       "previous": "Prev"
     },
+    "code": {
+      "copy": "Copy",
+      "copied": "Copied!",
+      "copyAriaLabel": "Copy code to clipboard",
+      "copiedAriaLabel": "Code copied to clipboard"
+    },
+    "clipboard": {
+      "copyAriaLabel": "Copy to clipboard",
+      "copiedAriaLabel": "Value copied to clipboard"
+    },
+    "snackbar": {
+      "dismiss": "Dismiss notification"
+    },
     "stepper": {
       "next": "Next",
-      "prev": "Previous"
+      "prev": "Previous",
+      "progressSteps": "Progress steps",
+      "stepAriaLabel": "Step {0}: {1}"
+    },
+    "dataTableRow": {
+      "expandRow": "Expand row",
+      "collapseRow": "Collapse row"
     },
     "rating": {
       "ariaLabel": {

@@ -47,3 +47,17 @@ export const BRACKET_DEFAULT_MATCH_GAP = 24
  * `bracket.gap-round`.
  */
 export const BRACKET_DEFAULT_ROUND_GAP = 48
+
+/**
+ * Default heading rendered above the winner-bracket tree in a
+ * double-elimination layout. Override via the `winnersLabel` prop
+ * (e.g. to localise). Kept as a literal in `withDefaults`, mirrored
+ * here for consumer reference.
+ */
+export const BRACKET_DEFAULT_WINNERS_LABEL = 'Winners bracket'
+
+/**
+ * Default heading rendered above the loser-bracket tree in a
+ * double-elimination layout. Override via the `losersLabel` prop.
+ */
+export const BRACKET_DEFAULT_LOSERS_LABEL = 'Losers bracket'

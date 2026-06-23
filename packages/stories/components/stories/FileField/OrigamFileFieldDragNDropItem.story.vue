@@ -3,148 +3,101 @@
 			group="components"
 			title="FileField/OrigamFileFieldDragNDropItem"
 	>
-		<!--
-			<origam-file-field-drag-n-drop-item> renders a single dropped
-			file inside the drop-zone variant of <origam-file-field>. It
-			needs a real File object — stories below build mock Files via
-			`new File([blob], name)`.
-		-->
 
-		<!-- Playground — first by convention, surfaces every prop via sidebar controls. -->
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<{
-					progress: number,
-					disabled: boolean,
-					readonly: boolean,
-					showSize: boolean,
-					color: string,
-				}>({
-					progress: 0,
-					disabled: false,
-					readonly: false,
-					showSize: true,
-					color: undefined,
-				})"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IFileFieldDragNDropItemProps>>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 480px;">
-					<origam-file-field-drag-n-drop-item
-							:file="mockFile('playground.pdf', 'application/pdf', 256000)"
-							:index="0"
-							v-bind="state"
-							data-cy="dnd-item-playground"
-					/>
-				</div>
+				<origam-file-field-drag-n-drop-item
+						:file="mockFile('design.pdf', 'application/pdf', 256000)"
+						:index="0"
+						:color="state.color"
+						:file-icon="state.fileIcon || undefined"
+						:remove-icon="state.removeIcon || undefined"
+				/>
 			</template>
 			<template #controls="{ state }">
-				<HstSlider   v-model="state.progress"  title="progress" :min="0" :max="100" :step="1"/>
-				<HstCheckbox v-model="state.disabled"  title="disabled"/>
-				<HstCheckbox v-model="state.readonly"  title="readonly"/>
-				<HstCheckbox v-model="state.showSize"  title="showSize"/>
-				<HstSelect   v-model="state.color"     title="color"    :options="intentList"/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Icons">
+					<HstSelect v-model="state.fileIcon"   title="File Icon"   :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.removeIcon" title="Remove Icon" :options="ICON_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Props ─────────────────────────────────────────────── -->
-
-		<Variant title="Prop — file (PDF)">
-			<div style="padding: 24px; max-width: 480px;">
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IFileFieldDragNDropItemProps>>({ progress: 0, showSize: true, disabled: false, readonly: false })"
+		>
+			<template #default="{ state }">
 				<origam-file-field-drag-n-drop-item
-						:file="mockFile('spec.pdf', 'application/pdf', 184320)"
+						:file="mockFile('functional.pdf', 'application/pdf', 184320)"
 						:index="0"
-						data-cy="dnd-item-default"
+						:progress="state.progress"
+						:show-size="state.showSize"
+						:disabled="state.disabled"
+						:readonly="state.readonly"
 				/>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+					<HstCheckbox v-model="state.readonly" title="Readonly"/>
+				</StoryGroup>
+				<StoryGroup title="Progress">
+					<HstNumber v-model="state.progress" title="Progress" :min="0" :max="100" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Data">
+					<HstSelect v-model="state.showSize" title="Show Size" :options="SHOW_SIZE_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<Variant title="Prop — progress">
-			<div style="padding: 24px; max-width: 480px; display: flex; flex-direction: column; gap: 12px;">
-				<origam-file-field-drag-n-drop-item
-						:file="mockFile('image.png', 'image/png', 4096000)"
-						:index="0"
-						:progress="35"
-						data-cy="dnd-item-progress-35"
-				/>
-				<origam-file-field-drag-n-drop-item
-						:file="mockFile('upload-finished.zip', 'application/zip', 1024000)"
-						:index="1"
-						:progress="100"
-						data-cy="dnd-item-progress-100"
-				/>
-			</div>
+		<Variant title="Events - click:remove">
+			<origam-file-field-drag-n-drop-item
+					:file="mockFile('removable.pdf', 'application/pdf', 32768)"
+					:index="0"
+					@click:remove="logEvent('click:remove', $event)"
+			/>
 		</Variant>
 
-		<Variant title="Prop — showSize">
-			<div style="padding: 24px; max-width: 480px; display: flex; flex-direction: column; gap: 12px;">
-				<origam-file-field-drag-n-drop-item :file="mockFile('big.iso', 'application/octet-stream', 4 * 1024 * 1024 * 1024)" :index="0" :show-size="1024"/>
-				<origam-file-field-drag-n-drop-item :file="mockFile('big.iso', 'application/octet-stream', 4 * 1024 * 1024 * 1024)" :index="1" :show-size="1000"/>
-			</div>
+		<Variant title="Slots - Default">
+			<origam-file-field-drag-n-drop-item
+					:file="mockFile('slot-demo.pdf', 'application/pdf', 32768)"
+					:index="0"
+			>
+				<span>Custom slot content</span>
+			</origam-file-field-drag-n-drop-item>
 		</Variant>
 
 		<Variant
-				title="Prop — color"
-				:init-state="() => useStoryInitState<{ color: string }>({ color: 'primary' })"
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IFileFieldDragNDropItemProps>>({ color: 'primary', progress: 0, showSize: true, disabled: false, readonly: false })"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 480px;">
-					<origam-file-field-drag-n-drop-item
-							:file="mockFile('tinted.txt', 'text/plain', 4096)"
-							:index="0"
-							:color="state.color"
-							data-cy="dnd-item-color"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.color" title="color" :options="intentList"/>
-			</template>
-		</Variant>
-
-		<Variant title="Prop — disabled & readonly">
-			<div style="padding: 24px; max-width: 480px; display: flex; flex-direction: column; gap: 12px;">
-				<origam-file-field-drag-n-drop-item :file="mockFile('disabled.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 32768)" :index="0" disabled/>
-				<origam-file-field-drag-n-drop-item :file="mockFile('readonly.txt', 'text/plain', 4096)" :index="1" readonly/>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — embedded in OrigamFileField">
-			<div style="padding: 24px; max-width: 600px;">
-				<origam-file-field
-						v-model="embeddedFiles"
-						label="Drop files here"
-						multiple
-						drag-n-drop
-						data-cy="dnd-item-embedded"
-				/>
-			</div>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<div style="padding: 24px; max-width: 480px;">
 				<origam-file-field-drag-n-drop-item
-						:file="mockFile('slot-demo.pdf', 'application/pdf', 32768)"
+						v-bind="state"
+						:file="mockFile('playground.pdf', 'application/pdf', 256000)"
 						:index="0"
-						data-cy="dnd-item-slot-default"
-				>
-					<span>Custom slot content</span>
-				</origam-file-field-drag-n-drop-item>
-			</div>
-		</Variant>
-
-		<!-- ── Emits ────────────────────────────────────────────────── -->
-
-		<Variant title="Emit — click:remove">
-			<div style="padding: 24px; max-width: 480px;">
-				<origam-file-field-drag-n-drop-item
-						:file="mockFile('removable.pdf', 'application/pdf', 32768)"
-						:index="0"
-						data-cy="dnd-item-emit-remove"
 						@click:remove="logEvent('click:remove', $event)"
 				/>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"      title="Color"       :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.fileIcon"   title="File Icon"   :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.removeIcon" title="Remove Icon" :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+					<HstCheckbox v-model="state.readonly" title="Readonly"/>
+					<HstNumber   v-model="state.progress" title="Progress" :min="0" :max="100" :step="1"/>
+					<HstSelect   v-model="state.showSize" title="Show Size" :options="SHOW_SIZE_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -154,26 +107,30 @@
 		setup
 >
 	import { logEvent } from 'histoire/client'
-	import { ref } from 'vue'
 
-	import { OrigamFileField, OrigamFileFieldDragNDropItem } from '@origam/components'
+	import { OrigamFileFieldDragNDropItem } from '@origam/components'
+	import type { IFileFieldDragNDropItemProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { intentList } from '@stories/const'
+	import {
+		COLOR_OPTIONS,
+		ICON_OPTIONS
+	} from '@stories/const'
+
+	const SHOW_SIZE_OPTIONS = [
+		{ label: 'true (auto)', value: true },
+		{ label: 'false (hidden)', value: false },
+		{ label: '1000 (SI)', value: 1000 },
+		{ label: '1024 (binary)', value: 1024 }
+	]
 
 	const mockFile = (name: string, type: string, size: number): File => {
-		// Histoire runs in the browser — `File` is available. The blob's
-		// content doesn't matter, only its declared `size`.
 		const blob = new Blob([new Uint8Array(Math.min(size, 64))], { type })
 		const file = new File([blob], name, { type })
 		Object.defineProperty(file, 'size', { value: size })
 		return file
 	}
-
-	const embeddedFiles = ref<File[]>([
-		mockFile('seed.png', 'image/png', 4096000),
-		mockFile('notes.md', 'text/markdown', 8192),
-	])
 </script>
 
 <docs lang="md" src="@docs/components/FileField/OrigamFileFieldDragNDropItem.md"/>

@@ -4,112 +4,89 @@
 			title="Window/OrigamWindowItem"
 	>
 
-		<Variant title="Default">
-			<div class="story-shell" data-cy="windowitem-default">
-				<origam-window v-model="defaultStep" :style="hostStyle">
-					<origam-window-item :value="1" data-cy="item-default-1">
-						<div :style="slideStyle(0)">Item 1</div>
-					</origam-window-item>
-					<origam-window-item :value="2" data-cy="item-default-2">
-						<div :style="slideStyle(1)">Item 2</div>
-					</origam-window-item>
-					<origam-window-item :value="3" data-cy="item-default-3">
-						<div :style="slideStyle(2)">Item 3</div>
-					</origam-window-item>
-				</origam-window>
-				<div class="story-status" data-cy="status-default">Active value: <strong>{{ defaultStep }}</strong></div>
-			</div>
-		</Variant>
-
-		<Variant title="Disabled">
-			<div class="story-shell" data-cy="windowitem-disabled">
-				<origam-window v-model="disabledStep" :style="hostStyle">
-					<origam-window-item :value="1" data-cy="item-disabled-1">
-						<div :style="slideStyle(0)">Enabled</div>
-					</origam-window-item>
-					<origam-window-item :value="2" disabled data-cy="item-disabled-2">
-						<div :style="slideStyle(1)">Locked</div>
-					</origam-window-item>
-					<origam-window-item :value="3" data-cy="item-disabled-3">
-						<div :style="slideStyle(2)">Enabled</div>
-					</origam-window-item>
-				</origam-window>
-				<div class="story-status" data-cy="status-disabled">Active value: <strong>{{ disabledStep }}</strong></div>
-			</div>
-		</Variant>
-
 		<Variant
-				title="Transition"
-				:init-state="() => useStoryInitState<{ transition: string | boolean | undefined, step: number }>({ transition: undefined, step: 1 })"
+				title="Functional"
+				:init-state="() => useStoryInitState<IWindowItemProps>({ value: 1, disabled: false, eager: false })"
 		>
 			<template #default="{ state }">
-				<div class="story-shell" data-cy="windowitem-transition">
-					<origam-window v-model="state.step" :style="hostStyle">
-						<origam-window-item v-for="n in 3" :key="n" :value="n" :transition="state.transition" :data-cy="`item-transition-${n}`">
-							<div :style="slideStyle(n - 1)">Slide {{ n }}</div>
+				<div class="story-shell">
+					<origam-window :model-value="state.value" :style="hostStyle">
+						<origam-window-item
+								:value="1"
+								:disabled="state.disabled"
+								:eager="state.eager"
+								:selected-class="state.selectedClass || undefined"
+						>
+							<div :style="slideStyle(0)">Slide 1</div>
+						</origam-window-item>
+						<origam-window-item
+								:value="2"
+								:eager="state.eager"
+						>
+							<div :style="slideStyle(1)">Slide 2</div>
+						</origam-window-item>
+						<origam-window-item
+								:value="3"
+								:eager="state.eager"
+						>
+							<div :style="slideStyle(2)">Slide 3</div>
 						</origam-window-item>
 					</origam-window>
+					<div class="story-status">Active value: <strong>{{ state.value }}</strong></div>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.transition" title="transition" :options="transitionList"/>
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled (item 1)"/>
+				</StoryGroup>
+				<StoryGroup title="Data">
+					<HstNumber   v-model="state.value"         title="Active value" :min="1" :max="3" :step="1"/>
+					<HstText     v-model="state.selectedClass" title="Selected Class"/>
+				</StoryGroup>
+				<StoryGroup title="Loading">
+					<HstCheckbox v-model="state.eager" title="Eager (no lazy)"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<{ step: number, transition: string | boolean | undefined, reverseTransition: string | boolean | undefined }>({ step: 1, transition: undefined, reverseTransition: undefined })"
+				title="Functional - Transition"
+				:init-state="() => useStoryInitState<{ value: number, transition: string | boolean | undefined, reverseTransition: string | boolean | undefined }>({ value: 1, transition: undefined, reverseTransition: undefined })"
 		>
 			<template #default="{ state }">
-				<div class="story-shell" data-cy="windowitem-playground">
-					<origam-window v-model="state.step" :style="hostStyle">
+				<div class="story-shell">
+					<origam-window :model-value="state.value" :style="hostStyle">
 						<origam-window-item
 								v-for="n in 3"
 								:key="n"
 								:value="n"
 								:transition="state.transition"
 								:reverse-transition="state.reverseTransition"
-								:data-cy="`item-playground-${n}`"
 						>
 							<div :style="slideStyle(n - 1)">Slide {{ n }}</div>
 						</origam-window-item>
 					</origam-window>
+					<div class="story-status">Active value: <strong>{{ state.value }}</strong></div>
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.transition"        title="transition"        :options="transitionList"/>
-				<HstSelect v-model="state.reverseTransition" title="reverseTransition" :options="transitionList"/>
+				<StoryGroup title="Navigation">
+					<HstNumber v-model="state.value" title="Active value" :min="1" :max="3" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Transition">
+					<HstSelect v-model="state.transition"        title="Transition"         :options="TRANSITION_OPTIONS"/>
+					<HstSelect v-model="state.reverseTransition" title="Reverse Transition" :options="TRANSITION_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<!-- ── Slots ─────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default">
-			<div class="story-shell" data-cy="windowitem-slot-default">
-				<origam-window v-model="slotStep" :style="hostStyle">
-					<origam-window-item :value="1" data-cy="item-slot-default-1">
-						<template #default>
-							<span>Custom slot content</span>
-						</template>
-					</origam-window-item>
-					<origam-window-item :value="2" data-cy="item-slot-default-2">
-						<div :style="slideStyle(1)">Slide 2</div>
-					</origam-window-item>
-				</origam-window>
-				<div class="story-status">Active: <strong>{{ slotStep }}</strong></div>
-			</div>
-		</Variant>
-
-		<!-- ── Emits ─────────────────────────────────────────────── -->
-
-		<Variant title="Emit — group:selected">
-			<div class="story-shell" data-cy="windowitem-emit-selected">
-				<origam-window v-model="emitStep" show-arrows :style="hostStyle">
+		<Variant title="Events - group:selected">
+			<div class="story-shell">
+				<origam-window :model-value="emitStep" show-arrows :style="hostStyle">
 					<origam-window-item
 							v-for="n in 3"
 							:key="n"
 							:value="n"
-							:data-cy="`item-emit-selected-${n}`"
 							@group:selected="logEvent('group:selected', $event)"
 					>
 						<div :style="slideStyle(n - 1)">Slide {{ n }}</div>
@@ -117,6 +94,66 @@
 				</origam-window>
 				<div class="story-status">Active: <strong>{{ emitStep }}</strong></div>
 			</div>
+		</Variant>
+
+		<Variant title="Slots - Default">
+			<div class="story-shell">
+				<origam-window :model-value="slotStep" :style="hostStyle">
+					<origam-window-item :value="1">
+						<template #default>
+							<div :style="slideStyle(0)">
+								<strong>Custom</strong>&nbsp;slot content
+							</div>
+						</template>
+					</origam-window-item>
+					<origam-window-item :value="2">
+						<div :style="slideStyle(1)">Slide 2</div>
+					</origam-window-item>
+					<origam-window-item :value="3">
+						<div :style="slideStyle(2)">Slide 3</div>
+					</origam-window-item>
+				</origam-window>
+				<div class="story-status">Active: <strong>{{ slotStep }}</strong></div>
+			</div>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IWindowItemProps & { activeValue: number }>({ activeValue: 1, value: 1, disabled: false, eager: false, transition: undefined, reverseTransition: undefined })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<origam-window :model-value="state.activeValue" :style="hostStyle">
+						<origam-window-item
+								v-for="n in 3"
+								:key="n"
+								:value="n"
+								:disabled="n === state.value ? state.disabled : false"
+								:eager="state.eager"
+								:transition="state.transition"
+								:reverse-transition="state.reverseTransition"
+								@group:selected="logEvent('group:selected', $event)"
+						>
+							<div :style="slideStyle(n - 1)">Slide {{ n }}</div>
+						</origam-window-item>
+					</origam-window>
+					<div class="story-status">Active: <strong>{{ state.activeValue }}</strong></div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Navigation">
+					<HstNumber v-model="state.activeValue" title="Active value" :min="1" :max="3" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstNumber   v-model="state.value"    title="Target item (for disabled)" :min="1" :max="3" :step="1"/>
+					<HstCheckbox v-model="state.disabled" title="Disabled (target item)"/>
+					<HstCheckbox v-model="state.eager"    title="Eager"/>
+				</StoryGroup>
+				<StoryGroup title="Transition">
+					<HstSelect v-model="state.transition"        title="Transition"         :options="TRANSITION_OPTIONS"/>
+					<HstSelect v-model="state.reverseTransition" title="Reverse Transition" :options="TRANSITION_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -129,16 +166,15 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamWindow, OrigamWindowItem } from '@origam/components'
-	import type { IOptions } from '@origam/interfaces'
+	import type { IWindowItemProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 
-	const defaultStep  = ref(1)
-	const disabledStep = ref(1)
-	const slotStep     = ref(1)
-	const emitStep     = ref(1)
+	const emitStep = ref(1)
+	const slotStep = ref(1)
 
-	const transitionList: Array<IOptions<string | boolean | undefined>> = [
+	const TRANSITION_OPTIONS = [
 		{ label: '(default — inherit window axis)', value: undefined },
 		{ label: 'false (no transition)',           value: false },
 		{ label: 'origam-fade-transition',          value: 'origam-fade-transition' },

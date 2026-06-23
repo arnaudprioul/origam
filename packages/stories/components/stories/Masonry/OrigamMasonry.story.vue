@@ -3,31 +3,44 @@
 			group="components"
 			title="Masonry/OrigamMasonry"
 	>
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<IMasonryProps>({
-					columns: 3,
-					gap: 'md',
-					animated: true,
-					align: 'top'
-				})"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IMasonryProps>>({})"
 		>
 			<template #default="{ state }">
-				<div
-						class="story-shell"
-						data-cy="masonry-playground"
-				>
+				<div class="story-shell">
 					<origam-masonry
-							v-bind="state"
+							:columns="3"
+							gap="md"
+							:color="state.color"
+							:bg-color="state.bgColor"
+							:rounded="state.rounded"
+							:elevation="state.elevation"
+							:border="state.border"
+							:border-color="state.borderColor"
+							:border-style="state.borderStyle"
+							:width="state.width"
+							:height="state.height"
+							:min-width="state.minWidth"
+							:max-width="state.maxWidth"
+							:margin="state.margin"
+							:margin-top="state.marginTop"
+							:margin-right="state.marginRight"
+							:margin-bottom="state.marginBottom"
+							:margin-left="state.marginLeft"
+							:padding="state.padding"
+							:padding-top="state.paddingTop"
+							:padding-right="state.paddingRight"
+							:padding-bottom="state.paddingBottom"
+							:padding-left="state.paddingLeft"
 							class="masonry-host"
-							data-cy="masonry-playground-host"
 					>
 						<div
-								v-for="card in playgroundCards"
+								v-for="card in previewCards"
 								:key="card.id"
 								class="card"
 								:style="{ height: card.height + 'px' }"
-								data-cy="masonry-playground-card"
 						>
 							<span class="card__index">#{{ card.id }}</span>
 							<span class="card__height">{{ card.height }}px</span>
@@ -36,141 +49,123 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<HstNumber
-						v-model="state.columns"
-						title="columns"
-						:min="1"
-						:max="8"
-				/>
-				<HstSelect
-						v-model="state.gap"
-						title="gap"
-						:options="masonryGapList"
-				/>
-				<HstSelect
-						v-model="state.align"
-						title="align"
-						:options="masonryAlignList"
-				/>
-				<HstCheckbox
-						v-model="state.animated"
-						title="animated"
-				/>
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"    title="Width"/>
+					<HstText v-model="state.height"   title="Height"/>
+					<HstText v-model="state.minWidth" title="Min Width"/>
+					<HstText v-model="state.maxWidth" title="Max Width"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.margin"       title="Margin"/>
+					<HstText v-model="state.marginTop"    title="Margin Top"/>
+					<HstText v-model="state.marginRight"  title="Margin Right"/>
+					<HstText v-model="state.marginBottom" title="Margin Bottom"/>
+					<HstText v-model="state.marginLeft"   title="Margin Left"/>
+					<HstText v-model="state.padding"      title="Padding"/>
+					<HstText v-model="state.paddingTop"    title="Padding Top"/>
+					<HstText v-model="state.paddingRight"  title="Padding Right"/>
+					<HstText v-model="state.paddingBottom" title="Padding Bottom"/>
+					<HstText v-model="state.paddingLeft"   title="Padding Left"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
-		<Variant title="Prop — columns">
-			<div
-					class="story-shell"
-					data-cy="masonry-columns"
-			>
-				<div
-						v-for="count in [2, 3, 4, 5]"
-						:key="count"
-						class="story-col"
-				>
-					<strong>columns = {{ count }}</strong>
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IMasonryProps>>({ columns: 3, gap: 'md', animated: true, align: 'top' })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<button
+							class="story-btn"
+							@click="shuffleCards"
+					>
+						Shuffle items
+					</button>
 					<origam-masonry
-							:columns="count"
-							gap="sm"
+							:columns="state.columns"
+							:gap="state.gap"
+							:animated="state.animated"
+							:align="state.align"
+							:column-breakpoints="state.columnBreakpoints"
+							:tag="state.tag"
 							class="masonry-host"
-							:data-cy="`masonry-columns-${count}`"
 					>
 						<div
-								v-for="card in playgroundCards"
+								v-for="card in shuffledCards"
 								:key="card.id"
 								class="card"
 								:style="{ height: card.height + 'px' }"
 						>
-							#{{ card.id }}
+							<span class="card__index">#{{ card.id }}</span>
+							<span class="card__height">{{ card.height }}px</span>
 						</div>
 					</origam-masonry>
 				</div>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Layout">
+					<HstNumber v-model="state.columns"   title="Columns" :min="1" :max="8"/>
+					<HstSelect v-model="state.gap"       title="Gap"     :options="MASONRY_GAP_OPTIONS"/>
+					<HstSelect v-model="state.align"     title="Align"   :options="MASONRY_ALIGN_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Behaviour">
+					<HstCheckbox v-model="state.animated" title="Animated"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<Variant title="Prop — columnBreakpoints">
-			<div
-					class="story-shell"
-					data-cy="masonry-breakpoints"
-			>
-				<p class="hint">
-					Resize the panel — the column count adapts via container
-					query (≥ 480 px → 2 cols, ≥ 720 px → 3 cols, ≥ 960 px → 4 cols).
-				</p>
+		<Variant title="Slots - Default">
+			<div class="story-shell">
 				<origam-masonry
-						:columns="1"
-						:column-breakpoints="{ 480: 2, 720: 3, 960: 4 }"
-						gap="sm"
+						:columns="3"
+						gap="md"
 						class="masonry-host"
-						data-cy="masonry-breakpoints-host"
 				>
 					<div
-							v-for="card in playgroundCards"
+							v-for="card in previewCards"
 							:key="card.id"
 							class="card"
 							:style="{ height: card.height + 'px' }"
 					>
-						#{{ card.id }} — {{ card.height }}px
+						<span class="card__index">#{{ card.id }}</span>
+						<span class="card__height">{{ card.height }}px</span>
 					</div>
 				</origam-masonry>
 			</div>
 		</Variant>
 
-		<Variant title="Prop — gap">
-			<div
-					class="story-shell"
-					data-cy="masonry-gap"
-			>
-				<div
-						v-for="size in masonryGapSizes"
-						:key="size"
-						class="story-col"
-				>
-					<strong>gap = {{ size }}</strong>
-					<origam-masonry
-							:columns="3"
-							:gap="size"
-							class="masonry-host"
-							:data-cy="`masonry-gap-${size}`"
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<IMasonryProps>({ columns: 3, gap: 'md', animated: true, align: 'top' })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<button
+							class="story-btn"
+							@click="shuffleCards"
 					>
-						<div
-								v-for="card in playgroundCards.slice(0, 9)"
-								:key="card.id"
-								class="card"
-								:style="{ height: card.height + 'px' }"
-						>
-							#{{ card.id }}
-						</div>
-					</origam-masonry>
-				</div>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — animated">
-			<div
-					class="story-shell"
-					data-cy="masonry-animated"
-			>
-				<p class="hint">
-					Click the button to shuffle the items; observe the transition
-					behaviour for `animated=true` vs `animated=false`.
-				</p>
-				<button
-						class="story-btn"
-						data-cy="masonry-animated-shuffle"
-						@click="shuffleCards"
-				>
-					Shuffle items
-				</button>
-				<div class="story-col">
-					<strong>animated = true</strong>
+						Shuffle items
+					</button>
 					<origam-masonry
-							:columns="3"
-							gap="sm"
-							:animated="true"
+							v-bind="state"
 							class="masonry-host"
-							data-cy="masonry-animated-true"
 					>
 						<div
 								v-for="card in shuffledCards"
@@ -178,30 +173,30 @@
 								class="card"
 								:style="{ height: card.height + 'px' }"
 						>
-							#{{ card.id }}
+							<span class="card__index">#{{ card.id }}</span>
+							<span class="card__height">{{ card.height }}px</span>
 						</div>
 					</origam-masonry>
 				</div>
-				<div class="story-col">
-					<strong>animated = false</strong>
-					<origam-masonry
-							:columns="3"
-							gap="sm"
-							:animated="false"
-							class="masonry-host"
-							data-cy="masonry-animated-false"
-					>
-						<div
-								v-for="card in shuffledCards"
-								:key="card.id"
-								class="card"
-								:style="{ height: card.height + 'px' }"
-						>
-							#{{ card.id }}
-						</div>
-					</origam-masonry>
-				</div>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Layout">
+					<HstNumber v-model="state.columns" title="Columns" :min="1" :max="8"/>
+					<HstSelect v-model="state.gap"     title="Gap"     :options="MASONRY_GAP_OPTIONS"/>
+					<HstSelect v-model="state.align"   title="Align"   :options="MASONRY_ALIGN_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.border"    title="Border"    :options="BORDER_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.animated" title="Animated"/>
+					<HstSelect   v-model="state.tag"      title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 	</Story>
 </template>
@@ -213,18 +208,23 @@
 	import { ref } from 'vue'
 
 	import { OrigamMasonry } from '@origam/components'
-
 	import { GRID_GAP_SIZES, MASONRY_ALIGNS } from '@origam/consts'
-
 	import type { IMasonryProps, IOptions } from '@origam/interfaces'
-
 	import type { TGridGapSize, TMasonryAlign } from '@origam/types'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
+		ROUNDED_OPTIONS,
+		TAG_OPTIONS
+	} from '@stories/const'
 
-	const masonryGapList: Array<IOptions<TGridGapSize>> = GRID_GAP_SIZES.map(v => ({label: v, value: v}))
-	const masonryAlignList: Array<IOptions<TMasonryAlign>> = MASONRY_ALIGNS.map(v => ({label: v, value: v}))
-	const masonryGapSizes: ReadonlyArray<TGridGapSize> = GRID_GAP_SIZES
+	const MASONRY_GAP_OPTIONS: Array<IOptions<TGridGapSize>> = GRID_GAP_SIZES.map(v => ({ label: v, value: v }))
+	const MASONRY_ALIGN_OPTIONS: Array<IOptions<TMasonryAlign>> = MASONRY_ALIGNS.map(v => ({ label: v, value: v }))
 
 	interface IPlaygroundCard {
 		id: number
@@ -236,12 +236,17 @@
 		220, 170, 260, 140, 310, 190, 250, 160
 	]
 
-	const playgroundCards: ReadonlyArray<IPlaygroundCard> = seededHeights.map((h, i) => ({
+	const previewCards: ReadonlyArray<IPlaygroundCard> = seededHeights.slice(0, 9).map((h, i) => ({
 		id: i + 1,
 		height: h
 	}))
 
-	const shuffledCards = ref<IPlaygroundCard[]>([...playgroundCards])
+	const allCards: ReadonlyArray<IPlaygroundCard> = seededHeights.map((h, i) => ({
+		id: i + 1,
+		height: h
+	}))
+
+	const shuffledCards = ref<IPlaygroundCard[]>([...allCards])
 
 	const shuffleCards = () => {
 		const next = [...shuffledCards.value]
@@ -259,25 +264,6 @@
 		flex-direction: column;
 		gap: 24px;
 		padding: 16px;
-	}
-
-	.story-col {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-	}
-
-	.story-col > strong {
-		font: 0.75rem/1 system-ui, sans-serif;
-		color: var(--origam-color__text---secondary, #555);
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
-	}
-
-	.hint {
-		margin: 0;
-		font: 0.875rem/1.4 system-ui, sans-serif;
-		color: var(--origam-color__text---secondary, #555);
 	}
 
 	.story-btn {

@@ -36,9 +36,17 @@ describe('useRounded — classes-first', () => {
         (value) => {
             const { api } = mountWith(value)
             expect(api().roundedClasses.value).toContain(`origam--rounded-${value}`)
-            expect(api().roundedStyles.value.some(d => d.includes(`var(--origam-radius---${value})`))).toBe(true)
+            // The `var()` carries a fallback (e.g. `none` → `, 0`) so a missing
+            // token never drops the declaration; match the var ref loosely.
+            expect(api().roundedStyles.value.some(d => d.includes(`var(--origam-radius---${value}`))).toBe(true)
         }
     )
+
+    it('utility "none" → emits a fallback of 0 so it overrides a component default radius', () => {
+        const { api } = mountWith('none')
+
+        expect(api().roundedStyles.value.some(d => /border-radius:\s*var\(--origam-radius---none,\s*0\)/.test(d))).toBe(true)
+    })
 
     // Legacy enum (`'small'|'large'|…`) still emits its component-local
     // class AND the matching primitive radius token as inline style.
@@ -68,6 +76,65 @@ describe('useRounded — classes-first', () => {
 
     it('null/undefined → empty', () => {
         const { api } = mountWith(null)
+        expect(api().roundedClasses.value).toEqual([])
+        expect(api().roundedStyles.value).toEqual([])
+    })
+
+    // Free-form custom CSS values the literal BORDER_RADIUS_REGEX can't
+    // describe (custom-property refs, calc/clamp, units outside the
+    // whitelist) are now emitted verbatim as inline border-radius, with
+    // NO class and NO warning — aligning useRounded with convertToUnit.
+    it('custom-property ref "var(--origam-radius---card)" → inline border-radius, no class', () => {
+        const { api } = mountWith('var(--origam-radius---card)')
+        expect(api().roundedClasses.value).toEqual([])
+        expect(api().roundedStyles.value).toEqual([
+            'border-radius: var(--origam-radius---card)'
+        ])
+    })
+
+    it('var() with fallback "var(--x, 8px)" → emitted verbatim', () => {
+        const { api } = mountWith('var(--x, 8px)')
+        expect(api().roundedStyles.value).toEqual(['border-radius: var(--x, 8px)'])
+    })
+
+    it('calc() expression → inline border-radius, no class', () => {
+        const { api } = mountWith('calc(1rem + 2px)')
+        expect(api().roundedClasses.value).toEqual([])
+        expect(api().roundedStyles.value).toEqual(['border-radius: calc(1rem + 2px)'])
+    })
+
+    it('clamp() expression → inline border-radius', () => {
+        const { api } = mountWith('clamp(4px, 1vw, 16px)')
+        expect(api().roundedStyles.value).toEqual(['border-radius: clamp(4px, 1vw, 16px)'])
+    })
+
+    it('CSS length outside the literal whitelist "12vw" → inline border-radius', () => {
+        const { api } = mountWith('12vw')
+        expect(api().roundedStyles.value).toEqual(['border-radius: 12vw'])
+    })
+
+    // Non-regression: literal "12px" still routed through BORDER_RADIUS_REGEX
+    // (single-value → `border-radius:`), NOT the custom branch.
+    it('literal "12px" → single border-radius (regex path, unchanged)', () => {
+        const { api } = mountWith('12px')
+        expect(api().roundedClasses.value).toEqual([])
+        expect(api().roundedStyles.value).toEqual(['border-radius: 12px'])
+    })
+
+    // Non-regression: 4-corner literal still expands to per-corner radii.
+    it('4-corner literal "4px 0 4px 0" → per-corner radii (regex path, unchanged)', () => {
+        const { api } = mountWith('4px 0 4px 0')
+        expect(api().roundedStyles.value).toEqual([
+            'border-start-start-radius: 4px',
+            'border-start-end-radius: 0',
+            'border-end-start-radius: 4px',
+            'border-end-end-radius: 0'
+        ])
+    })
+
+    // Non-regression: garbage / non-CSS strings are still dropped (no style).
+    it('non-CSS garbage string → dropped, no style, no class', () => {
+        const { api } = mountWith('not-a-radius')
         expect(api().roundedClasses.value).toEqual([])
         expect(api().roundedStyles.value).toEqual([])
     })

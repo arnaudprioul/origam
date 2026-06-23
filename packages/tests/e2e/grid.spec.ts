@@ -1,272 +1,471 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 /**
- * OrigamGrid — runtime probes for every prop / variant exposed by the
- * story. Each block targets one orthogonal facet and asserts on
- * `getComputedStyle()` so we catch the case where a prop is silently
- * ignored (the component types something but the SCSS doesn't wire
- * it through).
+ * OrigamGrid / OrigamGridItem — e2e spec.
  *
- *   - Default: smoke-test that the component mounts as `display: grid`
- *     and resolves the default token-driven gap.
- *   - Prop — columns: every accepted shape (number / string / string[])
- *     produces a real `grid-template-columns` track list.
- *   - Prop — areas: the array shape gets quoted and emitted as
- *     `grid-template-areas`.
- *   - Prop — gap: each token resolves to a distinct pixel value (xs <
- *     sm < md < lg < xl).
- *   - Prop — autoFlow: the prop value lands on `grid-auto-flow`.
- *   - Sub-component — OrigamGridItem: the object and string syntaxes
- *     both serialise to `grid-column` / `grid-row` shorthands.
+ * ## Navigation (pattern canonique btn.spec.ts)
+ *
+ *   STORY_ID = 'components-stories-grid-origamgrid-story-vue'
+ *   variantId = STORY_ID + '-' + index  (0-based, StoryGroup ≠ Variant)
+ *
+ *   Variants (index → titre) :
+ *     0  Design
+ *     1  Functional
+ *     2  Slots - Default
+ *     3  Prop — columns
+ *     4  Prop — areas
+ *     5  Prop — gap
+ *     6  Prop — autoFlow
+ *     7  Sub-component — OrigamGridItem
+ *     8  Default  (playground)
+ *
+ * ## Sélection du composant
+ *
+ *   - Grille racine : `.origam-grid`
+ *   - Item        : `.origam-grid-item`
+ *   - La story n'utilise PAS de `data-cy` → on cible par classe BEM + ordre `.nth()`.
+ *
+ * ## Point critique — résolution des tokens
+ *
+ *   Le gap est passé via CSS custom property :
+ *     `--origam-grid---gap: var(--origam-grid---gap-md)`
+ *   Les tokens `--origam-grid---gap-{size}` sont injectés par le setup Histoire
+ *   (qui charge les CSS DS dans le sandbox). Si les tokens ne sont pas chargés,
+ *   la valeur computée reste 0px — le test échouera et c'est un vrai bug de setup.
  */
 
-const sandboxOf = (page: Page) =>
-    page.frameLocator('iframe[src*="__sandbox"]')
+const STORY_ID   = 'components-stories-grid-origamgrid-story-vue'
+const STORY_PATH = '/stories/story/' + STORY_ID
 
-const openVariant = async (page: Page, storyPath: string, variant: string) => {
-    await page.goto(storyPath)
-    await page.waitForLoadState('networkidle')
-    await page.getByText(variant, { exact: true }).first().click()
-    await page.waitForTimeout(400)
-}
+const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
-const STORY = '/story/stories-components-stories-grid-origamgrid-story-vue'
+test.describe('OrigamGrid', () => {
+    test.setTimeout(90000)
 
-test.describe('OrigamGrid — Default (smoke + defaults)', () => {
-    test('mounts as display: grid and resolves the default gap token', async ({ page }) => {
-        await openVariant(page, STORY, 'Default')
-        const sandbox = sandboxOf(page)
+    // ------------------------------------------------------------------ //
+    // Design (index 0)                                                    //
+    // init: columns=4, rows='auto', gap='md', alignItems='stretch', …    //
+    // ------------------------------------------------------------------ //
 
-        const host = sandbox.locator('[data-cy="grid-playground-host"]').first()
-        await expect(host).toBeVisible({ timeout: 8000 })
+    test.describe('Design — montage et display grid', () => {
+        test('le composant racine a display: grid', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const grid = sandbox.locator('.origam-grid').first()
+            await expect(grid).toBeVisible({ timeout: 30000 })
 
-        const display = await host.evaluate((el) => getComputedStyle(el).display)
-        expect(display).toBe('grid')
+            const display = await grid.evaluate(el => getComputedStyle(el).display)
+            expect(display).toBe('grid')
+        })
 
-        // Default gap = 'md' → 16px (per tokens/component/grid.json → space.4).
-        const gap = await host.evaluate((el) => getComputedStyle(el).gap)
-        // `getComputedStyle.gap` returns "16px 16px" when both axes match;
-        // some engines collapse to "16px". Accept both.
-        expect(gap.replace(/\s+/g, ' ')).toMatch(/^16px( 16px)?$/)
+        test('columns=4 (défaut) → 4 pistes dans grid-template-columns', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const grid = sandbox.locator('.origam-grid').first()
+            await expect(grid).toBeVisible({ timeout: 30000 })
+
+            const trackCount = await grid.evaluate(el =>
+                getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean).length
+            )
+            expect(trackCount).toBe(4)
+        })
+
+        test('gap=md (défaut) → token --origam-grid---gap-md = 16px résolu', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const grid = sandbox.locator('.origam-grid').first()
+            await expect(grid).toBeVisible({ timeout: 30000 })
+
+            const gap = await grid.evaluate(el => parseFloat(getComputedStyle(el).columnGap))
+            expect(gap).toBe(16)
+        })
+
+        test('8 cellules enfants sont rendues', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const grid = sandbox.locator('.origam-grid').first()
+            await expect(grid).toBeVisible({ timeout: 30000 })
+
+            const cells = grid.locator('.cell')
+            await expect(cells).toHaveCount(8)
+        })
     })
 
-    test('renders the cells inside a 4-column track grid (columns prop = 4 default)', async ({ page }) => {
-        await openVariant(page, STORY, 'Default')
-        const sandbox = sandboxOf(page)
+    // ------------------------------------------------------------------ //
+    // Functional (index 1)                                                //
+    // init: autoFlow='row', inline=false, tag='div', columns=4, gap='md' //
+    // ------------------------------------------------------------------ //
 
-        const host = sandbox.locator('[data-cy="grid-playground-host"]').first()
-        await expect(host).toBeVisible({ timeout: 8000 })
+    test.describe('Functional — inline-grid', () => {
+        test('inline=false → display: grid (pas inline-grid) par défaut', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const grid = sandbox.locator('.origam-grid').first()
+            await expect(grid).toBeVisible({ timeout: 30000 })
 
-        const cells = sandbox.locator('[data-cy="grid-playground-cell"]')
-        await expect(cells).toHaveCount(8)
-
-        // 4 columns → `repeat(4, 1fr)` → computed style normalises to
-        // "Xpx Xpx Xpx Xpx" (4 length values).
-        const trackCount = await host.evaluate((el) =>
-            getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean).length
-        )
-        expect(trackCount).toBe(4)
-    })
-})
-
-test.describe('OrigamGrid — Prop "columns"', () => {
-    test('number → repeat(N, 1fr) — 3 vs 12 produce 3 vs 12 tracks', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — columns')
-        const sandbox = sandboxOf(page)
-
-        const grid3 = sandbox.locator('[data-cy="grid-columns-number-3"]').first()
-        const grid12 = sandbox.locator('[data-cy="grid-columns-number-12"]').first()
-        await expect(grid3).toBeVisible({ timeout: 8000 })
-        await expect(grid12).toBeVisible({ timeout: 8000 })
-
-        const tracks3 = await grid3.evaluate((el) =>
-            getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean).length
-        )
-        const tracks12 = await grid12.evaluate((el) =>
-            getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean).length
-        )
-        expect(tracks3).toBe(3)
-        expect(tracks12).toBe(12)
+            const display = await grid.evaluate(el => getComputedStyle(el).display)
+            expect(display).toBe('grid')
+            await expect(grid).not.toHaveClass(/origam-grid--inline/)
+        })
     })
 
-    test('string → passed verbatim (1fr 2fr 1fr → middle track wider)', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — columns')
-        const sandbox = sandboxOf(page)
+    // ------------------------------------------------------------------ //
+    // Slots - Default (index 2)                                           //
+    // columns=3, gap='sm' — 3 cellules                                   //
+    // ------------------------------------------------------------------ //
 
-        const host = sandbox.locator('[data-cy="grid-columns-string"]').first()
-        await expect(host).toBeVisible({ timeout: 8000 })
+    test.describe('Slots - Default', () => {
+        test('les enfants passés dans le slot default sont rendus dans la grille', async ({ page }) => {
+            await page.goto(variantUrl(2))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const grid = sandbox.locator('.origam-grid').first()
+            await expect(grid).toBeVisible({ timeout: 30000 })
 
-        const tracksPx = await host.evaluate((el) =>
-            getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean).map((t) => parseFloat(t))
-        )
-        expect(tracksPx).toHaveLength(3)
-        // 1fr / 2fr / 1fr → the middle one is roughly twice the outer ones.
-        const [a, b, c] = tracksPx
-        expect(b).toBeGreaterThan(a)
-        expect(b).toBeGreaterThan(c)
-        // Tolerance: 1.7x — 2.3x to ride subpixel rounding.
-        const ratio = b / a
-        expect(ratio).toBeGreaterThan(1.7)
-        expect(ratio).toBeLessThan(2.3)
+            const cells = grid.locator('.cell--span')
+            await expect(cells).toHaveCount(3)
+        })
+
+        test('columns=3 → 3 pistes', async ({ page }) => {
+            await page.goto(variantUrl(2))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const grid = sandbox.locator('.origam-grid').first()
+            await expect(grid).toBeVisible({ timeout: 30000 })
+
+            const trackCount = await grid.evaluate(el =>
+                getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean).length
+            )
+            expect(trackCount).toBe(3)
+        })
     })
 
-    test('array → joined with space (200px / 1fr / 200px)', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — columns')
-        const sandbox = sandboxOf(page)
+    // ------------------------------------------------------------------ //
+    // Prop — columns (index 3)                                            //
+    // Grilles dans l'ordre d'apparition dans la story :                  //
+    //   nth(0) → number = 3                                              //
+    //   nth(1) → number = 12                                             //
+    //   nth(2) → string = '1fr 2fr 1fr'                                 //
+    //   nth(3) → array  = ['200px', '1fr', '200px']                     //
+    // ------------------------------------------------------------------ //
 
-        const host = sandbox.locator('[data-cy="grid-columns-array"]').first()
-        await expect(host).toBeVisible({ timeout: 8000 })
+    test.describe('Prop — columns', () => {
+        test('number=3 → 3 pistes égales', async ({ page }) => {
+            await page.goto(variantUrl(3))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const grid = sandbox.locator('.origam-grid').nth(0)
+            await expect(grid).toBeVisible({ timeout: 30000 })
 
-        const tracks = await host.evaluate((el) =>
-            getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean)
-        )
-        expect(tracks).toHaveLength(3)
-        // Outer tracks are 200px exact; the middle one absorbs the rest.
-        expect(tracks[0]).toBe('200px')
-        expect(tracks[2]).toBe('200px')
+            const trackCount = await grid.evaluate(el =>
+                getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean).length
+            )
+            expect(trackCount).toBe(3)
+        })
+
+        test('number=12 → 12 pistes égales', async ({ page }) => {
+            await page.goto(variantUrl(3))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const grid = sandbox.locator('.origam-grid').nth(1)
+            await expect(grid).toBeVisible({ timeout: 30000 })
+
+            const trackCount = await grid.evaluate(el =>
+                getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean).length
+            )
+            expect(trackCount).toBe(12)
+        })
+
+        test('string "1fr 2fr 1fr" → piste centrale ~2× les latérales', async ({ page }) => {
+            await page.goto(variantUrl(3))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const grid = sandbox.locator('.origam-grid').nth(2)
+            await expect(grid).toBeVisible({ timeout: 30000 })
+
+            const tracksPx = await grid.evaluate(el =>
+                getComputedStyle(el).gridTemplateColumns
+                    .split(' ')
+                    .filter(Boolean)
+                    .map(t => parseFloat(t))
+            )
+            expect(tracksPx).toHaveLength(3)
+
+            const [a, b, c] = tracksPx
+            expect(b).toBeGreaterThan(a)
+            expect(b).toBeGreaterThan(c)
+            const ratio = b / a
+            expect(ratio).toBeGreaterThan(1.7)
+            expect(ratio).toBeLessThan(2.3)
+        })
+
+        test('array ["200px","1fr","200px"] → pistes latérales à 200px exact', async ({ page }) => {
+            await page.goto(variantUrl(3))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const grid = sandbox.locator('.origam-grid').nth(3)
+            await expect(grid).toBeVisible({ timeout: 30000 })
+
+            const tracks = await grid.evaluate(el =>
+                getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean)
+            )
+            expect(tracks).toHaveLength(3)
+            expect(tracks[0]).toBe('200px')
+            expect(tracks[2]).toBe('200px')
+        })
     })
-})
 
-test.describe('OrigamGrid — Prop "areas"', () => {
-    test('array shape → grid-template-areas with quoted rows', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — areas')
-        const sandbox = sandboxOf(page)
+    // ------------------------------------------------------------------ //
+    // Prop — areas (index 4)                                              //
+    // HOLY_GRAIL_AREAS : header × 3 / sidebar + main + aside / footer × 3//
+    // ------------------------------------------------------------------ //
 
-        const host = sandbox.locator('[data-cy="grid-areas-host"]').first()
-        await expect(host).toBeVisible({ timeout: 8000 })
+    test.describe('Prop — areas', () => {
+        test('grid-template-areas contient les 5 noms de zones', async ({ page }) => {
+            await page.goto(variantUrl(4))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const grid = sandbox.locator('.origam-grid').first()
+            await expect(grid).toBeVisible({ timeout: 30000 })
 
-        const areas = await host.evaluate((el) => getComputedStyle(el).gridTemplateAreas)
-        // Browsers normalise the value to space-separated quoted rows.
-        // Assert that every named area is present in any order.
-        expect(areas).toContain('header')
-        expect(areas).toContain('sidebar')
-        expect(areas).toContain('main')
-        expect(areas).toContain('aside')
-        expect(areas).toContain('footer')
+            const areas = await grid.evaluate(el => getComputedStyle(el).gridTemplateAreas)
+            expect(areas).toContain('header')
+            expect(areas).toContain('sidebar')
+            expect(areas).toContain('main')
+            expect(areas).toContain('aside')
+            expect(areas).toContain('footer')
+        })
+
+        test('header et footer s\'étendent sur toute la largeur de la grille', async ({ page }) => {
+            await page.goto(variantUrl(4))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const grid = sandbox.locator('.origam-grid').first()
+            await expect(grid).toBeVisible({ timeout: 30000 })
+
+            const headerCell = grid.locator('.cell--area').filter({ hasText: 'header' }).first()
+            const footerCell = grid.locator('.cell--area').filter({ hasText: 'footer' }).first()
+            await expect(headerCell).toBeVisible()
+            await expect(footerCell).toBeVisible()
+
+            const gridBox   = await grid.boundingBox()
+            const headerBox = await headerCell.boundingBox()
+            const footerBox = await footerCell.boundingBox()
+            expect(gridBox).not.toBeNull()
+            expect(headerBox).not.toBeNull()
+            expect(footerBox).not.toBeNull()
+            if (!gridBox || !headerBox || !footerBox) return
+
+            expect(headerBox.width).toBeGreaterThan(gridBox.width - 40)
+            expect(footerBox.width).toBeGreaterThan(gridBox.width - 40)
+        })
     })
 
-    test('named cells land in the right computed rect (header spans width)', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — areas')
-        const sandbox = sandboxOf(page)
+    // ------------------------------------------------------------------ //
+    // Prop — gap (index 5)                                                //
+    // Grilles dans l'ordre GRID_GAP_SIZES : xs sm md lg xl               //
+    // Tokens : xs=4px sm=8px md=16px lg=24px xl=32px                     //
+    // ------------------------------------------------------------------ //
 
-        const host = sandbox.locator('[data-cy="grid-areas-host"]').first()
-        const header = sandbox.locator('[data-cy="grid-areas-header"]').first()
-        const footer = sandbox.locator('[data-cy="grid-areas-footer"]').first()
-        await expect(host).toBeVisible({ timeout: 8000 })
-        await expect(header).toBeVisible()
-        await expect(footer).toBeVisible()
-
-        // Header and footer span the same width as the host (3 columns).
-        const hostBox = await host.boundingBox()
-        const headerBox = await header.boundingBox()
-        const footerBox = await footer.boundingBox()
-        expect(hostBox).not.toBeNull()
-        expect(headerBox).not.toBeNull()
-        expect(footerBox).not.toBeNull()
-        if (!hostBox || !headerBox || !footerBox) return
-
-        // Account for the host's 8px internal padding on each side.
-        expect(headerBox.width).toBeGreaterThan(hostBox.width - 40)
-        expect(footerBox.width).toBeGreaterThan(hostBox.width - 40)
-    })
-})
-
-test.describe('OrigamGrid — Prop "gap" (token resolution)', () => {
-    test('gap=xs → 4px, gap=xl → 32px (strict monotonic)', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — gap')
-        const sandbox = sandboxOf(page)
-
-        const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const
-        const values: number[] = []
-        for (const size of sizes) {
-            const host = sandbox.locator(`[data-cy="grid-gap-${size}"]`).first()
-            await expect(host).toBeVisible({ timeout: 8000 })
-            const gapPx = await host.evaluate((el) => parseFloat(getComputedStyle(el).columnGap))
-            values.push(gapPx)
+    test.describe('Prop — gap (résolution des tokens)', () => {
+        const EXPECTED_PX: Record<string, number> = {
+            xs: 4,
+            sm: 8,
+            md: 16,
+            lg: 24,
+            xl: 32
         }
 
-        // Token map: xs=4, sm=8, md=16, lg=24, xl=32.
-        expect(values[0]).toBe(4)
-        expect(values[1]).toBe(8)
-        expect(values[2]).toBe(16)
-        expect(values[3]).toBe(24)
-        expect(values[4]).toBe(32)
-    })
-})
+        const SIZES = ['xs', 'sm', 'md', 'lg', 'xl'] as const
 
-test.describe('OrigamGrid — Prop "autoFlow"', () => {
-    test('autoFlow="row" vs "column" → distinct grid-auto-flow', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — autoFlow')
-        const sandbox = sandboxOf(page)
+        for (let i = 0; i < SIZES.length; i++) {
+            const size = SIZES[i]
+            const expected = EXPECTED_PX[size]
 
-        const rowHost = sandbox.locator('[data-cy="grid-flow-row"]').first()
-        const columnHost = sandbox.locator('[data-cy="grid-flow-column"]').first()
-        await expect(rowHost).toBeVisible({ timeout: 8000 })
-        await expect(columnHost).toBeVisible({ timeout: 8000 })
+            test(`gap=${size} → columnGap computé = ${expected}px`, async ({ page }) => {
+                await page.goto(variantUrl(5))
+                const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+                const grid = sandbox.locator('.origam-grid').nth(i)
+                await expect(grid).toBeVisible({ timeout: 30000 })
 
-        const rowFlow = await rowHost.evaluate((el) => getComputedStyle(el).gridAutoFlow)
-        const columnFlow = await columnHost.evaluate((el) => getComputedStyle(el).gridAutoFlow)
-        expect(rowFlow).toBe('row')
-        expect(columnFlow).toBe('column')
-    })
+                const gapPx = await grid.evaluate(el =>
+                    parseFloat(getComputedStyle(el).columnGap)
+                )
+                expect(gapPx).toBe(expected)
+            })
+        }
 
-    test('autoFlow="row dense" → dense keyword applied', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — autoFlow')
-        const sandbox = sandboxOf(page)
+        test('les valeurs de gap sont strictement croissantes (xs < sm < md < lg < xl)', async ({ page }) => {
+            await page.goto(variantUrl(5))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const values: number[] = []
 
-        const denseHost = sandbox.locator('[data-cy="grid-flow-dense"]').first()
-        await expect(denseHost).toBeVisible({ timeout: 8000 })
+            for (let i = 0; i < SIZES.length; i++) {
+                const grid = sandbox.locator('.origam-grid').nth(i)
+                await expect(grid).toBeVisible({ timeout: 30000 })
+                const gapPx = await grid.evaluate(el =>
+                    parseFloat(getComputedStyle(el).columnGap)
+                )
+                values.push(gapPx)
+            }
 
-        const flow = await denseHost.evaluate((el) => getComputedStyle(el).gridAutoFlow)
-        // Browsers emit "row dense" or "dense" depending on normalisation.
-        expect(flow).toMatch(/dense/)
-    })
-})
-
-test.describe('OrigamGridItem — placement props', () => {
-    test('object syntax { start, end } → grid-column "1 / 4"', async ({ page }) => {
-        await openVariant(page, STORY, 'Sub-component — OrigamGridItem')
-        const sandbox = sandboxOf(page)
-
-        const item = sandbox.locator('[data-cy="grid-item-span-1-to-4"]').first()
-        await expect(item).toBeVisible({ timeout: 8000 })
-
-        const value = await item.evaluate((el) => el.getAttribute('style') ?? '')
-        expect(value.replace(/\s+/g, ' ')).toMatch(/grid-column:\s*1 \/ 4/)
+            for (let i = 1; i < values.length; i++) {
+                expect(values[i]).toBeGreaterThan(values[i - 1])
+            }
+        })
     })
 
-    test('object syntax { start, span } → grid-column "4 / span 3"', async ({ page }) => {
-        await openVariant(page, STORY, 'Sub-component — OrigamGridItem')
-        const sandbox = sandboxOf(page)
+    // ------------------------------------------------------------------ //
+    // Prop — autoFlow (index 6)                                           //
+    // Grilles dans l'ordre : row / column / row dense                    //
+    // ------------------------------------------------------------------ //
 
-        const item = sandbox.locator('[data-cy="grid-item-span-4-span-3"]').first()
-        await expect(item).toBeVisible({ timeout: 8000 })
+    test.describe('Prop — autoFlow', () => {
+        test('autoFlow="row" → grid-auto-flow = "row"', async ({ page }) => {
+            await page.goto(variantUrl(6))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const grid = sandbox.locator('.origam-grid').nth(0)
+            await expect(grid).toBeVisible({ timeout: 30000 })
 
-        const value = await item.evaluate((el) => el.getAttribute('style') ?? '')
-        expect(value.replace(/\s+/g, ' ')).toMatch(/grid-column:\s*4 \/ span 3/)
+            const flow = await grid.evaluate(el => getComputedStyle(el).gridAutoFlow)
+            expect(flow).toBe('row')
+        })
+
+        test('autoFlow="column" → grid-auto-flow = "column"', async ({ page }) => {
+            await page.goto(variantUrl(6))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const grid = sandbox.locator('.origam-grid').nth(1)
+            await expect(grid).toBeVisible({ timeout: 30000 })
+
+            const flow = await grid.evaluate(el => getComputedStyle(el).gridAutoFlow)
+            expect(flow).toBe('column')
+        })
+
+        test('autoFlow="row dense" → keyword dense présent dans grid-auto-flow', async ({ page }) => {
+            await page.goto(variantUrl(6))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const grid = sandbox.locator('.origam-grid').nth(2)
+            await expect(grid).toBeVisible({ timeout: 30000 })
+
+            const flow = await grid.evaluate(el => getComputedStyle(el).gridAutoFlow)
+            expect(flow).toMatch(/dense/)
+        })
     })
 
-    test('raw string syntax "span 4" → passed verbatim', async ({ page }) => {
-        await openVariant(page, STORY, 'Sub-component — OrigamGridItem')
-        const sandbox = sandboxOf(page)
+    // ------------------------------------------------------------------ //
+    // Sub-component — OrigamGridItem (index 7)                           //
+    // Grille 1 (nth 0) — column span : 4 items                          //
+    //   item nth(0) : { start: 1, end: 4 }   → grid-column: 1 / 4      //
+    //   item nth(1) : { start: 4, span: 3 }  → grid-column: 4 / span 3 //
+    //   item nth(2) : { span: 2 }            → grid-column: span 2      //
+    //   item nth(3) : column="span 4" (raw)  → grid-column: span 4      //
+    // Grille 2 (nth 1) — named areas : 5 OrigamGridItems avec `area`    //
+    // ------------------------------------------------------------------ //
 
-        const item = sandbox.locator('[data-cy="grid-item-span-raw"]').first()
-        await expect(item).toBeVisible({ timeout: 8000 })
+    test.describe('Sub-component — OrigamGridItem', () => {
+        test('object { start:1, end:4 } → style grid-column: 1 / 4', async ({ page }) => {
+            await page.goto(variantUrl(7))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const firstGrid = sandbox.locator('.origam-grid').nth(0)
+            await expect(firstGrid).toBeVisible({ timeout: 30000 })
 
-        const value = await item.evaluate((el) => el.getAttribute('style') ?? '')
-        expect(value.replace(/\s+/g, ' ')).toMatch(/grid-column:\s*span 4/)
+            const item = firstGrid.locator('.origam-grid-item').nth(0)
+            await expect(item).toBeVisible()
+
+            const style = await item.evaluate(el => el.getAttribute('style') ?? '')
+            expect(style.replace(/\s+/g, ' ')).toMatch(/grid-column:\s*1 \/ 4/)
+        })
+
+        test('object { start:4, span:3 } → style grid-column: 4 / span 3', async ({ page }) => {
+            await page.goto(variantUrl(7))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const firstGrid = sandbox.locator('.origam-grid').nth(0)
+            await expect(firstGrid).toBeVisible({ timeout: 30000 })
+
+            const item = firstGrid.locator('.origam-grid-item').nth(1)
+            await expect(item).toBeVisible()
+
+            const style = await item.evaluate(el => el.getAttribute('style') ?? '')
+            expect(style.replace(/\s+/g, ' ')).toMatch(/grid-column:\s*4 \/ span 3/)
+        })
+
+        test('object { span:2 } → style grid-column: span 2', async ({ page }) => {
+            await page.goto(variantUrl(7))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const firstGrid = sandbox.locator('.origam-grid').nth(0)
+            await expect(firstGrid).toBeVisible({ timeout: 30000 })
+
+            const item = firstGrid.locator('.origam-grid-item').nth(2)
+            await expect(item).toBeVisible()
+
+            const style = await item.evaluate(el => el.getAttribute('style') ?? '')
+            expect(style.replace(/\s+/g, ' ')).toMatch(/grid-column:\s*span 2/)
+        })
+
+        test('string "span 4" (syntaxe raw) → style grid-column: span 4', async ({ page }) => {
+            await page.goto(variantUrl(7))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const firstGrid = sandbox.locator('.origam-grid').nth(0)
+            await expect(firstGrid).toBeVisible({ timeout: 30000 })
+
+            const item = firstGrid.locator('.origam-grid-item').nth(3)
+            await expect(item).toBeVisible()
+
+            const style = await item.evaluate(el => el.getAttribute('style') ?? '')
+            expect(style.replace(/\s+/g, ' ')).toMatch(/grid-column:\s*span 4/)
+        })
+
+        test('prop area="header" → style grid-area: header', async ({ page }) => {
+            await page.goto(variantUrl(7))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const secondGrid = sandbox.locator('.origam-grid').nth(1)
+            await expect(secondGrid).toBeVisible({ timeout: 30000 })
+
+            const item = secondGrid.locator('.origam-grid-item').filter({ hasText: 'header' }).first()
+            await expect(item).toBeVisible()
+
+            const style = await item.evaluate(el => el.getAttribute('style') ?? '')
+            expect(style).toMatch(/grid-area:\s*header/)
+        })
+
+        test('prop area="footer" → style grid-area: footer', async ({ page }) => {
+            await page.goto(variantUrl(7))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const secondGrid = sandbox.locator('.origam-grid').nth(1)
+            await expect(secondGrid).toBeVisible({ timeout: 30000 })
+
+            const item = secondGrid.locator('.origam-grid-item').filter({ hasText: 'footer' }).first()
+            await expect(item).toBeVisible()
+
+            const style = await item.evaluate(el => el.getAttribute('style') ?? '')
+            expect(style).toMatch(/grid-area:\s*footer/)
+        })
+
+        test('la grille areas contient 5 OrigamGridItems', async ({ page }) => {
+            await page.goto(variantUrl(7))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const secondGrid = sandbox.locator('.origam-grid').nth(1)
+            await expect(secondGrid).toBeVisible({ timeout: 30000 })
+
+            const items = secondGrid.locator('.origam-grid-item')
+            await expect(items).toHaveCount(5)
+        })
     })
 
-    test('area prop overrides column/row and lands on grid-area', async ({ page }) => {
-        await openVariant(page, STORY, 'Sub-component — OrigamGridItem')
-        const sandbox = sandboxOf(page)
+    // ------------------------------------------------------------------ //
+    // Default / playground (index 8)                                     //
+    // init: columns=4, rows='auto', gap='md', autoFlow='row', …         //
+    // ------------------------------------------------------------------ //
 
-        const item = sandbox.locator('[data-cy="grid-item-area-main"]').first()
-        await expect(item).toBeVisible({ timeout: 8000 })
+    test.describe('Default (playground)', () => {
+        test('display grid + 4 pistes + gap=md résolu', async ({ page }) => {
+            await page.goto(variantUrl(8))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const grid = sandbox.locator('.origam-grid').first()
+            await expect(grid).toBeVisible({ timeout: 30000 })
 
-        const value = await item.evaluate((el) => el.getAttribute('style') ?? '')
-        // `grid-area: main` is the inline shorthand we emit (browsers
-        // accept the named-area form on this property since 2018).
-        expect(value).toMatch(/grid-area:\s*main/)
+            const display = await grid.evaluate(el => getComputedStyle(el).display)
+            expect(display).toBe('grid')
+
+            const trackCount = await grid.evaluate(el =>
+                getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean).length
+            )
+            expect(trackCount).toBe(4)
+
+            const gap = await grid.evaluate(el => parseFloat(getComputedStyle(el).columnGap))
+            expect(gap).toBe(16)
+        })
     })
 })

@@ -14,7 +14,7 @@
 		lang="ts"
 		setup
 >
-	import { useProps , useStyle} from "../../composables"
+	import { useDensity, useProps , useStyle} from "../../composables"
 	import type { ICardTextProps } from '../../interfaces'
 
 	import { computed, StyleValue } from 'vue'
@@ -29,6 +29,8 @@
 	const props = withDefaults(defineProps<ICardTextProps>(), {tag: 'div'})
 
 	const {filterProps} = useProps<ICardTextProps>(props)
+
+	const {densityClasses} = useDensity(props)
 
 	/*********************************************************
 	 * Class & Style
@@ -45,6 +47,7 @@
 	const cardTextClasses = computed(() => {
 		return [
 			'origam-card-text',
+			densityClasses.value,
 			props.class
 		]
 	})
@@ -79,10 +82,10 @@
 		letter-spacing: var(--origam-card-text---letter-spacing);
 		text-transform: var(--origam-card-text---text-transform);
 
-		padding-block-start: var(--origam-card-text---padding-block-start);
-		padding-block-end: var(--origam-card-text---padding-block-end);
-		padding-inline-start: var(--origam-card-text---padding-inline-start);
-		padding-inline-end: var(--origam-card-text---padding-inline-end);
+		padding-block-start: calc(var(--origam-card-text---padding-block-start) + var(--origam-card-text---density, 0px));
+		padding-block-end: calc(var(--origam-card-text---padding-block-end) + var(--origam-card-text---density, 0px));
+		padding-inline-start: calc(var(--origam-card-text---padding-inline-start) + var(--origam-card-text---density, 0px));
+		padding-inline-end: calc(var(--origam-card-text---padding-inline-end) + var(--origam-card-text---density, 0px));
 
 		margin-block-start: var(--origam-card-text---margin-block-start);
 		margin-block-end: var(--origam-card-text---margin-block-end);
@@ -93,6 +96,18 @@
 		border-style: var(--origam-card-text---border-style);
 		border-width: var(--origam-card-text---border-width);
 		border-radius: var(--origam-card-text---border-radius);
+
+		&--density-default {
+			--origam-card-text---density: 0px;
+		}
+
+		&--density-compact {
+			--origam-card-text---density: -8px;
+		}
+
+		&--density-comfortable {
+			--origam-card-text---density: 8px;
+		}
 	}
 </style>
 

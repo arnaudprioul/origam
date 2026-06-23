@@ -1,20 +1,35 @@
 <script setup lang="ts">
-const { t } = useI18nFallback()
+import { computed } from 'vue'
+import { useT } from '~/composables/useT'
+import {
+    SHOWCASE_AVATAR_ITEMS,
+    SHOWCASE_CHIP_ITEMS,
+    SHOWCASE_GRID_COLUMNS,
+    SHOWCASE_SPARKLINE_DATA,
+    SHOWCASE_TABLE_ROWS,
+    SHOWCASE_WIDGET_RADIUS,
+    SHOWCASE_WIDGET_VARS
+} from '~/consts/showcase.const'
 
-const TABLE_ROWS = [
-    { project: 'Aurora release', owner: 'Arnaud', status: 'Shipped', color: 'success' as const },
-    { project: 'Tokens v2', owner: 'Léa', status: 'In review', color: 'warning' as const },
-    { project: 'A11y audit', owner: 'Jade', status: 'Shipped', color: 'success' as const },
-    { project: 'Chart engine', owner: 'Marc', status: 'Draft', color: 'neutral' as const },
-    { project: 'New theme', owner: 'Romi', status: 'In review', color: 'warning' as const }
-] as const
+const { t } = useT()
 
-const AVATAR_ITEMS_WITH_REST = [
-    { text: 'A', color: 'primary' },
-    { text: 'L', color: 'success' },
-    { text: 'J', color: 'warning' },
-    { text: 'M', color: 'danger' }
-] as const
+const sparklineSeries = computed(() => [
+    { name: 'growth', data: SHOWCASE_SPARKLINE_DATA }
+])
+
+const switchPairs = computed(() => [
+    { modelValue: false, inset: false, flat: false },
+    { modelValue: true,  inset: false, flat: false }
+])
+
+const STATUS_DOT_COLOR: Record<string, string> = {
+    success: 'var(--origam-color__feedback--success---fgSubtle, #15803d)',
+    warning: 'var(--origam-color__feedback--warning---fgSubtle, #b45309)',
+    danger:  'var(--origam-color__feedback--danger---fgSubtle, #b91c1c)',
+    info:    'var(--origam-color__feedback--info---fgSubtle, #1d4ed8)',
+    neutral: 'var(--origam-color__text---secondary, #525252)',
+    primary: 'var(--origam-color__action--primary---fgSubtle, #6d28d9)',
+}
 </script>
 
 <template>
@@ -22,407 +37,521 @@ const AVATAR_ITEMS_WITH_REST = [
         class="home-showcase"
         aria-labelledby="showcase-title"
     >
-        <div class="home-showcase__inner">
-            <header class="home-showcase__header">
-                <span class="m-section-pre">{{ t('home.showcase.eyebrow', 'SHOWCASE') }}</span>
-                <div class="home-showcase__title-row">
-                    <div>
-                        <h2
-                            id="showcase-title"
-                            class="home-showcase__title m-h2"
-                        >
-                            {{ t('home.showcase.title', '95 components.') }}<br>
-                            {{ t('home.showcase.titleSub', 'One vibe.') }}
-                        </h2>
-                    </div>
-                    <OrigamBtn
-                        to="/components"
-                        variant="outlined"
-                        rounded="full"
-                        append-icon="mdi:arrow-right"
-                    >
-                        {{ t('home.showcase.viewAll', 'View all') }}
-                    </OrigamBtn>
-                </div>
-            </header>
+        <header class="home-showcase__header">
+            <p class="home-showcase__eyebrow">
+                {{ t('home.showcase.eyebrow', 'SHOWCASE') }}
+            </p>
 
-            <div class="home-showcase__grid">
-                <article class="home-showcase__tile home-showcase__tile--table" aria-labelledby="tile-table-title">
-                    <header class="home-showcase__tile-header">
-                        <h3 id="tile-table-title" class="m-h3 home-showcase__tile-title">
-                            {{ t('home.showcase.table.label', 'Data Table') }}
-                        </h3>
-                        <span class="home-showcase__tile-sub">{{ t('home.showcase.table.sub', 'Sortable · filterable · virtualized') }}</span>
-                        <OrigamChip color="primary" variant="tonal" size="small" class="home-showcase__tile-tag">
-                            {{ t('home.showcase.table.tag', 'Data') }}
-                        </OrigamChip>
-                    </header>
-                    <div class="home-showcase__table">
-                        <div class="home-showcase__table-head" role="row" aria-hidden="true">
-                            <span>Project</span>
-                            <span>Owner</span>
-                            <span>Status</span>
-                        </div>
-                        <ul class="home-showcase__table-body" role="list">
-                            <li
-                                v-for="row in TABLE_ROWS"
-                                :key="row.project"
-                                class="home-showcase__table-row"
-                            >
-                                <span class="home-showcase__table-cell home-showcase__table-cell--name">{{ row.project }}</span>
-                                <span class="home-showcase__table-cell home-showcase__table-cell--owner">{{ row.owner }}</span>
-                                <span
-                                    class="home-showcase__table-cell home-showcase__table-status"
-                                    :data-intent="row.color"
-                                >
-                                    <span class="home-showcase__table-status-dot" aria-hidden="true" />
-                                    {{ row.status }}
-                                </span>
-                            </li>
-                        </ul>
-                    </div>
-                </article>
+            <div class="home-showcase__title-row">
+                <origam-title
+                    id="showcase-title"
+                    tag="h2"
+                    class="home-showcase__title"
+                >
+                    <span class="home-showcase__title-line">{{ t('home.showcase.title_line1', '95 components.') }}</span>
+                    <span class="home-showcase__title-line">{{ t('home.showcase.title_line2', 'One vibe.') }}</span>
+                </origam-title>
 
-                <article class="home-showcase__tile" aria-labelledby="tile-chart-title">
-                    <header class="home-showcase__tile-header">
-                        <h3 id="tile-chart-title" class="m-h3 home-showcase__tile-title">
-                            {{ t('home.showcase.chart.label', 'Chart Line') }}
-                        </h3>
-                        <span class="home-showcase__tile-sub home-showcase__tile-sub--success">
-                            {{ t('home.showcase.chart.sub', '+12.4% this month') }}
-                        </span>
-                    </header>
-                    <svg viewBox="0 0 200 80" class="home-showcase__chart" aria-hidden="true">
-                        <defs>
-                            <linearGradient id="chart-grad" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0" stop-color="var(--m-accent, #8B5CF6)" stop-opacity=".5" />
-                                <stop offset="1" stop-color="var(--m-accent, #8B5CF6)" stop-opacity="0" />
-                            </linearGradient>
-                        </defs>
-                        <path d="M0,60 L20,55 L40,58 L60,40 L80,42 L100,30 L120,28 L140,18 L160,22 L180,12 L200,8 L200,80 L0,80 Z" fill="url(#chart-grad)" />
-                        <path d="M0,60 L20,55 L40,58 L60,40 L80,42 L100,30 L120,28 L140,18 L160,22 L180,12 L200,8" stroke="var(--m-accent, #8B5CF6)" stroke-width="1.8" fill="none" stroke-linecap="round" />
-                    </svg>
-                </article>
-
-                <article class="home-showcase__tile" aria-labelledby="tile-switch-title">
-                    <header class="home-showcase__tile-header">
-                        <h3 id="tile-switch-title" class="m-h3 home-showcase__tile-title">
-                            {{ t('home.showcase.switch.label', 'Switch') }}
-                        </h3>
-                        <span class="home-showcase__tile-sub">{{ t('home.showcase.switch.sub', 'inset · flat · default') }}</span>
-                    </header>
-                    <div class="home-showcase__switch-row">
-                        <OrigamSwitch :model-value="false" aria-label="Switch off state" />
-                        <OrigamSwitch :model-value="true" color="primary" aria-label="Switch on state" />
-                    </div>
-                </article>
-
-                <article class="home-showcase__tile" aria-labelledby="tile-chips-title">
-                    <header class="home-showcase__tile-header">
-                        <h3 id="tile-chips-title" class="m-h3 home-showcase__tile-title">
-                            {{ t('home.showcase.chips.label', 'Chips') }}
-                        </h3>
-                        <span class="home-showcase__tile-sub">{{ t('home.showcase.chips.sub', '6 intents') }}</span>
-                    </header>
-                    <div class="home-showcase__chips">
-                        <OrigamChip color="primary" variant="tonal" size="small">
-                            {{ t('home.showcase.chips.primary', 'Primary') }}
-                        </OrigamChip>
-                        <OrigamChip color="neutral" variant="tonal" size="small">
-                            {{ t('home.showcase.chips.neutral', 'Neutral') }}
-                        </OrigamChip>
-                        <OrigamChip color="success" variant="tonal" size="small">
-                            {{ t('home.showcase.chips.success', 'Success') }}
-                        </OrigamChip>
-                    </div>
-                </article>
-
-                <article class="home-showcase__tile" aria-labelledby="tile-avatars-title">
-                    <header class="home-showcase__tile-header">
-                        <h3 id="tile-avatars-title" class="m-h3 home-showcase__tile-title">
-                            {{ t('home.showcase.avatars.label', 'Avatar Group') }}
-                        </h3>
-                        <span class="home-showcase__tile-sub">{{ t('home.showcase.avatars.sub', '+24 members') }}</span>
-                    </header>
-                    <div class="home-showcase__avatars">
-                        <OrigamAvatar
-                            v-for="item in AVATAR_ITEMS_WITH_REST"
-                            :key="item.text"
-                            :text="item.text"
-                            :color="item.color"
-                            size="default"
-                            class="home-showcase__avatars-item"
-                        />
-                        <span class="home-showcase__avatars-rest" aria-label="24 more members">+24</span>
-                    </div>
-                </article>
+                <origam-btn
+                    variant="text"
+                    href="/components"
+                    class="home-showcase__view-all"
+                    append-icon="mdi-arrow-right"
+                    data-cy="showcase-view-all"
+                >
+                    {{ t('home.showcase.view_all', 'View all') }}
+                </origam-btn>
             </div>
+        </header>
 
-        </div>
+        <origam-grid
+            tag="ul"
+            :columns="SHOWCASE_GRID_COLUMNS"
+            gap="16px"
+            aria-label="Component showcase"
+            class="home-showcase__grid"
+        >
+            <origam-grid-item
+                tag="li"
+                :row="'1 / 3'"
+                class="home-showcase__item"
+            >
+                <origam-card
+                    tag="figure"
+                    flat
+                    :rounded="SHOWCASE_WIDGET_RADIUS"
+                    :style="SHOWCASE_WIDGET_VARS"
+                    class="home-showcase__widget"
+                >
+                    <figcaption class="home-showcase__widget-header">
+                        <div class="home-showcase__widget-label">
+                            <strong class="home-showcase__widget-title">
+                                {{ t('home.showcase.data_table.title', 'Data Table') }}
+                            </strong>
+                            <span class="home-showcase__widget-caption">
+                                {{ t('home.showcase.data_table.caption', 'Sortable · filterable · virtualized') }}
+                            </span>
+                        </div>
+
+                        <origam-chip
+                            :text="t('home.showcase.data_table.badge', 'Data')"
+                            color="primary"
+                            border
+                            pill
+                            size="x-small"
+                            class="home-showcase__data-badge"
+                            data-cy="showcase-data-badge"
+                        />
+                    </figcaption>
+
+                    <origam-table
+                        class="home-showcase__table"
+                        data-cy="showcase-data-table"
+                    >
+                        <thead class="home-showcase__table-head">
+                            <tr>
+                                <th scope="col" class="home-showcase__th">
+                                    {{ t('home.showcase.data_table.col_project', 'PROJECT') }}
+                                    <span class="home-showcase__th-sort" aria-hidden="true">↓</span>
+                                </th>
+                                <th scope="col" class="home-showcase__th">
+                                    {{ t('home.showcase.data_table.col_owner', 'Owner') }}
+                                </th>
+                                <th scope="col" class="home-showcase__th">
+                                    {{ t('home.showcase.data_table.col_status', 'Status') }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="(row, rowIndex) in SHOWCASE_TABLE_ROWS"
+                                :key="row.nameKey"
+                                class="home-showcase__tr"
+                            >
+                                <td class="home-showcase__td home-showcase__td--name">
+                                    {{ t(row.nameKey, row.nameFallback) }}
+                                </td>
+                                <td class="home-showcase__td home-showcase__td--owner">
+                                    {{ t(row.ownerKey, row.ownerFallback) }}
+                                </td>
+                                <td class="home-showcase__td home-showcase__td--status">
+                                    <span class="home-showcase__status-cell">
+                                        <span
+                                            class="home-showcase__status-dot"
+                                            :style="{ backgroundColor: STATUS_DOT_COLOR[row.statusIntent] }"
+                                            aria-hidden="true"
+                                        />
+                                        <span
+                                            class="home-showcase__status-text"
+                                            :style="{ color: STATUS_DOT_COLOR[row.statusIntent] }"
+                                        >
+                                            {{ t(row.statusKey, row.statusFallback) }}
+                                        </span>
+
+                                        <origam-btn
+                                            variant="text"
+                                            icon="mdi-dots-horizontal"
+                                            size="x-small"
+                                            class="home-showcase__row-menu"
+                                            :aria-label="t('home.showcase.data_table.row_menu', 'Row actions')"
+                                            :data-cy="`showcase-row-menu-${rowIndex}`"
+                                        />
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </origam-table>
+                </origam-card>
+            </origam-grid-item>
+
+            <origam-grid-item
+                tag="li"
+                class="home-showcase__item"
+            >
+                <origam-card
+                    tag="figure"
+                    flat
+                    :rounded="SHOWCASE_WIDGET_RADIUS"
+                    :style="SHOWCASE_WIDGET_VARS"
+                    class="home-showcase__widget"
+                >
+                    <figcaption class="home-showcase__widget-label">
+                        <strong class="home-showcase__widget-title">
+                            {{ t('home.showcase.chart_line.title', 'Chart Line') }}
+                        </strong>
+                        <span class="home-showcase__widget-caption home-showcase__widget-caption--accent">
+                            {{ t('home.showcase.chart_line.caption', '+12.4% this month') }}
+                        </span>
+                    </figcaption>
+
+                    <origam-chart-sparkline
+                        type="area"
+                        color="primary"
+                        :series="sparklineSeries"
+                        :show-last="true"
+                        width="100%"
+                        :height="80"
+                        class="home-showcase__sparkline"
+                        data-cy="showcase-sparkline"
+                        :title="t('home.showcase.chart_line.caption', '+12.4% this month')"
+                    />
+                </origam-card>
+            </origam-grid-item>
+
+            <origam-grid-item
+                tag="li"
+                class="home-showcase__item"
+            >
+                <origam-card
+                    tag="figure"
+                    flat
+                    :rounded="SHOWCASE_WIDGET_RADIUS"
+                    :style="SHOWCASE_WIDGET_VARS"
+                    class="home-showcase__widget"
+                >
+                    <figcaption class="home-showcase__widget-label">
+                        <strong class="home-showcase__widget-title">
+                            {{ t('home.showcase.switch.title', 'Switch') }}
+                        </strong>
+                        <span class="home-showcase__widget-caption">
+                            {{ t('home.showcase.switch.caption', 'inset · flat · default') }}
+                        </span>
+                    </figcaption>
+
+                    <div
+                        class="home-showcase__switch-row"
+                        role="group"
+                        :aria-label="t('home.showcase.switch.title', 'Switch')"
+                    >
+                        <origam-switch
+                            v-for="(variant, index) in switchPairs"
+                            :key="index"
+                            :model-value="variant.modelValue"
+                            :inset="variant.inset"
+                            :flat="variant.flat"
+                            readonly
+                            :data-cy="`showcase-switch-${index}`"
+                        />
+                    </div>
+                </origam-card>
+            </origam-grid-item>
+
+            <origam-grid-item
+                tag="li"
+                class="home-showcase__item"
+            >
+                <origam-card
+                    tag="figure"
+                    flat
+                    :rounded="SHOWCASE_WIDGET_RADIUS"
+                    :style="SHOWCASE_WIDGET_VARS"
+                    class="home-showcase__widget"
+                >
+                    <figcaption class="home-showcase__widget-label">
+                        <strong class="home-showcase__widget-title">
+                            {{ t('home.showcase.chips.title', 'Chips') }}
+                        </strong>
+                        <span class="home-showcase__widget-caption">
+                            {{ t('home.showcase.chips.caption', '6 intents') }}
+                        </span>
+                    </figcaption>
+
+                    <ul
+                        class="home-showcase__chip-list"
+                        data-cy="showcase-chip-group"
+                        aria-label="Chip intents"
+                    >
+                        <li
+                            v-for="chip in SHOWCASE_CHIP_ITEMS"
+                            :key="chip.intent"
+                        >
+                            <origam-chip
+                                :color="chip.intent"
+                                border
+                                pill
+                                size="small"
+                                :text="t(chip.labelKey, chip.labelFallback)"
+                                :data-cy="`showcase-chip-${chip.intent}`"
+                            />
+                        </li>
+                    </ul>
+                </origam-card>
+            </origam-grid-item>
+
+            <origam-grid-item
+                tag="li"
+                class="home-showcase__item"
+            >
+                <origam-card
+                    tag="figure"
+                    flat
+                    :rounded="SHOWCASE_WIDGET_RADIUS"
+                    :style="SHOWCASE_WIDGET_VARS"
+                    class="home-showcase__widget"
+                >
+                    <figcaption class="home-showcase__widget-label">
+                        <strong class="home-showcase__widget-title">
+                            {{ t('home.showcase.avatar_group.title', 'Avatar Group') }}
+                        </strong>
+                        <span class="home-showcase__widget-caption">
+                            {{ t('home.showcase.avatar_group.caption', '+24 members') }}
+                        </span>
+                    </figcaption>
+
+                    <div class="home-showcase__avatar-row">
+                        <origam-avatar-group
+                            :items="SHOWCASE_AVATAR_ITEMS"
+                            :max="5"
+                            class="home-showcase__avatar-group"
+                            data-cy="showcase-avatar-group"
+                            :aria-label="t('home.showcase.avatar_group.caption', '+24 members')"
+                        />
+                        <origam-chip
+                            text="+24"
+                            color="neutral"
+                            border
+                            pill
+                            size="x-small"
+                            class="home-showcase__avatar-pill"
+                        />
+                    </div>
+                </origam-card>
+            </origam-grid-item>
+        </origam-grid>
     </section>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .home-showcase {
-    padding-block: 6rem;
-    padding-inline: 3.5rem;
-    background-color: var(--m-surface, var(--origam-color__surface---raised, #0E0E0E));
-    border-block-start: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
-    border-block-end: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
-    container-type: inline-size;
-}
-
-
-.home-showcase__inner {
-    max-width: 80rem;
+    padding-block: var(--origam-space---24, 6rem);
+    padding-inline: var(--origam-space---14, 3.5rem);
+    max-width: var(--origam-layout---max-width, 80rem);
     margin-inline: auto;
-    display: flex;
-    flex-direction: column;
-    gap: var(--origam-space---12, 3rem);
-}
 
-.home-showcase__header {
-    display: flex;
-    flex-direction: column;
-    gap: var(--origam-space---3, 0.75rem);
-}
+    &__header {
+        margin-block-end: var(--origam-space---8, 2rem);
+    }
 
-.home-showcase__title-row {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: var(--origam-space---4, 1rem);
-    flex-wrap: wrap;
-}
+    &__eyebrow {
+        margin: 0 0 var(--origam-space---3, 0.75rem);
+        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-weight: var(--origam-font__weight---semibold, 600);
+        color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+        text-transform: uppercase;
+        letter-spacing: var(--origam-letter-spacing---wide, 0.08em);
+    }
 
-.home-showcase__title {
-    margin: 0;
-}
+    &__title-row {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: var(--origam-space---4, 1rem);
+    }
 
-.home-showcase__grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    grid-template-rows: auto auto;
-    gap: var(--origam-space---4, 1rem);
-}
+    &__title {
+        margin: 0;
+        font-size: var(--origam-font-size---section, 3rem);
+        font-weight: var(--origam-font__weight---bold, 700);
+        letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
+        line-height: var(--origam-line-height---tight, 1.1);
+        color: var(--origam-color__text---primary, #0a0a0a);
+        display: flex;
+        flex-direction: column;
+    }
 
-.home-showcase__tile {
-    background-color: var(--m-bg, var(--origam-color__surface---default, #0A0A0A));
-    border: 1px solid var(--m-border, var(--origam-color__border---subtle, rgba(255, 255, 255, 0.08)));
-    border-radius: var(--m-radius, var(--origam-radius---md, 10px));
-    box-shadow: var(--m-shadow-card, 0 8px 24px -16px rgba(0, 0, 0, 0.6));
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: border-color 0.2s ease;
-    padding: 1.5rem;
-}
+    &__title-line {
+        display: block;
+    }
 
-.home-showcase__tile:hover {
-    border-color: var(--m-accent-border, color-mix(in srgb, var(--m-accent, var(--origam-color__action--primary---bg, #7c3aed)) 30%, transparent));
-}
+    &__view-all {
+        flex-shrink: 0;
+        align-self: flex-end;
+        padding-block-end: var(--origam-space---1, 0.25rem);
+    }
 
-.home-showcase__tile--table {
-    grid-row: span 2;
-}
+    &__grid {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
 
-.home-showcase__tile-header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding: 0;
-    margin-block-end: 1rem;
-}
+    &__item {
+        list-style: none;
+        display: flex;
+    }
 
-.home-showcase__tile-title {
-    margin: 0;
-    color: var(--m-text, var(--origam-color__text---primary, #FAFAFA));
-}
+    &__widget {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: var(--origam-space---4, 1rem);
+        margin: 0;
+    }
 
-.home-showcase__tile-sub {
-    font-size: 0.75rem;
-    color: var(--m-text-quiet, var(--origam-color__text---placeholder, #737373));
-}
+    &__widget-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: var(--origam-space---3, 0.75rem);
+        flex-shrink: 0;
+    }
 
-.home-showcase__tile-sub--success {
-    color: var(--origam-color__feedback--success---fgSubtle, #16a34a);
-}
+    &__widget-label {
+        display: flex;
+        flex-direction: column;
+        gap: var(--origam-space---1, 0.25rem);
+        flex-shrink: 0;
+    }
 
-.home-showcase__tile-tag {
-    align-self: flex-start;
-    margin-block-start: var(--origam-space---1, 0.25rem);
-}
+    &__widget-title {
+        font-size: var(--origam-font-size---base, 1rem);
+        font-weight: var(--origam-font__weight---semibold, 600);
+        color: var(--origam-color__text---primary, #0a0a0a);
+    }
 
-.home-showcase__table {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
+    &__widget-caption {
+        font-size: var(--origam-font-size---sm, 0.875rem);
+        color: var(--origam-color__text---secondary, #525252);
 
-.home-showcase__table-head {
-    display: grid;
-    grid-template-columns: 1fr 5rem 6rem;
-    padding: var(--origam-space---2, 0.5rem) var(--origam-space---5, 1.25rem);
-    font-size: var(--origam-font__size---xs, 0.6875rem);
-    font-weight: var(--origam-font__weight---semibold, 600);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--origam-color__text---tertiary, #737373);
-    background-color: var(--origam-color__surface---sunken, #fafafa);
-    border-block-end: 1px solid var(--origam-color__border---subtle, #d4d4d4);
-}
+        &--accent {
+            color: var(--origam-color__feedback--success---fgSubtle, #15803d);
+            font-weight: var(--origam-font__weight---medium, 500);
+        }
+    }
 
-.home-showcase__table-body {
-    flex: 1;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-}
+    &__data-badge {
+        flex-shrink: 0;
+        margin-block-start: var(--origam-space---1, 0.25rem);
+    }
 
-.home-showcase__table-row {
-    display: grid;
-    grid-template-columns: 1fr 5rem 6rem;
-    align-items: center;
-    padding: var(--origam-space---3, 0.75rem) var(--origam-space---5, 1.25rem);
-    border-block-end: 1px solid var(--origam-color__border---subtle, #d4d4d4);
-    transition: background-color 0.1s ease;
-}
+    &__table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: var(--origam-font-size---sm, 0.875rem);
+        color: var(--origam-color__text---primary, #0a0a0a);
+    }
 
-.home-showcase__table-row:last-child {
-    border-block-end: none;
-}
+    &__th {
+        padding: var(--origam-space---2, 0.5rem) var(--origam-space---3, 0.75rem);
+        text-align: start;
+        font-weight: var(--origam-font__weight---semibold, 600);
+        font-size: var(--origam-font-size---xs, 0.75rem);
+        letter-spacing: var(--origam-letter-spacing---wide, 0.08em);
+        text-transform: uppercase;
+        color: var(--origam-color__text---secondary, #525252);
+        border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+        white-space: nowrap;
+    }
 
-.home-showcase__table-row:hover {
-    background-color: var(--origam-color__surface---sunken, #fafafa);
-}
+    &__th-sort {
+        margin-inline-start: var(--origam-space---1, 0.25rem);
+        font-size: var(--origam-font-size---xs, 0.75rem);
+        opacity: 0.7;
+    }
 
-.home-showcase__table-cell {
-    font-size: var(--origam-font__size---sm, 0.75rem);
-    color: var(--origam-color__text---primary, #171717);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+    &__tr {
+        border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
 
-.home-showcase__table-cell--name {
-    font-weight: var(--origam-font__weight---medium, 500);
-}
+        &:last-child {
+            border-block-end: none;
+        }
+    }
 
-.home-showcase__table-cell--owner {
-    color: var(--origam-color__text---secondary, #525252);
-}
+    &__td {
+        padding: var(--origam-space---2, 0.5rem) var(--origam-space---3, 0.75rem);
+        vertical-align: middle;
 
-.home-showcase__chart {
-    display: block;
-    width: 100%;
-    height: auto;
-    margin-block-start: auto;
-    padding: var(--origam-space---4, 1rem);
-}
+        &--name {
+            font-weight: var(--origam-font__weight---medium, 500);
+        }
 
-.home-showcase__switch-row {
-    display: flex;
-    align-items: center;
-    gap: var(--origam-space---4, 1rem);
-    padding: var(--origam-space---4, 1rem) var(--origam-space---5, 1.25rem);
-    flex: 1;
-}
+        &--owner {
+            color: var(--origam-color__text---secondary, #525252);
+        }
 
-.home-showcase__chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--origam-space---2, 0.5rem);
-    align-items: flex-start;
-    padding: 0;
-    flex: 1;
-}
+        &--status {
+            white-space: nowrap;
+        }
+    }
 
-/* Force a visible surface on the neutral tonal chip — origam's
- * default `--origam-color__action--neutral---bgSubtle` resolves
- * to `transparent` so without this the "Neutral" pill renders as
- * plain coloured text without a chip body. */
-.home-showcase__chips :deep(.origam-chip--color-neutral) {
-    background-color: var(--m-surface-2, color-mix(in srgb, var(--m-text, #fafafa) 8%, transparent));
-    color: var(--m-text-soft, var(--origam-color__text---secondary, #a3a3a3));
-}
+    &__status-cell {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--origam-space---2, 0.5rem);
+        width: 100%;
+    }
 
-.home-showcase__table-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    font-size: 0.75rem;
-}
+    &__status-dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
 
-.home-showcase__table-status[data-intent="success"] {
-    color: var(--origam-color__feedback--success---fgSubtle, #16a34a);
-}
+    &__status-text {
+        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-weight: var(--origam-font__weight---medium, 500);
+        flex: 1;
+    }
 
-.home-showcase__table-status[data-intent="warning"] {
-    color: var(--origam-color__feedback--warning---fgSubtle, #b45309);
-}
+    &__row-menu {
+        flex-shrink: 0;
+        color: var(--origam-color__text---secondary, #525252);
+    }
 
-.home-showcase__table-status[data-intent="neutral"] {
-    color: var(--m-text-quiet, var(--origam-color__text---placeholder, #737373));
-}
+    &__sparkline {
+        display: block;
+        flex: 1;
+    }
 
-.home-showcase__table-status-dot {
-    inline-size: 6px;
-    block-size: 6px;
-    border-radius: 50%;
-    background: currentColor;
-    flex-shrink: 0;
-}
+    &__switch-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--origam-space---4, 1rem);
+        flex: 1;
 
-.home-showcase__avatars {
-    display: flex;
-    align-items: center;
-}
+        :deep(.origam-switch-track--dirty:not(.origam-switch-track--disabled)) {
+            background-color: var(--origam-color__action--primary---bg, #7c3aed);
+        }
 
-.home-showcase__avatars-item {
-    margin-inline-start: -10px;
-    border: 2px solid var(--m-surface, var(--origam-color__surface---raised, #0E0E0E));
-}
+        :deep(.origam-switch__thumb) {
+            background-color: var(--origam-color__text---inverse, #ffffff);
+        }
+    }
 
-.home-showcase__avatars-item:first-child {
-    margin-inline-start: 0;
-}
+    &__chip-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--origam-space---2, 0.5rem);
+        flex: 1;
+        align-content: flex-start;
+    }
 
-.home-showcase__avatars-rest {
-    margin-inline-start: 0.5rem;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: var(--m-text-soft, var(--origam-color__text---secondary, #A3A3A3));
-    font-family: var(--m-font-mono, var(--origam-font__family---mono, monospace));
-}
+    &__avatar-row {
+        display: flex;
+        align-items: center;
+        gap: var(--origam-space---2, 0.5rem);
+        flex: 1;
+    }
 
-@media (prefers-reduced-motion: reduce) {
-    .home-showcase__tile,
-    .home-showcase__table-row {
-        transition: none;
+    &__avatar-group {
+        --origam-avatar-group__item---margin-inline-start: -8px;
+        --origam-avatar---box-shadow: 0 0 0 2px var(--origam-color__surface---raised, #fafafa);
+    }
+
+    &__avatar-pill {
+        flex-shrink: 0;
     }
 }
 
-@container (max-width: 900px) {
-    .home-showcase__grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .home-showcase__tile--table {
-        grid-column: span 2;
-        grid-row: auto;
-    }
-}
-
-@container (max-width: 600px) {
-    .home-showcase__grid {
-        grid-template-columns: 1fr;
-    }
-
-    .home-showcase__tile--table {
-        grid-column: 1;
+@media (max-width: 48rem) {
+    .home-showcase {
+        padding-inline: var(--origam-space---6, 1.5rem);
     }
 }
 </style>

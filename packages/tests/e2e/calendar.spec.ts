@@ -9,7 +9,7 @@ import { expect, test, type Page } from '@playwright/test'
  * Histoire upgrades.
  */
 
-const STORY = '/story/stories-components-stories-calendar-origamcalendar-story-vue'
+const STORY = '/story/components-stories-calendar-origamcalendar-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')
@@ -107,7 +107,7 @@ test.describe('OrigamCalendar — events', () => {
         await openVariant(page, 'Prop — events (15+ events fixture)')
         const sandbox = sandboxOf(page)
 
-        const event = sandbox.locator('[data-cy="origam-calendar-events-cal"] [data-cy^="origam-calendar-event-"]').first()
+        const event = sandbox.locator('[data-cy="calendar-events-cal"] [data-cy^="origam-calendar-event-"]').first()
         await expect(event).toBeVisible({ timeout: 8000 })
     })
 
@@ -116,6 +116,7 @@ test.describe('OrigamCalendar — events', () => {
         const sandbox = sandboxOf(page)
 
         const chips = sandbox.locator('[data-cy="calendar-recurring-cal"] [data-cy^="origam-calendar-event-"]')
+        await expect(chips.first()).toBeVisible({ timeout: 8000 })
         const count = await chips.count()
         expect(count).toBeGreaterThanOrEqual(3)
     })

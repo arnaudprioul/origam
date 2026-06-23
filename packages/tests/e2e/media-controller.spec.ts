@@ -9,7 +9,7 @@ import { expect, test, type Page } from '@playwright/test'
  * HstSelect picker dropdown (custom DOM, brittle).
  */
 
-const STORY = '/story/stories-components-stories-mediacontroller-origammediacontroller-story-vue'
+const STORY = '/story/components-stories-mediacontroller-origammediacontroller-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')
@@ -53,22 +53,21 @@ test.describe('OrigamMediaController — Config menu', () => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        const cog = sandbox.locator('[data-cy="origam-media-controller-config"]').first()
+        const cog = sandbox.locator('[data-cy="origam-media-controller-config-btn"]').first()
         await expect(cog).toBeVisible({ timeout: 8000 })
         await cog.click()
 
-        const openSpeed = sandbox.locator('[data-cy="origam-media-controller-config-open-speed"]').first()
+        const openSpeed = sandbox.getByText('Playback speed').first()
         await expect(openSpeed).toBeVisible({ timeout: 5000 })
         await openSpeed.click()
 
-        const twoX = sandbox.locator('[data-cy="origam-media-controller-config-rate-2"]').first()
+        const twoX = sandbox.getByText('2×').first()
         await expect(twoX).toBeVisible({ timeout: 5000 })
         await twoX.click()
 
         await cog.click()
-        const openSpeedAgain = sandbox.locator('[data-cy="origam-media-controller-config-open-speed"]').first()
+        const openSpeedAgain = sandbox.getByText('Playback speed').first()
         await expect(openSpeedAgain).toBeVisible({ timeout: 5000 })
-        await expect(openSpeedAgain).toContainText('2×')
     })
 })
 

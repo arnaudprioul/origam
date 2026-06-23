@@ -50,6 +50,24 @@ field chrome.
 </template>
 ```
 
+## Rounded
+
+The field corner radius defaults to the active theme's
+`--origam-field---border-radius` token (e.g. `6px` sobre, `8px` apple,
+`10px` glass, `12px` material, `0px` editorial). Pass the `rounded` prop
+(inherited from `IRoundedProps`) to override it per instance — named
+rungs (`xs`/`sm`/`md`/`lg`/`xl`), the legacy boolean, or a free-form CSS
+value.
+
+```vue
+<template>
+  <OrigamField label="Themed default" />
+  <OrigamField label="Medium"   rounded="md" />
+  <OrigamField label="Custom"   rounded="10px" />
+  <OrigamField label="Pill"     rounded="9999px" />
+</template>
+```
+
 ## Prefix / suffix
 
 ```vue
@@ -105,6 +123,7 @@ field chrome.
 
 | CSS variable | Default | Description |
 |---|---|---|
+| `--origam-field---border-radius` | theme rung (fallback `8px`) | Corner radius (overridable via `rounded` prop) |
 | `--origam-field---border-color` | semantic border | Outline color |
 | `--origam-field---label-color` | text-secondary | Label color |
 | `--origam-field---bg-color` | surface | Background |

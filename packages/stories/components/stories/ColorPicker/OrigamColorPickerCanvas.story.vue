@@ -3,67 +3,86 @@
 			group="components"
 			title="ColorPicker/OrigamColorPickerCanvas"
 	>
-		<!--
-			Playground — first by convention. Sub-component: the 2-D HSV
-			gradient canvas for hue/saturation picking. Controls expose the
-			main surface props.
-		-->
+
 		<Variant
-				title="Default"
-				:init-state="() => useStoryInitState<{
-					disabled?: boolean
-					dotSize?: number
-				}>({ disabled: false, dotSize: 10 })"
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IColorPickerCanvasProps>>({ dotSize: 15, height: 150, width: '100%' })"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; display: flex; justify-content: center;">
-					<origam-color-picker-canvas
-							:color-hsv="defaultColor"
-							v-bind="state"
-							data-cy="color-picker-canvas-playground"
-					/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstCheckbox v-model="state.disabled" title="disabled"/>
-				<HstNumber   v-model="state.dotSize"  title="dotSize" :min="4" :max="20"/>
-			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant title="Prop — disabled">
-			<div style="padding: 24px; display: flex; justify-content: center;">
 				<origam-color-picker-canvas
 						:color-hsv="defaultColor"
-						:disabled="true"
-						data-cy="color-picker-canvas-disabled"
+						:dot-size="state.dotSize"
+						:height="state.height"
+						:width="state.width"
+						:max-height="state.maxHeight"
+						:max-width="state.maxWidth"
+						:min-height="state.minHeight"
+						:min-width="state.minWidth"
 				/>
-			</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Dot">
+					<HstNumber v-model="state.dotSize" title="Dot Size" :min="4" :max="30" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.height"    title="Height"/>
+					<HstText v-model="state.width"     title="Width"/>
+					<HstText v-model="state.maxHeight" title="Max Height"/>
+					<HstText v-model="state.maxWidth"  title="Max Width"/>
+					<HstText v-model="state.minHeight" title="Min Height"/>
+					<HstText v-model="state.minWidth"  title="Min Width"/>
+				</StoryGroup>
+			</template>
 		</Variant>
 
-		<!-- ── Emits ────────────────────────────────────────────────── -->
-
 		<Variant
-				title="Emit — update:colorHsv"
-				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IColorPickerCanvasProps>>({ disabled: false, ariaLabel: '' })"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 12px;">
-					<origam-color-picker-canvas
-							:color-hsv="defaultColor"
-							data-cy="color-picker-canvas-emit"
-							@update:color-hsv="(v: unknown) => {
-								state.log = [JSON.stringify(v), ...state.log].slice(0, 5)
-							}"
-					/>
-					<ul style="font-family: monospace; font-size: 0.75rem; align-self: stretch;">
-						<li v-for="(line, i) in state.log" :key="i">{{ line }}</li>
-					</ul>
-					<p v-if="state.log.length === 0" style="font-size: 0.8rem; color: var(--origam-color__text---secondary);">
-						Drag the canvas picker to see events.
-					</p>
-				</div>
+				<origam-color-picker-canvas
+						:color-hsv="defaultColor"
+						:disabled="state.disabled"
+						:aria-label="state.ariaLabel || undefined"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
+				<StoryGroup title="Data">
+					<HstText v-model="state.ariaLabel" title="Aria Label"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Events - update:colorHsv">
+			<origam-color-picker-canvas
+					:color-hsv="defaultColor"
+					@update:color-hsv="logEvent('update:colorHsv', $event)"
+			/>
+		</Variant>
+
+		<Variant
+				title="Default"
+				:init-state="() => useStoryInitState<Partial<IColorPickerCanvasProps>>({ dotSize: 15, height: 150, width: '100%', disabled: false })"
+		>
+			<template #default="{ state }">
+				<origam-color-picker-canvas
+						v-bind="state"
+						:color-hsv="defaultColor"
+						@update:color-hsv="logEvent('update:colorHsv', $event)"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Design">
+					<HstNumber v-model="state.dotSize" title="Dot Size" :min="4" :max="30" :step="1"/>
+					<HstText   v-model="state.height"  title="Height"/>
+					<HstText   v-model="state.width"   title="Width"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 	</Story>
@@ -73,8 +92,12 @@
 		lang="ts"
 		setup
 >
-	import { OrigamColorPickerCanvas } from '@origam/components'
+	import { logEvent } from 'histoire/client'
 
+	import { OrigamColorPickerCanvas } from '@origam/components'
+	import type { IColorPickerCanvasProps } from '@origam/interfaces'
+
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 
 	const defaultColor = { h: 210, s: 0.7, v: 0.8, a: 1 }

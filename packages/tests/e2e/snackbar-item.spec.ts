@@ -25,7 +25,7 @@ const openVariant = async (page: Page, variant: string) => {
     await page.waitForTimeout(800)
 }
 
-const STORY = '/story/stories-components-stories-snackbaritem-origamsnackbaritem-story-vue'
+const STORY = '/story/components-stories-snackbar-origamsnackbaritem-story-vue'
 
 test.describe('OrigamSnackbarItem — Prop: intent', () => {
     test('each intent renders the correct modifier class', async ({ page }) => {
@@ -137,7 +137,7 @@ test.describe('OrigamSnackbarItem — Slot: prepend', () => {
         const sandbox = sandboxOf(page)
 
         const prepend = sandbox
-            .locator('[data-cy="snackbar-item-prepend"]')
+            .locator('[data-cy="snackbar-item-prepend-host"]')
             .locator('.origam-snackbar-item__prepend')
         await expect(prepend).toBeVisible({ timeout: 5000 })
     })

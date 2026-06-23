@@ -109,6 +109,8 @@
 	import {
 		useFocus,
 		useHover,
+		useMargin,
+		usePadding,
 		useProps,
 		useStateEffect,
 		useStyle,
@@ -203,14 +205,25 @@
 	 * @description
 	 * radioStyles and radioClasses compose the BEM block.
 	 ********************************************************/
+	// Spacing (padding / margin) is consumed HERE on the radio root —
+	// the SelectionControl chain below only owns color / density / dimension,
+	// so without this the `padding*` / `margin*` props are declared on the
+	// interface but silently ignored.
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+
 	const radioStyles = computed(() => {
 		return [
+			paddingStyles.value,
+			marginStyles.value,
 			props.style
 		] as StyleValue
 	})
 	const radioClasses = computed(() => {
 		return [
 			'origam-radio',
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})
@@ -244,7 +257,7 @@
 		}
 
 		.origam-selection-control {
-			min-height: calc(56px + 2 * var(--origam-input---density));
+			min-height: calc(56px + 2 * var(--origam-input---density, 0px));
 		}
 	}
 </style>

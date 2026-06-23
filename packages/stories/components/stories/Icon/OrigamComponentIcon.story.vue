@@ -3,16 +3,90 @@
 			group="components"
 			title="Icon/OrigamComponentIcon"
 	>
-		<!--
-			Playground — first by convention. OrigamComponentIcon renders
-			a Vue component passed as the `icon` prop.
-		-->
+
+		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<IIconComponentProps>>({ size: 'default' })"
+		>
+			<template #default="{ state }">
+				<origam-component-icon
+						:icon="StarSvgComponent"
+						:color="state.color"
+						:bg-color="state.bgColor"
+						:size="state.size"
+						:rounded="state.rounded"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
+						:width="state.width"
+						:height="state.height"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.size" title="Size" :options="SIZE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded" title="Rounded" :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Dimension">
+					<HstText v-model="state.width"  title="Width"/>
+					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<Partial<IIconComponentProps>>({ tag: 'div' })"
+		>
+			<template #default="{ state }">
+				<origam-component-icon
+						:icon="StarSvgComponent"
+						:disabled="state.disabled"
+						:tag="state.tag"
+						:size="state.size"
+						:padding="state.padding"
+						:margin="state.margin"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.size" title="Size" :options="SIZE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstText v-model="state.padding" title="Padding"/>
+					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Slots - Default">
+			<origam-component-icon>
+				<svg viewBox="0 0 24 24" style="width:1em;height:1em;fill:currentColor;" aria-hidden="true">
+					<path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"/>
+				</svg>
+			</origam-component-icon>
+		</Variant>
+
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<IIconComponentProps>({
-					size: undefined,
-					tag: undefined,
-				})"
+				:init-state="() => useStoryInitState<IIconComponentProps>({ tag: 'div', size: 'default' })"
 		>
 			<template #default="{ state }">
 				<origam-component-icon
@@ -21,66 +95,18 @@
 				/>
 			</template>
 			<template #controls="{ state }">
-				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
-				<HstSelect v-model="state.tag"  title="tag"  :options="tagList"/>
+				<StoryGroup title="Design">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.size"    title="Size"     :options="SIZE_OPTIONS"/>
+					<HstSelect v-model="state.rounded" title="Rounded"  :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.border"  title="Border"   :options="BORDER_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect   v-model="state.tag"      title="Tag"      :options="TAG_OPTIONS"/>
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
 			</template>
-		</Variant>
-
-		<!-- ── Props ────────────────────────────────────────────────── -->
-
-		<Variant
-				title="Prop — size"
-				:init-state="() => useStoryInitState<ISizeProps>({ size: undefined })"
-		>
-			<template #default="{ state }">
-				<div style="display: flex; gap: 16px; align-items: center;">
-					<origam-component-icon :size="state.size" :icon="StarSvgComponent"/>
-				</div>
-				<div style="display: flex; gap: 16px; align-items: center; margin-top: 16px;">
-					<origam-component-icon :icon="StarSvgComponent" size="x-small"/>
-					<origam-component-icon :icon="StarSvgComponent" size="small"/>
-					<origam-component-icon :icon="StarSvgComponent" size="default"/>
-					<origam-component-icon :icon="StarSvgComponent" size="large"/>
-					<origam-component-icon :icon="StarSvgComponent" size="x-large"/>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.size" title="size" :options="sizeList"/>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Prop — tag"
-				:init-state="() => useStoryInitState<{ tag?: string }>({ tag: undefined })"
-		>
-			<template #default="{ state }">
-				<origam-component-icon
-						:tag="state.tag"
-						:icon="StarSvgComponent"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<HstSelect v-model="state.tag" title="tag" :options="tagList"/>
-			</template>
-		</Variant>
-
-		<Variant title="Prop — size (numeric override)">
-			<div style="display: flex; gap: 16px; align-items: center;">
-				<origam-component-icon :icon="StarSvgComponent" :size="16"/>
-				<origam-component-icon :icon="StarSvgComponent" :size="24"/>
-				<origam-component-icon :icon="StarSvgComponent" :size="40"/>
-				<origam-component-icon :icon="StarSvgComponent" :size="64"/>
-			</div>
-		</Variant>
-
-		<!-- ── Slots ────────────────────────────────────────────────── -->
-
-		<Variant title="Slot — default (overrides icon prop)">
-			<origam-component-icon>
-				<svg viewBox="0 0 24 24" style="width:1em;height:1em;fill:currentColor;" aria-hidden="true">
-					<path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"/>
-				</svg>
-			</origam-component-icon>
 		</Variant>
 	</Story>
 </template>
@@ -92,13 +118,19 @@
 	import { defineComponent, h } from 'vue'
 
 	import { OrigamComponentIcon } from '@origam/components'
-	import type { IIconComponentProps, ISizeProps } from '@origam/interfaces'
+	import type { IIconComponentProps } from '@origam/interfaces'
 
+	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { sizeList, tagList } from '@stories/const'
+	import {
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
+		ROUNDED_OPTIONS,
+		SIZE_OPTIONS,
+		TAG_OPTIONS,
+	} from '@stories/const'
 
-	// Inline lightweight Vue SVG component — no external icon-lib dependency.
-	// Uses `currentColor` fill so it respects the design-token color cascade.
 	const StarSvgComponent = defineComponent({
 		name: 'StarSvgComponent',
 		setup () {

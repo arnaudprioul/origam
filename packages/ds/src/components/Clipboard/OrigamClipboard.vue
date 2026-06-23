@@ -47,12 +47,13 @@
 
 	import { OrigamIcon } from '../Icon'
 
-	import { useBorder, useBothColor, useClipboard, useMargin, usePadding, useRounded } from '../../composables'
+	import { useBorder, useBothColor, useClipboard, useLocale, useMargin, usePadding, useRounded } from '../../composables'
 
 	import { MDI_ICONS } from '../../enums'
 
 	import type {
-		IClipboardProps} from '../../interfaces'
+		IClipboardProps
+	} from '../../interfaces'
 
 	import type { IClipboardEmits } from '../../interfaces/Clipboard/clipboard.interface'
 
@@ -102,15 +103,18 @@
 	})
 
 	/*********************************************************
-	 * Labels (i18n-friendly fallback strings; consumers wrap with t()).
+	 * Labels — localised through the DS i18n provider (`useLocale`).
+	 * Keys live under `origam.clipboard.*` in the shipped locale messages.
 	 ********************************************************/
+	const { t } = useLocale()
+
 	const resolvedFeedbackText = computed(() => props.successText ?? props.feedbackText ?? 'Copied!')
 
 	const defaultIcon = MDI_ICONS.CONTENT_COPY
 
 	const defaultAriaLabel = computed(() => copied.value
-		? 'Value copied to clipboard'
-		: 'Copy to clipboard'
+		? t('origam.clipboard.copiedAriaLabel', 'Value copied to clipboard')
+		: t('origam.clipboard.copyAriaLabel', 'Copy to clipboard')
 	)
 
 	/*********************************************************

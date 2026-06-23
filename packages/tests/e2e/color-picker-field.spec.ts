@@ -107,7 +107,7 @@ test.describe('OrigamColorPickerField', () => {
         await expect(field).toBeVisible({ timeout: 5000 })
 
         // Messages container must NOT be visible initially (validateOn=blur, pristine state)
-        const messages = sandbox.locator('[data-cy="colorpickerfield-rules"] .origam-messages, [data-cy="colorpickerfield-rules"] ~ .origam-messages')
+        const _messages = sandbox.locator('[data-cy="colorpickerfield-rules"] .origam-messages, [data-cy="colorpickerfield-rules"] ~ .origam-messages')
         // Use the broader OrigamInput messages container (rendered as a sibling of the field
         // inside the OrigamInput wrapper)
         const inputWrapper = sandbox.locator('.origam-input').filter({ has: field })

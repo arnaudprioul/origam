@@ -1,5 +1,6 @@
 export * from './Alert/alert.interface'
 
+export * from './App/app.interface'
 export * from './App/app-bar.interface'
 
 export * from './Avatar/avatar.interface'
@@ -34,7 +35,6 @@ export * from './Card/card-text.interface'
 
 export * from './Carousel/carousel.interface'
 export * from './Carousel/carousel-item.interface'
-
 
 export * from './Checkbox/checkbox.interface'
 export * from './Checkbox/checkbox-btn.interface'
