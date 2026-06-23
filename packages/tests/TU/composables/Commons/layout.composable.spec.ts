@@ -30,7 +30,7 @@ describe('useLayout — missing injection', () => {
                 try {
                     useLayout()
                 } catch (e) {
-                    threwInSetup = true
+                    threwInSetup = e instanceof Error
                 }
                 return () => h('div')
             }
