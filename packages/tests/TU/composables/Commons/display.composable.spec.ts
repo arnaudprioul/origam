@@ -54,7 +54,7 @@ describe('useDisplay — missing injection', () => {
                 try {
                     useDisplay()
                 } catch (e) {
-                    threwInSetup = true
+                    threwInSetup = e instanceof Error
                 }
                 return () => h('div')
             }

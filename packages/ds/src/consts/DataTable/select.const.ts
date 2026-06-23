@@ -11,7 +11,7 @@ export const singleSelectStrategy: IDataTableSelectStrategy = {
     showSelectAll: false,
     allSelected: () => [],
     select: ({items, value}) => {
-        return new Set(value && items.length > 0 ? [items[0]!.value] : [])
+        return new Set(value && items.length > 0 ? [items[0].value] : [])
     },
     selectAll: ({selected}) => selected
 }
