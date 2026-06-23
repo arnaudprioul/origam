@@ -280,6 +280,36 @@ chaque run** (les 5 autres jobs passent). Il dépasse systématiquement son
   Codemod fourni.
 - Gain : ~2× moins de calcul reactif, hydratation plus légère.
 
+### Modularisation du DS — entry-points par domaine **(XL, v3+)**
+
+> Demande mainteneur (juin 2026). **Objectif : un bundle de base plus léger** —
+> l'app n'importe (et ne paie) que les modules qu'elle utilise.
+
+Découper la lib publiée en **modules / sub-exports tree-shakables** par domaine, au
+lieu d'un point d'entrée unique massif :
+- **`origam/core`** — fondations : Btn, Card, Icon, Layout/Grid, Divider, tokens,
+  thème, directives + composables transversaux (color/size/elevation/rounded/border…).
+  Dépendance commune à tous les autres modules.
+- **`origam/form`** — champs & formulaires : TextField, Textarea, Select, Checkbox,
+  Switch, Radio, Slider, NumberField, PasswordField, OtpInput, RatingField, FileField,
+  ColorPicker, DatePicker, Form, validation, **AddMore** (cf. spec ci-dessous).
+- **`origam/chart`** — toute la famille `OrigamChart*` (la plus lourde : SVG + maths),
+  isolée pour ne JAMAIS peser sur une app sans graphes.
+
+Autres modules candidats (à valider) :
+- **`origam/data`** — DataTable, DataList, List, Treeview, Table, Pagination, VirtualScroll.
+- **`origam/overlay`** — Dialog, Drawer, Menu, ContextualMenu, Tooltip, Sheet, Picker.
+- **`origam/feedback`** — Alert, Snackbar, Badge, Progress, Skeleton, EmptyState.
+- **`origam/media`** — Audio, Video, Img, Carousel, Parallax.
+- **`origam/nav`** — Breadcrumb, Tabs, Stepper, BottomNav, Toolbar, SystemBar.
+- Le module **`origam/nuxt`** reste un sub-export à part (cf. Module Nuxt officiel).
+
+Mise en œuvre : entrées multiples `unbuild` (`build.config.ts`) + `exports` map dans
+`package.json` (`origam`, `origam/core`, `origam/form`, `origam/chart`, …), `sideEffects`
+propre, CSS scindé par module. Le barrel global `origam` reste exporté (rétro-compatible).
+Doc de migration + mesure du gain bundle par module (lien : Bundle-size monitoring).
+**Structurant / breaking de packaging → aligné v3.**
+
 ### Module Nuxt officiel **(L)**
 - `@origam/nuxt` : auto-import composants + composables, plugin theme
   SSR-safe (cookie + `prefers-color-scheme` côté Node), injection auto des
@@ -558,6 +588,29 @@ du parent (via defaults-provider).
 v3, alias rétro-compatible (`nav` déprécié → `variant="nav"`, warn once) +
 codemod. Story + doc + e2e + audit a11y (axe) dans la même PR. Une fois livré,
 migrer le marketing d'`OrigamGrid tag="ul"` vers `OrigamList variant="unordered"`.
+
+### `OrigamAddMore` — répéteur de champs / groupes **(M, spec)**
+
+> Demande mainteneur (juin 2026). **Statut : planifié, non implémenté.** Module `form`.
+
+Nouveau composant de formulaire « **add more** » : un **slot** contenant un ou
+plusieurs champs (ou un groupe de champs), répété N fois, avec un **bouton « Add more »**
+pour ajouter une nouvelle occurrence, et la possibilité de **supprimer un groupe**.
+
+**API cible (esquisse — à affiner)** :
+- `v-model` = tableau d'items (chaque item = les valeurs d'un groupe). Ajout / suppression
+  mute le tableau et émet `update:modelValue`.
+- slot `#default="{ index, item, remove }"` — rend le(s) champ(s) du groupe ; `remove()`
+  supprime CE groupe ; `index` / `item` pour binder les valeurs du groupe.
+- slot `#actions` optionnel pour personnaliser les boutons ; sinon défaut `OrigamBtn`
+  « Add more » + bouton de suppression par groupe.
+- props : `min` / `max` (bornes du nombre de groupes), `addLabel` / `removeLabel` (i18n
+  via `t()`), `disabled`, `itemFactory` (valeur initiale d'un nouveau groupe).
+- a11y : chaque groupe dans un conteneur sémantique (`<fieldset>` ou `role="group"` +
+  `aria-label`) ; bouton remove avec `aria-label` explicite ; focus géré à l'ajout /
+  suppression (focus sur le nouveau groupe / sur le voisin après suppression).
+- Livrable : composant + interface (`IAddMoreProps`) + types + story (format unifié) +
+  doc + e2e (ajout, suppression, bornes min/max) — **test-as-you-build**.
 
 ### Visual regression testing **(M)**
 - Playwright `expect(page).toHaveScreenshot()` par Variant. OU Chromatic /
