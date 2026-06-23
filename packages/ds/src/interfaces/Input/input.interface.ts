@@ -45,6 +45,7 @@ export interface IInputEmits extends ICommonsComponentEmits, IAdjacentEmits, IFo
 export interface IInputSlots extends IAdjacentSlots {
     default?: (data: {
         id: string
+        messagesId: string
         isDisabled: boolean
         isDirty: boolean
         isValid: boolean

@@ -59,7 +59,7 @@
 						<template v-if="hasLabels && labelOnTop && slots[`itemLabel.${index}`]">
 							<slot :name="`itemLabel.${index}`">
 								<slot name="itemLabel">
-									<span>{{ itemLabels[index] ?? '&nbsp;' }}</span>
+									<span>{{ itemLabels?.[index] ?? '&nbsp;' }}</span>
 								</slot>
 							</slot>
 						</template>
@@ -93,7 +93,7 @@
 						<template v-if="hasLabels && labelOnBottom && slots[`itemLabel.${index}`]">
 							<slot :name="`itemLabel.${index}`">
 								<slot name="itemLabel">
-									<span>{{ itemLabels[index] ?? '&nbsp;' }}</span>
+									<span>{{ itemLabels?.[index] ?? '&nbsp;' }}</span>
 								</slot>
 							</slot>
 						</template>

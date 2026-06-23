@@ -896,7 +896,7 @@
 		}
 	}
 
-	const thumbClasses = (focused: boolean) => {
+	const thumbClasses = (focused: boolean | undefined) => {
 		return [
 			'origam-slider-field-thumb',
 			'origam-slider-field__thumb',
