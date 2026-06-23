@@ -8,7 +8,7 @@ import {
     ORIGAM_THEME_STORAGE_KEY as STORAGE_KEY
 } from '../../consts/Theme/theme.const'
 
-import type { TMode, TModeResolved, TTheme, TThemeResolved } from '../../types'
+import type { TMode, TModeResolved, TTheme, TThemeResolved } from '../../types/Theme/theme.type'
 
 /**
  * Module-level singletons — every call to `useTheme()` shares the same Refs
