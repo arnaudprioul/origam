@@ -24,7 +24,6 @@
 				<origam-date-picker-header
 						key="header"
 						ref="origamDatePickerHeaderRef"
-						:header="t(header)"
 						v-bind="{ ...datePickerHeaderProps, ...headerProps }"
 						@click="!viewModeIsMonth ? handleClickDate : undefined"
 				/>

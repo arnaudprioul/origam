@@ -2,7 +2,6 @@
 	<origam-responsive
 			v-intersect="intersect"
 			:aria-label="alt"
-			:aspect-ratio="aspectRatio"
 			:class="imgClasses"
 			:role="alt ? 'img' : undefined"
 			:style="imgStyles"
