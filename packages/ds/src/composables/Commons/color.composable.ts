@@ -114,7 +114,7 @@ export function useColor (colors: ComputedRef<{ background?: TColor, text?: TCol
                     bgIsGradient = true
                 }
             } else if (isIntent(colors.value.background as string)) {
-                const m = tokenStylesForIntent(colors.value.background as string, 'default')
+                const m = tokenStylesForIntent(colors.value.background as TIntent, 'default')
                 bgDecl = `background-color: ${m['background-color']}`
                 bgIntentFg = m.color
             } else if (colors.value.background === 'transparent') {
@@ -267,7 +267,12 @@ export function useBackgroundColor<T extends Record<K, TColor>, K extends string
  * useColorEffect
  ********************************************************/
 export function useColorEffect (
-    props: IColorProps & IBgColorProps,
+    props: IColorProps & IBgColorProps & {
+        hoverColor?: TColor
+        activeColor?: TColor
+        hoverBgColor?: TColor
+        activeBgColor?: TColor
+    },
     isHover: Ref<boolean> | ComputedRef<boolean> = ref(false),
     isActive: Ref<boolean> | ComputedRef<boolean> = ref(false),
     isDisabled: Ref<boolean> | ComputedRef<boolean> = ref(false)
@@ -409,12 +414,12 @@ export function useColorEffect (
                 bgIsGradient = true
             }
         } else if (bgColor.value && isIntent(bgColor.value as string)) {
-            const m = tokenStylesForIntent(bgColor.value as string, bgRole)
+            const m = tokenStylesForIntent(bgColor.value as TIntent, bgRole)
             bgDecl = `background-color: ${m['background-color']}`
             // The intent's contrast fg is fixed across roles — pull from
             // the default slot regardless of bgRole so hover/active text
             // never darkens with the bg.
-            bgIntentFg = tokenStylesForIntent(bgColor.value as string, 'default').color
+            bgIntentFg = tokenStylesForIntent(bgColor.value as TIntent, 'default').color
         } else if (bgColor.value === 'transparent') {
             // Default mode (transparent base): math derivation gives a
             // subtle gray on hover, a stronger gray on active — matches
