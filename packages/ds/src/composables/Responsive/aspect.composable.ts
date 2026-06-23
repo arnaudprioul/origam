@@ -21,7 +21,17 @@ export function useAspectRatio (props: { aspectRatio?: string | number }) {
         let ratio: number
 
         if (props.aspectRatio) {
-            ratio = eval(props.aspectRatio as string)
+            const raw = String(props.aspectRatio).trim()
+            const slash = raw.indexOf('/')
+
+            if (slash !== -1) {
+                const w = Number(raw.slice(0, slash))
+                const h = Number(raw.slice(slash + 1))
+
+                ratio = h ? w / h : NaN
+            } else {
+                ratio = Number(raw)
+            }
         } else if (IN_BROWSER) {
             ratio = window.innerWidth / window.innerHeight
         } else {
