@@ -490,28 +490,24 @@ describe('XyztoLab / LabtoXyz round-trip', () => {
 // ─── classToHex ──────────────────────────────────────────────────────────────
 
 describe('classToHex', () => {
-    // IMPLEMENTATION NOTE: classToHex calls `.replace('-', '')` on the full
-    // input string BEFORE splitting on space. This strips the FIRST hyphen
-    // in the entire string, not just from the modifier. Concretely:
+    // Fixed: the original code called `.replace('-', '')` on the FULL input
+    // string before splitting on space, which stripped the first hyphen from
+    // anywhere in the string (including within the color name). Concretely:
     //   'red lighten-1' → strip first '-' → 'red lighten1' → split on space
-    //   → colorName='red', colorModifier='lighten1'
-    // A palette keyed with 'lighten-1' will therefore NEVER match — the
-    // modifier arrives as 'lighten1'. This is a source bug.
-    // CANDIDATE TICKET: color.util.ts classToHex — .replace('-', '') strips
-    // the first hyphen from the entire string, silently preventing any
-    // modifier containing a dash (e.g. 'lighten-1') from ever matching the
-    // palette key. Should use .replace(/-/g, '') or only strip from the
-    // modifier part. File: packages/ds/src/utils/Commons/color.util.ts L426.
+    //   → colorModifier='lighten1', but palette key is 'lighten-1' → no match.
+    //
+    // Fix: split on space first, then strip ALL hyphens from the modifier part
+    // only (colorModifier?.replace(/-/g, '')), leaving the color name intact.
+    //   'red lighten-1' → split → ['red', 'lighten-1']
+    //   modifier 'lighten-1'.replace(/-/g,'') → 'lighten1'
+    //   palette key lookup: 'lighten1' matches palette['red']['lighten1']
 
     const palette = {
-        // Keys without dash work correctly (replace('-','') on 'colourname modkey'
-        // hits the space before the modifier in this case — no dash before the mod)
         red: { base: '#FF0000', 'lighten1': '#FF5555' },
         blue: { base: '#0000FF' }
     }
 
-    it('resolves base when modifier key does not contain a dash', () => {
-        // 'red lighten1' — no dash in modifier key, so the replace is harmless
+    it('resolves modifier key when no dash in modifier', () => {
         expect(classToHex('red lighten1', palette)).toBe('#FF5555')
     })
 
@@ -523,21 +519,28 @@ describe('classToHex', () => {
         expect(classToHex('purple', palette)).toBe('')
     })
 
-    it('returns empty string when color exists but modifier does not and no base', () => {
+    it('returns empty string when color exists but modifier does not match and no base', () => {
         const noPalette = { grey: { '500': '#9E9E9E' } }
         expect(classToHex('grey darken1', noPalette)).toBe('')
     })
 
-    it('BUG: a modifier with a dash (e.g. "lighten-1") never matches the palette key', () => {
-        // Documenting the source bug: the .replace('-', '') strips the first
-        // '-' in the full string, so 'lighten-1' becomes 'lighten1' and the
-        // palette key 'lighten-1' is never found. Falls back to base.
-        const paletteWithDashKey = {
-            red: { base: '#FF0000', 'lighten-1': '#FF5555' }
+    it('resolves a modifier with a dash (e.g. "lighten-1") by stripping the dash from the modifier only', () => {
+        // Fixed: the dash is now stripped only from the modifier part after the
+        // split, so 'lighten-1' → 'lighten1' and the palette key 'lighten1' matches.
+        const paletteWithDashModifier = {
+            red: { base: '#FF0000', 'lighten1': '#FF5555' }
         }
-        // Expected (correct) behaviour would be '#FF5555', but the bug means
-        // we actually get the base '#FF0000'.
-        expect(classToHex('red lighten-1', paletteWithDashKey)).toBe('#FF0000')
+        expect(classToHex('red lighten-1', paletteWithDashModifier)).toBe('#FF5555')
+    })
+
+    it('does not corrupt the color name when modifier contains a dash', () => {
+        // The color name must remain intact — only the modifier is stripped.
+        // Previously the fix candidate was `replace('-','')` on the full string
+        // which could eat a hyphen from the color name itself.
+        const palette2 = {
+            'deep-red': { base: '#CC0000', 'lighten1': '#FF4444' }
+        }
+        expect(classToHex('deep-red lighten-1', palette2)).toBe('#FF4444')
     })
 })
 

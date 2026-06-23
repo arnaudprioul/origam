@@ -1,5 +1,5 @@
 import { computed, isRef, Ref } from 'vue'
-import { PREDIFINED_DENSITY } from '../../consts'
+import { PREDEFINED_DENSITY } from '../../consts'
 
 import type { IDensityProps } from '../../interfaces'
 
@@ -17,7 +17,7 @@ export function useDensity (props: IDensityProps | Ref<number | string | undefin
 
         if (density == null) return classes
 
-        if (density && PREDIFINED_DENSITY.includes(density as TDensity)) {
+        if (density && PREDEFINED_DENSITY.includes(density as TDensity)) {
             classes.push(`${name}--density-${density}`)
         }
 

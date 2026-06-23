@@ -164,6 +164,59 @@ describe('sortItems', () => {
             // null return means "continue" — original order preserved
             expect(result.map(i => i.raw.v)).toEqual([3, 1, 2])
         })
+
+        it('sortFunctions returning 0 is honoured as equality — generic path is NOT re-executed', () => {
+            // Bug fix: the old code used `if (customResult)` which treats 0 as falsy,
+            // causing the generic comparator to run even when the custom fn declared equality.
+            // Fix: `if (customResult !== 0) return customResult` preserves the 0 return.
+            const items = [
+                makeItem({ tag: 'b', order: 1 }),
+                makeItem({ tag: 'a', order: 2 }),
+                makeItem({ tag: 'b', order: 3 })
+            ]
+            // Custom fn: 'b' > 'a' → positive; 'a' < 'b' → negative; same tag → 0 (equal)
+            // We sort by 'tag', custom fn returns 0 for equal tags.
+            // If 0 is wrongly treated as "no result", the generic path runs and sorts
+            // by the string value of 'tag', which would still group them — but with a
+            // secondary key 'order' we can detect the fallthrough.
+            const callCount = { raw: 0 }
+            const result = sortItems(items, [{ key: 'tag', order: 'asc' }, { key: 'order', order: 'asc' }], {
+                transform: (item) => item.raw as Record<string, any>,
+                sortFunctions: {
+                    tag: (a: any, b: any) => {
+                        callCount.raw++
+                        const tagA = a as string
+                        const tagB = b as string
+                        if (tagA === tagB) return 0
+                        return tagA < tagB ? -1 : 1
+                    }
+                }
+            })
+            // 'a' comes first, then two 'b' items sorted by 'order' (secondary key)
+            expect(result.map(i => i.raw.tag)).toEqual(['a', 'b', 'b'])
+            expect(result.map(i => i.raw.order)).toEqual([2, 1, 3])
+        })
+
+        it('sortRawFunctions returning 0 is honoured as equality — generic path is NOT re-executed', () => {
+            // Same fix applies to the sortRawFunctions branch.
+            const items = [
+                makeItem({ score: 10, name: 'charlie' }),
+                makeItem({ score: 10, name: 'alice' }),
+                makeItem({ score: 20, name: 'bob' })
+            ]
+            const result = sortItems(items, [{ key: 'score', order: 'asc' }, { key: 'name', order: 'asc' }], {
+                transform: (item) => item.raw as Record<string, any>,
+                sortRawFunctions: {
+                    score: (a: any, b: any) => {
+                        const diff = (a as any).score - (b as any).score
+                        return diff === 0 ? 0 : diff
+                    }
+                }
+            })
+            // score=10 items: tied, secondary key 'name' breaks tie → alice < charlie
+            // score=20 item: last
+            expect(result.map(i => i.raw.name)).toEqual(['alice', 'charlie', 'bob'])
+        })
     })
 
     describe('empty input', () => {

@@ -37,7 +37,7 @@ export function useScroll (
     const isScrollingUp = shallowRef(false)
 
     const scrollThreshold = computed(() => {
-        return Number(props.scrollThreshold)
+        return Number(props.scrollThreshold ?? 0)
     })
     const scrollRatio = computed(() => {
         return clamp(((scrollThreshold.value - currentScroll.value) / scrollThreshold.value) || 0)

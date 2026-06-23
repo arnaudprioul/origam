@@ -32,12 +32,15 @@ function mountWithFocus (focused: boolean | undefined, kebabName = 'origam-focus
 // ─── suite ──────────────────────────────────────────────────────────────────
 
 describe('useFocus — initial state', () => {
-    it('isFocused is falsy when prop is undefined (useVModel returns undefined for unset prop)', () => {
-        // useVModel without a defaultValue returns `undefined` when props.focused is undefined.
-        // The computed isFocused.value is therefore undefined, which is falsy.
-        // Components relying on this should pass `focused: false` or provide a default.
+    it('isFocused is false (boolean) when prop is undefined', () => {
+        // Fixed: useVModel is now called with `false` as the defaultValue.
+        // Previously, useVModel without a defaultValue returned `undefined` when
+        // props.focused was undefined — causing isFocused.value to be `undefined`
+        // (falsy but not strictly false). After the fix, it is guaranteed to be
+        // the boolean `false`, which is required for correct ARIA binding and
+        // strict equality checks in consumers.
         const { api } = mountWithFocus(undefined)
-        expect(api().isFocused.value).toBeFalsy()
+        expect(api().isFocused.value).toBe(false)
     })
 
     it('isFocused reflects the initial prop value when true', () => {

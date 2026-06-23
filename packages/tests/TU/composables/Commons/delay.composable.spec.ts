@@ -133,4 +133,25 @@ describe('useDelay', () => {
         vi.advanceTimersByTime(100)
         await expect(p).resolves.toBe(true)
     })
+
+    it('clearDelay cancels a pending delay started after destructuring', async () => {
+        // Regression test for the closure bug:
+        // previously, the `clearDelay` returned in the object was a snapshot
+        // of the initial `() => {}` no-op — reassigning the local variable
+        // inside `runDelay` did NOT update the returned reference, so calling
+        // the destructured `clearDelay()` was always a no-op.
+        // Fixed by storing the cancel function in a mutable container and
+        // exposing a stable wrapper that always calls the current cancel.
+        const cb = vi.fn()
+        const props: IDelayProps = { openDelay: 300 }
+        const { runOpenDelay, clearDelay } = useDelay(props, cb)
+
+        runOpenDelay()
+        // Cancel BEFORE the timer fires using the destructured clearDelay
+        clearDelay()
+
+        vi.advanceTimersByTime(300)
+        // cb must NOT have been called — clearDelay must have cancelled the timer
+        expect(cb).not.toHaveBeenCalled()
+    })
 })

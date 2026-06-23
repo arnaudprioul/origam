@@ -43,7 +43,7 @@ export const useChartGauge = (options: IUseChartGaugeOptions): {
         const min = options.min()
         const max = options.max()
         const value = options.value()
-        const thickness = options.thickness?.() ?? DEFAULT_THICKNESS
+        const thickness = Math.max(1, options.thickness?.() ?? DEFAULT_THICKNESS)
         const startAngle = options.startAngle?.() ?? DEFAULT_START_ANGLE
         const endAngle = options.endAngle?.() ?? DEFAULT_END_ANGLE
 

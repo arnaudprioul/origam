@@ -8,7 +8,7 @@ import { getCurrentInstanceName } from '../../utils'
  * useFocus
  ********************************************************/
 export function useFocus (props: IFocusProps, name = getCurrentInstanceName()) {
-    const isFocused = useVModel(props, 'focused')
+    const isFocused = useVModel(props, 'focused', false as unknown as IFocusProps['focused'])
     const focusClasses = computed(() => {
         return ({
             [`${name}--focused`]: isFocused.value

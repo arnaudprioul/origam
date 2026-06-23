@@ -78,7 +78,8 @@ export function useDragResizer (el: HTMLElement | undefined, value: Ref<number>,
 
         removeListeners.push(...[
             addWindowListener('touchmove', onTouchMove as (e: Event) => void, onUnmountedCleanupFns),
-            addWindowListener('touchend touchcancel', onTouchEnd, onUnmountedCleanupFns)
+            addWindowListener('touchend', onTouchEnd, onUnmountedCleanupFns),
+            addWindowListener('touchcancel', onTouchEnd, onUnmountedCleanupFns)
         ])
     }
 

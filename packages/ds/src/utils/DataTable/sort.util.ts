@@ -53,7 +53,7 @@ export function sortItems<T extends IInternalItem> (
 
                 if (customResult == null) continue
                 hasCustomResult = true
-                if (customResult) return customResult
+                if (customResult !== 0) return customResult
             }
 
             if (options?.sortFunctions?.[sortKey]) {
@@ -61,7 +61,7 @@ export function sortItems<T extends IInternalItem> (
 
                 if (customResult == null) continue
                 hasCustomResult = true
-                if (customResult) return customResult
+                if (customResult !== 0) return customResult
             }
 
             if (hasCustomResult) continue

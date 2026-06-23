@@ -24,6 +24,13 @@ export function transformListItems (props: IItemProps & { itemType?: string }, i
  * @param props …
  * @param item  …
  * @returns …
+ *
+ * @note When `props.itemValue` is `undefined`, `getPropertyFromItem` returns
+ * its fallback, which is `title` (the resolved title value). This is the
+ * intentional Vuetify-like behaviour: without an explicit `itemValue` mapping,
+ * the item's resolved title becomes both its display label and its selection
+ * value. This is NOT a bug — it enables string arrays to work without any
+ * additional configuration (e.g. `items: ['Alice', 'Bob']`).
  */
 export function transformListItem (props: Omit<IItemProps, 'items'>, item: any): IInternalListItem {
     const title = getPropertyFromItem(item, props.itemTitle, item)

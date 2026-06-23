@@ -30,7 +30,7 @@ export const CUSTOM_BORDER_RADIUS_REGEX = /^(?:var|calc|clamp|min|max|env)\(.*\)
 
 /**
  * Whitelist of named radius variants. Mirrors `useDensity` /
- * `PREDIFINED_DENSITY` so the composable can decide between
+ * `PREDEFINED_DENSITY` so the composable can decide between
  * `--rounded-{name}` (class output) and an inline `border-radius`
  * declaration.
  */

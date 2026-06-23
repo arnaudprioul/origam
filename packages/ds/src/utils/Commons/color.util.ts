@@ -422,8 +422,9 @@ export function classToHex (
     color: string,
     colors: Record<string, Record<string, string>>
 ): string {
-    const [colorName, colorModifier] = color
-        .toString().trim().replace('-', '').split(' ', 2) as Array<(string | undefined)>
+    const parts = color.toString().trim().split(' ', 2) as Array<(string | undefined)>
+    const colorName = parts[0]
+    const colorModifier = parts[1]?.replace(/-/g, '')
 
     let hexColor = ''
     if (colorName && colorName in colors) {
