@@ -37,13 +37,12 @@ describe('useScroll — scrollThreshold / scrollRatio', () => {
         expect(api().scrollThreshold.value).toBe(300)
     })
 
-    it('scrollThreshold is NaN when prop is undefined (Number(undefined) = NaN — candidate bug #DS-scroll-nan)', () => {
-        // BUG CANDIDAT: Number(undefined) retourne NaN, pas 0.
-        // La formule scrollRatio clamp(…||0) masque ce NaN côté ratio,
-        // mais scrollThreshold.value expose NaN directement aux consommateurs.
-        // Ticket de remédiation recommandé: Number(props.scrollThreshold ?? 0)
+    it('scrollThreshold defaults to 0 when prop is undefined', () => {
+        // Fixed: Number(props.scrollThreshold ?? 0) replaces Number(props.scrollThreshold).
+        // Number(undefined) returned NaN, exposing NaN directly to consumers.
+        // After the fix, an absent scrollThreshold yields 0 instead of NaN.
         const { api } = mountScroll({})
-        expect(api().scrollThreshold.value).toBeNaN()
+        expect(api().scrollThreshold.value).toBe(0)
     })
 
     it('scrollRatio is 1 when currentScroll === 0 and threshold > 0', () => {

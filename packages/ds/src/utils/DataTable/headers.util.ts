@@ -49,7 +49,7 @@ export function convertToInternalHeaders (items: Array<IDataTableHeader>) {
             ...defaultItem,
             key,
             value,
-            sortable: defaultItem.sortable ?? (defaultItem.key != null || !!defaultItem.sort),
+            sortable: defaultItem.sortable ?? (key != null || !!defaultItem.sort),
             children: defaultItem.children ? convertToInternalHeaders(defaultItem.children) : undefined
         }
 

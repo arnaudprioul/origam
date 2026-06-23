@@ -5,16 +5,15 @@ import { defer } from '../../utils'
  * useDelay
  ********************************************************/
 export function useDelay (props: IDelayProps, cb?: (value: boolean) => void) {
-    let clearDelay: (() => void) = () => {
-    }
+    const cancelRef: { current: (() => void) } = { current: () => {} }
 
     const runDelay = (isOpening: boolean) => {
-        clearDelay?.()
+        cancelRef.current()
 
         const delay = Number(isOpening ? props.openDelay : props.closeDelay)
 
         return new Promise(resolve => {
-            clearDelay = defer(delay, () => {
+            cancelRef.current = defer(delay, () => {
                 cb?.(isOpening)
                 resolve(isOpening)
             })
@@ -27,6 +26,10 @@ export function useDelay (props: IDelayProps, cb?: (value: boolean) => void) {
 
     const runCloseDelay = () => {
         return runDelay(false)
+    }
+
+    const clearDelay = () => {
+        cancelRef.current()
     }
 
     return {

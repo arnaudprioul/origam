@@ -141,21 +141,22 @@ describe('useIcon — alias resolution', () => {
         expect(getIconData().icon).toBe('close')
     })
 
-    it('unknown "$noexist" alias throws when computed is accessed', () => {
-        // NOTE: `useIcon` wraps resolution in a `computed`. The throw happens
-        // when `.value` is accessed, not when `useIcon` is called. We capture
-        // the ref and read `.value` synchronously inside the setup body.
-        let thrownError: unknown = null
+    it('unknown "$noexist" alias warns and falls back to an empty icon (no throw)', () => {
+        // `useIcon` no longer throws inside the computed (an uncatchable Vue
+        // error). For an unresolvable alias it warns once and falls back to the
+        // empty component icon, so reading `.value` is always safe.
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        let threw = false
+        let result: { component?: unknown } | null = null
         const iconProp = ref('$noexist')
 
         const Child = defineComponent({
             setup () {
                 const { iconData } = useIcon(iconProp)
                 try {
-                    // Reading .value triggers the computed and should throw.
-                    void iconData.value
-                } catch (e) {
-                    thrownError = e
+                    result = iconData.value as { component?: unknown }
+                } catch {
+                    threw = true
                 }
                 return () => h('div')
             }
@@ -167,7 +168,10 @@ describe('useIcon — alias resolution', () => {
             }
         })
         mount(Wrapper)
-        expect(thrownError).toBeInstanceOf(Error)
+        expect(threw).toBe(false)
+        expect(warn).toHaveBeenCalled()
+        expect(result?.component).toBeTruthy()
+        warn.mockRestore()
     })
 })
 

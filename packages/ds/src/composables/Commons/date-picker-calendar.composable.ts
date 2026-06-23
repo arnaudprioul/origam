@@ -126,7 +126,7 @@ export function useDatePickerCalendar (props: ICalendarProps) {
                     isAdjacent,
                     isHidden: isAdjacent && !props.showAdjacentMonths,
                     isStart,
-                    isSelected: model.value.some(value => adapter.isSameDay(date, value)),
+                    isSelected: model.value.some(value => adapter.isSameDay(date, adapter.date(value))),
                     isEnd,
                     isSame,
                     localized: adapter.format(date, 'dayOfMonth')

@@ -116,21 +116,14 @@ describe('OrigamBreadcrumb — items list', () => {
 // ---------------------------------------------------------------------------
 
 describe('OrigamBreadcrumb — last item semantics', () => {
-    // BUG CANDIDATE: OrigamBreadcrumb.vue normalises items with `isActive:
-    // isLastItem(index)` (line ~138). However IBreadcrumbItemProps only exposes
-    // the `active` prop (via IActiveProps), NOT `isActive`. As a result the
-    // last item never receives `active: true` via v-bind, so `useActive` never
-    // sets isActive=true, and aria-current="page" is never rendered from the
-    // items prop. The last item IS correctly marked `disabled: true`.
-    // This test documents the observed (broken) behaviour so a regression test
-    // can be written once the fix lands (rename `isActive` → `active` in the
-    // items normalisation or add `isActive` as a separate prop).
-    it.skip('KNOWN-BUG — last item should have aria-current="page" (isActive key mismatch in OrigamBreadcrumb)', () => {
+    it('last item has aria-current="page" via items normalisation (active prop)', () => {
+        // FIX: OrigamBreadcrumb.vue normalises items with `active: isLastItem(index)`
+        // (was `isActive:` — wrong key, silently ignored by IBreadcrumbItemProps/IActiveProps).
+        // After fix, the last item receives active=true, useActive sets isActive=true,
+        // and aria-current="page" is rendered correctly on the last breadcrumb item.
         const wrapper = mountBreadcrumb({ items: ITEMS_STRINGS })
         const items = wrapper.findAll('.origam-breadcrumb-item')
         const lastItem = items[items.length - 1]
-        // Expected once fix lands: 'page'
-        // Actual: undefined (isActive prop key not recognised by IBreadcrumbItemProps)
         expect(lastItem.attributes('aria-current')).toBe('page')
     })
 

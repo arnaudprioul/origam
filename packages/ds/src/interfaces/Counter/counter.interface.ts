@@ -1,4 +1,5 @@
 import type {
+    IBgColorProps,
     IBorderProps,
     IColorProps,
     ICommonsComponentProps,
@@ -11,7 +12,7 @@ import type {
     ITransitionComponentProps
 } from "../../interfaces"
 
-export interface ICounterProps extends ICommonsComponentProps, ITagProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IColorProps, IElevationProps, IDensityProps, ITransitionComponentProps {
+export interface ICounterProps extends ICommonsComponentProps, ITagProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IColorProps, IBgColorProps, IElevationProps, IDensityProps, ITransitionComponentProps {
     active?: boolean
     disabled?: boolean
     max?: string | number

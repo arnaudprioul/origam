@@ -97,11 +97,19 @@ describe('convertToInternalHeaders', () => {
         expect(result[0].sortable).toBe(true) // key != null → sortable defaults to true
     })
 
-    it('sets sortable false when the original key property is absent and no sort fn', () => {
-        // The source computes `key` from `value` when `item.key` is absent, but the
-        // `sortable` default checks `defaultItem.key != null` (original key, not the
-        // computed one) and `!!defaultItem.sort`. Both are falsy → sortable = false.
-        const headers = [{ title: 'No key', value: 'someValue' }] as any[]
+    it('sets sortable true when key is absent but value is a string (computed key is non-null)', () => {
+        // Bug fix: the `sortable` default now uses the COMPUTED `key` (derived from
+        // `value` when `item.key` is absent) rather than the original `defaultItem.key`.
+        // A header `{ value: 'email' }` gets key='email' → sortable should be true.
+        const headers = [{ title: 'Email', value: 'email' }] as any[]
+        const result = convertToInternalHeaders(headers)
+        expect(result[0].sortable).toBe(true)
+    })
+
+    it('sets sortable false when both key and value are absent (computed key is null)', () => {
+        // When neither key nor a string value is provided, the computed key is null
+        // → sortable defaults to false (no sort fn either).
+        const headers = [{ title: 'No key or value' }] as any[]
         const result = convertToInternalHeaders(headers)
         expect(result[0].sortable).toBe(false)
     })

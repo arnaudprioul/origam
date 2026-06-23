@@ -125,19 +125,40 @@ describe('useDragResizer — touch events', () => {
         expect(value.value).toBe(260)
     })
 
-    it.skip('touchend stops further touchmove updates — CANDIDATE BUG: addWindowListener is called with "touchend touchcancel" (space-separated), which browsers and jsdom treat as a single invalid event type — the touchend event is never actually listened for, so removeListeners is never called and touchmove keeps firing after touchend. See useDragResizer.composable.ts line 81: addWindowListener("touchend touchcancel", ...) should be two separate calls.', () => {
-        // BUG CANDIDATE (ticket-worthy):
-        // `addWindowListener('touchend touchcancel', onTouchEnd, …)` registers
-        // the listener with event type `'touchend touchcancel'` — a string with
-        // a space. Neither browsers nor jsdom support multi-event strings in
-        // addEventListener; the listener is silently dropped. As a result:
-        //   • `onTouchEnd` never fires on the real `touchend` event
-        //   • `removeListeners` is never cleared
-        //   • touchmove continues to update `value` even after touchend
-        //
-        // The fix (in the source) is to call addWindowListener twice:
+    it('touchend stops further touchmove updates', () => {
+        // Fixed: addWindowListener('touchend touchcancel', …) was a single call
+        // with a space-separated string — addEventListener does NOT support
+        // multi-event strings, so the listener was silently dropped and
+        // touchmove kept firing after touchend. The fix uses two separate calls:
         //   addWindowListener('touchend', onTouchEnd, …)
         //   addWindowListener('touchcancel', onTouchEnd, …)
+        const { value, el } = mountDragResizer({ initialValue: 200, min: 50, max: 500 })
+
+        el().dispatchEvent(makeTouchEvent('touchstart', 200))
+        window.dispatchEvent(makeTouchEvent('touchmove', 260))
+        expect(value.value).toBe(260)
+
+        // Fire touchend — must stop the drag session
+        window.dispatchEvent(makeTouchEvent('touchend', 260))
+
+        // Further touchmove events must NOT change the value
+        window.dispatchEvent(makeTouchEvent('touchmove', 350))
+        expect(value.value).toBe(260)
+    })
+
+    it('touchcancel also stops further touchmove updates', () => {
+        // Regression test for the second half of the fix:
+        // addWindowListener('touchcancel', onTouchEnd, …) must also be registered.
+        const { value, el } = mountDragResizer({ initialValue: 200, min: 50, max: 500 })
+
+        el().dispatchEvent(makeTouchEvent('touchstart', 200))
+        window.dispatchEvent(makeTouchEvent('touchmove', 270))
+        expect(value.value).toBe(270)
+
+        window.dispatchEvent(makeTouchEvent('touchcancel', 270))
+
+        window.dispatchEvent(makeTouchEvent('touchmove', 400))
+        expect(value.value).toBe(270)
     })
 
     it('touchmove clamps to max', () => {

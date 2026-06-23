@@ -157,27 +157,13 @@ describe('OrigamCounter — color props → utility classes / inline styles', ()
         expect(classes.some(c => c.includes('primary'))).toBe(true)
     })
 
-    // BUG-CANDIDATE: counterClasses includes colorClasses.value (from useBothColor),
-    // but in jsdom neither the class 'origam--bg-success' nor the inline style
-    // 'background-color: ...' appears on the rendered .origam-counter element,
-    // even though useBothColor() alone (in a minimal test component) correctly
-    // produces that class. The OrigamTransition wrapper (stubbed as <span>)
-    // intercepts the color resolution. Tracked as a DS bug candidate.
-    //
-    // Root cause hypothesis: counterStyles is bound as :style on the
-    // <component :is="tag"> element, but the stub OrigamTransition wraps it
-    // and the scoped transition doesn't propagate computed styles to the slot.
-    // The colorClasses / colorStyles are present in the computed but never
-    // reach the DOM in this stub configuration.
-    it.skip('bgColor="success" should produce origam--bg-success class or background-color style — SKIP: bug candidate (see note)', () => {
-        // This assertion documents the expected behaviour: either the class
-        // origam--bg-success or an inline background-color from colorStyles
-        // should be present on .origam-counter when bgColor="success".
-        // The composable useBothColor() produces the class correctly when
-        // used in isolation. The discrepancy exists in the Counter component
-        // rendering path within the OrigamTransition stub context.
-        // Filed as a DS bug candidate: "OrigamCounter bgColor prop silently
-        // ignored (no class, no inline style produced in the DOM)".
+    it('bgColor="success" produces origam--bg-success class on .origam-counter', () => {
+        // FIX: ICounterProps now extends IBgColorProps so bgColor is a recognised
+        // prop. useBothColor(toRef(props, 'bgColor'), …) now receives the value
+        // and emits the origam--bg-success utility class via colorClasses.
+        const wrapper = mountCounter({ props: { active: true, value: 0, bgColor: 'success' } })
+        const classes = wrapper.find('.origam-counter').classes()
+        expect(classes.some(c => c.includes('bg-success') || c.includes('success'))).toBe(true)
     })
 })
 

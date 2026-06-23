@@ -276,13 +276,20 @@ describe('useDatePickerCalendar — isDisabled', () => {
 // ---------------------------------------------------------------------------
 
 describe('useDatePickerCalendar — isSelected', () => {
-    // The `date` prop must hold actual Date objects (the DateAdapter's isSameDay
-    // calls .getDate() on values from the model array). ISO strings would cause
-    // "comparing.getDate is not a function" at runtime.
-
-    it('a date matching the model value is marked isSelected=true', () => {
+    it('a date matching the model value is marked isSelected=true (Date object)', () => {
         const jan15 = new Date(2026, 0, 15)
         const { api } = mountCalendar(baseProps({ date: [jan15] }))
+        const days = api().daysInMonth.value
+        const selected = days.find(d => d.isoDate.startsWith('2026-01-15'))
+        expect(selected?.isSelected).toBe(true)
+    })
+
+    it('ISO string in date prop does NOT crash and correctly marks isSelected=true (bug fix: adapter.date() normalises string)', () => {
+        // FIX: genDays previously called adapter.isSameDay(date, value) where
+        // value could be an ISO string — causing "getDate is not a function".
+        // Fix wraps value with adapter.date(value) before calling isSameDay.
+        const { api } = mountCalendar(baseProps({ date: ['2026-01-15' as unknown as Date] }))
+        expect(() => api().daysInMonth.value).not.toThrow()
         const days = api().daysInMonth.value
         const selected = days.find(d => d.isoDate.startsWith('2026-01-15'))
         expect(selected?.isSelected).toBe(true)

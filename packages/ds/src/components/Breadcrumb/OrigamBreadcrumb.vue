@@ -135,10 +135,10 @@
 	// they remain explicitly set on the item object.
 	const items = computed(() => {
 		return props.items.map((item, index) => {
-			return typeof item === 'string' ? {title: item, disabled: isLastItem(index)} : {
+			return typeof item === 'string' ? {title: item, disabled: isLastItem(index), active: isLastItem(index)} : {
 				...item,
 				disabled: isLastItem(index) || item.disabled,
-				isActive: isLastItem(index)
+				active: isLastItem(index)
 			}
 		}) as Array<IBreadcrumbItemProps>
 	})

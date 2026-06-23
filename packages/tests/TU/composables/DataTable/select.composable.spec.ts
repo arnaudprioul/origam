@@ -157,15 +157,10 @@ describe('provideSelection — SINGLE strategy', () => {
         expect(api().isSelected([makeItem('b')])).toBe(false)
     })
 
-    // CANDIDAT-BUG #single-select-empty-items
-    // packages/ds/src/consts/DataTable/select.const.ts — singleSelectStrategy.select
-    // When `items` is empty, `items[0]?.value` is `undefined`, so the strategy
-    // returns `new Set([undefined])` (set.size = 1 → someSelected = true).
-    // Expected: empty items should produce an empty selection.
-    // Observed: someSelected.value is true (Set contains `undefined`).
-    // Severity: low (caller shouldn't pass empty items to select, but the guard
-    // is missing).
-    it.skip('select([], true) with empty items → nothing selected [BUG: singleSelectStrategy adds undefined to Set]', () => {
+    it('select([], true) with empty items → nothing selected (guard against undefined in Set)', () => {
+        // Bug fix: singleSelectStrategy.select previously returned new Set([undefined])
+        // when items was empty (items[0]?.value === undefined → Set size 1, someSelected true).
+        // The fix uses `value && items.length > 0 ? [items[0]!.value] : []`.
         const { api } = mountSelection({ strategy: DATATABLE_SELECT_STRATEGY.SINGLE })
         api().select([], true)
         expect(api().someSelected.value).toBe(false)

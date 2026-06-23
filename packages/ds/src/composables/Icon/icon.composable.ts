@@ -27,7 +27,10 @@ export const useIcon = (props: Ref<TIcon | undefined>) => {
             }
         }
 
-        if (!icon) throw new Error(`Could not find aliased icon "${iconAlias}"`)
+        if (!icon) {
+            console.warn(`[Origam] useIcon: could not find aliased icon "${iconAlias}". Falling back to empty icon.`)
+            return {component: OrigamComponentIcon}
+        }
 
         if (Array.isArray(icon)) {
             return {
