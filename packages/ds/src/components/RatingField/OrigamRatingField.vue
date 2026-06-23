@@ -360,13 +360,5 @@
 			pointer-events: none;
 		}
 
-		&--hover {
-
-		}
-	}
-</style>
-<style>
-	:root {
-
 	}
 </style>

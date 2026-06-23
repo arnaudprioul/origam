@@ -88,7 +88,7 @@ export function forwardRefs<T extends Record<string, unknown>, U extends Ref<HTM
                     const ref = queue.shift()
                     const descriptor = getDescriptor(ref.value, key)
                     if (descriptor) return descriptor
-                    const childRefs = ref.value && (ref.value as any)[FORWARD_REFS]
+                    const childRefs = ref.value && ref.value[FORWARD_REFS]
                     if (childRefs) queue.push(...childRefs)
                 }
             }

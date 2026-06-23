@@ -83,7 +83,7 @@ export function useGroupedItems<T extends IDataTableGroupableItem> (
     const flatItems = computed(() => {
         if (!groupBy.value.length) return items.value
 
-        const groupedItems = groupItems(items.value as Array<T>, groupBy.value.map(item => item.key))
+        const groupedItems = groupItems(items.value, groupBy.value.map(item => item.key))
 
         return flattenItems(groupedItems, opened.value)
     })

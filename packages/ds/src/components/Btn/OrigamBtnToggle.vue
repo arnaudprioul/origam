@@ -120,15 +120,3 @@
 	})
 </script>
 
-<style
-		lang="scss"
-		scoped
->
-
-</style>
-
-<style>
-	:root {
-
-	}
-</style>

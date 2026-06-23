@@ -272,10 +272,6 @@
 			pointer-events: none;
 		}
 
-		&--link {
-
-		}
-
 		&--density-comfortable {
 			--origam-breadcrumb-item---density: -8px;
 		}

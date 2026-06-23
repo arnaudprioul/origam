@@ -6,7 +6,7 @@ import type { IOrigamNuxtRuntimeConfig } from '../interfaces'
 
 import { createOrigam } from '../origam'
 
-import type { TMode, TModeResolved, TTheme } from '../types'
+import type { TMode, TTheme } from '../types'
 
 import { defineNuxtPlugin, useCookie, useRuntimeConfig } from '#app'
 
@@ -76,8 +76,8 @@ export default defineNuxtPlugin({
             [themeApi.theme, themeApi.resolvedMode],
             ([brand, mode]) => {
                 origam._defaultsRef.value = origam._activeDefaultsFor(
-                    brand === 'auto' ? '' : (brand as string),
-                    mode as TModeResolved
+                    brand === 'auto' ? '' : brand,
+                    mode
                 )
             },
             { immediate: true }

@@ -644,8 +644,3 @@
 	}
 </style>
 
-<style>
-	:root {
-
-	}
-</style>

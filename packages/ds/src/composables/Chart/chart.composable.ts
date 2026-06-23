@@ -91,7 +91,7 @@ const resolveColor = (raw: TIntent | string | undefined): string => {
     // `feedback--*---bg` tokens rather than the non-existent
     // `action--success---bg`.
     if (isIntent(raw)) {
-        return intentBgExpr(raw as TIntent, 'default')
+        return intentBgExpr(raw, 'default')
     }
     return 'currentColor'
 }
@@ -117,7 +117,7 @@ const resolveCategoryX = (
 ): number => {
     const idx = typeof value === 'string'
         ? categories.indexOf(value)
-        : (value as number)
+        : value
     const slots = Math.max(1, categories.length)
     if (slots === 1) return (plotX0 + plotX1) / 2
     const clamped = Math.max(0, Math.min(slots - 1, idx))
