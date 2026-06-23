@@ -144,6 +144,7 @@
 				<origam-snackbar
 						v-model="emitOpen"
 						text="Watch the Events tab."
+						:timeout="-1"
 						@update:model-value="logEvent('update:modelValue', $event)"
 				/>
 			</div>
@@ -152,7 +153,7 @@
 		<Variant title="Slots - Default">
 			<div style="padding: 16px; position: relative; min-height: 120px;">
 				<origam-btn text="Show" @click="defaultSlotOpen = true"/>
-				<origam-snackbar v-model="defaultSlotOpen">
+				<origam-snackbar v-model="defaultSlotOpen" :timeout="-1">
 					<span><strong>Custom</strong> default slot content</span>
 				</origam-snackbar>
 			</div>
@@ -161,7 +162,7 @@
 		<Variant title="Slots - Prepend">
 			<div style="padding: 16px; position: relative; min-height: 120px;">
 				<origam-btn text="Show with prepend" @click="prependSlotOpen = true"/>
-				<origam-snackbar v-model="prependSlotOpen" text="With prepend icon.">
+				<origam-snackbar v-model="prependSlotOpen" text="With prepend icon." :timeout="-1">
 					<template #prepend>
 						<origam-icon :icon="MDI_ICONS.HEART"/>
 					</template>
@@ -172,7 +173,7 @@
 		<Variant title="Slots - Text">
 			<div style="padding: 16px; position: relative; min-height: 120px;">
 				<origam-btn text="Show custom text" @click="textSlotOpen = true"/>
-				<origam-snackbar v-model="textSlotOpen">
+				<origam-snackbar v-model="textSlotOpen" :timeout="-1">
 					<template #text>
 						<strong>Custom</strong> text slot content.
 					</template>
@@ -183,7 +184,7 @@
 		<Variant title="Slots - Action">
 			<div style="padding: 16px; position: relative; min-height: 120px;">
 				<origam-btn text="Show with action" @click="actionSlotOpen = true"/>
-				<origam-snackbar v-model="actionSlotOpen" text="Item deleted.">
+				<origam-snackbar v-model="actionSlotOpen" text="Item deleted." :timeout="-1">
 					<template #action="{ isActive }">
 						<origam-btn
 								text="Undo"

@@ -450,7 +450,7 @@ test.describe('OrigamSelect', () => {
             expect(hasLinkClass).toBe(true)
         })
 
-        test('dropdown list items use the 48px menu height', async ({ page }) => {
+        test('dropdown list items render at the default list-item height (40px)', async ({ page }) => {
             await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
@@ -461,7 +461,7 @@ test.describe('OrigamSelect', () => {
 
             const itemHeight = await sandbox.locator('.origam-list-item').first()
                 .evaluate(el => el.getBoundingClientRect().height)
-            expect(itemHeight).toBe(48)
+            expect(itemHeight).toBe(40)
         })
 
         test('list items have a visible hover state layer', async ({ page }) => {
