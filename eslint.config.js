@@ -95,7 +95,12 @@ export default typescriptEslint.config(
 	{
 		files: ['**/*.spec.ts', '**/*.spec.js', '**/*.cy.ts', '**/*.test.ts'],
 		rules: {
-			"@typescript-eslint/no-unused-vars": "warn",
+			// Specs frequently declare harness vars used only for their mount
+			// side-effect (destructured `{ wrapper }`, an assigned-but-asserted
+			// state flag) — chasing these in throwaway scaffolding adds churn and
+			// risks breaking green tests. Off for spec files; product-code unused
+			// vars are still caught by the base config.
+			"@typescript-eslint/no-unused-vars": "off",
 			// Composable/SSR specs define throwaway harness components inline
 			// (multiple `defineComponent({...})` per file) to exercise a hook
 			// under different setups. The one-component-per-file rule targets
@@ -105,7 +110,15 @@ export default typescriptEslint.config(
 			// array (`props: ['color']`) just to forward a value into a hook —
 			// runtime prop typing adds noise with no value in throwaway test
 			// scaffolding. Off for spec files.
-			"vue/require-prop-types": "off"
+			"vue/require-prop-types": "off",
+			// Harness components are named for the role they play in a single
+			// test (`Root`, `Leaf`, `Host`) — multi-word names add no value in
+			// throwaway scaffolding. Off for spec files.
+			"vue/multi-word-component-names": "off",
+			// Specs occasionally re-`require()` a module mid-test to reset its
+			// internal singleton state between cases — a legitimate test-only
+			// pattern. Off for spec files.
+			"@typescript-eslint/no-require-imports": "off"
 		}
 	},
 	{
