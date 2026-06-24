@@ -20,6 +20,7 @@ import type {
 } from '../../interfaces'
 
 import type {
+    TChartSmoothing,
     TChartStacking,
     TChartType,
     TIntent
@@ -761,7 +762,7 @@ export const useChart = (options: IUseChartOptions) => {
                 const sliceSeries: IChartSeries = {
                     ...s,
                     name: labelStr,
-                    data: [entry],
+                    data: [entry] as unknown as IChartSeries['data'],
                     visible: !hidden.has(labelStr)
                 }
                 return {
@@ -892,22 +893,6 @@ export const useChart = (options: IUseChartOptions) => {
     })
 
     /**
-     * Compute pie / donut total (sum of first series, or first
-     * column when categories drive separate slices). Pie charts
-     * only use `series[0]` — extra series are silently ignored.
-     */
-    const _pieTotal = computed<number>(() => {
-        const first = options.series()[0]
-        if (!first) return 0
-        let total = 0
-        for (const entry of first.data) {
-            const y = typeof entry === 'number' ? entry : entry.y
-            if (y > 0) total += y
-        }
-        return total
-    })
-
-    /**
      * Heart of the engine. One render descriptor per visible
      * series (or per data point for charts that emit one shape
      * per value).
@@ -917,7 +902,6 @@ export const useChart = (options: IUseChartOptions) => {
         const series = options.series()
         const cats = categories.value
         const { x0, x1, y0, y1, cx, cy } = plot.value
-        const _baseline = scales.value.y(Math.max(0, yRange.value.min))
         const smoothing = options.smoothing()
 
         const pieSeriesList = series.filter((s) => effectiveType(s) === 'pie' || effectiveType(s) === 'donut')

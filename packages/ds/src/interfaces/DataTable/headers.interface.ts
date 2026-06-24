@@ -2,6 +2,7 @@ import type { ComputedRef, Ref, UnwrapRef } from 'vue'
 import { ALIGN } from '../../enums'
 import type {
     IAdjacentEmits,
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IDataTableItem,
@@ -11,7 +12,6 @@ import type {
 } from '../../interfaces'
 
 import type {
-    TAlign,
     TDataTableCompareFunction,
     TDataTableHeaderCell,
     TFilterFunction,
@@ -47,7 +47,7 @@ export interface IDataTableHeadersCellProps extends ICommonsComponentProps, ICol
     headers: Array<Array<IInternalDataTableHeader>>
 }
 
-export interface IDataTableHeaderCellProps extends ICommonsComponentProps, IHeaderCellProps, IColorProps {
+export interface IDataTableHeaderCellProps extends ICommonsComponentProps, IHeaderCellProps, IColorProps, IBgColorProps {
     column: IInternalDataTableHeader
     x: number
     y: number
@@ -61,7 +61,7 @@ export interface IDataTableHeadersSlotProps {
     allSelected: UnwrapRef<ComputedRef<boolean>>
     toggleSort: (column: IInternalDataTableHeader) => void
     selectAll: (value: boolean) => void
-    getSortIcon: (column: IInternalDataTableHeader) => TIcon
+    getSortIcon: (column: IInternalDataTableHeader) => TIcon | undefined
     isSorted: (column: IInternalDataTableHeader) => boolean
 }
 
@@ -76,7 +76,7 @@ export interface IDataTableHeader<T = any> {
     title?: string
 
     fixed?: boolean
-    align?: Omit<TAlign, ALIGN.BASELINE | ALIGN.STRETCH>
+    align?: ALIGN.START | ALIGN.END | ALIGN.CENTER
 
     width?: number | string
     minWidth?: string

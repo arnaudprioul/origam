@@ -736,7 +736,7 @@
 	const rangeSelectorButtons = computed<Array<IChartRangeSelectorButton>>(() => {
 		const custom = props.rangeSelector?.buttons
 		if (custom && custom.length) return custom
-		return CHART_RANGE_SELECTOR_DEFAULT_BUTTONS as Array<IChartRangeSelectorButton>
+		return CHART_RANGE_SELECTOR_DEFAULT_BUTTONS as unknown as Array<IChartRangeSelectorButton>
 	})
 
 	const onRangeSelectorSelect = (index: number, start: number, end: number): void => {

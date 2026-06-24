@@ -6,13 +6,14 @@ import type { IOrigamNuxtRuntimeConfig } from '../interfaces'
 
 import { createOrigam } from '../origam'
 
-import type { TMode, TTheme } from '../types'
+import type { TMode, TTheme } from '../types/Theme/theme.type'
 
 import { defineNuxtPlugin, useCookie, useRuntimeConfig } from '#app'
+import type { NuxtApp } from '#app'
 
 export default defineNuxtPlugin({
     name: 'origam:client',
-    setup (nuxtApp) {
+    setup (nuxtApp: NuxtApp) {
         const runtimeConfig = useRuntimeConfig().public as { origam: IOrigamNuxtRuntimeConfig }
         const config = runtimeConfig.origam
 

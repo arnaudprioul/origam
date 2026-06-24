@@ -101,6 +101,8 @@
 
 	import { bracketSurfaceVars, resolveBracketForeground } from '../../utils/Bracket/bracket-surface.util'
 
+	import type { IBracketSurfaceInput } from '../../utils/Bracket/bracket-surface.util'
+
 	import type { IBracketCompetitor, IBracketMatch, IBracketMatchProps } from '../../interfaces'
 
 	const props = withDefaults(defineProps<IBracketMatchProps>(), {
@@ -196,7 +198,7 @@
 	})
 
 	const handleMatchClick = (event: MouseEvent) => {
-		onActive(event)
+		onActive()
 
 		const target = event.target as HTMLElement | null
 		if (target?.closest('.origam-bracket-competitor')) return
@@ -298,10 +300,10 @@
 	})
 
 	const matchStyles = computed<StyleValue>(() => {
-		const textColor = autoTextColor.value ?? resolveBracketForeground(props.color)
+		const textColor = autoTextColor.value ?? resolveBracketForeground(props.color as string | null | undefined)
 
 		return [
-			bracketSurfaceVars(surfaceInput.value),
+			bracketSurfaceVars(surfaceInput.value as IBracketSurfaceInput),
 			textColor ? {'--origam-bracket---color': textColor, color: textColor} : {},
 			paddingStyles.value,
 			marginStyles.value,

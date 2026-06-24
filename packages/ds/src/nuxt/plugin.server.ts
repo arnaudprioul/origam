@@ -12,9 +12,10 @@ import {
     ORIGAM_THEME_AUTO
 } from '../consts'
 
-import type { TMode, TTheme } from '../types'
+import type { TMode, TTheme } from '../types/Theme/theme.type'
 
 import { defineNuxtPlugin, useCookie, useHead, useRequestHeaders, useRuntimeConfig } from '#app'
+import type { NuxtApp } from '#app'
 
 /**
  * Resolve the brand theme SSR-side. The brand axis is driven exclusively by
@@ -74,7 +75,7 @@ function resolveServerMode (cookieValue: string | null | undefined, config: IOri
 export default defineNuxtPlugin({
     name: 'origam:server',
     enforce: 'pre',
-    setup (nuxtApp) {
+    setup (nuxtApp: NuxtApp) {
         const runtimeConfig = useRuntimeConfig().public as { origam: IOrigamNuxtRuntimeConfig }
         const config = runtimeConfig.origam
 

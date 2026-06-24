@@ -361,7 +361,7 @@
 		 * `undefined.toUpperCase()`.
 		 */
 		if (props.mode !== 'choropleth') return []
-		return series.data as Array<IChartMapChoroplethDatum>
+		return series.data as unknown as Array<IChartMapChoroplethDatum>
 	})
 
 	const choroplethMap = computed<Map<string, IChartMapChoroplethDatum>>(() => {
@@ -417,7 +417,7 @@
 		if (!isRoutesMode.value) return []
 		const series = props.series?.[0]
 		if (!series?.data?.length) return []
-		return series.data as Array<IChartMapRouteDatum>
+		return series.data as unknown as Array<IChartMapRouteDatum>
 	})
 
 	const computedRoutes = computed<Array<IChartMapRoute>>(() => {

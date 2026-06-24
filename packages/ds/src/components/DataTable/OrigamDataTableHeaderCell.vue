@@ -103,9 +103,9 @@
 
 	const headerProps = mergeProps(props.headerProps ?? {})
 
-	const sortedItems = (column: IDataTableSortItem) => {
+	const sortedItems = (column: IInternalDataTableHeader) => {
 		return sortBy.value.findIndex((x: IDataTableSortItem) => {
-			return x.key === column.key + 1
+			return x.key === column.key! + 1
 		})
 	}
 

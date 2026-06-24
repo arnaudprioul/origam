@@ -1,4 +1,5 @@
 import type {
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IDensityProps,
@@ -10,6 +11,6 @@ import type {
 
 import type { TIcon } from '../../types'
 
-export interface IBreadcrumbDividerProps extends ICommonsComponentProps, ITagProps, IPaddingProps, IMarginProps, IDensityProps, IColorProps, ISizeProps {
+export interface IBreadcrumbDividerProps extends ICommonsComponentProps, ITagProps, IPaddingProps, IMarginProps, IDensityProps, IColorProps, IBgColorProps, ISizeProps {
     divider: string | TIcon
 }

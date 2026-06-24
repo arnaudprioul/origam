@@ -3,7 +3,10 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "#app": ["./src/nuxt/nuxt-app.shim.d.ts"]
+    }
   },
   "include": [
     "src/**/*.ts",

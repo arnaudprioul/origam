@@ -23,6 +23,6 @@ export interface IDataTableRowProps extends ICommonsComponentProps, IDisplayProp
 
 /** Emits fired by `<OrigamDataTableRow>` — row-level expand / select. */
 export interface IDataTableRowEmits {
-    (e: 'expand', payload: { item: IDataTableItem, value: boolean }): void
-    (e: 'select', payload: { item: IDataTableItem, value: boolean }): void
+    (e: 'expand', payload?: { item: IDataTableItem, value: boolean }): void
+    (e: 'select', payload?: { item: IDataTableItem, value: boolean }): void
 }

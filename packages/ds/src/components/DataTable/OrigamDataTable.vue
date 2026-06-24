@@ -80,7 +80,7 @@
 						<origam-data-table-rows
 								ref="origamDataTableRowsRef"
 								:items="paginatedItems"
-								v-bind="{ ...attrs, ...dataTableRowsProps }"
+								v-bind="dataTableRowsBindProps"
 						>
 						</origam-data-table-rows>
 					</slot>
@@ -312,6 +312,14 @@
 
 	const dataTableRowsProps = computed(() => {
 		return origamDataTableRowsRef.value?.filterProps(props, ['class', 'style', 'id', 'items'])
+	})
+
+	// Merges fallthrough attrs with the filtered rows props.
+	// Typed as `Record<string, unknown>` to prevent TS from widening
+	// `class`/`style` to include `null | false` (from `useAttrs()`)
+	// which `OrigamDataTableRows` does not accept.
+	const dataTableRowsBindProps = computed((): Record<string, unknown> => {
+		return { ...attrs, ...dataTableRowsProps.value } as Record<string, unknown>
 	})
 
 	const dataTableFooterProps = computed(() => {

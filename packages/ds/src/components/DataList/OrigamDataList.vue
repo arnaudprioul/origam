@@ -127,7 +127,7 @@
 
 							<template v-if="item.text">
 								<template
-										v-for="(data, i) in item.text"
+										v-for="(data, i) in getTextItems(item)"
 										:key="i"
 								>
 									<origam-data-text
@@ -193,7 +193,8 @@
 		IDataItem,
 		IDataListKVItem,
 		IDataListKVItemValueComponent,
-		IDataListProps
+		IDataListProps,
+		IDataTextProps
 	} from "../../interfaces"
 	// `isDataListKVItemValueComponent` is a type-guard FUNCTION — it
 	// belongs in `src/utils/`, not `src/interfaces/`, per the global
@@ -239,12 +240,16 @@
 		return !isEmpty(props.items)
 	})
 
-	// In avatar mode we forward `props.items` as-is to preserve the
-	// historical v-for iteration semantics (Vue handles both arrays and
-	// keyed objects natively, exposing the key as the second arg).
-	const avatarItems = computed(() => {
-		if (isKvMode.value || !props.items) return [] as Array<IDataItem>
-		return props.items as Array<IDataItem> | { [key: string]: IDataItem }
+	// In avatar mode we normalise to an `Array<IDataItem>` so that the
+	// v-for in the template always iterates a typed array (not an
+	// `Array | object` union that TypeScript widens to `unknown`).
+	// Object inputs are flattened to their values; the iteration order
+	// follows `Object.values` insertion order, consistent with JSON.
+	const avatarItems = computed<Array<IDataItem>>(() => {
+		if (isKvMode.value || !props.items) return []
+		return Array.isArray(props.items)
+			? (props.items as Array<IDataItem>)
+			: (Object.values(props.items) as Array<IDataItem>)
 	})
 
 	// KV mode normalizes to an array — we need a deterministic order
@@ -271,6 +276,18 @@
 	// Template helpers — kept thin to avoid TS-cast gymnastics inside
 	// the `<template>` block (Volar tolerates `as` casts but they
 	// muddy the SFC IR; explicit functions read better in the markup).
+
+	// Normalises `IDataItem.text` (which can be an array or a keyed
+	// object) to a plain `Array<IDataTextProps>` so the v-for in the
+	// template always iterates a typed array and the spread `{...data}`
+	// never receives an `unknown` element.
+	function getTextItems (item: IDataItem): Array<IDataTextProps> {
+		if (!item.text) return []
+		return Array.isArray(item.text)
+			? (item.text as Array<IDataTextProps>)
+			: (Object.values(item.text) as Array<IDataTextProps>)
+	}
+
 	function getComponentTag (v: IDataListKVItem["value"]): string | object {
 		return (v as IDataListKVItemValueComponent).component
 	}
