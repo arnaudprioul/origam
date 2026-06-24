@@ -1,13 +1,4 @@
-import type { TTheme } from 'origam/types'
-
-/**
- * Color mode for OrigamThemeProvider.
- * DS gap: `TMode` from `origam/types` currently resolves to the Commons mode
- * enum ('horizontal' | 'vertical' | 'shift') due to export ordering in
- * dist/types/index.d.ts (line 61 < 213). The theme TMode ('auto'|'light'|'dark')
- * is re-declared here as a local type until the DS dist is rebuilt.
- */
-export type TColorMode = 'auto' | 'light' | 'dark'
+import type { TMode, TTheme } from 'origam/types'
 
 export interface IThemeChip {
     key: string
@@ -27,7 +18,7 @@ export interface IThemePreviewTile {
      */
     theme: TTheme
     /** Color mode applied via <OrigamThemeProvider mode>. */
-    mode: TColorMode
+    mode: TMode
 }
 
 /**
@@ -39,10 +30,6 @@ export interface IThemePreviewTile {
  * DS gap: brand-a and brand-b themes are not registered in
  * packages/ds/tokens/$themes.json — these overrides are a temporary
  * decorative layer until those themes exist.
- *
- * DS gap: TMode from origam/types currently resolves to the Commons orientation
- * enum due to export ordering in dist/types/index.d.ts. Using local TColorMode
- * until DS is rebuilt. See themes-showcase.interface.ts for details.
  */
 export interface IThemePreviewTileDecorative extends IThemePreviewTile {
     /** Override the tile surface color (null = use DS theme surface token). */

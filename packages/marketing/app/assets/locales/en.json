@@ -633,8 +633,34 @@
       "label": "Theme name",
       "placeholder": "my-theme"
     },
+    "label": {
+      "label": "Display label",
+      "placeholder": "My theme"
+    },
+    "mode": {
+      "label": "Color mode",
+      "light": "Light",
+      "dark": "Dark",
+      "auto": "Auto",
+      "editing": "Editing",
+      "preview_only": "Preview only",
+      "tab_label": "Edit color mode"
+    },
     "reset": "Reset",
     "validate": "Validate & export",
+    "export_json": "Export JSON",
+    "preset": {
+      "origam_light": "Origam light",
+      "origam_dark": "Origam dark"
+    },
+    "seed": {
+      "title": "Start from an existing theme",
+      "preset_label": "Seed from a DS preset",
+      "import_label": "Paste a theme module or JSON",
+      "import_placeholder": "Paste a theme module or a JSON object…",
+      "import_action": "Import",
+      "import_error": "Could not parse that theme — paste a valid IOrigamTheme module or JSON object."
+    },
     "nav": {
       "label": "Components"
     },
@@ -642,10 +668,14 @@
       "legend": "Default props"
     },
     "tokens": {
-      "legend": "CSS tokens"
+      "legend": "CSS tokens",
+      "legend_light": "CSS tokens — Light",
+      "legend_dark": "CSS tokens — Dark"
     },
     "preview": {
-      "unavailable": "Live preview unavailable for this component."
+      "unavailable": "Live preview unavailable for this component.",
+      "light_label": "Light",
+      "dark_label": "Dark"
     },
     "output": {
       "title": "Generated theme"

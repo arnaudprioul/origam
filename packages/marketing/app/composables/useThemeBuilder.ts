@@ -1,17 +1,25 @@
-import { computed, reactive } from 'vue'
+import { computed, reactive, watch } from 'vue'
 
 import {
     CORE_THEME_SLUGS,
+    THEME_BUILDER_DEFAULT_LABEL,
+    THEME_BUILDER_DEFAULT_MODE,
     THEME_BUILDER_DEFAULT_NAME,
-    THEME_BUILDER_PREVIEW_ADAPTERS
+    THEME_BUILDER_PREVIEW_ADAPTERS,
+    THEME_BUILDER_STORAGE_KEY
 } from '~/consts/theme-builder.const'
+import { THEME_BUILDER_PRESETS } from '~/consts/theme-builder-presets.const'
 import { THEME_BUILDER_TOKENS } from '~/consts/theme-builder-tokens.const'
 import type {
+    IThemeBuilderPreset,
     IThemeBuilderPreviewAdapter,
     IThemeBuilderState,
-    IThemeBuilderToken
+    IThemeBuilderToken,
+    TEditMode
 } from '~/interfaces/theme-builder.interface'
 import type { IComponentPlaygroundControl } from '~/interfaces/components-catalog.interface'
+import type { IOrigamTheme } from 'origam/interfaces'
+import type { TMode } from 'origam/types'
 
 /**
  * useThemeBuilder — engine for the /theming visual theme builder.
@@ -22,6 +30,13 @@ import type { IComponentPlaygroundControl } from '~/interfaces/components-catalo
  * theme). The composable owns the diff-only state, the live preview props per
  * slug, the serialised TS string, and the client-side download. Components stay
  * thin — they only render what the engine exposes.
+ *
+ * DUAL-MODE (A4+A5):
+ * - `cssVars` is split by mode: `state.cssVars.light` / `state.cssVars.dark`.
+ * - `defaults` (component prop overrides) are GLOBAL — not split by mode.
+ * - `activeMode` drives which mode is currently edited in the UI.
+ * - The export emits an `IOrigamTheme[]` array (one entry per mode), each with
+ *   its own `cssVars` at the root, plus the global `component` defaults.
  */
 
 const allDocs = import.meta.glob('~/consts/components/*.const.ts', { eager: true }) as Record<
@@ -70,7 +85,7 @@ function camelCaseName (raw: string): string {
     const cleaned = raw.trim().replace(/[^a-zA-Z0-9]+/g, ' ').trim()
     if (!cleaned) return 'myTheme'
     const parts = cleaned.split(' ')
-    const head = parts[0].toLowerCase()
+    const head = (parts[0] ?? '').toLowerCase()
     const tail = parts.slice(1).map(p => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase())
     const id = [head, ...tail].join('')
     return /^[a-zA-Z]/.test(id) ? id : `theme${id.charAt(0).toUpperCase()}${id.slice(1)}`
@@ -92,13 +107,35 @@ function serialiseValue (value: unknown): string {
     return JSON.stringify(value)
 }
 
+/**
+ * Parse a theme from either raw JSON or a TS module that exports an
+ * `IOrigamTheme` object literal (or an array of them). Returns `null` when
+ * nothing parseable is found. Throws are caught by the caller.
+ */
+function parseThemeSource (text: string): unknown {
+    const trimmed = text.trim()
+    if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+        return JSON.parse(trimmed)
+    }
+    const start = trimmed.indexOf('{')
+    const end = trimmed.lastIndexOf('}')
+    if (start === -1 || end === -1 || end <= start) return null
+    const literal = trimmed.slice(start, end + 1)
+
+    const factory = new Function(`"use strict"; return (${literal});`)
+    return factory()
+}
+
 export function useThemeBuilder () {
     const entries = buildEntries()
 
     const state = reactive<IThemeBuilderState>({
         name: THEME_BUILDER_DEFAULT_NAME,
+        label: THEME_BUILDER_DEFAULT_LABEL,
+        mode: THEME_BUILDER_DEFAULT_MODE,
+        activeMode: 'light',
         defaults: {},
-        cssVars: {}
+        cssVars: { light: {}, dark: {} }
     })
 
     /** Default prop value for a control (used to compute the diff). */
@@ -108,7 +145,11 @@ export function useThemeBuilder () {
         return ctrl?.defaultValue ?? ''
     }
 
-    /** Default token value (used to compute the diff). */
+    /**
+     * Default token value for a given mode. Falls back to the light default
+     * when no dark-specific default is registered (since most tokens are
+     * identical by default in light and dark seeds).
+     */
     const defaultToken = (cssVar: string): string => {
         for (const entry of entries) {
             const tok = entry.tokens.find(t => t.cssVar === cssVar)
@@ -139,25 +180,31 @@ export function useThemeBuilder () {
         state.defaults[key][prop] = value
     }
 
-    /** Current value of a token (edited or default). */
-    const tokenValue = (cssVar: string): string => {
-        const edited = state.cssVars[cssVar]
+    /** Current value of a token for a given mode (edited or default). */
+    const tokenValue = (mode: TEditMode, cssVar: string): string => {
+        const edited = state.cssVars[mode][cssVar]
         return edited !== undefined ? edited : defaultToken(cssVar)
     }
 
-    /** Set a token value, storing only when it differs from the theme default. */
-    const setToken = (cssVar: string, value: string): void => {
+    /** Set a token value for a given mode, storing only when it differs from the theme default. */
+    const setToken = (mode: TEditMode, cssVar: string, value: string): void => {
         if (value === defaultToken(cssVar)) {
-            delete state.cssVars[cssVar]
+            delete state.cssVars[mode][cssVar]
             return
         }
-        state.cssVars[cssVar] = value
+        state.cssVars[mode][cssVar] = value
     }
 
-    /** Reset all edits. */
+    /** Reset all edits AND the persisted storage entry. */
     const reset = (): void => {
         Object.keys(state.defaults).forEach(k => delete state.defaults[k])
-        Object.keys(state.cssVars).forEach(k => delete state.cssVars[k])
+        Object.keys(state.cssVars.light).forEach(k => delete state.cssVars.light[k])
+        Object.keys(state.cssVars.dark).forEach(k => delete state.cssVars.dark[k])
+        state.name = THEME_BUILDER_DEFAULT_NAME
+        state.label = THEME_BUILDER_DEFAULT_LABEL
+        state.mode = THEME_BUILDER_DEFAULT_MODE
+        state.activeMode = 'light'
+        clearStorage()
     }
 
     /** Props passed to the live `<component :is>` for a given slug. */
@@ -173,13 +220,13 @@ export function useThemeBuilder () {
         return out
     }
 
-    /** Scoped CSS-var overrides for a slug's preview wrapper. */
-    const previewStyle = (slug: string): Record<string, string> => {
+    /** Scoped CSS-var overrides for a slug's preview wrapper, scoped to a mode. */
+    const previewStyle = (slug: string, mode: TEditMode): Record<string, string> => {
         const entry = entries.find(e => e.slug === slug)
         if (!entry) return {}
         const out: Record<string, string> = {}
         for (const tok of entry.tokens) {
-            const edited = state.cssVars[tok.cssVar]
+            const edited = state.cssVars[mode][tok.cssVar]
             if (edited !== undefined) out[tok.cssVar] = edited
         }
         return out
@@ -190,76 +237,292 @@ export function useThemeBuilder () {
         return entry?.previewAdapter.slotText ?? ''
     }
 
-    /** Number of overridden props + tokens (for the validate button badge). */
+    /** Number of overridden props across all modes + both cssVars sets. */
     const editCount = computed(() => {
         const propCount = Object.values(state.defaults).reduce((n, m) => n + Object.keys(m).length, 0)
-        return propCount + Object.keys(state.cssVars).length
+        const lightCount = Object.keys(state.cssVars.light).length
+        const darkCount = Object.keys(state.cssVars.dark).length
+        return propCount + lightCount + darkCount
     })
+
+    /** Number of overridden tokens for a specific mode only (for tab badges). */
+    const editCountByMode = (mode: TEditMode): number => {
+        return Object.keys(state.cssVars[mode]).length
+    }
+
+    /**
+     * Builds one `IOrigamTheme` entry for the given mode. The `component`
+     * (defaults) block is shared and injected into both entries.
+     */
+    const buildThemeEntry = (mode: TEditMode): IOrigamTheme => {
+        const baseName = kebabName(state.name)
+        const theme: IOrigamTheme = {
+            name: `${baseName}-${mode}`,
+            mode,
+            label: `${state.label.trim() || state.name} (${mode})`
+        }
+        const cssEntries = Object.entries(state.cssVars[mode])
+        if (cssEntries.length) {
+            const cssVars: Record<string, string> = {}
+            cssEntries.forEach(([k, v]) => { cssVars[k] = v })
+            theme.cssVars = cssVars
+        }
+        const defaultEntries = Object.entries(state.defaults)
+        if (defaultEntries.length) {
+            const component: Record<string, Record<string, unknown>> = {}
+            defaultEntries.forEach(([compKey, props]) => { component[compKey] = { ...props } })
+            theme.component = component
+        }
+        return theme
+    }
+
+    /**
+     * The diff-only state assembled as an `IOrigamTheme[]` array — one entry
+     * per mode (light + dark). Each entry has its own `cssVars` at the root and
+     * the shared global `component` defaults. Directly passable to
+     * `createOrigam({ themes: [<light>, <dark>] })`.
+     */
+    const themeObjects = computed<IOrigamTheme[]>(() => [
+        buildThemeEntry('light'),
+        buildThemeEntry('dark')
+    ])
 
     /** Serialise the diff-only state into a printable `[name].ts` module. */
     const generatedCode = computed(() => {
         const identifier = camelCaseName(state.name)
         const lines: string[] = []
-        lines.push(`export const ${identifier} = {`)
+        lines.push('import type { IOrigamTheme } from \'origam/interfaces\'')
+        lines.push('')
+        lines.push(`export const ${identifier}: IOrigamTheme[] = [`)
 
-        const defaultKeys = Object.keys(state.defaults)
-        if (defaultKeys.length) {
-            lines.push('    defaults: {')
-            defaultKeys.forEach((compKey, ci) => {
-                const props = state.defaults[compKey]
-                lines.push(`        ${JSON.stringify(compKey)}: {`)
-                const propKeys = Object.keys(props)
-                propKeys.forEach((p, pi) => {
-                    const comma = pi < propKeys.length - 1 ? ',' : ''
-                    lines.push(`            ${p}: ${serialiseValue(props[p])}${comma}`)
+        const modes: TEditMode[] = ['light', 'dark']
+        modes.forEach((mode, mIdx) => {
+            const entry = buildThemeEntry(mode)
+            const trailingComma = mIdx < modes.length - 1 ? ',' : ''
+
+            lines.push('    {')
+            lines.push(`        name: ${JSON.stringify(entry.name)},`)
+            lines.push(`        mode: ${JSON.stringify(entry.mode)},`)
+            lines.push(`        label: ${JSON.stringify(entry.label)},`)
+
+            const cssEntries = Object.entries(state.cssVars[mode])
+            const defaultEntries = Object.entries(state.defaults)
+
+            if (cssEntries.length) {
+                lines.push('        cssVars: {')
+                cssEntries.forEach(([k, v], i) => {
+                    const comma = i < cssEntries.length - 1 ? ',' : ''
+                    lines.push(`            ${JSON.stringify(k)}: ${JSON.stringify(v)}${comma}`)
                 })
-                lines.push(`        }${ci < defaultKeys.length - 1 ? ',' : ''}`)
-            })
-            lines.push('    },')
-        } else {
-            lines.push('    defaults: {},')
-        }
+                lines.push(defaultEntries.length ? '        },' : '        }')
+            }
 
-        const cssKeys = Object.keys(state.cssVars)
-        lines.push('    theme: {')
-        if (cssKeys.length) {
-            lines.push('        cssVars: {')
-            cssKeys.forEach((k, i) => {
-                const comma = i < cssKeys.length - 1 ? ',' : ''
-                lines.push(`            ${JSON.stringify(k)}: ${JSON.stringify(state.cssVars[k])}${comma}`)
-            })
-            lines.push('        }')
-        } else {
-            lines.push('        cssVars: {}')
-        }
-        lines.push('    }')
-        lines.push('}')
+            if (defaultEntries.length) {
+                lines.push('        component: {')
+                defaultEntries.forEach(([compKey, props], ci) => {
+                    lines.push(`            ${JSON.stringify(compKey)}: {`)
+                    const propEntries = Object.entries(props)
+                    propEntries.forEach(([p, value], pi) => {
+                        const comma = pi < propEntries.length - 1 ? ',' : ''
+                        lines.push(`                ${p}: ${serialiseValue(value)}${comma}`)
+                    })
+                    lines.push(`            }${ci < defaultEntries.length - 1 ? ',' : ''}`)
+                })
+                lines.push('        }')
+            }
+
+            lines.push(`    }${trailingComma}`)
+        })
+
+        lines.push(']')
         lines.push('')
         return lines.join('\n')
     })
 
-    const fileName = computed(() => `${kebabName(state.name)}.ts`)
+    /** The same `IOrigamTheme[]` array serialised as pretty JSON. */
+    const generatedJson = computed(() => `${JSON.stringify(themeObjects.value, null, 4)}\n`)
 
-    /** Trigger a client-side download of the generated module. */
-    const download = (): void => {
+    const fileName = computed(() => `${kebabName(state.name)}.ts`)
+    const jsonFileName = computed(() => `${kebabName(state.name)}.json`)
+
+    /** Generic client-side download of a string payload. */
+    const downloadBlob = (contents: string, name: string, mime: string): void => {
         if (typeof window === 'undefined') return
-        const blob = new Blob([generatedCode.value], { type: 'text/typescript' })
+        const blob = new Blob([contents], { type: mime })
         const url = URL.createObjectURL(blob)
         const anchor = document.createElement('a')
         anchor.href = url
-        anchor.download = fileName.value
+        anchor.download = name
         document.body.appendChild(anchor)
         anchor.click()
         document.body.removeChild(anchor)
         URL.revokeObjectURL(url)
     }
 
+    /** Download the generated TS module. */
+    const download = (): void => downloadBlob(generatedCode.value, fileName.value, 'text/typescript')
+
+    /** Download the generated `IOrigamTheme[]` JSON. */
+    const downloadJson = (): void => downloadBlob(generatedJson.value, jsonFileName.value, 'application/json')
+
+    /**
+     * Replace the live state from a parsed `IOrigamTheme` or `IOrigamTheme[]`.
+     * Accepts the new dual-mode format (array of 2 entries with distinct `mode`)
+     * and also the legacy single-object format (migrates into the matching mode).
+     */
+    const applyTheme = (theme: IOrigamTheme): void => {
+        if (typeof theme.name === 'string' && theme.name) state.name = theme.name
+        if (typeof theme.label === 'string' && theme.label) state.label = theme.label
+        if (theme.mode === 'light' || theme.mode === 'dark' || theme.mode === 'auto') {
+            state.mode = theme.mode as TMode
+        }
+        const mode: TEditMode = theme.mode === 'dark' ? 'dark' : 'light'
+
+        if (theme.cssVars && typeof theme.cssVars === 'object') {
+            for (const [k, v] of Object.entries(theme.cssVars)) {
+                if (typeof v === 'string' || typeof v === 'number') setToken(mode, k, String(v))
+            }
+        }
+
+        if (theme.component && typeof theme.component === 'object') {
+            for (const [compKey, props] of Object.entries(theme.component as Record<string, unknown>)) {
+                if (!props || typeof props !== 'object') continue
+                const slug = compKey.replace(/^origam-/, '')
+                for (const [prop, value] of Object.entries(props as Record<string, unknown>)) {
+                    setProp(slug, prop, value)
+                }
+            }
+        }
+    }
+
+    /**
+     * Parse a raw string (JSON object or array, or a TS module) and apply it.
+     * Accepts both the new IOrigamTheme[] format and the legacy single-object.
+     * Returns `true` on success, `false` on a parse error (never throws).
+     */
+    const importTheme = (raw: string): boolean => {
+        const text = raw.trim()
+        if (!text) return false
+        try {
+            const parsed = parseThemeSource(text)
+            if (!parsed || typeof parsed !== 'object') return false
+
+            if (Array.isArray(parsed)) {
+                Object.keys(state.defaults).forEach(k => delete state.defaults[k])
+                Object.keys(state.cssVars.light).forEach(k => delete state.cssVars.light[k])
+                Object.keys(state.cssVars.dark).forEach(k => delete state.cssVars.dark[k])
+                for (const entry of parsed) {
+                    if (!entry || typeof entry !== 'object') continue
+                    applyTheme(entry as IOrigamTheme)
+                }
+                return true
+            }
+
+            Object.keys(state.defaults).forEach(k => delete state.defaults[k])
+            Object.keys(state.cssVars.light).forEach(k => delete state.cssVars.light[k])
+            Object.keys(state.cssVars.dark).forEach(k => delete state.cssVars.dark[k])
+            applyTheme(parsed as IOrigamTheme)
+            return true
+        } catch {
+            return false
+        }
+    }
+
+    /** Seed the builder from a DS preset (origam light / dark). */
+    const seedPreset = (key: string): void => {
+        const preset = THEME_BUILDER_PRESETS.find(p => p.key === key)
+        if (!preset) return
+        Object.keys(state.defaults).forEach(k => delete state.defaults[k])
+        Object.keys(state.cssVars.light).forEach(k => delete state.cssVars.light[k])
+        Object.keys(state.cssVars.dark).forEach(k => delete state.cssVars.dark[k])
+        state.mode = preset.mode
+        const targetMode: TEditMode = preset.mode === 'dark' ? 'dark' : 'light'
+        for (const [k, v] of Object.entries(preset.cssVars)) setToken(targetMode, k, v)
+    }
+
+    const presets: IThemeBuilderPreset[] = THEME_BUILDER_PRESETS
+
+    /**
+     * Load the persisted state from localStorage (client-only). Called from the
+     * page in `onMounted` so SSR never touches `window`/`localStorage`.
+     * Handles both the new dual-mode format and the legacy flat `cssVars`.
+     */
+    const loadStorage = (): void => {
+        if (typeof window === 'undefined') return
+        try {
+            const raw = window.localStorage.getItem(THEME_BUILDER_STORAGE_KEY)
+            if (!raw) return
+            const saved = JSON.parse(raw) as Partial<IThemeBuilderState & { cssVars: unknown }>
+            if (typeof saved.name === 'string') state.name = saved.name
+            if (typeof saved.label === 'string') state.label = saved.label
+            if (saved.mode === 'light' || saved.mode === 'dark' || saved.mode === 'auto') {
+                state.mode = saved.mode
+            }
+            if (saved.defaults && typeof saved.defaults === 'object') {
+                Object.keys(state.defaults).forEach(k => delete state.defaults[k])
+                for (const [k, v] of Object.entries(saved.defaults)) {
+                    if (v && typeof v === 'object') state.defaults[k] = { ...v as Record<string, unknown> }
+                }
+            }
+            if (saved.cssVars && typeof saved.cssVars === 'object') {
+                const rawVars = saved.cssVars as Record<string, unknown>
+                Object.keys(state.cssVars.light).forEach(k => delete state.cssVars.light[k])
+                Object.keys(state.cssVars.dark).forEach(k => delete state.cssVars.dark[k])
+
+                if (rawVars.light && typeof rawVars.light === 'object') {
+                    for (const [k, v] of Object.entries(rawVars.light as Record<string, unknown>)) {
+                        if (typeof v === 'string') state.cssVars.light[k] = v
+                    }
+                } else if (rawVars.dark && typeof rawVars.dark === 'object') {
+                    for (const [k, v] of Object.entries(rawVars.dark as Record<string, unknown>)) {
+                        if (typeof v === 'string') state.cssVars.dark[k] = v
+                    }
+                } else {
+                    for (const [k, v] of Object.entries(rawVars)) {
+                        if (typeof v === 'string') state.cssVars.light[k] = v
+                    }
+                }
+            }
+        } catch {
+            /* corrupt entry — ignore and start fresh */
+        }
+    }
+
+    /** Auto-persist on every state change (client-only). */
+    const startAutoPersist = (): void => {
+        if (typeof window === 'undefined') return
+        watch(
+            () => JSON.stringify({ ...state, activeMode: undefined }),
+            (snapshot) => {
+                try {
+                    window.localStorage.setItem(THEME_BUILDER_STORAGE_KEY, snapshot)
+                } catch {
+                    /* quota / private mode — non-fatal */
+                }
+            }
+        )
+    }
+
+    const clearStorage = (): void => {
+        if (typeof window === 'undefined') return
+        try {
+            window.localStorage.removeItem(THEME_BUILDER_STORAGE_KEY)
+        } catch {
+            /* non-fatal */
+        }
+    }
+
     return {
         entries,
         state,
         editCount,
+        editCountByMode,
         generatedCode,
+        generatedJson,
+        themeObjects,
         fileName,
+        jsonFileName,
+        presets,
         propValue,
         setProp,
         tokenValue,
@@ -268,6 +531,11 @@ export function useThemeBuilder () {
         previewStyle,
         slotText,
         reset,
-        download
+        download,
+        downloadJson,
+        importTheme,
+        seedPreset,
+        loadStorage,
+        startAutoPersist
     }
 }

@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import { useT } from '~/composables/useT'
 import { useThemeBuilder } from '~/composables/useThemeBuilder'
 import type { IComponentPlaygroundControl } from '~/interfaces/components-catalog.interface'
+import type { TEditMode } from '~/interfaces/theme-builder.interface'
 
 const { t } = useT()
 
@@ -11,8 +12,10 @@ const {
     entries,
     state,
     editCount,
+    editCountByMode,
     generatedCode,
     fileName,
+    presets,
     propValue,
     setProp,
     tokenValue,
@@ -21,8 +24,50 @@ const {
     previewStyle,
     slotText,
     reset,
-    download
+    download,
+    downloadJson,
+    importTheme,
+    seedPreset,
+    loadStorage,
+    startAutoPersist
 } = useThemeBuilder()
+
+onMounted(() => {
+    loadStorage()
+    startAutoPersist()
+})
+
+const MODE_OPTIONS = [
+    { title: t('theming.mode.light', 'Light'), value: 'light' },
+    { title: t('theming.mode.dark', 'Dark'), value: 'dark' },
+    { title: t('theming.mode.auto', 'Auto'), value: 'auto' }
+]
+
+const presetItems = computed(() =>
+    presets.map(p => ({ title: t(p.labelKey, p.labelFallback), value: p.key }))
+)
+
+const selectedPreset = ref<string>('')
+const importText = ref<string>('')
+const importError = ref<boolean>(false)
+
+const numberValue = (slug: string, prop: string): number | undefined => {
+    const v = propValue(slug, prop)
+    return typeof v === 'number' ? v : undefined
+}
+
+const onSeedPreset = (key: unknown) => {
+    if (typeof key !== 'string' || !key) return
+    seedPreset(key)
+}
+
+const onImport = () => {
+    const ok = importTheme(importText.value)
+    importError.value = !ok
+    if (ok) importText.value = ''
+}
+
+const onExportJson = () => downloadJson()
 
 useSeoMeta({
     title: () => t('theming.meta.title', 'Theme builder · origam design system'),
@@ -41,7 +86,8 @@ const selectItems = (ctrl: IComponentPlaygroundControl) =>
     (ctrl.options ?? []).map(o => ({ title: o.label, value: o.value }))
 
 const onSelect = (slug: string, prop: string, value: unknown) => setProp(slug, prop, value)
-const onToken = (cssVar: string, value: string) => setToken(cssVar, value)
+
+const onToken = (mode: TEditMode, cssVar: string, value: string) => setToken(mode, cssVar, value)
 
 const componentTabs = computed(() =>
     entries.map(e => ({ slug: e.slug, label: e.name, icon: e.icon }))
@@ -51,6 +97,14 @@ const onValidate = () => download()
 
 const downloadHint = computed(() =>
     t('theming.export.filename', 'Downloads {file}', { file: fileName.value })
+)
+
+const PREVIEW_MODES: TEditMode[] = ['light', 'dark']
+
+const tokenLegend = computed(() =>
+    state.activeMode === 'dark'
+        ? t('theming.tokens.legend_dark', 'CSS tokens — Dark')
+        : t('theming.tokens.legend_light', 'CSS tokens — Light')
 )
 </script>
 
@@ -93,6 +147,26 @@ const downloadHint = computed(() =>
                         class="theming__name-field"
                         data-cy="theming-name"
                     />
+                    <origam-text-field
+                        v-model="state.label"
+                        :label="t('theming.label.label', 'Display label')"
+                        :placeholder="t('theming.label.placeholder', 'My theme')"
+                        variant="outlined"
+                        density="compact"
+                        hide-details
+                        class="theming__label-field"
+                        data-cy="theming-label"
+                    />
+                    <origam-select
+                        v-model="state.mode"
+                        :label="t('theming.mode.label', 'Color mode')"
+                        :items="MODE_OPTIONS"
+                        variant="outlined"
+                        density="compact"
+                        hide-details
+                        class="theming__mode-field"
+                        data-cy="theming-mode"
+                    />
                     <div class="theming__name-actions">
                         <origam-btn
                             variant="text"
@@ -118,8 +192,80 @@ const downloadHint = computed(() =>
                                 class="theming__edit-badge"
                             />
                         </origam-btn>
+                        <origam-btn
+                            variant="outlined"
+                            prepend-icon="mdi-code-json"
+                            type="button"
+                            data-cy="theming-export-json"
+                            @click="onExportJson"
+                        >
+                            {{ t('theming.export_json', 'Export JSON') }}
+                        </origam-btn>
                     </div>
                 </form>
+
+                <section
+                    class="theming__seed"
+                    aria-labelledby="theming-seed-title"
+                    data-cy="theming-seed"
+                >
+                    <origam-title
+                        id="theming-seed-title"
+                        tag="h2"
+                        class="theming__seed-title"
+                    >
+                        {{ t('theming.seed.title', 'Start from an existing theme') }}
+                    </origam-title>
+
+                    <div class="theming__seed-row">
+                        <origam-select
+                            v-model="selectedPreset"
+                            :label="t('theming.seed.preset_label', 'Seed from a DS preset')"
+                            :items="presetItems"
+                            variant="outlined"
+                            density="compact"
+                            hide-details
+                            class="theming__seed-preset"
+                            data-cy="theming-seed-preset"
+                            @update:model-value="onSeedPreset"
+                        />
+                    </div>
+
+                    <div class="theming__seed-row theming__seed-row--import">
+                        <origam-textarea-field
+                            v-model="importText"
+                            :label="t('theming.seed.import_label', 'Paste a theme module or JSON')"
+                            :placeholder="t('theming.seed.import_placeholder', 'Paste a theme module or a JSON object…')"
+                            variant="outlined"
+                            density="compact"
+                            hide-details
+                            :rows="4"
+                            class="theming__seed-import"
+                            data-cy="theming-import-text"
+                        />
+                        <origam-btn
+                            variant="tonal"
+                            color="primary"
+                            prepend-icon="mdi-import"
+                            type="button"
+                            class="theming__seed-import-btn"
+                            data-cy="theming-import-btn"
+                            @click="onImport"
+                        >
+                            {{ t('theming.seed.import_action', 'Import') }}
+                        </origam-btn>
+                    </div>
+
+                    <origam-alert
+                        v-if="importError"
+                        type="danger"
+                        density="compact"
+                        class="theming__seed-error"
+                        data-cy="theming-import-error"
+                    >
+                        {{ t('theming.seed.import_error', 'Could not parse that theme — paste a valid IOrigamTheme module or JSON object.') }}
+                    </origam-alert>
+                </section>
             </origam-container>
         </header>
 
@@ -159,30 +305,64 @@ const downloadHint = computed(() =>
                     :data-cy="`theming-editor-${activeEntry.slug}`"
                 >
                     <div
-                        class="theming__preview"
+                        class="theming__preview-dual"
                         aria-live="polite"
-                        data-cy="theming-preview"
+                        data-cy="theming-preview-dual"
                     >
                         <ClientOnly>
-                            <NuxtErrorBoundary>
-                                <div
-                                    class="theming__preview-stage"
-                                    :style="previewStyle(activeEntry.slug)"
-                                >
-                                    <component
-                                        :is="activeEntry.componentKey"
-                                        v-bind="previewProps(activeEntry.slug)"
-                                        :data-cy="`theming-live-${activeEntry.slug}`"
+                            <div
+                                v-for="paneMode in PREVIEW_MODES"
+                                :key="paneMode"
+                                class="theming__preview-pane"
+                                :class="{ 'theming__preview-pane--active': paneMode === state.activeMode }"
+                                :data-mode="paneMode"
+                                :data-cy="`theming-preview-pane-${paneMode}`"
+                            >
+                                <div class="theming__preview-pane-header">
+                                    <span class="theming__preview-pane-label">
+                                        {{ paneMode === 'light' ? t('theming.preview.light_label', 'Light') : t('theming.preview.dark_label', 'Dark') }}
+                                    </span>
+                                    <origam-badge
+                                        v-if="editCountByMode(paneMode)"
+                                        :content="editCountByMode(paneMode)"
+                                        inline
+                                        color="primary"
+                                        class="theming__pane-badge"
+                                    />
+                                    <origam-chip
+                                        density="compact"
+                                        :color="paneMode === state.activeMode ? 'primary' : undefined"
+                                        variant="tonal"
+                                        class="theming__pane-chip"
+                                        :data-cy="`theming-pane-chip-${paneMode}`"
+                                        @click="state.activeMode = paneMode"
                                     >
-                                        {{ slotText(activeEntry.slug) }}
-                                    </component>
+                                        {{ paneMode === state.activeMode ? t('theming.mode.editing', 'Editing') : t('theming.mode.preview_only', 'Preview only') }}
+                                    </origam-chip>
                                 </div>
-                                <template #error>
-                                    <p class="theming__preview-fallback">
-                                        {{ t('theming.preview.unavailable', 'Live preview unavailable for this component.') }}
-                                    </p>
-                                </template>
-                            </NuxtErrorBoundary>
+                                <origam-theme-provider :mode="paneMode">
+                                    <div
+                                        class="theming__preview-stage"
+                                        :style="previewStyle(activeEntry.slug, paneMode)"
+                                        :data-cy="`theming-preview-stage-${paneMode}`"
+                                    >
+                                        <NuxtErrorBoundary>
+                                            <component
+                                                :is="activeEntry.componentKey"
+                                                v-bind="previewProps(activeEntry.slug)"
+                                                :data-cy="`theming-live-${activeEntry.slug}`"
+                                            >
+                                                {{ slotText(activeEntry.slug) }}
+                                            </component>
+                                            <template #error>
+                                                <p class="theming__preview-fallback">
+                                                    {{ t('theming.preview.unavailable', 'Live preview unavailable for this component.') }}
+                                                </p>
+                                            </template>
+                                        </NuxtErrorBoundary>
+                                    </div>
+                                </origam-theme-provider>
+                            </div>
                         </ClientOnly>
                     </div>
 
@@ -231,7 +411,7 @@ const downloadHint = computed(() =>
 
                                 <origam-number-field
                                     v-else-if="ctrl.kind === 'number'"
-                                    :model-value="propValue(activeEntry.slug, ctrl.prop)"
+                                    :model-value="numberValue(activeEntry.slug, ctrl.prop)"
                                     :label="t(ctrl.labelKey, ctrl.labelFallback)"
                                     variant="outlined"
                                     density="compact"
@@ -257,7 +437,7 @@ const downloadHint = computed(() =>
                             data-cy="theming-tokens"
                         >
                             <legend class="theming__group-legend">
-                                {{ t('theming.tokens.legend', 'CSS tokens') }}
+                                {{ tokenLegend }}
                             </legend>
 
                             <div
@@ -278,15 +458,15 @@ const downloadHint = computed(() =>
                                         :id="`tok-${tok.cssVar}`"
                                         type="color"
                                         class="theming__token-color"
-                                        :value="tokenValue(tok.cssVar)"
-                                        @input="onToken(tok.cssVar, ($event.target as HTMLInputElement).value)"
+                                        :value="tokenValue(state.activeMode, tok.cssVar)"
+                                        @input="onToken(state.activeMode, tok.cssVar, ($event.target as HTMLInputElement).value)"
                                     >
                                     <input
                                         :id="tok.kind === 'color' ? undefined : `tok-${tok.cssVar}`"
                                         type="text"
                                         class="theming__token-text"
-                                        :value="tokenValue(tok.cssVar)"
-                                        @input="onToken(tok.cssVar, ($event.target as HTMLInputElement).value)"
+                                        :value="tokenValue(state.activeMode, tok.cssVar)"
+                                        @input="onToken(state.activeMode, tok.cssVar, ($event.target as HTMLInputElement).value)"
                                     >
                                 </div>
                             </div>
@@ -378,6 +558,57 @@ const downloadHint = computed(() =>
         max-width: 24rem;
     }
 
+    &__label-field {
+        flex: 1 1 14rem;
+        max-width: 20rem;
+    }
+
+    &__mode-field {
+        flex: 0 1 10rem;
+    }
+
+    &__seed {
+        display: flex;
+        flex-direction: column;
+        gap: var(--origam-spacing-3, 0.75rem);
+        margin-block-start: var(--origam-spacing-6, 1.5rem);
+        padding: var(--origam-spacing-5, 1.25rem);
+        background-color: var(--origam-color-surface-default);
+        border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+        border-radius: var(--origam-radius-lg, 0.75rem);
+    }
+
+    &__seed-title {
+        margin: 0;
+        font-size: var(--origam-font-size-md, 1rem);
+    }
+
+    &__seed-row {
+        display: flex;
+        gap: var(--origam-spacing-3, 0.75rem);
+
+        &--import {
+            align-items: flex-end;
+        }
+    }
+
+    &__seed-preset {
+        flex: 1 1 16rem;
+        max-width: 24rem;
+    }
+
+    &__seed-import {
+        flex: 1 1 auto;
+    }
+
+    &__seed-import-btn {
+        flex: 0 0 auto;
+    }
+
+    &__seed-error {
+        margin: 0;
+    }
+
     &__name-actions {
         display: flex;
         align-items: center;
@@ -419,19 +650,58 @@ const downloadHint = computed(() =>
         gap: var(--origam-spacing-6, 1.5rem);
     }
 
-    &__preview {
+    &__preview-dual {
         display: grid;
-        place-items: center;
-        min-height: 12rem;
-        padding: var(--origam-spacing-8, 2rem);
+        grid-template-columns: 1fr 1fr;
+        gap: var(--origam-spacing-4, 1rem);
+
+        @container (max-width: 56rem) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__preview-pane {
+        display: flex;
+        flex-direction: column;
+        gap: var(--origam-spacing-3, 0.75rem);
+        padding: var(--origam-spacing-5, 1.25rem);
         background-color: var(--origam-color-surface-default);
         border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
         border-radius: var(--origam-radius-lg, 0.75rem);
+        transition: box-shadow 0.15s ease;
+
+        &--active {
+            box-shadow: 0 0 0 2px var(--origam-color-action-primary-bg, var(--origam-color-action-primary-bg));
+        }
+    }
+
+    &__preview-pane-header {
+        display: flex;
+        align-items: center;
+        gap: var(--origam-spacing-2, 0.5rem);
+    }
+
+    &__preview-pane-label {
+        font-size: var(--origam-font-size-sm, 0.875rem);
+        font-weight: var(--origam-font-weight-semibold, 600);
+        color: var(--origam-color-text-default);
+        flex: 1 1 auto;
+    }
+
+    &__pane-badge {
+        flex: 0 0 auto;
+    }
+
+    &__pane-chip {
+        flex: 0 0 auto;
+        cursor: pointer;
     }
 
     &__preview-stage {
         display: grid;
         place-items: center;
+        min-height: 10rem;
+        padding: var(--origam-spacing-6, 1.5rem);
     }
 
     &__preview-fallback {

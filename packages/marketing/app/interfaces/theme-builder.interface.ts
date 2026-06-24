@@ -8,6 +8,10 @@
  * hardcoded per component — the only per-slug data is the optional preview
  * adapter below, used for components that render nothing on their own.
  */
+import type { TMode } from 'origam/types'
+
+/** The two concrete edit modes (never 'auto'). */
+export type TEditMode = 'light' | 'dark'
 
 /**
  * A single editable CSS token row surfaced for a component, derived from the
@@ -43,12 +47,34 @@ export interface IThemeBuilderPreviewAdapter {
  * The serialisable theme-builder state. Only values the user ACTUALLY changed
  * are stored, so the exported file stays a clean diff against the DS defaults.
  *
+ *   - `name` / `label` map to `IOrigamTheme.name` / `IOrigamTheme.label`.
+ *   - `mode` is kept for meta (global mode hint on the theme, e.g. 'light').
+ *   - `activeMode` is the mode currently being edited in the UI (never persisted,
+ *     reset to 'light' on load).
  *   - `defaults` is keyed by the origam component key (`origam-{slug}` or
- *     `global`) → prop name → value. Matches `useDefaults()` resolution.
- *   - `cssVars` is a flat map of overridden CSS custom properties (IOrigamTheme).
+ *     `global`) → prop name → value. Maps to `IOrigamTheme.component`.
+ *     Defaults are GLOBAL (mode-independent).
+ *   - `cssVars` is split by mode: each sub-map holds the overridden CSS vars for
+ *     that mode only. Maps to `IOrigamTheme.cssVars` per exported entry.
  */
 export interface IThemeBuilderState {
     name: string
+    label: string
+    mode: TMode
+    activeMode: TEditMode
     defaults: Record<string, Record<string, unknown>>
+    cssVars: Record<TEditMode, Record<string, string>>
+}
+
+/**
+ * A reusable theme seed surfaced in the preset picker (origam light / dark).
+ * `cssVars` is the SUBSET of the real DS theme cssVars exposed by the builder
+ * (see THEME_BUILDER_TOKENS) so seeding never bundles the full origam theme.
+ */
+export interface IThemeBuilderPreset {
+    key: string
+    labelKey: string
+    labelFallback: string
+    mode: TMode
     cssVars: Record<string, string>
 }
