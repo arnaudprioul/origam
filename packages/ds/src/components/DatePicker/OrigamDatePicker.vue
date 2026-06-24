@@ -113,7 +113,7 @@
 
 	import { CALENDAR_STRATEGY, DATE_MODE } from "../../enums"
 
-	import type { IDatePickerProps} from "../../interfaces"
+	import type { IDatePickerControlsProps, IDatePickerProps} from "../../interfaces"
 
 	import type { IDatePickerEmits } from '../../interfaces/DatePicker/date-picker.interface'
 
@@ -366,7 +366,15 @@
 		return origamPickerRef.value?.filterProps(props, ['class', 'style', 'title', 'id'])
 	})
 	const datePickerControlsProps = computed(() => {
-		return origamDatePickerControlsRef.value?.filterProps(props, ['class', 'style', 'id', 'text', 'disabled'])
+		// Cast: `props` is IDatePickerProps ⊃ IDatePickerControlsProps.
+		// filterProps is typed against the child's T=IDatePickerControlsProps and
+		// its <U extends Partial<ExtractPropTypes<T>>> constraint rejects the wider
+		// type. The cast is safe — every key of IDatePickerControlsProps is present
+		// in IDatePickerProps.
+		return origamDatePickerControlsRef.value?.filterProps(
+			props as unknown as IDatePickerControlsProps,
+			['class', 'style', 'id', 'text', 'disabled']
+		)
 	})
 	const datePickerHeaderProps = computed(() => {
 		return origamDatePickerHeaderRef.value?.filterProps(props, ['class', 'style', 'header', 'id'])

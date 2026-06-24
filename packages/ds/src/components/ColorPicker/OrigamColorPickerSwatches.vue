@@ -45,7 +45,7 @@
 	import type { IColorPickerSwatchesProps} from "../../interfaces"
 
 	import type { IColorPickerSwatchesEmits } from '../../interfaces/ColorPicker/color-picker-swatches.interface'
-	import type { TRGBA } from "../../types"
+	import type { TColorType, TRGBA } from "../../types"
 
 	import { convertToUnit, deepEqual, getContrast, parseColor, RGBtoCSS, RGBtoHSV } from "../../utils"
 
@@ -66,13 +66,16 @@
 
 	const {filterProps} = useProps<IColorPickerSwatchesProps>(props)
 
-	const rgba = (color: TRGBA) => {
-		return parseColor(color)
+	// `swatches` items are typed as TColorType (string | number | THSVA | TRGBA | THSLA)
+	// in the interface. At runtime the consumer always passes RGBA objects, so the
+	// cast via unknown is safe and avoids TS2345 on the template bindings.
+	const rgba = (color: TColorType) => {
+		return parseColor(color as unknown as TRGBA)
 	}
-	const hsva = (color: TRGBA) => {
+	const hsva = (color: TColorType) => {
 		return RGBtoHSV(rgba(color))
 	}
-	const background = (color: TRGBA) => {
+	const background = (color: TColorType) => {
 		return RGBtoCSS(rgba(color))
 	}
 
@@ -80,7 +83,7 @@
 	 * Event handlers
 	 ********************************************************/
 
-	const handleUpdateColor = (color: TRGBA) => {
+	const handleUpdateColor = (color: TColorType) => {
 		const colorUpdate = hsva(color)
 
 		if (colorUpdate) {

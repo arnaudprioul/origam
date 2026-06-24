@@ -92,7 +92,7 @@
 		modelValue: internalModel,
 		orientation: computed(() => props.orientation ?? 'horizontal'),
 		clickable: computed(() => props.clickable ?? false),
-		color: computed(() => props.color)
+		color: computed(() => props.color as string | undefined)
 	})
 
 	/*********************************************************

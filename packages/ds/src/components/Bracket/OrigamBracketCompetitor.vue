@@ -74,6 +74,8 @@
 
 	import type { IBracketCompetitorProps } from '../../interfaces'
 
+	import type { TIntent } from '../../types'
+
 	const props = withDefaults(defineProps<IBracketCompetitorProps>(), {
 		tag: 'div',
 		isWinner: false,
@@ -129,7 +131,7 @@
 	const handleClick = (event: MouseEvent) => {
 		if (!props.interactive) return
 
-		onActive(event)
+		onActive()
 		emit('click', event)
 	}
 
@@ -171,7 +173,7 @@
 	const borderColorStyle = computed<string[]>(() => {
 		const value = props.borderColor
 
-		return value && isIntent(value as string) ? [`border-color: ${tokenForegroundForIntent(value as string)}`] : []
+		return value && isIntent(value as string) ? [`border-color: ${tokenForegroundForIntent(value as TIntent)}`] : []
 	})
 
 	const rowStyles = computed<StyleValue>(() => {

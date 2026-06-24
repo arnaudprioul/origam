@@ -8,6 +8,12 @@ import type {
     IPaddingProps
 } from "../../interfaces";
 
+import type { TColor } from "../../types";
+
 export interface IDataTextProps extends ICommonsComponentProps, IAdjacentProps, IDensityProps, IMarginProps, IPaddingProps, IColorProps, IBgColorProps {
     text: string | number
+    /** @deprecated Use the `hover` object prop instead. Kept for back-compat. */
+    hoverColor?: TColor
+    /** @deprecated Use the `hover` object prop instead. Kept for back-compat. */
+    hoverBgColor?: TColor
 }

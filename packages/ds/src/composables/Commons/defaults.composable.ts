@@ -51,7 +51,7 @@ export function useDefaults<T extends Record<string, any>> (
     props: T,
     name = getCurrentInstanceName()
 ): T {
-    const defaults = inject(ORIGAM_DEFAULTS_KEY, ref({}))
+    const defaults = inject(ORIGAM_DEFAULTS_KEY, ref<IDefault>({}))
     const vm = getCurrentInstance('useDefaults')
 
     const propNames = Object.keys(props)

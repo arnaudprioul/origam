@@ -19,5 +19,5 @@ export interface ICheckboxBtnEmits extends ICommonsComponentEmits, IFocusEmits, 
 
 export interface ICheckboxBtnSlots extends ICommonsComponentSlots {
     label?: () => any
-    input?: (data: { props: any, icon: TIcon, textColorStyles: TColor, backgroundColorStyles: TColor, model: any }) => any
+    input?: (data: { props: any, icon?: TIcon, textColorStyles?: TColor, backgroundColorStyles?: TColor, model: any }) => any
 }

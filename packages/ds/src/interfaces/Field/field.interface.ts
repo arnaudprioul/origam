@@ -19,6 +19,8 @@ import type {
     IVariantProps
 } from '../../interfaces'
 
+import type { TColor } from '../../types'
+
 export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IBgColorProps, IAdjacentInnerProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IVariantProps, IRoundedProps, IElevationProps, ISizeProps {
     centerAffix?: boolean
     dirty?: boolean
@@ -42,6 +44,10 @@ export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColo
     reverse?: boolean
     singleLine?: boolean
     required?: boolean
+    /** @deprecated Use the `active` object prop instead. Kept for back-compat. */
+    activeColor?: TColor
+    /** @deprecated Use the `active` object prop instead. Kept for back-compat. */
+    activeBgColor?: TColor
 }
 
 /**

@@ -1,3 +1,3 @@
 import { MODE } from '../../enums'
 
-export type TMode = `${MODE}`
+export type TNavMode = `${MODE}`

@@ -103,7 +103,7 @@
 	 * @description
 	 * Label click forwarded up to Radio / RadioGroup.
 	 ********************************************************/
-	const handleClickLabel = (e: Event) => {
+	const handleClickLabel = (e: MouseEvent) => {
 		emits('click:label', e)
 	}
 

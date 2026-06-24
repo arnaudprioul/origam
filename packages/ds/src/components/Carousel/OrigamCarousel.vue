@@ -35,7 +35,7 @@
 									name="item"
 									v-bind="{props: controlProps(item, index, group), item, index}"
 							>
-								<origam-btn v-bind="controlProps(item, index, group)"/>
+								<origam-btn v-bind="(controlProps(item, index, group) as any)"/>
 							</slot>
 						</slot>
 					</template>

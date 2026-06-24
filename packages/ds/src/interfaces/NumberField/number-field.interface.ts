@@ -40,7 +40,7 @@ export interface INumberFieldEmits extends IFieldEmits, IInputEmits {
 }
 
 export interface INumberFieldSlots extends IFieldSlots, Omit<IInputSlots, 'default'> {
-    field?: (data: { id: string, isDisabled: boolean, isDirty: boolean, isValid: boolean, isReadonly: boolean }) => any
+    field?: (data: { id: string, isDisabled: boolean, isDirty: boolean, isValid: boolean | undefined, isReadonly: boolean }) => any
     increment?: (data: { canIncrease: boolean, onControlClick: () => void, onUpControlMousedown: () => void, onControlMouseup: () => void }) => any
     decrement?: (data: { canDecrease: boolean, onControlClick: () => void, onDownControlMousedown: () => void, onControlMouseup: () => void }) => any
 }

@@ -134,9 +134,7 @@
 		props.class
 	])
 
-	const skeletonContainerStyles = computed<StyleValue>(() => [
-		props.style
-	])
+	const skeletonContainerStyles = computed<StyleValue>(() => [props.style] as StyleValue)
 
 	// ── Single-block classes & styles ──────────────────────────────────────
 	const skeletonClasses = computed(() => [
@@ -155,7 +153,7 @@
 		if (resolvedWidth.value) styles['width'] = resolvedWidth.value
 		if (resolvedHeight.value) styles['height'] = resolvedHeight.value
 
-		return [styles, colorStyles.value, roundedStyles.value, sizeStyles.value, props.style]
+		return [styles, colorStyles.value, roundedStyles.value, sizeStyles.value, props.style] as StyleValue
 	})
 	const {id, css, load, isLoaded, unload} = useStyle(skeletonStyles)
 

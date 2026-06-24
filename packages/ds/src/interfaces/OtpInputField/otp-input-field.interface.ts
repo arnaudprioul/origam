@@ -29,6 +29,8 @@ export interface IOtpInputFieldEmits extends IFieldEmits, IInputEmits {
     (e: 'click:clear', event: MouseEvent): void
 }
 
-export interface IOtpInputFieldSlots extends IFieldSlots, Omit<IInputSlots, 'default'> {
-    field?: (data: { id: string, isDisabled: boolean, isDirty: boolean, isValid: boolean, isReadonly: boolean }) => any
+export interface IOtpInputFieldSlots extends Omit<IFieldSlots, 'default'>, Omit<IInputSlots, 'default'> {
+    /** Generic slot — no slot props. */
+    default?: () => any
+    field?: (data: { id: string, isDisabled: boolean, isDirty: boolean, isValid: boolean | undefined, isReadonly: boolean }) => any
 }

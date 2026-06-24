@@ -21,11 +21,11 @@ import type {
     ITransitionComponentProps
 } from '../../interfaces'
 
-import type { TBottomNavPosition, TMode } from '../../types'
+import type { TBottomNavPosition, TNavMode } from '../../types'
 
 export interface IBottomNavProps extends ITagProps, ICommonsComponentProps, IColorProps, IBgColorProps, IPaddingProps, IBorderProps, IElevationProps, IMarginProps, IDimensionProps, IDensityProps, IRoundedProps, ILayoutItemProps, IGroupProps, IHoverProps, IActiveProps, ITransitionComponentProps {
     grow?: boolean
-    mode?: TMode
+    mode?: TNavMode
     items?: Array<IBtnProps>
     /**
      * Horizontal placement of the bar when it does not span the full width

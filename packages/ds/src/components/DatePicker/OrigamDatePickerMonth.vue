@@ -66,7 +66,7 @@
 						<template v-if="showAdjacentMonths || !item.isAdjacent">
 							<slot
 									name="days"
-									v-bind="{props: { onClick: () => handleClick(e, item.date)}, item, index}"
+									v-bind="{props: { onClick: (e: MouseEvent) => handleClick(e, item.date)}, item, index}"
 							>
 								<origam-btn
 										ref="origamBtnRef"

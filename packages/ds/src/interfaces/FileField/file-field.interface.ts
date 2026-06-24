@@ -75,7 +75,7 @@ export interface IFileFieldEmits extends IFieldEmits, IInputEmits {
 
 export interface IFileFieldSlots extends IFieldSlots, Omit<IInputSlots, 'default'> {
     counter?: (data: { counter: string, value: string | number, max?: string | number }) => any
-    field?: (data: { id: string, isDisabled: boolean, isDirty: boolean, isValid: boolean, isReadonly: boolean }) => any
+    field?: (data: { id: string, isDisabled: boolean, isDirty: boolean, isValid: boolean | undefined, isReadonly: boolean }) => any
     dropzone?: (data: { isDragging: boolean, browse: () => void }) => any
     item?: (data: { file: File, index: number, progress: number, remove: () => void, download: () => void }) => any
     chip?: (data: { fileNames: string, totalBytes: number, totalBytesReadable: string, props: Record<string, any> }) => any

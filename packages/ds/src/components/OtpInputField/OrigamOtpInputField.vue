@@ -113,7 +113,7 @@
 				<template #loader>
 					<slot name="loader">
 						<origam-progress
-								:color="typeof loading === 'boolean' ? undefined : loading"
+								:color="typeof loading === 'string' ? loading : undefined"
 								:size="24"
 								:type="PROGRESS_TYPE.CIRCULAR"
 								indeterminate

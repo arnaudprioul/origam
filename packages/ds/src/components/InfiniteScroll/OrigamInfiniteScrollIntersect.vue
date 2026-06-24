@@ -35,7 +35,8 @@
 	}, props.margin ? {rootMargin: props.margin} : undefined)
 
 	watch(isIntersecting, async (val) => {
-		emits('intersect', props.side, val)
+		if (!props.side) return
+		emits('intersect', {isIntersecting: val, side: props.side})
 	})
 
 	/*********************************************************

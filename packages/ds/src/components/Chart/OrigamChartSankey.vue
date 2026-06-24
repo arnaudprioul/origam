@@ -361,7 +361,7 @@
 		const series = props.series?.[0]
 		if (!series?.data?.length) return []
 
-		const data = series.data as Array<{ from: string, to: string, value: number, color?: TIntent | string }>
+		const data = series.data as unknown as Array<{ from: string, to: string, value: number, color?: TIntent | string }>
 
 		const nodeSet = new Set<string>()
 		for (const d of data) {
@@ -497,7 +497,7 @@
 		const series = props.series?.[0]
 		if (!series?.data?.length) return []
 
-		const data = series.data as Array<{ from: string, to: string, value: number, color?: TIntent | string }>
+		const data = series.data as unknown as Array<{ from: string, to: string, value: number, color?: TIntent | string }>
 
 		if (layoutNodes.value.length === 0) return []
 

@@ -72,7 +72,8 @@
 
 	import { convertToUnit, int } from '../../utils'
 
-	import { computed, ref, Ref, StyleValue, toRef } from 'vue'
+	import { computed, ref, StyleValue, toRef } from 'vue'
+	import type { ComputedRef } from 'vue'
 
 	/*********************************************************
 	 * Global
@@ -183,11 +184,11 @@
 
 	const {layoutItemStyles} = useLayoutItem({
 		id: props.name,
-		order: computed(() => int(props.order)),
+		order: computed(() => int(props.order ?? 0)),
 		position: computed(() => 'bottom'),
 		layoutSize: computed(() => isActive.value ? height.value : 0),
 		elementSize: height,
-		active: isActive as Ref<boolean>,
+		active: isActive as ComputedRef<boolean>,
 		absolute: toRef(props, 'absolute')
 	})
 

@@ -4,7 +4,7 @@ import type {
     IColorProps, ICommonsComponentEmits, ICommonsComponentProps, IDensityProps, ISelectionControlGroupProps,
     IHoverProps
 } from '../../interfaces'
-import type { TIcon } from '../../types'
+import type { TColor, TIcon } from '../../types'
 
 export interface ISelectionControlProps extends ICommonsComponentProps, Partial<Omit<ISelectionControlGroupProps, 'items'>>, IColorProps, IBgColorProps, IActiveProps, IHoverProps, IDensityProps {
     label?: string
@@ -12,6 +12,10 @@ export interface ISelectionControlProps extends ICommonsComponentProps, Partial<
     falseValue?: any
     value?: any
     required?: boolean
+    /** @deprecated Use the `active` object prop instead. Kept for back-compat. */
+    activeColor?: TColor
+    /** @deprecated Use the `active` object prop instead. Kept for back-compat. */
+    activeBgColor?: TColor
 }
 
 export interface ISelectionControlEmits extends ICommonsComponentEmits {
@@ -19,7 +23,7 @@ export interface ISelectionControlEmits extends ICommonsComponentEmits {
 }
 
 export interface ISelectionControlSlots {
-    default?: (model: any, icon: TIcon, props: any) => any
+    default?: (data: { model: any, color?: TColor, bgColor?: TColor, icon?: TIcon, props: any }) => any
     label?: () => any
-    input?: (props: any, icon: TIcon, model: any) => any
+    input?: (data: { model: any, color?: TColor, bgColor?: TColor, icon?: TIcon, props: any, textColorStyles?: any, backgroundColorStyles?: any }) => any
 }

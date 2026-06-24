@@ -61,5 +61,5 @@ export interface ITextFieldEmits extends IFieldEmits, IInputEmits {
  */
 export interface ITextFieldSlots extends IFieldSlots, Omit<IInputSlots, 'default'> {
     counter?: (data: { counter: string, max?: string | number, value: string | number }) => any
-    field?: (data: { id: string, isDisabled: boolean, isDirty: boolean, isValid: boolean, isReadonly: boolean }) => any
+    field?: (data: { id: string, isDisabled: boolean, isDirty: boolean, isValid: boolean | undefined, isReadonly: boolean }) => any
 }

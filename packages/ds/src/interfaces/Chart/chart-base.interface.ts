@@ -92,8 +92,13 @@ export interface IChartBaseEmits {
  * Identical to `IChartSlots` from the universal `<OrigamChart>`.
  */
 export interface IChartBaseSlots {
-    /** Replace the default tooltip body. */
-    tooltip?: (bindings: { point: IChartPoint, series: IChartSeries, category: string | number }) => any
+    /**
+     * Replace the default tooltip body.
+     * Sub-chart interfaces extend this with a narrower binding signature;
+     * the parameter is typed `any` here so those overrides satisfy the
+     * TypeScript function-parameter assignability check (TS2430).
+     */
+    tooltip?: (bindings: any) => any
     /** Replace one legend entry. */
     'legend-item'?: (bindings: { series: IChartSeries, index: number, visible: boolean }) => any
     /** Replace the title block (title + subtitle). */

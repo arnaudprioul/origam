@@ -11,7 +11,7 @@
 				<template v-if="hasItems">
 					<ol class="origam-breadcrumb__items">
 						<template
-								v-for="(item, index) in items"
+								v-for="(item, index) in normalizedItems"
 								:key="index"
 						>
 							<li class="origam-breadcrumb__item">
@@ -106,10 +106,8 @@
 			density: props.density,
 			color: props.color,
 			bgColor: props.bgColor,
-			hoverColor: props.hoverColor,
-			hoverBgColor: props.hoverBgColor,
-			activeColor: props.activeColor,
-			activeBgColor: props.activeBgColor,
+			hover: props.hover,
+			active: props.active,
 			disabled: props.disabled
 		}
 	}))
@@ -133,7 +131,7 @@
 	// density/color fallback — no manual merge needed here.
 	// `disabled` and `isActive` are structural (not visual tokens), so
 	// they remain explicitly set on the item object.
-	const items = computed(() => {
+	const normalizedItems = computed<Array<IBreadcrumbItemProps>>(() => {
 		return props.items.map((item, index) => {
 			return typeof item === 'string' ? {title: item, disabled: isLastItem(index), active: isLastItem(index)} : {
 				...item,
@@ -148,7 +146,7 @@
 
 	const slots = useSlots()
 	const hasItems = computed(() => {
-		return slots.default || items.value
+		return slots.default || normalizedItems.value
 	})
 
 	/*********************************************************

@@ -41,7 +41,7 @@ export interface ITimelineProps extends ICommonsComponentProps, ITagProps, IColo
     ariaLabel?: string
 }
 
-export interface ITimelineItemProps extends ICommonsComponentProps, IColorProps {
+export interface ITimelineItemProps extends ICommonsComponentProps, IColorProps, IDensityProps, ISizeProps {
     title?: string
     subtitle?: string
     icon?: TIcon

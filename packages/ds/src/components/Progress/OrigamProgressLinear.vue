@@ -107,8 +107,8 @@
 	 * Color
 	 ********************************************************/
 
-	const {textColorStyles: backgroundColorStyles, textColorClasses: backgroundColorClasses} = useTextColor(toRef(props, 'bgColor'), undefined, 'origam-progress__background')
-	const {textColorStyles: loaderColorStyles, textColorClasses: loaderColorClasses} = useTextColor(toRef(props, 'color'), undefined, 'origam-progress__loader')
+	const {textColorStyles: backgroundColorStyles, textColorClasses: backgroundColorClasses} = useTextColor(toRef(props, 'bgColor'))
+	const {textColorStyles: loaderColorStyles, textColorClasses: loaderColorClasses} = useTextColor(toRef(props, 'color'))
 	const {isRtl, rtlClasses} = useRtl()
 
 	/*********************************************************

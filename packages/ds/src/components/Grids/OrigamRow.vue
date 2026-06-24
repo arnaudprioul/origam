@@ -12,7 +12,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue, toRef } from 'vue'
+	import { computed, type Ref, StyleValue, toRef } from 'vue'
 	import {
 	useBorder,
 	useBothColor,
@@ -25,6 +25,7 @@
 	import { DENSITY } from '../../enums'
 
 	import type { IRowProps } from '../../interfaces'
+	import type { TColor } from '../../types'
 
 	import { toKebabCase } from '../../utils'
 
@@ -44,7 +45,10 @@
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {colorClasses, colorStyles} = useBothColor(
+		toRef(props, 'bgColor') as Ref<TColor | undefined>,
+		toRef(props, 'color') as Ref<TColor | undefined>
+	)
 
 	/*********************************************************
 	 * Composables

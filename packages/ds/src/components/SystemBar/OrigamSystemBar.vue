@@ -71,7 +71,7 @@
 	const height = computed(() => props.height ?? (props.window ? 32 : 24))
 	const {layoutItemStyles} = useLayoutItem({
 		id: props.name,
-		order: computed(() => parseInt(props.order, 10)),
+		order: computed(() => parseInt(String(props.order ?? 0), 10)),
 		position: shallowRef('top'),
 		layoutSize: height,
 		elementSize: height,

@@ -128,6 +128,7 @@
 		setup
 >
 	import { computed, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
+	import type { ComputedRef, ExtractPropTypes } from 'vue'
 	import { OrigamAvatar, OrigamIcon, OrigamLoader, OrigamProgress, OrigamSkeleton } from '../../components'
 
 	import {
@@ -157,7 +158,7 @@
 
 	import { DENSITY, PROGRESS_TYPE, SIZES } from '../../enums'
 
-	import type { IBtnProps} from '../../interfaces'
+	import type { IAdjacentProps, IBtnProps, IProgressProps, IStatusProps } from '../../interfaces'
 
 	import type { IBtnEmits } from '../../interfaces/Btn/btn.interface'
 
@@ -275,7 +276,7 @@
 	 * Icon
 	 ********************************************************/
 
-	const {icon, prependIcon, appendIcon, statusClasses} = useStatus(props)
+	const {icon, prependIcon, appendIcon, statusClasses} = useStatus(props as unknown as IStatusProps & IAdjacentProps)
 	// Phase 3 (Vague A) — strategy (a): we destructure BOTH `colorClasses`
 	// and `colorStyles`. The classes hit the `.origam--bg-{intent}` /
 	// `.origam--color-{intent}` global utilities for the resting state;
@@ -295,7 +296,7 @@
 		elevationClasses, elevationStyles,
 		paddingClasses, paddingStyles,
 		marginClasses, marginStyles,
-	} = useStateEffect(props, isHover, isActive, hoverState, activeState, isDisabled, toRef(props, 'flat'))
+	} = useStateEffect(props, isHover, isActive as ComputedRef<boolean>, hoverState, activeState, isDisabled, toRef(props, 'flat'))
 	const {variantClasses} = useVariant(props)
 	const {
 		onClickPrepend: handleClickPrepend,
@@ -364,7 +365,7 @@
 	 * Forwarded props
 	 ********************************************************/
 
-	const progressProps = computed(() => {
+	const progressProps = computed<Record<string, unknown>>(() => {
 		// Exclude `size`, `type` and (critically) `tag` from filterProps.
 		// The Btn's own `tag` prop is `'button'` or `'a'` (from useLink),
 		// and without this exclusion `Object.assign` propagates it onto
@@ -381,7 +382,7 @@
 					modelValue: cfg.modelValue,
 					type: cfg.kind === 'line' ? PROGRESS_TYPE.LINEAR : PROGRESS_TYPE.CIRCULAR
 				},
-				origamProgressRef.value?.filterProps(props, ['class', 'style', 'id', 'tag', 'size', 'type']),
+				origamProgressRef.value?.filterProps(props as Partial<ExtractPropTypes<IProgressProps>>, ['class', 'style', 'id', 'tag', 'size', 'type']) ?? {},
 				cfg.overrides)
 	})
 

@@ -67,7 +67,7 @@
 	 * Forwarded click, mouseenter and mouseleave events so the parent
 	 * overlay can hook into scrim interactions.
 	 ********************************************************/
-	const handleClick = (e: Event) => {
+	const handleClick = (e: MouseEvent) => {
 		emits('click', e)
 	}
 	const handleMouseenter = (e: MouseEvent) => {

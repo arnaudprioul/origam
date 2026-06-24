@@ -243,7 +243,7 @@
 	 * Event handlers
 	 ********************************************************/
 
-	const handleIntersect = (side: TInfiniteScrollSide, _isIntersecting: boolean) => {
+	const handleIntersect = ({side, isIntersecting: _isIntersecting}: {isIntersecting: boolean, side: TInfiniteScrollSide}) => {
 		isIntersecting.value = _isIntersecting
 
 		if (isIntersecting.value) {

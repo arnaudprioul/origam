@@ -82,7 +82,7 @@
 									ref="origamMenuRef"
 									:model-value="showRequirements"
 									persistent
-									:target="origamInputRef"
+									:target="(origamInputRef as any)"
 									content-class="origam-password-field__info"
 									v-bind="resolvedMenuProps"
 							>

@@ -210,7 +210,7 @@
 		emits('expand')
 	}
 
-	const dataTableColumnCellClasses = (key: string) => {
+	const dataTableColumnCellClasses = (key: string | null) => {
 		return [
 			'origam-data-table-row__column',
 			{

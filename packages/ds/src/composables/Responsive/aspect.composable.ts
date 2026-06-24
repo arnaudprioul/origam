@@ -17,7 +17,7 @@ import { IN_BROWSER } from '../../consts'
  ********************************************************/
 export function useAspectRatio (props: { aspectRatio?: string | number }) {
     const aspectStyles = computed(() => {
-        const aspectRatio = []
+        const aspectRatio: Array<string> = []
         let ratio: number
 
         if (props.aspectRatio) {

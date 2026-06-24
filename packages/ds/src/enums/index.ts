@@ -23,6 +23,7 @@ export * from './Chart/chart-sparkline-kind.enum'
 export * from './Chart/chart-stacking.enum'
 
 export * from './Code/code-lang.enum'
+export * from './Code/code-theme.enum'
 
 export * from './ColorPicker/color-picker.enum'
 

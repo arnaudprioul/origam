@@ -32,7 +32,7 @@
 								v-model="query"
 								:aria-activedescendant="activeOptionId"
 								:aria-controls="listboxId"
-								:aria-expanded="String(hasResults)"
+								:aria-expanded="hasResults"
 								:placeholder="placeholder"
 								aria-autocomplete="list"
 								autocomplete="off"

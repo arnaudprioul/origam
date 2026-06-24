@@ -102,7 +102,7 @@
 	 ********************************************************/
 
 	const progressProps = computed(() => {
-		return origamProgressRef.value?.filterProps(props)
+		return (origamProgressRef.value as any)?.filterProps(props)
 	})
 
 	/*********************************************************

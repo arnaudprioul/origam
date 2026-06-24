@@ -12,7 +12,7 @@ import type {
     ITagProps
 } from "../../interfaces"
 
-import type { TIcon } from "../../types"
+import type { TColor, TIcon } from "../../types"
 
 export interface IPaginationProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IBorderProps, IPaddingProps, IMarginProps, IElevationProps, ISizeProps, IDensityProps {
     start?: number
@@ -77,6 +77,14 @@ export interface IPaginationProps extends ICommonsComponentProps, ITagProps, ICo
      * @default 'origam.pagination.ariaLabel.pageNumber'
      */
     pageNumberAriaLabel?: string
+    /** @deprecated Use the `hover` object prop instead. Kept for back-compat. */
+    hoverColor?: TColor
+    /** @deprecated Use the `hover` object prop instead. Kept for back-compat. */
+    hoverBgColor?: TColor
+    /** @deprecated Use the `active` object prop instead. Kept for back-compat. */
+    activeColor?: TColor
+    /** @deprecated Use the `active` object prop instead. Kept for back-compat. */
+    activeBgColor?: TColor
 }
 
 /** Emits fired by `<OrigamPagination>` — current page v-model + the four

@@ -309,7 +309,7 @@
 	const rawData = computed<Array<IChartCandlestickDatum>>(() => {
 		const series = props.series?.[0]
 		if (!series?.data?.length) return []
-		return series.data as Array<IChartCandlestickDatum>
+		return series.data as unknown as Array<IChartCandlestickDatum>
 	})
 
 	const validData = computed(() =>

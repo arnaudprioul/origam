@@ -1,4 +1,5 @@
 import type {
+    IActiveState,
     IAdjacentEmits,
     IAdjacentProps,
     IBorderProps,
@@ -20,22 +21,29 @@ import type {
     IRippleProps,
     IRoundedProps,
     ISizeProps,
-    IStatusProps,
     ITagProps,
     IVariantProps
 } from '../../interfaces'
 
 import type { TIcon } from '../../types'
+import type { TStatus, TStatusPosition } from '../../types'
 
-export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IBorderProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ITagProps, ISizeProps, ILinkProps, IRippleProps, ILoaderProps, IPositionProps, ILocationProps, IGroupItemProps, IPaddingProps, IMarginProps, IAdjacentProps, IStatusProps, IHoverProps, IVariantProps {
-    active?: boolean
+/** Btn needs `status` / `statusIconPosition` from IStatusProps but its own
+ *  `icon` prop accepts `boolean | TIcon` (boolean = icon-only mode) which is
+ *  wider than `IIconProps.icon?: TIcon`.  Pulling the two status props in
+ *  directly avoids the TS2430 incompatible-extends error. */
+export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IBorderProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ITagProps, ISizeProps, ILinkProps, IRippleProps, ILoaderProps, IPositionProps, ILocationProps, IGroupItemProps, IPaddingProps, IMarginProps, IAdjacentProps, IHoverProps, IVariantProps {
+    active?: boolean | IActiveState
     /** @deprecated Use `variant="flat"` instead. Kept for backward compat. */
     flat?: boolean,
+    /** Pass `true` to activate icon-only mode; pass a `TIcon` value to set the icon. */
     icon?: boolean | TIcon
     block?: boolean
     slim?: boolean
     stacked?: boolean
     text?: string
+    status?: TStatus
+    statusIconPosition?: TStatusPosition
 }
 
 /** Emits fired by `<OrigamBtn>` — clicks on prepend/append slots and

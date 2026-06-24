@@ -66,7 +66,7 @@
 		return props.modes.map((key) => ({...COLOR_PICKER_MODES[key], name: key}))
 	})
 
-	const inputsProps = computed(() => {
+	const inputsProps = computed((): Array<Record<string, unknown>> => {
 		const mode = enabledModes.value.find((m) => {
 			return m.name === props.mode
 		})
@@ -75,7 +75,7 @@
 
 		const color = props.colorHsv ? mode.to(props.colorHsv) : null
 
-		return mode.inputs?.map(({getValue, getColor, ...inputProps}) => {
+		return (mode.inputs?.map(({getValue, getColor, ...inputProps}) => {
 			return {
 				...mode.inputProps,
 				...inputProps,
@@ -88,8 +88,8 @@
 
 					emits('update:colorHsv', mode.from(getColor(color ?? mode.to(COLOR_NULL), target.value)))
 				}
-			}
-		})
+			} as Record<string, unknown>
+		}) ?? [])
 	})
 
 	/*********************************************************

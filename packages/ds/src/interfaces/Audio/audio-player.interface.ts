@@ -387,6 +387,28 @@ export interface IAudioEmits {
 }
 
 /**
+ * Options accepted by `useWaveform()` to configure how the audio file
+ * is fetched and decoded into waveform peak data.
+ */
+export interface IUseWaveformOptions {
+    /**
+     * Number of amplitude buckets (bars) to downsample the decoded
+     * audio into. A higher value produces a finer-grained waveform but
+     * costs more processing time.
+     *
+     * @default 200
+     */
+    bins?: number
+    /**
+     * CORS credentials mode forwarded to `fetch()`.
+     *
+     * - `'use-credentials'` — include cookies / auth headers.
+     * - any other value (or `undefined`) — `'same-origin'` semantics.
+     */
+    crossOrigin?: string
+}
+
+/**
  * Reactive state surface returned by `useAudioPlayer` (Audio
  * namespace). For the moment audio does not expose any state beyond
  * the media-agnostic baseline — the alias exists so future

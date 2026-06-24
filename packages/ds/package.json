@@ -95,6 +95,7 @@
   "scripts": {
     "build": "pnpm run tokens:build && unbuild",
     "lib:build": "pnpm run build",
+    "type-check": "vue-tsc --noEmit -p tsconfig.json",
     "tokens:build": "node scripts/build-tokens.mjs",
     "tokens:watch": "node scripts/build-tokens.mjs --watch",
     "tokens:lint": "node scripts/build-tokens.mjs --dry-run --strict",
@@ -120,6 +121,7 @@
   },
   "devDependencies": {
     "@nuxt/kit": "^4.4.5",
+    "@types/node": "^24.0.14",
     "@tokens-studio/sd-transforms": "^1.2.9",
     "@vitejs/plugin-vue": "^6.0.0",
     "sass": "^1.89.2",

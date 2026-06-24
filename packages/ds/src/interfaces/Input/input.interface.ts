@@ -48,7 +48,7 @@ export interface IInputSlots extends IAdjacentSlots {
         messagesId: string
         isDisabled: boolean
         isDirty: boolean
-        isValid: boolean
+        isValid: boolean | undefined
         isReadonly: boolean
     }) => any
     messages?: (data: { hasMessages: boolean, messages: Array<string> | Record<string, string> }) => any

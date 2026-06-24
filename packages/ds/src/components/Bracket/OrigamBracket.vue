@@ -110,7 +110,7 @@
 						<origam-bracket-round
 								v-for="(round, index) in section.rounds"
 								:key="round.id"
-								:color="color"
+								:color="roundColor"
 								:data-cy="`origam-bracket-${section.key}-round-${index}`"
 								:direction="DIRECTION.HORIZONTAL"
 								:index="index"
@@ -192,7 +192,7 @@
 				<origam-bracket-round
 						v-for="(round, index) in displayRounds"
 						:key="round.id"
-						:color="color"
+						:color="roundColor"
 						:data-cy="`origam-bracket-round-${index}`"
 						:direction="direction"
 						:index="index"
@@ -280,6 +280,10 @@
 		IBracketRound
 	} from '../../interfaces'
 
+	import type { IBracketSurfaceInput } from '../../utils/Bracket/bracket-surface.util'
+
+	import type { TIntent } from '../../types'
+
 	/*********************************************************
 	 * Global
 	 ********************************************************/
@@ -306,6 +310,11 @@
 
 	const resolvedId = computed(() => props.id ?? 'origam-bracket')
 	const ariaLabel = 'Tournament bracket'
+
+	// `IBracketRoundProps.color` expects `TIntent | undefined` but `IBracketProps`
+	// inherits `color` from `IColorProps` (TColor). Cast to the narrower type
+	// expected by child round components — type-only, no runtime change.
+	const roundColor = computed<TIntent | undefined>(() => props.color as TIntent | undefined)
 
 	/*********************************************************
 	 * Display rounds
@@ -349,11 +358,13 @@
 	}
 
 	const doubleSections = computed<TDoubleSection[]>(() => {
-		return [
-			{key: 'winners', label: props.winnersLabel, rounds: winnerRounds.value},
-			{key: 'losers', label: props.losersLabel, rounds: loserRounds.value},
+		const all: TDoubleSection[] = [
+			{key: 'winners', label: props.winnersLabel ?? '', rounds: winnerRounds.value},
+			{key: 'losers', label: props.losersLabel ?? '', rounds: loserRounds.value},
 			{key: 'grand-final', label: '', rounds: grandFinalRounds.value}
-		].filter(section => section.rounds.length > 0)
+		]
+
+		return all.filter(section => section.rounds.length > 0)
 	})
 
 	/*********************************************************
@@ -833,12 +844,12 @@
 	 * border (width + style + colour) so trees and links read as one.
 	 ********************************************************/
 	const colorVars = computed<Record<string, string>>(() => {
-		const vars: Record<string, string> = bracketSurfaceVars(props)
+		const vars: Record<string, string> = bracketSurfaceVars(props as IBracketSurfaceInput)
 
 		// Text foreground: a painted surface (`bgColor`) takes the measured
 		// black / white that actually passes WCAG against it; with no
 		// surface, `color` drives the text on the neutral background.
-		const foreground = autoTextColor.value ?? resolveBracketForeground(props.color)
+		const foreground = autoTextColor.value ?? resolveBracketForeground(props.color as string | null | undefined)
 		if (foreground) vars['--origam-bracket---color'] = foreground
 
 		// Connector links mirror the match border. stroke-width is set
@@ -850,7 +861,7 @@
 			vars['--origam-bracket-connector---stroke-color-winner'] = borderColor
 		}
 
-		const borderWidth = resolveBracketBorderWidth(props.border)
+		const borderWidth = resolveBracketBorderWidth(props.border as string | number | boolean | null | undefined)
 		if (borderWidth) vars['--origam-bracket-connector---stroke-width'] = borderWidth
 
 		const dash = bracketDashArray(props.borderStyle)

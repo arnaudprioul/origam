@@ -1,6 +1,7 @@
 import type {
     IBgColorProps,
     IChartAnnotation,
+    IChartDrilldownProps,
     IChartPlotBand,
     IChartPlotLine,
     IChartPoint,
@@ -150,6 +151,17 @@ export interface IChartProps
      * coordinates. Four kinds: `'arrow'`, `'label'`, `'circle'`, `'bracket'`.
      */
     annotations?: Array<IChartAnnotation>
+    /**
+     * Drilldown configuration forwarded to `<OrigamChartCartesian>` and
+     * `<OrigamChartPolar>`. Ignored by other families (radar, gauge, …).
+     */
+    drilldown?: IChartDrilldownProps
+    /**
+     * Secondary (right-hand) Y axis configuration. Forwarded to
+     * `<OrigamChartCartesian>` only — ignored for other families.
+     * When absent the engine ignores `series.yAxis === 1` assignments.
+     */
+    secondaryYAxis?: IChartSecondaryYAxis
 }
 
 /**

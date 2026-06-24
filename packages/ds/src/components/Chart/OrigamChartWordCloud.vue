@@ -302,7 +302,7 @@
 		if (!series || !series.data?.length) return []
 
 		type RawDatum = { text: string; value: number; color?: string }
-		const raw = series.data as Array<RawDatum>
+		const raw = series.data as unknown as Array<RawDatum>
 
 		const valid = raw.filter((d) => d && typeof d === 'object' && 'text' in d && typeof d.value === 'number')
 		if (!valid.length) return []
