@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import { useT } from '~/composables/useT'
 import { useThemeBuilder } from '~/composables/useThemeBuilder'
@@ -13,6 +13,7 @@ const {
     editCount,
     generatedCode,
     fileName,
+    presets,
     propValue,
     setProp,
     tokenValue,
@@ -21,8 +22,50 @@ const {
     previewStyle,
     slotText,
     reset,
-    download
+    download,
+    downloadJson,
+    importTheme,
+    seedPreset,
+    loadStorage,
+    startAutoPersist
 } = useThemeBuilder()
+
+onMounted(() => {
+    loadStorage()
+    startAutoPersist()
+})
+
+const MODE_OPTIONS = [
+    { title: t('theming.mode.light', 'Light'), value: 'light' },
+    { title: t('theming.mode.dark', 'Dark'), value: 'dark' },
+    { title: t('theming.mode.auto', 'Auto'), value: 'auto' }
+]
+
+const presetItems = computed(() =>
+    presets.map(p => ({ title: t(p.labelKey, p.labelFallback), value: p.key }))
+)
+
+const selectedPreset = ref<string>('')
+const importText = ref<string>('')
+const importError = ref<boolean>(false)
+
+const numberValue = (slug: string, prop: string): number | undefined => {
+    const v = propValue(slug, prop)
+    return typeof v === 'number' ? v : undefined
+}
+
+const onSeedPreset = (key: unknown) => {
+    if (typeof key !== 'string' || !key) return
+    seedPreset(key)
+}
+
+const onImport = () => {
+    const ok = importTheme(importText.value)
+    importError.value = !ok
+    if (ok) importText.value = ''
+}
+
+const onExportJson = () => downloadJson()
 
 useSeoMeta({
     title: () => t('theming.meta.title', 'Theme builder · origam design system'),
@@ -93,6 +136,26 @@ const downloadHint = computed(() =>
                         class="theming__name-field"
                         data-cy="theming-name"
                     />
+                    <origam-text-field
+                        v-model="state.label"
+                        :label="t('theming.label.label', 'Display label')"
+                        :placeholder="t('theming.label.placeholder', 'My theme')"
+                        variant="outlined"
+                        density="compact"
+                        hide-details
+                        class="theming__label-field"
+                        data-cy="theming-label"
+                    />
+                    <origam-select
+                        v-model="state.mode"
+                        :label="t('theming.mode.label', 'Color mode')"
+                        :items="MODE_OPTIONS"
+                        variant="outlined"
+                        density="compact"
+                        hide-details
+                        class="theming__mode-field"
+                        data-cy="theming-mode"
+                    />
                     <div class="theming__name-actions">
                         <origam-btn
                             variant="text"
@@ -118,8 +181,80 @@ const downloadHint = computed(() =>
                                 class="theming__edit-badge"
                             />
                         </origam-btn>
+                        <origam-btn
+                            variant="outlined"
+                            prepend-icon="mdi-code-json"
+                            type="button"
+                            data-cy="theming-export-json"
+                            @click="onExportJson"
+                        >
+                            {{ t('theming.export_json', 'Export JSON') }}
+                        </origam-btn>
                     </div>
                 </form>
+
+                <section
+                    class="theming__seed"
+                    aria-labelledby="theming-seed-title"
+                    data-cy="theming-seed"
+                >
+                    <origam-title
+                        id="theming-seed-title"
+                        tag="h2"
+                        class="theming__seed-title"
+                    >
+                        {{ t('theming.seed.title', 'Start from an existing theme') }}
+                    </origam-title>
+
+                    <div class="theming__seed-row">
+                        <origam-select
+                            v-model="selectedPreset"
+                            :label="t('theming.seed.preset_label', 'Seed from a DS preset')"
+                            :items="presetItems"
+                            variant="outlined"
+                            density="compact"
+                            hide-details
+                            class="theming__seed-preset"
+                            data-cy="theming-seed-preset"
+                            @update:model-value="onSeedPreset"
+                        />
+                    </div>
+
+                    <div class="theming__seed-row theming__seed-row--import">
+                        <origam-textarea-field
+                            v-model="importText"
+                            :label="t('theming.seed.import_label', 'Paste a theme module or JSON')"
+                            :placeholder="t('theming.seed.import_placeholder', 'Paste a theme module or a JSON object…')"
+                            variant="outlined"
+                            density="compact"
+                            hide-details
+                            :rows="4"
+                            class="theming__seed-import"
+                            data-cy="theming-import-text"
+                        />
+                        <origam-btn
+                            variant="tonal"
+                            color="primary"
+                            prepend-icon="mdi-import"
+                            type="button"
+                            class="theming__seed-import-btn"
+                            data-cy="theming-import-btn"
+                            @click="onImport"
+                        >
+                            {{ t('theming.seed.import_action', 'Import') }}
+                        </origam-btn>
+                    </div>
+
+                    <origam-alert
+                        v-if="importError"
+                        type="danger"
+                        density="compact"
+                        class="theming__seed-error"
+                        data-cy="theming-import-error"
+                    >
+                        {{ t('theming.seed.import_error', 'Could not parse that theme — paste a valid IOrigamTheme module or JSON object.') }}
+                    </origam-alert>
+                </section>
             </origam-container>
         </header>
 
@@ -231,7 +366,7 @@ const downloadHint = computed(() =>
 
                                 <origam-number-field
                                     v-else-if="ctrl.kind === 'number'"
-                                    :model-value="propValue(activeEntry.slug, ctrl.prop)"
+                                    :model-value="numberValue(activeEntry.slug, ctrl.prop)"
                                     :label="t(ctrl.labelKey, ctrl.labelFallback)"
                                     variant="outlined"
                                     density="compact"
@@ -376,6 +511,57 @@ const downloadHint = computed(() =>
     &__name-field {
         flex: 1 1 16rem;
         max-width: 24rem;
+    }
+
+    &__label-field {
+        flex: 1 1 14rem;
+        max-width: 20rem;
+    }
+
+    &__mode-field {
+        flex: 0 1 10rem;
+    }
+
+    &__seed {
+        display: flex;
+        flex-direction: column;
+        gap: var(--origam-spacing-3, 0.75rem);
+        margin-block-start: var(--origam-spacing-6, 1.5rem);
+        padding: var(--origam-spacing-5, 1.25rem);
+        background-color: var(--origam-color-surface-default);
+        border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+        border-radius: var(--origam-radius-lg, 0.75rem);
+    }
+
+    &__seed-title {
+        margin: 0;
+        font-size: var(--origam-font-size-md, 1rem);
+    }
+
+    &__seed-row {
+        display: flex;
+        gap: var(--origam-spacing-3, 0.75rem);
+
+        &--import {
+            align-items: flex-end;
+        }
+    }
+
+    &__seed-preset {
+        flex: 1 1 16rem;
+        max-width: 24rem;
+    }
+
+    &__seed-import {
+        flex: 1 1 auto;
+    }
+
+    &__seed-import-btn {
+        flex: 0 0 auto;
+    }
+
+    &__seed-error {
+        margin: 0;
     }
 
     &__name-actions {

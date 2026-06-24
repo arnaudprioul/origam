@@ -20,6 +20,23 @@ import type { IThemeBuilderPreviewAdapter } from '~/interfaces/theme-builder.int
 export const THEME_BUILDER_DEFAULT_NAME = 'my-theme'
 
 /**
+ * Default human-readable label pre-filled in the label field (maps to
+ * `IOrigamTheme.label`).
+ */
+export const THEME_BUILDER_DEFAULT_LABEL = 'My theme'
+
+/**
+ * Default color mode for a freshly-started theme (maps to `IOrigamTheme.mode`).
+ */
+export const THEME_BUILDER_DEFAULT_MODE = 'light'
+
+/**
+ * localStorage key under which the builder auto-persists its diff-only state so
+ * edits survive a page reload. Reset clears this entry too.
+ */
+export const THEME_BUILDER_STORAGE_KEY = 'origam_theme_builder_state'
+
+/**
  * Core set wired in the editor. ~15 components that render visibly from props
  * (plus light slot text). `tabs` is intentionally excluded: it renders only via
  * OrigamTab children (slot-driven) and can't be previewed from props alone.

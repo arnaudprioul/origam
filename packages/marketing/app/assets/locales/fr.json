@@ -633,8 +633,31 @@
       "label": "Nom du thème",
       "placeholder": "my-theme"
     },
+    "label": {
+      "label": "Libellé affiché",
+      "placeholder": "Mon thème"
+    },
+    "mode": {
+      "label": "Mode de couleur",
+      "light": "Clair",
+      "dark": "Sombre",
+      "auto": "Auto"
+    },
     "reset": "Réinitialiser",
     "validate": "Valider et exporter",
+    "export_json": "Exporter en JSON",
+    "preset": {
+      "origam_light": "Origam clair",
+      "origam_dark": "Origam sombre"
+    },
+    "seed": {
+      "title": "Partir d'un thème existant",
+      "preset_label": "Initialiser depuis un preset DS",
+      "import_label": "Collez un module de thème ou du JSON",
+      "import_placeholder": "Paste a theme module or a JSON object…",
+      "import_action": "Importer",
+      "import_error": "Impossible d'analyser ce thème — collez un module ou un objet JSON IOrigamTheme valide."
+    },
     "nav": {
       "label": "Composants"
     },
