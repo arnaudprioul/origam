@@ -13,7 +13,9 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare || [ \"$CI\" = \"true\" ]",
     "lint": "eslint .",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "docs:generate": "node scripts/generate-api-docs.mjs",
+    "docs:generate:check": "node scripts/generate-api-docs.mjs --check"
   },
   "dependencies": {
     "@nuxtjs/i18n": "^9.0.0",
