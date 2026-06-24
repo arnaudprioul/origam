@@ -95,6 +95,7 @@
   "scripts": {
     "build": "pnpm run tokens:build && unbuild",
     "lib:build": "pnpm run build",
+    "type-check": "vue-tsc --noEmit -p tsconfig.json",
     "tokens:build": "node scripts/build-tokens.mjs",
     "tokens:watch": "node scripts/build-tokens.mjs --watch",
     "tokens:lint": "node scripts/build-tokens.mjs --dry-run --strict",

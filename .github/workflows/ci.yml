@@ -40,6 +40,32 @@ jobs:
       - name: Run ESLint (no auto-fix)
         run: pnpm exec eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --max-warnings 0
 
+  type-check:
+    name: Type-check (vue-tsc)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Generated token types (src/types/tokens.type.ts) are imported across the
+      # DS source; rebuild them so vue-tsc resolves every reference.
+      - name: Build tokens (prereq for type resolution)
+        run: pnpm -F origam tokens:build
+
+      # Hard gate: the DS must stay at ZERO vue-tsc errors. This locks in the
+      # #65 type-debt cleanup (262 -> 0) and fails the build on any regression.
+      - name: vue-tsc --noEmit
+        run: pnpm -F origam run type-check
+
   tokens:
     name: Tokens build & lint
     runs-on: ubuntu-latest
