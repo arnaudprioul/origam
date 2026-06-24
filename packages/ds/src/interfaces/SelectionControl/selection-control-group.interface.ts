@@ -5,7 +5,8 @@ import { Ref } from 'vue'
 
 export interface ISelectionControlGroupProps extends ICommonsComponentProps, IColorProps, IDensityProps, IRippleProps {
     disabled?: boolean
-    error?: boolean
+    /** Error state. Accepts `boolean` or a `string` error message (same contract as `IValidationProps`). */
+    error?: string | boolean
     inline?: boolean
     falseIcon?: TIcon
     trueIcon?: TIcon

@@ -102,7 +102,7 @@
 
 	const yearRef = templateRef()
 
-	const btnProps = (year: { text: string, value: number }) => {
+	const btnProps = (year: { text: string, value: number }, _index?: number) => {
 		return {
 			ref: model.value === year.value ? yearRef : undefined,
 			active: model.value === year.value,

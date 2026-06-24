@@ -1,6 +1,7 @@
 import { onBeforeUnmount, ref, watch, type Ref } from 'vue'
 
-import type { TMasonryAlign, TMasonryColumnBreakpoints } from '../../types'
+import type { TMasonryAlign } from '../../types'
+import type { TMasonryColumnBreakpoints } from '../../interfaces'
 
 /**
  * Internal layout descriptor produced by the bucket-fill algorithm.

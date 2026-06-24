@@ -75,7 +75,7 @@ export function forwardRefs<T extends Record<string, unknown>, U extends Ref<HTM
             // Check each ref's own properties
             for (const ref of refs) {
                 if (!ref.value) continue
-                const descriptor = getDescriptor(ref.value, key) ?? ('_' in ref.value ? getDescriptor(ref.value._?.setupState, key) : undefined)
+                const descriptor = getDescriptor(ref.value, key) ?? ('_' in ref.value ? getDescriptor((ref.value as unknown as { _?: { setupState?: unknown } })._?.setupState, key) : undefined)
                 if (descriptor) return descriptor
             }
 

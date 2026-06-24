@@ -9,7 +9,7 @@
 			<slot name="default">
 				<origam-img
 						ref="origamImgRef"
-						v-bind="{...attrs , ...imgProps}"
+						v-bind="({...attrs , ...imgProps} as any)"
 				>
 					<template
 							v-if="slots.content"

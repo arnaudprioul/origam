@@ -29,5 +29,5 @@ export interface IListActivatorProps extends ICommonsComponentProps, ITagProps {
 /** Emits fired by `<OrigamListGroup>` — click on the activator chrome
  *  (used by parents to toggle the open state). */
 export interface IListGroupEmits {
-    (e: 'click:activator', event: MouseEvent): void
+    (e: 'click:activator', payload: { open: boolean; event: Event }): void
 }

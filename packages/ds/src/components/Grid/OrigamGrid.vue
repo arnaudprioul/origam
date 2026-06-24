@@ -29,7 +29,8 @@
 
 	import type { IGridProps } from '../../interfaces'
 
-	import type { TGridGapSize, TGridTracks } from '../../types'
+	import type { TGridGapSize } from '../../types'
+	import type { TGridTracks } from '../../interfaces'
 
 	/*********************************************************
 	 * Global

@@ -23,7 +23,7 @@ export function formatElevationStyle (elevation: number = 0, bgColor?: TColor) {
     const opacity = roundTo(normalize(elevation * .04, 0, 1, 0.5, 0.25), 2);
     let color: THSLA = {h: 0, s: 0, l: 0}
 
-    if (bgColor && isParsableColor(bgColor)) {
+    if (typeof bgColor === 'string' && isParsableColor(bgColor)) {
         color = HSVtoHSL(RGBtoHSV(parseColor(bgColor)))
     }
 

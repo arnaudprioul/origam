@@ -225,7 +225,7 @@
 	import { OrigamBottomNav, OrigamBtn } from '@origam/components'
 	import { BOTTOM_NAV_POSITION, MDI_ICONS, MODE } from '@origam/enums'
 	import type { IBottomNavProps, IOptions } from '@origam/interfaces'
-	import type { TBottomNavPosition, TMode } from '@origam/types'
+	import type { TBottomNavPosition, TNavMode } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -243,7 +243,7 @@
 		TAG_OPTIONS
 	} from '@stories/const'
 
-	const MODE_OPTIONS: Array<IOptions<TMode>> = [
+	const MODE_OPTIONS: Array<IOptions<TNavMode>> = [
 		{ label: 'vertical',   value: MODE.VERTICAL   },
 		{ label: 'horizontal', value: MODE.HORIZONTAL },
 		{ label: 'shift',      value: MODE.SHIFT      },

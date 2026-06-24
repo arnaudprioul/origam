@@ -161,7 +161,7 @@ export function useRounded (
         // Legacy boolean-true and empty-string opt-in: also push an
         // inline radius so the chrome lands regardless of per-component
         // SCSS coverage. Mirrors the utility `md` rung.
-        if (rounded === true || rounded === '') {
+        if (rounded === true || (typeof rounded === 'string' && rounded === '')) {
             styles.push(`border-radius: var(--origam-radius---md, 8px)`)
             return styles
         }
@@ -182,7 +182,7 @@ export function useRounded (
                 // `useRounded` with `convertToUnit`/`useDimension`, which already
                 // pass custom-property refs and computed lengths straight through.
                 // Emit the declaration verbatim — no warning, no drop.
-                styles.push(`border-radius: ${rounded.trim()}`)
+                styles.push(`border-radius: ${(rounded as string).trim()}`)
             }
         } else if (typeof rounded === 'number') {
             styles.push(`border-radius: ${convertToUnit(rounded)}`)

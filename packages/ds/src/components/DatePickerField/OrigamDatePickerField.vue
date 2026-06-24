@@ -75,9 +75,9 @@
 				<template #default>
 					<origam-date-picker
 							ref="origamDatePickerRef"
-							:model-value="model"
-							v-bind="{...datePickerProps}"
-							@update:model-value="handleSelectDate"
+							:model-value="(model as (string | Date)[])"
+							v-bind="(datePickerProps as Record<string, unknown>)"
+							@update:model-value="(handleSelectDate as (v: any) => void)"
 					/>
 				</template>
 			</origam-menu>
@@ -190,7 +190,7 @@
 
 	import { BLOCK, DENSITY, DIRECTION, KEYBOARD_VALUES, MDI_ICONS, TEXT_FIELD_TYPE } from "../../enums"
 
-	import type { IDatePickerFieldProps } from "../../interfaces"
+	import type { IDatePickerFieldProps, IDatePickerProps } from "../../interfaces"
 
 	import type { TOrigamDatePicker, TOrigamMenu, TOrigamTextField, TTransitionProps } from "../../types"
 
@@ -359,7 +359,7 @@
 	/*********************************************************
 	 * Chips
 	 ********************************************************/
-	const chipSlotProps = (item: string) => {
+	const chipSlotProps = (item: string): Record<string, unknown> => {
 		return {
 			closable: props.closableChips,
 			bgColor: 'rgba(168, 168, 168, 1)',
@@ -408,11 +408,15 @@
 		// them down made the inner `<origam-date-picker>` apply the
 		// Sheet's `--rounded` modifier (24px), which doesn't match
 		// the popup menu's 8px corner — visible gap at the corners.
-		return origamDatePickerRef.value?.filterProps(props, [
-			'class', 'id', 'style', 'modelValue',
+		// Cast: props is IDatePickerFieldProps (superset). filterProps on the child
+		// ref expects T=IDatePickerProps. The cast is safe — all IDatePickerProps
+		// keys are present in IDatePickerFieldProps.
+		return origamDatePickerRef.value?.filterProps(
+			props as unknown as IDatePickerProps,
+			['class', 'id', 'style', 'modelValue',
 			'rounded', 'border', 'borderColor', 'borderStyle',
-			'density', 'direction',
-		])
+			'density', 'direction']
+		)
 	})
 
 	/*********************************************************

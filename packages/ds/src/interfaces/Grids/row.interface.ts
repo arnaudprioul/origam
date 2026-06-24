@@ -1,5 +1,6 @@
 import type {
     IAlignProps,
+    IBgColorProps,
     IBorderProps,
     IColorProps,
     ICommonsComponentProps,
@@ -12,7 +13,7 @@ import type {
 
 import type { TFlexDirection } from '../../types'
 
-export interface IRowProps extends ICommonsComponentProps, ITagProps, IPaddingProps, IMarginProps, IBorderProps, IColorProps, IDensityProps, IAlignProps, IJustifyProps {
+export interface IRowProps extends ICommonsComponentProps, ITagProps, IPaddingProps, IMarginProps, IBorderProps, IColorProps, IBgColorProps, IDensityProps, IAlignProps, IJustifyProps {
     gutters?: string | number
     direction?: TFlexDirection
 }

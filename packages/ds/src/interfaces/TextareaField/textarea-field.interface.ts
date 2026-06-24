@@ -83,7 +83,7 @@ export interface ITextareaFieldEmits extends IFieldEmits, IInputEmits {
  */
 export interface ITextareaFieldSlots extends IFieldSlots, Omit<IInputSlots, 'default'> {
     counter?: (data: { counter: string, max?: string | number, value: string | number }) => any
-    field?: (data: { id: string, isDisabled: boolean, isDirty: boolean, isValid: boolean, isReadonly: boolean }) => any
+    field?: (data: { id: string, isDisabled: boolean, isDirty: boolean, isValid: boolean | undefined, isReadonly: boolean }) => any
     /** Replace the rich-text toolbar entirely (rich mode only). */
     toolbar?: (data: ITextareaToolbarSlotProps) => any
     /** Replace a single toolbar button (rich mode only). */

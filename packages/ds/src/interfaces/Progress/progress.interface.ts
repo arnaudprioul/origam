@@ -1,4 +1,5 @@
 import type {
+    IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
     IMarginProps,
@@ -14,7 +15,7 @@ export interface IProgressProps extends IProgressLinearProps, IProgressCircularP
     type?: TProgressType
 }
 
-export interface IProgressTypeProps extends ITagProps, ICommonsComponentProps, IColorProps, IPaddingProps, IMarginProps {
+export interface IProgressTypeProps extends ITagProps, ICommonsComponentProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps {
     indeterminate?: boolean
     modelValue?: string | number
     thickness?: string | number

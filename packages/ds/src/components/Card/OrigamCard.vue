@@ -263,7 +263,7 @@
 	// / `activeBgColor` resolve via `useStateEffect`) and the link
 	// navigation when the Card is interactive (`link` prop / clickable).
 	const handleClick = (event: MouseEvent) => {
-		onActive(event)
+		onActive()
 		if (isClickable.value && link.navigate) {
 			link.navigate(event)
 		}

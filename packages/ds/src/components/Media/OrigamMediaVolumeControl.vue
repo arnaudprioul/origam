@@ -11,7 +11,7 @@
 					type="button"
 					class="origam-media-volume-control__btn"
 					:class="rootClasses"
-					:style="style"
+					:style="rootStyle"
 					:aria-label="muted ? unmuteLabel : muteLabel"
 					:data-cy="btnDataCy"
 					@click="onToggleMute"
@@ -46,7 +46,7 @@
 		lang="ts"
 		setup
 >
-	import { computed } from 'vue'
+	import { computed, type CSSProperties } from 'vue'
 
 	import { OrigamIcon } from '../Icon'
 	import { OrigamTooltip } from '../Tooltip'
@@ -74,6 +74,7 @@
 	}
 
 	const rootClasses = computed(() => [props.class])
+	const rootStyle = computed<CSSProperties | string | undefined>(() => props.style as CSSProperties | string | undefined)
 
 	const btnDataCy = computed<string>(() => `${props.dataCy}-mute`)
 	const wrapperDataCy = computed<string>(() => `${props.dataCy}-wrapper`)

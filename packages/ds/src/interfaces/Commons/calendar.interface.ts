@@ -4,12 +4,12 @@ export interface ICalendarProps {
     allowedDates?: Array<unknown> | ((date: unknown) => boolean)
     disabled?: boolean
     displayValue?: unknown
-    date?: Array<unknown>
-    month: number
+    date?: ReadonlyArray<unknown> | Array<unknown>
+    month?: number
     max?: unknown
     min?: unknown
     showAdjacentMonths?: boolean
-    year: number
+    year?: number
     weekdays?: Array<number>
     weeksInMonth?: TCalendarStrategy
     firstDayOfWeek?: number

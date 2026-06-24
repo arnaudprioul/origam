@@ -154,7 +154,11 @@ function buildIntlOptions (options: IUseNumberFormatOptions): Intl.NumberFormatO
     }
 
     if (options.signDisplay !== undefined) {
-        intl.signDisplay = options.signDisplay
+        // Cast: TNumberFormatSignDisplay uses 'except-zero' and 'negative' which
+        // are not yet present in TS lib's NumberFormatOptionsSignDisplayRegistry
+        // ('exceptZero' differs in casing, 'negative' is missing).
+        // The runtime Intl engine accepts these values; the cast bridges the gap.
+        intl.signDisplay = options.signDisplay as Intl.NumberFormatOptions['signDisplay']
     }
 
     return intl

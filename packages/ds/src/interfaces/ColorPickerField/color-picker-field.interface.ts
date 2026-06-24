@@ -1,22 +1,15 @@
 import type {
-    IAdjacentInnerProps,
-    IAdjacentProps,
-    IBorderProps,
-    IColorProps,
-    ICommonsComponentProps,
-    IDensityProps,
-    IElevationProps,
-    IFieldProps,
-    IInputProps,
-    IMarginProps,
     IMenuProps,
-    IPaddingProps,
-    IRoundedProps,
     ITextFieldProps,
     ITransitionComponentProps
 } from "../../interfaces"
 
-export interface IColorPickerFieldProps extends ICommonsComponentProps, IColorProps, ITextFieldProps, IDensityProps, IAdjacentProps, IAdjacentInnerProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, ITransitionComponentProps {
+// ITextFieldProps already includes ICommonsComponentProps, IColorProps,
+// IDensityProps, IFieldProps, IInputProps, IAdjacentProps, IAdjacentInnerProps,
+// IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps.
+// Listing them again alongside ITextFieldProps triggered TS2320 because
+// TypeScript detected incompatible redeclarations across the diamond hierarchy.
+export interface IColorPickerFieldProps extends ITextFieldProps, ITransitionComponentProps {
     menu?: boolean,
     menuProps?: IMenuProps,
     openOnClear?: boolean

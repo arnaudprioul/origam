@@ -6,6 +6,6 @@ export interface IDialogConfirmationProps extends IDialogProps {
 
 /** Emits fired by `<OrigamDialogConfirmation>` — confirm/cancel buttons. */
 export interface IDialogConfirmationEmits {
-    (e: 'validate', event: MouseEvent): void
-    (e: 'cancel', event: MouseEvent): void
+    (e: 'validate', event?: MouseEvent): void
+    (e: 'cancel', event?: MouseEvent): void
 }

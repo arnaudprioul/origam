@@ -93,16 +93,24 @@ export interface IMediaScrubberProps extends ICommonsComponentProps, IColorProps
      */
     formatHoverTooltip?: (value: number) => string
     /**
-     * Required accessibility label — read by screen readers when the
+     * Accessibility label — read by screen readers when the
      * scrubber gains focus. Always pass a translated string here.
+     * Declared optional to allow Volar to map the kebab-case `:aria-label`
+     * attribute from parent templates without a required-prop error.
      */
-    ariaLabel: string
+    ariaLabel?: string
     /**
      * Optional human-readable representation of the current value
      * (e.g. `"1:23"` for a timestamp, `"45 %"` for a volume).
      * Mapped to `aria-valuetext`.
      */
     ariaValueText?: string
+    /**
+     * Optional `data-cy` test selector forwarded by the parent
+     * (`OrigamMediaController`, `OrigamMediaVolumeControl`) as a
+     * camelCase Vue prop. Passed through `$attrs` to the host element.
+     */
+    dataCy?: string
 }
 
 /**

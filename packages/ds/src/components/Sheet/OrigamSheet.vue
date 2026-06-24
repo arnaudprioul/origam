@@ -30,7 +30,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, ref, StyleValue, toRef, watch } from 'vue'
+	import { computed, type Ref, ref, StyleValue, toRef, watch } from 'vue'
 	import {
 		useActive,
 		useBothColor,
@@ -48,7 +48,7 @@
 
 	import type { ISheetEmits } from '../../interfaces/Sheet/sheet-emits.interface'
 
-	import type { TSheetSnapId, TSheetSnapPoint } from "../../types"
+	import type { TColor, TSheetSnapId, TSheetSnapPoint } from "../../types"
 
 	/*********************************************************
 	 * Global
@@ -77,7 +77,10 @@
 	 * Composables
 	 ********************************************************/
 
-	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {colorClasses, colorStyles} = useBothColor(
+		toRef(props, 'bgColor') as Ref<TColor | undefined>,
+		toRef(props, 'color') as Ref<TColor | undefined>
+	)
 	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
 	const {isActive, activeState, activeClasses, onActive} = useActive(props)
 	const {

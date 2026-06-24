@@ -60,6 +60,7 @@
 	import {
 		computed,
 		ComputedRef,
+		isRef,
 		nextTick,
 		onBeforeMount,
 		Ref,
@@ -309,10 +310,11 @@
 	// Detect the orphan case and disable the teleport — Vue's
 	// `disabled` flag falls back to inline rendering at the declared
 	// position, which is what the consumer expects in standalone use.
-	const isLayoutOrphan = computed(() => layoutId.value === 'origam-layout-orphan')
+	const resolvedLayoutId = computed<string>(() => isRef(layoutId) ? layoutId.value : layoutId)
+	const isLayoutOrphan = computed(() => resolvedLayoutId.value === 'origam-layout-orphan')
 	const teleportDrawer = computed(() => {
 		if (isLayoutOrphan.value) return undefined
-		return `#${layoutId.value} .origam-layout__wrapper`
+		return `#${resolvedLayoutId.value} .origam-layout__wrapper`
 	})
 
 	const {isStuck, stickyStyles} = useSticky({rootEl, isSticky, layoutItemStyles})

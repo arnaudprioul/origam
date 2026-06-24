@@ -76,6 +76,8 @@
 
 	import type { IColorPickerPreviewEmits } from '../../interfaces/ColorPicker/color-picker-preview.interface'
 
+	import type { THSVA } from "../../types"
+
 	import { consoleWarn, HSVtoCSS, parseColor, RGBtoHSV } from "../../utils"
 
 	import { computed, onUnmounted, StyleValue } from "vue"
@@ -122,11 +124,11 @@
 
 	const handleUpdateColorHue = (h: number) => {
 		colorHsv.value!.h = h
-		emits('update:colorHsv', {...colorHsv.value, h})
+		emits('update:colorHsv', {...colorHsv.value, h} as THSVA)
 	}
 	const handleUpdateColorAlpha = (a: number) => {
 		colorHsv.value!.a = a
-		emits('update:colorHsv', {...colorHsv.value, a})
+		emits('update:colorHsv', {...colorHsv.value, a} as THSVA)
 	}
 
 	onUnmounted(() => {

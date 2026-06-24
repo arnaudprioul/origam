@@ -12,7 +12,7 @@
 				xmlns="http://www.w3.org/2000/svg"
 		>
 			<template v-if="!isArray(icon)">
-				<path :d="icon"></path>
+				<path :d="(icon as string)"></path>
 			</template>
 			<template v-else>
 				<template

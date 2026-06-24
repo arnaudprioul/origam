@@ -4,7 +4,9 @@ import type { TValidateOn } from '../../types'
 
 export interface IValidationProps extends IFocusProps {
     disabled?: boolean
-    error?: boolean
+    /** Field-level error flag. Accepts a `boolean` (error on/off) or a `string`
+     *  (error message rendered inline by consumers such as `FileField`). */
+    error?: string | boolean
     errorMessages?: Array<string> | string
     maxErrors?: number | string
     name?: string

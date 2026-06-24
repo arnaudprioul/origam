@@ -203,7 +203,7 @@
 		if (!normalisedSrc.value.src) return
 
 		nextTick(() => {
-			emits('loadstart', image.value?.currentSrc || normalisedSrc.value.src)
+			emits('loadstart', {src: image.value?.currentSrc || normalisedSrc.value.src || ''})
 
 			setTimeout(() => {
 				if (vm.isUnmounted) return
@@ -233,7 +233,7 @@
 
 		state.value = 'loaded'
 
-		emits('load', image.value?.currentSrc || normalisedSrc.value.src)
+		emits('load', {src: image.value?.currentSrc || normalisedSrc.value.src || ''})
 	}
 
 	/*********************************************************
@@ -249,7 +249,7 @@
 
 		state.value = 'error'
 
-		emits('error', image.value?.currentSrc || normalisedSrc.value.src)
+		emits('error', {src: image.value?.currentSrc || normalisedSrc.value.src || ''})
 	}
 
 	const handleError = () => {

@@ -227,7 +227,7 @@
 		// `preventDefault` on the native event before emitting — we just
 		// need to forward the click to the hidden `<input>` so the
 		// SelectionControl picks it up and toggles `model`.
-		origamSelectionControlRef.value?.inputRef?.click()
+		;(origamSelectionControlRef.value as any)?.inputRef?.click()
 	}
 
 	/*********************************************************
@@ -262,10 +262,6 @@
 	 * @description
 	 * Derived flags combining slot and prop loading states.
 	 ********************************************************/
-
-	const _hasLoading = computed(() => {
-		return slots.loader || loaderConfig.value.isActive
-	})
 
 	// True when the whole switch should be replaced by a skeleton placeholder.
 	const isSkeletonLoading = computed(() => {

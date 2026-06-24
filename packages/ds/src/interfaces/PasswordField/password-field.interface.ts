@@ -101,5 +101,5 @@ export interface IPasswordFieldSlots extends IFieldSlots, Omit<IInputSlots, 'def
     /** Renders the counter inside the details slot. */
     counter?: (data: { counter: string, max?: string | number, value: string | number }) => any
     /** Renders the field control (replaces the default `<input>`). */
-    field?: (data: { id: string, isDisabled: boolean, isDirty: boolean, isValid: boolean, isReadonly: boolean }) => any
+    field?: (data: { id: string, isDisabled: boolean, isDirty: boolean, isValid: boolean | undefined, isReadonly: boolean }) => any
 }

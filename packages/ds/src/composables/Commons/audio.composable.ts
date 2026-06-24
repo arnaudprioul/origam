@@ -6,7 +6,7 @@ import type { IUseAudioProps } from '../../interfaces'
  ********************************************************/
 export function useAudio (props: IUseAudioProps) {
     const analyser = ref<AnalyserNode | null>(null)
-    const audioArray = shallowRef<Uint8Array | null>(null)
+    const audioArray = shallowRef<Uint8Array<ArrayBuffer> | null>(null)
     const audioRef = ref()
     const wasPlayed = ref(false)
     const isPlaying = ref(false)

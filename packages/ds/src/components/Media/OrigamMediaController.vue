@@ -164,7 +164,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, ref, useSlots, watch } from 'vue'
+	import { computed, type CSSProperties, ref, useSlots, watch } from 'vue'
 
 	import { OrigamBtn } from '../Btn'
 	import { OrigamMenu } from '../Menu'
@@ -664,7 +664,7 @@
 		props.class
 	])
 
-	const style = computed(() => props.style)
+	const style = computed<CSSProperties | string | undefined>(() => props.style as CSSProperties | string | undefined)
 
 	defineExpose({
 		configMenuOpen,

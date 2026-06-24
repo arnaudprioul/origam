@@ -125,6 +125,9 @@
 			'onClick': handleClick
 		} as IListActivatorProps
 	})
+
+	const activatorEvents = computed(() => ({}))
+
 	const prependActivatorIcon = computed(() => {
 		return props.prependIcon
 	})
