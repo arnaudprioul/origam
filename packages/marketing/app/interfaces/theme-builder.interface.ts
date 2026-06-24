@@ -10,6 +10,9 @@
  */
 import type { TMode } from 'origam/types'
 
+/** The two concrete edit modes (never 'auto'). */
+export type TEditMode = 'light' | 'dark'
+
 /**
  * A single editable CSS token row surfaced for a component, derived from the
  * origam theme `cssVars`. `kind` drives which input renders (color picker vs
@@ -45,18 +48,22 @@ export interface IThemeBuilderPreviewAdapter {
  * are stored, so the exported file stays a clean diff against the DS defaults.
  *
  *   - `name` / `label` map to `IOrigamTheme.name` / `IOrigamTheme.label`.
- *   - `mode` maps to `IOrigamTheme.mode` (light/dark/auto).
+ *   - `mode` is kept for meta (global mode hint on the theme, e.g. 'light').
+ *   - `activeMode` is the mode currently being edited in the UI (never persisted,
+ *     reset to 'light' on load).
  *   - `defaults` is keyed by the origam component key (`origam-{slug}` or
  *     `global`) → prop name → value. Maps to `IOrigamTheme.component`.
- *   - `cssVars` is a flat map of overridden CSS custom properties, written at
- *     the ROOT of the exported `IOrigamTheme`.
+ *     Defaults are GLOBAL (mode-independent).
+ *   - `cssVars` is split by mode: each sub-map holds the overridden CSS vars for
+ *     that mode only. Maps to `IOrigamTheme.cssVars` per exported entry.
  */
 export interface IThemeBuilderState {
     name: string
     label: string
     mode: TMode
+    activeMode: TEditMode
     defaults: Record<string, Record<string, unknown>>
-    cssVars: Record<string, string>
+    cssVars: Record<TEditMode, Record<string, string>>
 }
 
 /**

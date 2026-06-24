@@ -641,7 +641,10 @@
       "label": "Color mode",
       "light": "Light",
       "dark": "Dark",
-      "auto": "Auto"
+      "auto": "Auto",
+      "editing": "Editing",
+      "preview_only": "Preview only",
+      "tab_label": "Edit color mode"
     },
     "reset": "Reset",
     "validate": "Validate & export",
@@ -665,10 +668,14 @@
       "legend": "Default props"
     },
     "tokens": {
-      "legend": "CSS tokens"
+      "legend": "CSS tokens",
+      "legend_light": "CSS tokens — Light",
+      "legend_dark": "CSS tokens — Dark"
     },
     "preview": {
-      "unavailable": "Live preview unavailable for this component."
+      "unavailable": "Live preview unavailable for this component.",
+      "light_label": "Light",
+      "dark_label": "Dark"
     },
     "output": {
       "title": "Generated theme"

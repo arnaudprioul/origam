@@ -641,7 +641,10 @@
       "label": "Mode de couleur",
       "light": "Clair",
       "dark": "Sombre",
-      "auto": "Auto"
+      "auto": "Auto",
+      "editing": "En cours d'édition",
+      "preview_only": "Prévisualisation",
+      "tab_label": "Éditer le mode couleur"
     },
     "reset": "Réinitialiser",
     "validate": "Valider et exporter",
@@ -665,10 +668,14 @@
       "legend": "Props par défaut"
     },
     "tokens": {
-      "legend": "Tokens CSS"
+      "legend": "Tokens CSS",
+      "legend_light": "Tokens CSS — Clair",
+      "legend_dark": "Tokens CSS — Sombre"
     },
     "preview": {
-      "unavailable": "Aperçu en direct indisponible pour ce composant."
+      "unavailable": "Aperçu en direct indisponible pour ce composant.",
+      "light_label": "Clair",
+      "dark_label": "Sombre"
     },
     "output": {
       "title": "Thème généré"
