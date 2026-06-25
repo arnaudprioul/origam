@@ -94,7 +94,10 @@
 			</slot>
 		</template>
 
-		<slot name="default"/>
+		<slot
+				v-else
+				name="default"
+		/>
 	</component>
 </template>
 
