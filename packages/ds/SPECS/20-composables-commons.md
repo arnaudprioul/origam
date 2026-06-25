@@ -212,11 +212,11 @@ Aucun ne fait d'appel réseau. Aucun n'importe de `$fetch` ni de service HTTP.
   | `roundedClasses` | `ComputedRef<string[]>` | Classe utility (`origam--rounded-{xs…full}`) ou composant-local |
   | `roundedStyles` | `ComputedRef<string[]>` | Déclaration `border-radius: var(--origam-radius---{rung})` ou valeur brute |
 
-- **Dépendances** `BORDER_RADIUS_REGEX`, `PREDIFINED_ROUNDED`, `IRoundedProps`, `TRounded`, `convertToUnit`, `formatRoundedStylesVar`.
+- **Dépendances** `BORDER_RADIUS_REGEX`, `PREDEFINED_ROUNDED`, `IRoundedProps`, `TRounded`, `convertToUnit`, `formatRoundedStylesVar`.
 
 - **Consommé par** `useStateEffect`, `OrigamBtn`, `OrigamCard`, `OrigamChip`, `OrigamAvatar`, etc.
 
-- **Notes** Deux espaces de noms : legacy `PREDIFINED_ROUNDED` (`x-small|small|default|medium|large|x-large|shaped|shaped-invert`) vs utilitaires modernes `xs|sm|md|lg|xl|none|full`. `shaped`/`shaped-invert` restent owned par les SCSS des composants (asymétrie de coins). Styles inline companion pour les utility classes afin de gagner la cascade (spécificité `#id` > scoped SCSS).
+- **Notes** Deux espaces de noms : legacy `PREDEFINED_ROUNDED` (`x-small|small|default|medium|large|x-large|shaped|shaped-invert`) vs utilitaires modernes `xs|sm|md|lg|xl|none|full`. `shaped`/`shaped-invert` restent owned par les SCSS des composants (asymétrie de coins). Styles inline companion pour les utility classes afin de gagner la cascade (spécificité `#id` > scoped SCSS).
 
 ---
 

@@ -278,7 +278,7 @@ Raison : le compilateur de SFC Vue 3 analyse `withDefaults` de façon **statique
 - **Rôle** : Variantes prédéfinies de rayon de coin, chacune correspondant à un token dans `tokens/primitive.json` sous `radius.*` et à une classe utility `.origam--rounded-{value}`.
 - **Membres** :
   - `X_SMALL = 'x-small'`, `SMALL = 'small'`, `DEFAULT = 'default'`, `MEDIUM = 'medium'`, `LARGE = 'large'`, `X_LARGE = 'x-large'`, `SHAPED = 'shaped'`, `SHAPED_INVERT = 'shaped-invert'`
-- **Consommé par** : `useRounded`, `PREDIFINED_ROUNDED` (const), `BORDER_RADIUS_REGEX`, tous les composants avec prop `rounded`.
+- **Consommé par** : `useRounded`, `PREDEFINED_ROUNDED` (const), `BORDER_RADIUS_REGEX`, tous les composants avec prop `rounded`.
 
 ---
 
@@ -1181,11 +1181,11 @@ Raison : le compilateur de SFC Vue 3 analyse `withDefaults` de façon **statique
 
 ---
 
-### `BORDER_RADIUS_REGEX`, `PREDIFINED_ROUNDED`
+### `BORDER_RADIUS_REGEX`, `PREDEFINED_ROUNDED`
 - **Fichier** : `src/consts/Commons/rounded.const.ts`
 - **Rôle** :
   - `BORDER_RADIUS_REGEX` — regex pour valeurs CSS de rayon libres (`4px`, `0`, `4px 0 4px 0`…)
-  - `PREDIFINED_ROUNDED` — tableau des 8 variantes nommées
+  - `PREDEFINED_ROUNDED` — tableau des 8 variantes nommées
 - **Consommé par** : `useRounded`.
 
 ---
