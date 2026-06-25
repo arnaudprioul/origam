@@ -37,12 +37,6 @@ onMounted(() => {
     startAutoPersist()
 })
 
-const MODE_OPTIONS = [
-    { title: t('theming.mode.light', 'Light'), value: 'light' },
-    { title: t('theming.mode.dark', 'Dark'), value: 'dark' },
-    { title: t('theming.mode.auto', 'Auto'), value: 'auto' }
-]
-
 const presetItems = computed(() =>
     presets.map(p => ({ title: t(p.labelKey, p.labelFallback), value: p.key }))
 )
@@ -50,6 +44,10 @@ const presetItems = computed(() =>
 const selectedPreset = ref<string>('')
 const importText = ref<string>('')
 const importError = ref<boolean>(false)
+
+const splitEnabled = ref<boolean>(false)
+
+const expandedPanels = ref<string[]>(['props', 'tokens-active'])
 
 const numberValue = (slug: string, prop: string): number | undefined => {
     const v = propValue(slug, prop)
@@ -99,13 +97,45 @@ const downloadHint = computed(() =>
     t('theming.export.filename', 'Downloads {file}', { file: fileName.value })
 )
 
-const PREVIEW_MODES: TEditMode[] = ['light', 'dark']
+const inactiveMode = computed<TEditMode>(() =>
+    state.activeMode === 'light' ? 'dark' : 'light'
+)
+
+const modeTabs = computed(() => [
+    {
+        value: 'light' as TEditMode,
+        label: t('theming.mode.light', 'Light'),
+        icon: 'mdi-weather-sunny',
+        count: editCountByMode('light')
+    },
+    {
+        value: 'dark' as TEditMode,
+        label: t('theming.mode.dark', 'Dark'),
+        icon: 'mdi-weather-night',
+        count: editCountByMode('dark')
+    }
+])
 
 const tokenLegend = computed(() =>
     state.activeMode === 'dark'
         ? t('theming.tokens.legend_dark', 'CSS tokens — Dark')
         : t('theming.tokens.legend_light', 'CSS tokens — Light')
 )
+
+const controlsHeading = computed(() => {
+    const componentName = activeEntry.value?.name ?? ''
+    const modeLabel = state.activeMode === 'dark'
+        ? t('theming.mode.dark', 'Dark')
+        : t('theming.mode.light', 'Light')
+    return t('theming.controls.heading', 'Controls — {component} ({mode})', {
+        component: componentName,
+        mode: modeLabel
+    })
+})
+
+const onSplitPaneClick = () => {
+    state.activeMode = inactiveMode.value
+}
 </script>
 
 <template>
@@ -157,16 +187,6 @@ const tokenLegend = computed(() =>
                         class="theming__label-field"
                         data-cy="theming-label"
                     />
-                    <origam-select
-                        v-model="state.mode"
-                        :label="t('theming.mode.label', 'Color mode')"
-                        :items="MODE_OPTIONS"
-                        variant="outlined"
-                        density="compact"
-                        hide-details
-                        class="theming__mode-field"
-                        data-cy="theming-mode"
-                    />
                     <div class="theming__name-actions">
                         <origam-btn
                             variant="text"
@@ -187,6 +207,7 @@ const tokenLegend = computed(() =>
                             <origam-badge
                                 v-if="editCount"
                                 :content="editCount"
+                                :model-value="true"
                                 inline
                                 color="primary"
                                 class="theming__edit-badge"
@@ -266,6 +287,39 @@ const tokenLegend = computed(() =>
                         {{ t('theming.seed.import_error', 'Could not parse that theme — paste a valid IOrigamTheme module or JSON object.') }}
                     </origam-alert>
                 </section>
+
+                <nav
+                    class="theming__mode-tabs"
+                    :aria-label="t('theming.mode.tab_label', 'Edit color mode')"
+                    data-cy="theming-mode-tabs"
+                >
+                    <origam-tabs
+                        v-model="state.activeMode"
+                        variant="underline"
+                        class="theming__mode-tabs-inner"
+                        data-cy="theming-mode-tabs-inner"
+                    >
+                        <origam-tab
+                            v-for="tab in modeTabs"
+                            :key="tab.value"
+                            :value="tab.value"
+                            :prepend-icon="tab.icon"
+                            class="theming__mode-tab"
+                            :data-cy="`theming-mode-tab-${tab.value}`"
+                        >
+                            {{ tab.label }}
+                            <origam-badge
+                                v-if="tab.count"
+                                :content="tab.count"
+                                :model-value="true"
+                                inline
+                                color="primary"
+                                class="theming__mode-tab-badge"
+                                :data-cy="`theming-mode-tab-badge-${tab.value}`"
+                            />
+                        </origam-tab>
+                    </origam-tabs>
+                </nav>
             </origam-container>
         </header>
 
@@ -304,47 +358,62 @@ const tokenLegend = computed(() =>
                     :aria-label="activeEntry.name"
                     :data-cy="`theming-editor-${activeEntry.slug}`"
                 >
+                    <div class="theming__preview-bar">
+                        <span class="theming__preview-bar-title">
+                            {{ activeEntry.name }}
+                        </span>
+                        <span class="theming__preview-bar-mode">
+                            <origam-icon
+                                :icon="state.activeMode === 'dark' ? 'mdi-weather-night' : 'mdi-weather-sunny'"
+                                size="small"
+                            />
+                            {{ state.activeMode === 'dark' ? t('theming.mode.dark', 'Dark') : t('theming.mode.light', 'Light') }}
+                        </span>
+                        <origam-btn
+                            :variant="splitEnabled ? 'tonal' : 'text'"
+                            :color="splitEnabled ? 'primary' : undefined"
+                            prepend-icon="mdi-view-split-vertical"
+                            density="compact"
+                            size="small"
+                            class="theming__split-btn"
+                            data-cy="theming-split-btn"
+                            @click="splitEnabled = !splitEnabled"
+                        >
+                            {{ t('theming.split.toggle', 'Split') }}
+                        </origam-btn>
+                    </div>
+
                     <div
-                        class="theming__preview-dual"
+                        class="theming__preview-area"
+                        :class="{ 'theming__preview-area--split': splitEnabled }"
                         aria-live="polite"
-                        data-cy="theming-preview-dual"
+                        data-cy="theming-preview-area"
                     >
                         <ClientOnly>
                             <div
-                                v-for="paneMode in PREVIEW_MODES"
-                                :key="paneMode"
-                                class="theming__preview-pane"
-                                :class="{ 'theming__preview-pane--active': paneMode === state.activeMode }"
-                                :data-mode="paneMode"
-                                :data-cy="`theming-preview-pane-${paneMode}`"
+                                class="theming__preview-pane theming__preview-pane--active"
+                                :data-mode="state.activeMode"
+                                :data-cy="`theming-preview-pane-${state.activeMode}`"
                             >
-                                <div class="theming__preview-pane-header">
-                                    <span class="theming__preview-pane-label">
-                                        {{ paneMode === 'light' ? t('theming.preview.light_label', 'Light') : t('theming.preview.dark_label', 'Dark') }}
-                                    </span>
-                                    <origam-badge
-                                        v-if="editCountByMode(paneMode)"
-                                        :content="editCountByMode(paneMode)"
-                                        inline
-                                        color="primary"
-                                        class="theming__pane-badge"
-                                    />
+                                <div
+                                    v-if="splitEnabled"
+                                    class="theming__preview-pane-header"
+                                >
                                     <origam-chip
-                                        density="compact"
-                                        :color="paneMode === state.activeMode ? 'primary' : undefined"
+                                        color="primary"
                                         variant="tonal"
-                                        class="theming__pane-chip"
-                                        :data-cy="`theming-pane-chip-${paneMode}`"
-                                        @click="state.activeMode = paneMode"
+                                        density="compact"
+                                        class="theming__pane-chip theming__pane-chip--edit"
+                                        data-cy="theming-pane-chip-edit"
                                     >
-                                        {{ paneMode === state.activeMode ? t('theming.mode.editing', 'Editing') : t('theming.mode.preview_only', 'Preview only') }}
+                                        {{ t('theming.mode.edit', 'EDIT') }}
                                     </origam-chip>
                                 </div>
-                                <origam-theme-provider :mode="paneMode">
+                                <origam-theme-provider :mode="state.activeMode">
                                     <div
                                         class="theming__preview-stage"
-                                        :style="previewStyle(activeEntry.slug, paneMode)"
-                                        :data-cy="`theming-preview-stage-${paneMode}`"
+                                        :style="previewStyle(activeEntry.slug, state.activeMode)"
+                                        :data-cy="`theming-preview-stage-${state.activeMode}`"
                                     >
                                         <NuxtErrorBoundary>
                                             <component
@@ -363,146 +432,270 @@ const tokenLegend = computed(() =>
                                     </div>
                                 </origam-theme-provider>
                             </div>
+
+                            <div
+                                v-if="splitEnabled"
+                                class="theming__preview-pane theming__preview-pane--view"
+                                :data-mode="inactiveMode"
+                                :data-cy="`theming-preview-pane-${inactiveMode}`"
+                                role="button"
+                                tabindex="0"
+                                :aria-label="t('theming.split.switch_mode', 'Switch to {mode} mode', { mode: inactiveMode === 'dark' ? t('theming.mode.dark', 'Dark') : t('theming.mode.light', 'Light') })"
+                                @click="onSplitPaneClick"
+                                @keydown.enter="onSplitPaneClick"
+                                @keydown.space.prevent="onSplitPaneClick"
+                            >
+                                <div class="theming__preview-pane-header">
+                                    <origam-chip
+                                        variant="tonal"
+                                        density="compact"
+                                        class="theming__pane-chip theming__pane-chip--view"
+                                        data-cy="theming-pane-chip-view"
+                                    >
+                                        {{ t('theming.mode.view', 'VIEW') }}
+                                    </origam-chip>
+                                </div>
+                                <origam-theme-provider :mode="inactiveMode">
+                                    <div
+                                        class="theming__preview-stage"
+                                        :style="previewStyle(activeEntry.slug, inactiveMode)"
+                                        :data-cy="`theming-preview-stage-${inactiveMode}`"
+                                    >
+                                        <NuxtErrorBoundary>
+                                            <component
+                                                :is="activeEntry.componentKey"
+                                                v-bind="previewProps(activeEntry.slug)"
+                                                :data-cy="`theming-live-${activeEntry.slug}-view`"
+                                            >
+                                                {{ slotText(activeEntry.slug) }}
+                                            </component>
+                                            <template #error>
+                                                <p class="theming__preview-fallback">
+                                                    {{ t('theming.preview.unavailable', 'Live preview unavailable for this component.') }}
+                                                </p>
+                                            </template>
+                                        </NuxtErrorBoundary>
+                                    </div>
+                                </origam-theme-provider>
+                            </div>
                         </ClientOnly>
                     </div>
 
-                    <form class="theming__controls">
-                        <fieldset
-                            v-if="activeEntry.controls.length"
-                            class="theming__group"
-                            data-cy="theming-props"
-                        >
-                            <legend class="theming__group-legend">
-                                {{ t('theming.props.legend', 'Default props') }}
-                            </legend>
-
-                            <div
-                                v-for="ctrl in activeEntry.controls"
-                                :key="ctrl.prop"
-                                class="theming__control"
-                                :data-cy="`theming-prop-${ctrl.prop}`"
-                            >
-                                <origam-select
-                                    v-if="ctrl.kind === 'select'"
-                                    :model-value="propValue(activeEntry.slug, ctrl.prop)"
-                                    :label="t(ctrl.labelKey, ctrl.labelFallback)"
-                                    :items="selectItems(ctrl)"
-                                    variant="outlined"
-                                    density="compact"
-                                    hide-details
-                                    @update:model-value="onSelect(activeEntry.slug, ctrl.prop, $event)"
-                                />
-
-                                <div
-                                    v-else-if="ctrl.kind === 'switch'"
-                                    class="theming__switch-row"
-                                >
-                                    <span class="theming__switch-label">
-                                        {{ t(ctrl.labelKey, ctrl.labelFallback) }}
-                                    </span>
-                                    <origam-switch
-                                        :model-value="propValue(activeEntry.slug, ctrl.prop)"
-                                        :aria-label="t(ctrl.labelKey, ctrl.labelFallback)"
-                                        density="compact"
-                                        hide-details
-                                        @update:model-value="onSelect(activeEntry.slug, ctrl.prop, $event)"
-                                    />
-                                </div>
-
-                                <origam-number-field
-                                    v-else-if="ctrl.kind === 'number'"
-                                    :model-value="numberValue(activeEntry.slug, ctrl.prop)"
-                                    :label="t(ctrl.labelKey, ctrl.labelFallback)"
-                                    variant="outlined"
-                                    density="compact"
-                                    hide-details
-                                    @update:model-value="onSelect(activeEntry.slug, ctrl.prop, $event)"
-                                />
-
-                                <origam-text-field
-                                    v-else
-                                    :model-value="propValue(activeEntry.slug, ctrl.prop)"
-                                    :label="t(ctrl.labelKey, ctrl.labelFallback)"
-                                    variant="outlined"
-                                    density="compact"
-                                    hide-details
-                                    @update:model-value="onSelect(activeEntry.slug, ctrl.prop, $event)"
-                                />
-                            </div>
-                        </fieldset>
-
-                        <fieldset
-                            v-if="activeEntry.tokens.length"
-                            class="theming__group"
-                            data-cy="theming-tokens"
-                        >
-                            <legend class="theming__group-legend">
-                                {{ tokenLegend }}
-                            </legend>
-
-                            <div
-                                v-for="tok in activeEntry.tokens"
-                                :key="tok.cssVar"
-                                class="theming__control theming__control--token"
-                                :data-cy="`theming-token-${tok.cssVar}`"
-                            >
-                                <label
-                                    class="theming__token-label"
-                                    :for="`tok-${tok.cssVar}`"
-                                >
-                                    {{ tok.label }}
-                                </label>
-                                <div class="theming__token-input">
-                                    <input
-                                        v-if="tok.kind === 'color'"
-                                        :id="`tok-${tok.cssVar}`"
-                                        type="color"
-                                        class="theming__token-color"
-                                        :value="tokenValue(state.activeMode, tok.cssVar)"
-                                        @input="onToken(state.activeMode, tok.cssVar, ($event.target as HTMLInputElement).value)"
-                                    >
-                                    <input
-                                        :id="tok.kind === 'color' ? undefined : `tok-${tok.cssVar}`"
-                                        type="text"
-                                        class="theming__token-text"
-                                        :value="tokenValue(state.activeMode, tok.cssVar)"
-                                        @input="onToken(state.activeMode, tok.cssVar, ($event.target as HTMLInputElement).value)"
-                                    >
-                                </div>
-                            </div>
-                        </fieldset>
-                    </form>
-                </section>
-            </div>
-
-            <section
-                class="theming__output"
-                aria-labelledby="theming-output-title"
-                data-cy="theming-output"
-            >
-                <header class="theming__output-header">
-                    <origam-title
-                        id="theming-output-title"
-                        tag="h2"
-                        class="theming__output-title"
+                    <section
+                        class="theming__output"
+                        aria-labelledby="theming-output-title"
+                        data-cy="theming-output"
                     >
-                        {{ t('theming.output.title', 'Generated theme') }}
-                    </origam-title>
-                    <p class="theming__output-hint">
-                        {{ downloadHint }}
-                    </p>
-                </header>
+                        <header class="theming__output-header">
+                            <origam-title
+                                id="theming-output-title"
+                                tag="h2"
+                                class="theming__output-title"
+                            >
+                                {{ t('theming.output.title', 'Generated theme') }}
+                            </origam-title>
+                            <p class="theming__output-hint">
+                                {{ downloadHint }}
+                            </p>
+                        </header>
 
-                <output class="theming__output-code">
-                    <origam-code
-                        :code="generatedCode"
-                        lang="ts"
-                        :filename="fileName"
-                        copyable
-                        data-cy="theming-generated-code"
-                    />
-                </output>
-            </section>
+                        <output class="theming__output-code">
+                            <origam-code
+                                :code="generatedCode"
+                                lang="ts"
+                                :filename="fileName"
+                                copyable
+                                data-cy="theming-generated-code"
+                            />
+                        </output>
+                    </section>
+                </section>
+
+                <aside
+                    v-if="activeEntry"
+                    class="theming__controls-panel"
+                    :aria-label="t('theming.controls.panel_label', 'Component controls')"
+                    data-cy="theming-controls-panel"
+                >
+                    <div class="theming__controls-panel-head">
+                        <origam-title
+                            tag="h3"
+                            class="theming__controls-panel-heading"
+                        >
+                            {{ controlsHeading }}
+                        </origam-title>
+                    </div>
+
+                    <div class="theming__controls-panel-body">
+                        <origam-expansion-panels
+                            v-model="expandedPanels"
+                            multiple
+                            class="theming__controls-accordion"
+                        >
+                            <origam-expansion-panel
+                                v-if="activeEntry.controls.length"
+                                value="props"
+                                data-cy="theming-props-panel"
+                            >
+                                <template #title>
+                                    {{ t('theming.props.legend', 'Default props') }}
+                                    <origam-chip
+                                        density="compact"
+                                        variant="tonal"
+                                        class="theming__global-chip"
+                                    >
+                                        {{ t('theming.props.global', 'global') }}
+                                    </origam-chip>
+                                </template>
+                                <template #content />
+                                <template #default>
+                                    <form class="theming__controls">
+                                        <div
+                                            v-for="ctrl in activeEntry.controls"
+                                            :key="ctrl.prop"
+                                            class="theming__control"
+                                            :data-cy="`theming-prop-${ctrl.prop}`"
+                                        >
+                                            <origam-select
+                                                v-if="ctrl.kind === 'select'"
+                                                :model-value="propValue(activeEntry.slug, ctrl.prop)"
+                                                :label="t(ctrl.labelKey, ctrl.labelFallback)"
+                                                :items="selectItems(ctrl)"
+                                                variant="outlined"
+                                                density="compact"
+                                                hide-details
+                                                @update:model-value="onSelect(activeEntry.slug, ctrl.prop, $event)"
+                                            />
+
+                                            <div
+                                                v-else-if="ctrl.kind === 'switch'"
+                                                class="theming__switch-row"
+                                            >
+                                                <span class="theming__switch-label">
+                                                    {{ t(ctrl.labelKey, ctrl.labelFallback) }}
+                                                </span>
+                                                <origam-switch
+                                                    :model-value="propValue(activeEntry.slug, ctrl.prop)"
+                                                    :aria-label="t(ctrl.labelKey, ctrl.labelFallback)"
+                                                    density="compact"
+                                                    hide-details
+                                                    @update:model-value="onSelect(activeEntry.slug, ctrl.prop, $event)"
+                                                />
+                                            </div>
+
+                                            <origam-number-field
+                                                v-else-if="ctrl.kind === 'number'"
+                                                :model-value="numberValue(activeEntry.slug, ctrl.prop)"
+                                                :label="t(ctrl.labelKey, ctrl.labelFallback)"
+                                                variant="outlined"
+                                                density="compact"
+                                                hide-details
+                                                @update:model-value="onSelect(activeEntry.slug, ctrl.prop, $event)"
+                                            />
+
+                                            <origam-text-field
+                                                v-else
+                                                :model-value="propValue(activeEntry.slug, ctrl.prop)"
+                                                :label="t(ctrl.labelKey, ctrl.labelFallback)"
+                                                variant="outlined"
+                                                density="compact"
+                                                hide-details
+                                                @update:model-value="onSelect(activeEntry.slug, ctrl.prop, $event)"
+                                            />
+                                        </div>
+                                    </form>
+                                </template>
+                            </origam-expansion-panel>
+
+                            <origam-expansion-panel
+                                v-if="activeEntry.tokens.length"
+                                value="tokens-active"
+                                data-cy="theming-tokens-panel"
+                            >
+                                <template #title>
+                                    {{ tokenLegend }}
+                                    <origam-badge
+                                        v-if="editCountByMode(state.activeMode)"
+                                        :content="editCountByMode(state.activeMode)"
+                                        :model-value="true"
+                                        inline
+                                        color="primary"
+                                        class="theming__tokens-badge"
+                                    />
+                                </template>
+                                <template #content />
+                                <template #default>
+                                    <div
+                                        class="theming__token-list"
+                                        data-cy="theming-tokens"
+                                    >
+                                        <div
+                                            v-for="tok in activeEntry.tokens"
+                                            :key="tok.cssVar"
+                                            class="theming__control theming__control--token"
+                                            :data-cy="`theming-token-${tok.cssVar}`"
+                                        >
+                                            <label
+                                                class="theming__token-label"
+                                                :for="`tok-${tok.cssVar}`"
+                                            >
+                                                {{ tok.label }}
+                                            </label>
+                                            <div class="theming__token-input">
+                                                <input
+                                                    v-if="tok.kind === 'color'"
+                                                    :id="`tok-${tok.cssVar}`"
+                                                    type="color"
+                                                    class="theming__token-color"
+                                                    :value="tokenValue(state.activeMode, tok.cssVar)"
+                                                    @input="onToken(state.activeMode, tok.cssVar, ($event.target as HTMLInputElement).value)"
+                                                >
+                                                <input
+                                                    :id="tok.kind === 'color' ? undefined : `tok-${tok.cssVar}`"
+                                                    type="text"
+                                                    class="theming__token-text"
+                                                    :value="tokenValue(state.activeMode, tok.cssVar)"
+                                                    @input="onToken(state.activeMode, tok.cssVar, ($event.target as HTMLInputElement).value)"
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </origam-expansion-panel>
+                        </origam-expansion-panels>
+                    </div>
+
+                    <div class="theming__controls-panel-export">
+                        <origam-btn
+                            color="primary"
+                            variant="elevated"
+                            prepend-icon="mdi-download"
+                            block
+                            data-cy="theming-validate-side"
+                            @click="onValidate"
+                        >
+                            {{ t('theming.validate', 'Validate & export') }}
+                            <origam-badge
+                                v-if="editCount"
+                                :content="editCount"
+                                :model-value="true"
+                                inline
+                                color="primary"
+                                class="theming__edit-badge"
+                            />
+                        </origam-btn>
+                        <origam-btn
+                            variant="outlined"
+                            prepend-icon="mdi-code-json"
+                            block
+                            data-cy="theming-export-json-side"
+                            @click="onExportJson"
+                        >
+                            {{ t('theming.export_json', 'Export JSON') }}
+                        </origam-btn>
+                    </div>
+                </aside>
+            </div>
         </origam-container>
     </article>
 </template>
@@ -515,7 +708,7 @@ const tokenLegend = computed(() =>
     padding-block-end: var(--origam-spacing-16, 4rem);
 
     &__header {
-        padding-block: var(--origam-spacing-12, 3rem) var(--origam-spacing-6, 1.5rem);
+        padding-block: var(--origam-spacing-12, 3rem) 0;
         background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-default));
         border-block-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
     }
@@ -563,15 +756,11 @@ const tokenLegend = computed(() =>
         max-width: 20rem;
     }
 
-    &__mode-field {
-        flex: 0 1 10rem;
-    }
-
     &__seed {
         display: flex;
         flex-direction: column;
         gap: var(--origam-spacing-3, 0.75rem);
-        margin-block-start: var(--origam-spacing-6, 1.5rem);
+        margin-block-start: var(--origam-spacing-4, 1rem);
         padding: var(--origam-spacing-5, 1.25rem);
         background-color: var(--origam-color-surface-default);
         border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
@@ -615,20 +804,47 @@ const tokenLegend = computed(() =>
         gap: var(--origam-spacing-2, 0.5rem);
     }
 
+    &__mode-tabs {
+        margin-block-start: var(--origam-spacing-2, 0.5rem);
+    }
+
+    &__mode-tabs-inner {
+        min-height: unset;
+    }
+
+    &__mode-tab-badge {
+        margin-inline-start: var(--origam-spacing-2, 0.5rem);
+    }
+
+    &__body {
+        padding-block-start: var(--origam-spacing-6, 1.5rem);
+    }
+
     &__layout {
         display: grid;
-        grid-template-columns: 16rem 1fr;
-        gap: var(--origam-spacing-6, 1.5rem);
+        grid-template-columns: 14rem 1fr 20rem;
+        grid-template-rows: auto;
+        gap: 0;
         align-items: start;
+        border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+        border-radius: var(--origam-radius-lg, 0.75rem);
+        overflow: hidden;
 
-        @container (max-width: 56rem) {
+        @media (max-width: 56rem) {
             grid-template-columns: 1fr;
         }
     }
 
     &__nav {
-        position: sticky;
-        top: var(--origam-spacing-4, 1rem);
+        border-inline-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+        padding: var(--origam-spacing-4, 1rem) var(--origam-spacing-2, 0.5rem);
+        background-color: var(--origam-color-surface-default);
+        min-height: 100%;
+
+        @media (max-width: 56rem) {
+            border-inline-end: none;
+            border-block-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+        }
     }
 
     &__nav-list {
@@ -647,31 +863,75 @@ const tokenLegend = computed(() =>
     &__editor {
         display: flex;
         flex-direction: column;
-        gap: var(--origam-spacing-6, 1.5rem);
+        background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-default));
+        border-inline-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+
+        @media (max-width: 56rem) {
+            border-inline-end: none;
+        }
     }
 
-    &__preview-dual {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: var(--origam-spacing-4, 1rem);
+    &__preview-bar {
+        display: flex;
+        align-items: center;
+        gap: var(--origam-spacing-3, 0.75rem);
+        padding: var(--origam-spacing-3, 0.75rem) var(--origam-spacing-4, 1rem);
+        background-color: var(--origam-color-surface-default);
+        border-block-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+    }
 
-        @container (max-width: 56rem) {
-            grid-template-columns: 1fr;
+    &__preview-bar-title {
+        font-size: var(--origam-font-size-sm, 0.875rem);
+        font-weight: var(--origam-font-weight-semibold, 600);
+        color: var(--origam-color-text-default);
+    }
+
+    &__preview-bar-mode {
+        display: flex;
+        align-items: center;
+        gap: var(--origam-spacing-1, 0.25rem);
+        font-size: var(--origam-font-size-sm, 0.875rem);
+        color: var(--origam-color-text-subtle);
+        flex: 1 1 auto;
+    }
+
+    &__split-btn {
+        flex: 0 0 auto;
+    }
+
+    &__preview-area {
+        display: grid;
+        grid-template-columns: 1fr;
+        flex: 1;
+
+        &--split {
+            grid-template-columns: 1fr 1fr;
+
+            @media (max-width: 40rem) {
+                grid-template-columns: 1fr;
+            }
         }
     }
 
     &__preview-pane {
         display: flex;
         flex-direction: column;
-        gap: var(--origam-spacing-3, 0.75rem);
-        padding: var(--origam-spacing-5, 1.25rem);
-        background-color: var(--origam-color-surface-default);
-        border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
-        border-radius: var(--origam-radius-lg, 0.75rem);
-        transition: box-shadow 0.15s ease;
 
-        &--active {
-            box-shadow: 0 0 0 2px var(--origam-color-action-primary-bg, var(--origam-color-action-primary-bg));
+        &--view {
+            cursor: pointer;
+            opacity: 0.8;
+            border-inline-start: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+            transition: opacity 0.15s ease;
+
+            &:hover,
+            &:focus-visible {
+                opacity: 1;
+            }
+
+            &:focus-visible {
+                outline: 2px solid var(--origam-color-action-primary-bg);
+                outline-offset: -2px;
+            }
         }
     }
 
@@ -679,22 +939,15 @@ const tokenLegend = computed(() =>
         display: flex;
         align-items: center;
         gap: var(--origam-spacing-2, 0.5rem);
-    }
-
-    &__preview-pane-label {
-        font-size: var(--origam-font-size-sm, 0.875rem);
-        font-weight: var(--origam-font-weight-semibold, 600);
-        color: var(--origam-color-text-default);
-        flex: 1 1 auto;
-    }
-
-    &__pane-badge {
-        flex: 0 0 auto;
+        padding: var(--origam-spacing-2, 0.5rem) var(--origam-spacing-4, 1rem);
+        background-color: var(--origam-color-surface-default);
+        border-block-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
     }
 
     &__pane-chip {
-        flex: 0 0 auto;
-        cursor: pointer;
+        font-size: var(--origam-font-size-xs, 0.75rem);
+        font-weight: var(--origam-font-weight-bold, 700);
+        letter-spacing: 0.04em;
     }
 
     &__preview-stage {
@@ -709,27 +962,76 @@ const tokenLegend = computed(() =>
         color: var(--origam-color-text-subtle);
     }
 
-    &__controls {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
-        gap: var(--origam-spacing-6, 1.5rem);
-    }
-
-    &__group {
+    &__output {
         display: flex;
         flex-direction: column;
-        gap: var(--origam-spacing-4, 1rem);
-        margin: 0;
-        padding: var(--origam-spacing-5, 1.25rem);
-        border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
-        border-radius: var(--origam-radius-lg, 0.75rem);
+        gap: var(--origam-spacing-3, 0.75rem);
+        padding: var(--origam-spacing-6, 1.5rem);
+        border-block-start: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+        background-color: var(--origam-color-surface-default);
     }
 
-    &__group-legend {
-        padding-inline: var(--origam-spacing-2, 0.5rem);
+    &__output-title {
+        margin: 0;
+    }
+
+    &__output-hint {
+        margin: 0;
         font-size: var(--origam-font-size-sm, 0.875rem);
-        font-weight: var(--origam-font-weight-semibold, 600);
-        color: var(--origam-color-text-default);
+        color: var(--origam-color-text-subtle);
+    }
+
+    &__output-code {
+        display: block;
+    }
+
+    &__controls-panel {
+        display: flex;
+        flex-direction: column;
+        background-color: var(--origam-color-surface-default);
+        min-height: 100%;
+    }
+
+    &__controls-panel-head {
+        padding: var(--origam-spacing-3, 0.75rem) var(--origam-spacing-4, 1rem) var(--origam-spacing-2, 0.5rem);
+        border-block-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+    }
+
+    &__controls-panel-heading {
+        margin: 0;
+        font-size: var(--origam-font-size-sm, 0.875rem);
+    }
+
+    &__controls-panel-body {
+        flex: 1 1 auto;
+        overflow-y: auto;
+    }
+
+    &__controls-accordion {
+        border-radius: 0;
+    }
+
+    &__global-chip {
+        margin-inline-start: var(--origam-spacing-2, 0.5rem);
+        font-size: var(--origam-font-size-xs, 0.75rem);
+    }
+
+    &__tokens-badge {
+        margin-inline-start: var(--origam-spacing-2, 0.5rem);
+    }
+
+    &__controls {
+        display: flex;
+        flex-direction: column;
+        gap: var(--origam-spacing-3, 0.75rem);
+        padding: var(--origam-spacing-2, 0.5rem) 0;
+    }
+
+    &__token-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--origam-spacing-3, 0.75rem);
+        padding: var(--origam-spacing-2, 0.5rem) 0;
     }
 
     &__control {
@@ -790,25 +1092,18 @@ const tokenLegend = computed(() =>
         border-radius: var(--origam-radius-sm, 0.25rem);
     }
 
-    &__output {
+    &__controls-panel-export {
+        flex-shrink: 0;
         display: flex;
         flex-direction: column;
-        gap: var(--origam-spacing-3, 0.75rem);
-        margin-block-start: var(--origam-spacing-8, 2rem);
+        gap: var(--origam-spacing-2, 0.5rem);
+        padding: var(--origam-spacing-4, 1rem);
+        border-block-start: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+        background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-default));
     }
 
-    &__output-title {
-        margin: 0;
-    }
-
-    &__output-hint {
-        margin: 0;
-        font-size: var(--origam-font-size-sm, 0.875rem);
-        color: var(--origam-color-text-subtle);
-    }
-
-    &__output-code {
-        display: block;
+    &__edit-badge {
+        margin-inline-start: var(--origam-spacing-2, 0.5rem);
     }
 }
 </style>

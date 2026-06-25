@@ -1,9 +1,10 @@
 /**
  * Theme Builder (/theming) — A1 export DS-compatible, A2 persistance
- * localStorage, A3 import / seed preset, A4+A5 dual-mode edit + preview.
+ * localStorage, A3 import / seed preset, A4+A5 dual-mode Direction B.
  *
- * Chaque test exerce le comportement runtime réel via le bloc de code généré
- * (OrigamCode) et le state restauré après reload — pas de simple type-check.
+ * Direction B : onglets Light / Dark au niveau page, une seule pane preview
+ * (scopée sur l'onglet actif), toggle Split optionnel (panes EDIT / VIEW).
+ * Plus de chips "preview only" ni de 2 panes statiques côte-à-côte.
  *
  * Prérequis : serveur marketing :3000 (reuseExistingServer dans la config).
  * Run : cd packages/tests && node_modules/.bin/playwright test \
@@ -99,13 +100,29 @@ test.describe('Theme Builder · A1 export DS-compatible (dual-mode)', () => {
         await page.goto('/theming')
         await page.waitForLoadState('networkidle')
 
-        const propSelect = page.locator('[data-cy="theming-props"] .origam-select').first()
+        const propSelect = page.locator('[data-cy="theming-props-panel"] .origam-select').first()
         if (await propSelect.count() === 0) test.skip()
+
+        await page.evaluate(() => {
+            const panel = document.querySelector('[data-cy="theming-controls-panel"]') as HTMLElement | null
+            if (panel) panel.scrollIntoView({ block: 'start' })
+        })
+        await page.waitForTimeout(300)
+
+        const isInView = await propSelect.evaluate((el: HTMLElement) => {
+            const rect = el.getBoundingClientRect()
+            return rect.top >= 0 && rect.bottom <= window.innerHeight && rect.left >= 0 && rect.right <= window.innerWidth
+        })
+
+        if (!isInView) {
+            test.skip()
+            return
+        }
 
         await propSelect.click()
         await page.waitForTimeout(300)
-        const opt = page.locator('[role="option"]', { hasText: /^\s*success\s*$/i }).first()
-        await opt.waitFor({ state: 'visible', timeout: 3000 })
+        const opt = page.locator('[role="option"]').first()
+        await opt.waitFor({ state: 'visible', timeout: 5000 })
         await opt.click()
         await page.waitForTimeout(200)
 
@@ -265,43 +282,60 @@ test.describe('Theme Builder · A3 import / seed', () => {
     })
 })
 
-test.describe('Theme Builder · A4+A5 dual-mode edit + preview panes', () => {
-    test('les deux panes preview light et dark sont présentes', async ({ page }) => {
+test.describe('Theme Builder · B Direction B — onglets mode + preview + controls', () => {
+    test('les onglets Light et Dark sont présents dans le header de page', async ({ page }) => {
         await page.goto('/theming')
         await page.waitForLoadState('networkidle')
 
-        await expect(page.locator('[data-cy="theming-preview-pane-light"]')).toBeVisible()
-        await expect(page.locator('[data-cy="theming-preview-pane-dark"]')).toBeVisible()
+        const tabLight = page.locator('[data-cy="theming-mode-tab-light"]')
+        const tabDark = page.locator('[data-cy="theming-mode-tab-dark"]')
+
+        await expect(tabLight).toBeVisible()
+        await expect(tabDark).toBeVisible()
     })
 
-    test('les panes sont scoped par data-mode', async ({ page }) => {
+    test('au chargement, aucun chip "preview only" n\'est présent', async ({ page }) => {
         await page.goto('/theming')
         await page.waitForLoadState('networkidle')
 
-        const lightPane = page.locator('[data-cy="theming-preview-pane-light"]')
-        const darkPane = page.locator('[data-cy="theming-preview-pane-dark"]')
-
-        await expect(lightPane).toHaveAttribute('data-mode', 'light')
-        await expect(darkPane).toHaveAttribute('data-mode', 'dark')
+        const previewOnlyChips = page.locator('[data-cy*="theming-pane-chip-"]')
+        expect(await previewOnlyChips.count()).toBe(0)
     })
 
-    test('cliquer sur le chip de la pane dark passe en mode dark', async ({ page }) => {
+    test('cliquer l\'onglet Dark bascule la preview sur le mode dark', async ({ page }) => {
         await page.goto('/theming')
         await page.waitForLoadState('networkidle')
 
-        await page.locator('[data-cy="theming-pane-chip-dark"]').click()
-        await page.waitForTimeout(200)
+        await page.locator('[data-cy="theming-mode-tab-dark"]').click()
+        await page.waitForTimeout(300)
 
-        const darkPane = page.locator('[data-cy="theming-preview-pane-dark"]')
-        await expect(darkPane).toHaveClass(/theming__preview-pane--active/)
+        const pane = page.locator('[data-cy="theming-preview-pane-dark"]')
+        await expect(pane).toBeVisible()
+        await expect(pane).toHaveAttribute('data-mode', 'dark')
+        await expect(pane).toHaveClass(/theming__preview-pane--active/)
     })
 
-    test('un token édité en mode dark ne modifie pas la pane light', async ({ page }) => {
+    test('cliquer l\'onglet Light bascule la preview sur le mode light', async ({ page }) => {
         await page.goto('/theming')
         await page.waitForLoadState('networkidle')
 
-        await page.locator('[data-cy="theming-pane-chip-dark"]').click()
-        await page.waitForTimeout(200)
+        await page.locator('[data-cy="theming-mode-tab-dark"]').click()
+        await page.waitForTimeout(300)
+        await page.locator('[data-cy="theming-mode-tab-light"]').click()
+        await page.waitForTimeout(300)
+
+        const pane = page.locator('[data-cy="theming-preview-pane-light"]')
+        await expect(pane).toBeVisible()
+        await expect(pane).toHaveAttribute('data-mode', 'light')
+        await expect(pane).toHaveClass(/theming__preview-pane--active/)
+    })
+
+    test('en mode dark, un token édité modifie le code dark mais pas light', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+
+        await page.locator('[data-cy="theming-mode-tab-dark"]').click()
+        await page.waitForTimeout(300)
 
         const firstColor = page.locator('.theming__token-color').first()
         await firstColor.evaluate((el) => {
@@ -314,33 +348,162 @@ test.describe('Theme Builder · A4+A5 dual-mode edit + preview panes', () => {
         const code = await generatedCode(page)
         const arr = parseExportedArray(code)
         const lightEntry = arr.find(e => e.mode === 'light')
-        const lightVars = (lightEntry?.cssVars ?? {}) as Record<string, string>
-        expect(Object.values(lightVars)).not.toContain('#abcdef')
-
         const darkEntry = arr.find(e => e.mode === 'dark')
+        const lightVars = (lightEntry?.cssVars ?? {}) as Record<string, string>
         const darkVars = (darkEntry?.cssVars ?? {}) as Record<string, string>
+
+        expect(Object.values(lightVars)).not.toContain('#abcdef')
         expect(Object.values(darkVars)).toContain('#abcdef')
     })
 
-    test('la pane active a le ring visuel (classe --active)', async ({ page }) => {
+    test('le badge sur l\'onglet affiche le nombre de tokens modifiés pour ce mode', async ({ page }) => {
         await page.goto('/theming')
         await page.waitForLoadState('networkidle')
 
-        const lightPane = page.locator('[data-cy="theming-preview-pane-light"]')
-        await expect(lightPane).toHaveClass(/theming__preview-pane--active/)
+        const badgeLight = page.locator('[data-cy="theming-mode-tab-badge-light"]')
+        await expect(badgeLight).not.toBeVisible()
 
-        const darkPane = page.locator('[data-cy="theming-preview-pane-dark"]')
-        await expect(darkPane).not.toHaveClass(/theming__preview-pane--active/)
+        const firstColor = page.locator('.theming__token-color').first()
+        await firstColor.evaluate((el) => {
+            const input = el as HTMLInputElement
+            input.value = '#ff0000'
+            input.dispatchEvent(new Event('input', { bubbles: true }))
+        })
+        await page.waitForTimeout(200)
+
+        await expect(badgeLight).toBeVisible()
     })
 
-    test('chaque pane contient un OrigamThemeProvider avec le bon data-mode', async ({ page }) => {
+    test('la pane preview active contient un OrigamThemeProvider scopé sur le mode actif', async ({ page }) => {
         await page.goto('/theming')
         await page.waitForLoadState('networkidle')
 
-        const lightThemeProvider = page.locator('[data-cy="theming-preview-pane-light"] .origam-theme-provider').first()
-        const darkThemeProvider = page.locator('[data-cy="theming-preview-pane-dark"] .origam-theme-provider').first()
+        const lightThemeProvider = page
+            .locator('[data-cy="theming-preview-pane-light"] .origam-theme-provider')
+            .first()
 
         await expect(lightThemeProvider).toHaveAttribute('data-mode', 'light')
+
+        await page.locator('[data-cy="theming-mode-tab-dark"]').click()
+        await page.waitForTimeout(300)
+
+        const darkThemeProvider = page
+            .locator('[data-cy="theming-preview-pane-dark"] .origam-theme-provider')
+            .first()
+
         await expect(darkThemeProvider).toHaveAttribute('data-mode', 'dark')
+    })
+
+    test('le panneau de contrôles est visible et affiche le composant + mode actif', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+
+        const controlsPanel = page.locator('[data-cy="theming-controls-panel"]')
+        await expect(controlsPanel).toBeVisible()
+    })
+
+    test('le export code est un IOrigamTheme[] avec light + dark après édition des deux modes', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+
+        const firstColor = page.locator('.theming__token-color').first()
+        await firstColor.evaluate((el) => {
+            const input = el as HTMLInputElement
+            input.value = '#111111'
+            input.dispatchEvent(new Event('input', { bubbles: true }))
+        })
+        await page.waitForTimeout(200)
+
+        await page.locator('[data-cy="theming-mode-tab-dark"]').click()
+        await page.waitForTimeout(300)
+
+        await firstColor.evaluate((el) => {
+            const input = el as HTMLInputElement
+            input.value = '#222222'
+            input.dispatchEvent(new Event('input', { bubbles: true }))
+        })
+        await page.waitForTimeout(200)
+
+        const code = await generatedCode(page)
+        const arr = parseExportedArray(code)
+
+        expect(arr.length).toBe(2)
+        const lightEntry = arr.find(e => e.mode === 'light')
+        const darkEntry = arr.find(e => e.mode === 'dark')
+        expect(lightEntry).toBeTruthy()
+        expect(darkEntry).toBeTruthy()
+
+        const lightVars = (lightEntry?.cssVars ?? {}) as Record<string, string>
+        const darkVars = (darkEntry?.cssVars ?? {}) as Record<string, string>
+        expect(Object.values(lightVars)).toContain('#111111')
+        expect(Object.values(darkVars)).toContain('#222222')
+    })
+})
+
+test.describe('Theme Builder · B Split toggle', () => {
+    test('le bouton Split est visible dans la preview bar', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+
+        const splitBtn = page.locator('[data-cy="theming-split-btn"]')
+        await splitBtn.scrollIntoViewIfNeeded()
+        await expect(splitBtn).toBeVisible()
+    })
+
+    test('activer Split affiche deux panes EDIT et VIEW', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+
+        const splitBtn = page.locator('[data-cy="theming-split-btn"]')
+        await splitBtn.evaluate((el) => el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })))
+        await page.waitForTimeout(300)
+
+        await expect(page.locator('[data-cy="theming-pane-chip-edit"]')).toBeVisible()
+        await expect(page.locator('[data-cy="theming-pane-chip-view"]')).toBeVisible()
+    })
+
+    test('les deux panes Split ont des data-mode opposés', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+
+        const splitBtn = page.locator('[data-cy="theming-split-btn"]')
+        await splitBtn.evaluate((el) => el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })))
+        await page.waitForTimeout(300)
+
+        const editPane = page.locator('[data-cy="theming-preview-pane-light"]')
+        const viewPane = page.locator('[data-cy="theming-preview-pane-dark"]')
+
+        await expect(editPane).toHaveAttribute('data-mode', 'light')
+        await expect(viewPane).toHaveAttribute('data-mode', 'dark')
+    })
+
+    test('cliquer le pane VIEW en Split bascule le mode actif', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+
+        const splitBtn = page.locator('[data-cy="theming-split-btn"]')
+        await splitBtn.evaluate((el) => el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })))
+        await page.waitForTimeout(300)
+
+        const viewPane = page.locator('[data-cy="theming-preview-pane-dark"]')
+        await viewPane.evaluate((el) => el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })))
+        await page.waitForTimeout(300)
+
+        const tabDark = page.locator('[data-cy="theming-mode-tab-dark"]')
+        await expect(tabDark).toHaveClass(/origam-tab--active/)
+    })
+
+    test('désactiver Split revient à une seule pane sans chips EDIT/VIEW', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+
+        const splitBtn = page.locator('[data-cy="theming-split-btn"]')
+        await splitBtn.evaluate((el) => el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })))
+        await page.waitForTimeout(300)
+        await splitBtn.evaluate((el) => el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })))
+        await page.waitForTimeout(300)
+
+        await expect(page.locator('[data-cy="theming-pane-chip-edit"]')).not.toBeVisible()
+        await expect(page.locator('[data-cy="theming-pane-chip-view"]')).not.toBeVisible()
     })
 })

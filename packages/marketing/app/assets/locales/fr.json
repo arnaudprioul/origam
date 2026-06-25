@@ -642,9 +642,17 @@
       "light": "Clair",
       "dark": "Sombre",
       "auto": "Auto",
-      "editing": "En cours d'édition",
-      "preview_only": "Prévisualisation",
+      "edit": "ÉDITER",
+      "view": "VOIR",
       "tab_label": "Éditer le mode couleur"
+    },
+    "split": {
+      "toggle": "Scindé",
+      "switch_mode": "Passer en mode {mode}"
+    },
+    "controls": {
+      "heading": "Contrôles — {component} ({mode})",
+      "panel_label": "Contrôles du composant"
     },
     "reset": "Réinitialiser",
     "validate": "Valider et exporter",
@@ -665,7 +673,8 @@
       "label": "Composants"
     },
     "props": {
-      "legend": "Props par défaut"
+      "legend": "Props par défaut",
+      "global": "global"
     },
     "tokens": {
       "legend": "Tokens CSS",
