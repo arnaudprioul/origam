@@ -7,7 +7,7 @@
 export interface IConstEntry {
     /** kebab-case slug, used as the URL segment /consts/{slug} */
     slug: string
-    /** Display name, e.g. "BREAKPOINTS_ARRAY", "PREDIFINED_DENSITY" */
+    /** Display name, e.g. "BREAKPOINTS_ARRAY", "PREDEFINED_DENSITY" */
     name: string
     /** MDI icon name for the catalog card */
     icon: string
