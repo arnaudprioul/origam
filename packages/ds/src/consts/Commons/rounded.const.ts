@@ -34,7 +34,7 @@ export const CUSTOM_BORDER_RADIUS_REGEX = /^(?:var|calc|clamp|min|max|env)\(.*\)
  * `--rounded-{name}` (class output) and an inline `border-radius`
  * declaration.
  */
-export const PREDIFINED_ROUNDED: Array<TRounded> = [
+export const PREDEFINED_ROUNDED: Array<TRounded> = [
     ROUNDED.X_SMALL,
     ROUNDED.SMALL,
     ROUNDED.DEFAULT,
@@ -44,3 +44,10 @@ export const PREDIFINED_ROUNDED: Array<TRounded> = [
     ROUNDED.SHAPED,
     ROUNDED.SHAPED_INVERT
 ]
+
+/**
+ * @deprecated Misspelling of `PREDEFINED_ROUNDED`. Kept as an alias for
+ * backward compatibility and slated for removal in a future major. Use
+ * `PREDEFINED_ROUNDED`.
+ */
+export const PREDIFINED_ROUNDED = PREDEFINED_ROUNDED
