@@ -15,18 +15,38 @@ import { DOC_TYPE, DOC_SUFFIX, IMPORT_PATH } from './merge.mjs'
 
 const IND = '    '
 
+// Tokens the Nuxt SSR build statically replaces (e.g. `typeof window` ->
+// "undefined"). When such a token appears verbatim INSIDE a documentation
+// code string, @rollup/plugin-replace corrupts it ('"undefined" !== ...') and
+// the server bundle fails to parse. We emit the token via a `${'…'}`
+// interpolation so the rendered text is identical but the contiguous token
+// never exists in the module source for the replacer to match.
+const SSR_REPLACED_TOKENS = ['typeof window', 'typeof document']
+
+function hasDangerousToken (s) {
+    return SSR_REPLACED_TOKENS.some(t => String(s).includes(t))
+}
+
+function neutralizeTokens (body) {
+    return body
+        .replace(/typeof window/g, "typeof ${'window'}")
+        .replace(/typeof document/g, "typeof ${'document'}")
+}
+
 function q (s) {
     return "'" + String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'"
 }
 
-/** multi-line code → template literal; escape backticks and ${ */
+/** multi-line code → template literal; escape backticks and ${, then split
+ *  any SSR-replaced token so the build can't corrupt it. */
 function tpl (s) {
-    return '`' + String(s).replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$\{/g, '\\${') + '`'
+    const escaped = String(s).replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$\{/g, '\\${')
+    return '`' + neutralizeTokens(escaped) + '`'
 }
 
-/** choose template literal for multi-line, single-quote otherwise */
+/** template literal for multi-line OR token-bearing strings, single-quote otherwise */
 function strField (s) {
-    return /\n/.test(String(s)) ? tpl(s) : q(s)
+    return (/\n/.test(String(s)) || hasDangerousToken(s)) ? tpl(s) : q(s)
 }
 
 function arr (items, indent, render) {
