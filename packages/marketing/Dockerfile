@@ -64,6 +64,11 @@ LABEL org.opencontainers.image.licenses="MIT"
 
 WORKDIR /app
 
+# `curl` is required by Coolify's healthcheck command (it prefers curl and
+# the base alpine image ships neither curl nor a curl-compatible wget). Keep
+# it minimal — only the curl package.
+RUN apk add --no-cache curl
+
 ENV NODE_ENV=production
 ENV NITRO_PORT=3000
 ENV NITRO_HOST=0.0.0.0
@@ -74,7 +79,9 @@ COPY --from=build /app/packages/marketing/.output ./.output
 
 EXPOSE 3000
 
+# Hit the dedicated /api/health Nitro route on the IPv4 loopback (the server
+# binds 0.0.0.0; using 127.0.0.1 avoids a localhost->IPv6 resolution miss).
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-    CMD wget -q -O /dev/null http://127.0.0.1:3000/ || exit 1
+    CMD curl -fsS http://127.0.0.1:3000/api/health || exit 1
 
 CMD ["node", ".output/server/index.mjs"]
