@@ -37,9 +37,9 @@ export const THEME_BUILDER_DEFAULT_MODE = 'light'
 export const THEME_BUILDER_STORAGE_KEY = 'origam_theme_builder_state'
 
 /**
- * Core set wired in the editor. ~15 components that render visibly from props
- * (plus light slot text). `tabs` is intentionally excluded: it renders only via
- * OrigamTab children (slot-driven) and can't be previewed from props alone.
+ * Core set kept for backwards compatibility (tests / legacy references). The v2
+ * builder lists EVERY component via the catalog; this curated list now only
+ * marks the historically-wired components.
  */
 export const CORE_THEME_SLUGS = [
     'btn',
@@ -59,6 +59,39 @@ export const CORE_THEME_SLUGS = [
 ] as const
 
 /**
+ * Slugs whose component renders a visible, meaningful preview from props alone
+ * (plus the slot text / preview props from the adapter below). The builder
+ * shows the live `<component :is>` preview for these and a graceful
+ * "preview unavailable" note for the rest (overlays, providers, sub-parts that
+ * need an activator or parent context). Verified against the real component API.
+ */
+export const THEME_BUILDER_PREVIEWABLE_SLUGS = [
+    'btn',
+    'card',
+    'chip',
+    'avatar',
+    'alert',
+    'text-field',
+    'textarea-field',
+    'number-field',
+    'password-field',
+    'select',
+    'checkbox',
+    'switch',
+    'radio',
+    'rating-field',
+    'slider-field',
+    'title',
+    'icon',
+    'badge',
+    'divider',
+    'progress-linear',
+    'blockquote',
+    'breadcrumb',
+    'pagination'
+] as const
+
+/**
  * Per-slug preview adapter. Static `previewProps` are merged UNDER the user's
  * edited props (preview only — never serialised). `slotText` renders inside the
  * default slot. Absent slugs fall back to `playground.defaultSlotContent`.
@@ -70,14 +103,23 @@ export const THEME_BUILDER_PREVIEW_ADAPTERS: Record<string, IThemeBuilderPreview
     avatar: { previewProps: { icon: 'mdi-account', size: 'large' } },
     alert: { slotText: 'A short alert message.', previewProps: { type: 'info' } },
     'text-field': { previewProps: { label: 'Label', modelValue: 'Value', width: 240 } },
+    'textarea-field': { previewProps: { label: 'Message', modelValue: 'A few lines of text.', width: 240, rows: 3 } },
+    'number-field': { previewProps: { label: 'Amount', modelValue: 42, width: 240 } },
+    'password-field': { previewProps: { label: 'Password', modelValue: 'secret', width: 240 } },
     select: { previewProps: { label: 'Pick one', items: ['One', 'Two', 'Three'], width: 240 } },
     checkbox: { previewProps: { label: 'Checkbox', modelValue: true } },
     switch: { previewProps: { label: 'Switch', modelValue: true } },
+    radio: { previewProps: { label: 'Radio', modelValue: true } },
+    'rating-field': { previewProps: { modelValue: 3 } },
+    'slider-field': { previewProps: { modelValue: 50, width: 240 } },
     title: { slotText: 'The quick brown fox' },
     icon: { previewProps: { icon: 'mdi-star', size: 'x-large' } },
     badge: { slotText: 'Inbox', previewProps: { content: '4', inline: true } },
     divider: { previewProps: { width: 240 } },
-    'progress-linear': { previewProps: { modelValue: 64, height: 8 } }
+    'progress-linear': { previewProps: { modelValue: 64, height: 8 } },
+    blockquote: { slotText: 'Design is not just what it looks like. Design is how it works.' },
+    breadcrumb: { previewProps: { items: [{ title: 'Home', href: '#' }, { title: 'Library', href: '#' }, { title: 'Data' }] } },
+    pagination: { previewProps: { length: 5, modelValue: 2 } }
 }
 
 /**

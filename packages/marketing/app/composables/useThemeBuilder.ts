@@ -1,23 +1,18 @@
 import { computed, reactive, watch } from 'vue'
 
 import {
-    CORE_THEME_SLUGS,
     THEME_BUILDER_DEFAULT_LABEL,
     THEME_BUILDER_DEFAULT_MODE,
     THEME_BUILDER_DEFAULT_NAME,
-    THEME_BUILDER_PREVIEW_ADAPTERS,
     THEME_BUILDER_STORAGE_KEY
 } from '~/consts/theme-builder.const'
 import { THEME_BUILDER_PRESETS } from '~/consts/theme-builder-presets.const'
-import { THEME_BUILDER_TOKENS } from '~/consts/theme-builder-tokens.const'
+import { useThemeBuilderCatalog } from '~/composables/useThemeBuilderCatalog'
 import type {
     IThemeBuilderPreset,
-    IThemeBuilderPreviewAdapter,
     IThemeBuilderState,
-    IThemeBuilderToken,
     TEditMode
 } from '~/interfaces/theme-builder.interface'
-import type { IComponentPlaygroundControl } from '~/interfaces/components-catalog.interface'
 import type { IOrigamTheme } from 'origam/interfaces'
 import type { TMode } from 'origam/types'
 
@@ -38,47 +33,6 @@ import type { TMode } from 'origam/types'
  * - The export emits an `IOrigamTheme[]` array (one entry per mode), each with
  *   its own `cssVars` at the root, plus the global `component` defaults.
  */
-
-const allDocs = import.meta.glob('~/consts/components/*.const.ts', { eager: true }) as Record<
-    string,
-    Record<string, unknown> | undefined
->
-
-interface IThemeBuilderComponentEntry {
-    slug: string
-    /** Origam defaults key, e.g. `origam-btn`. */
-    componentKey: string
-    name: string
-    icon: string
-    controls: IComponentPlaygroundControl[]
-    tokens: IThemeBuilderToken[]
-    previewAdapter: IThemeBuilderPreviewAdapter
-}
-
-function findDoc (slug: string): Record<string, unknown> | undefined {
-    const key = Object.keys(allDocs).find(k => k.includes(`/${slug}.const`))
-    if (!key) return undefined
-    const mod = allDocs[key]
-    if (!mod) return undefined
-    const exportKey = Object.keys(mod).find(k => k.endsWith('_DOC'))
-    return exportKey ? (mod[exportKey] as Record<string, unknown>) : undefined
-}
-
-function buildEntries (): IThemeBuilderComponentEntry[] {
-    return CORE_THEME_SLUGS.map((slug) => {
-        const doc = findDoc(slug)
-        const playground = (doc?.playground as { controls?: IComponentPlaygroundControl[] } | undefined)
-        return {
-            slug,
-            componentKey: `origam-${slug}`,
-            name: (doc?.name as string) ?? slug,
-            icon: (doc?.icon as string) ?? 'mdi-puzzle-outline',
-            controls: playground?.controls ?? [],
-            tokens: THEME_BUILDER_TOKENS[slug] ?? [],
-            previewAdapter: THEME_BUILDER_PREVIEW_ADAPTERS[slug] ?? {}
-        }
-    })
-}
 
 /** `my-theme` / `My Theme` → `myTheme` (export identifier). */
 function camelCaseName (raw: string): string {
@@ -127,7 +81,7 @@ function parseThemeSource (text: string): unknown {
 }
 
 export function useThemeBuilder () {
-    const entries = buildEntries()
+    const { entries, nav } = useThemeBuilderCatalog()
 
     const state = reactive<IThemeBuilderState>({
         name: THEME_BUILDER_DEFAULT_NAME,
@@ -512,8 +466,48 @@ export function useThemeBuilder () {
         }
     }
 
+    /** True when a component prop is currently overridden away from its default. */
+    const isPropEdited = (slug: string, prop: string): boolean => {
+        return state.defaults[`origam-${slug}`]?.[prop] !== undefined
+    }
+
+    /** True when a CSS token is currently overridden for the given mode. */
+    const isTokenEdited = (mode: TEditMode, cssVar: string): boolean => {
+        return state.cssVars[mode][cssVar] !== undefined
+    }
+
+    /** Number of overridden props for one component (any mode-agnostic default). */
+    const componentEditCount = (slug: string): number => {
+        return Object.keys(state.defaults[`origam-${slug}`] ?? {}).length
+    }
+
+    /** Number of overridden props within a set of control prop names. */
+    const groupEditCount = (slug: string, props: string[]): number => {
+        const map = state.defaults[`origam-${slug}`]
+        if (!map) return 0
+        return props.reduce((n, p) => (map[p] !== undefined ? n + 1 : n), 0)
+    }
+
+    /** Number of overridden tokens within a set of cssVars for the active mode. */
+    const tokenGroupEditCount = (mode: TEditMode, cssVars: string[]): number => {
+        const map = state.cssVars[mode]
+        return cssVars.reduce((n, v) => (map[v] !== undefined ? n + 1 : n), 0)
+    }
+
+    /** Reset every prop + token override for a single component. */
+    const resetComponent = (slug: string): void => {
+        delete state.defaults[`origam-${slug}`]
+        const entry = entries.find(e => e.slug === slug)
+        if (!entry) return
+        for (const tok of entry.tokens) {
+            delete state.cssVars.light[tok.cssVar]
+            delete state.cssVars.dark[tok.cssVar]
+        }
+    }
+
     return {
         entries,
+        nav,
         state,
         editCount,
         editCountByMode,
@@ -530,6 +524,12 @@ export function useThemeBuilder () {
         previewProps,
         previewStyle,
         slotText,
+        isPropEdited,
+        isTokenEdited,
+        componentEditCount,
+        groupEditCount,
+        tokenGroupEditCount,
+        resetComponent,
         reset,
         download,
         downloadJson,
