@@ -49,7 +49,8 @@ packages/tests/a11y/.results
 *.debug*
 
 
-maquettes/
+**/*/maquettes/
+**/*/wireframes/
 
 # TypeScript / tsc build artefacts — never track
 # These are emitted by `tsc --emitDeclarationOnly` or by the IDE's
