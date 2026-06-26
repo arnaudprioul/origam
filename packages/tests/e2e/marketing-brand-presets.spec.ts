@@ -2,8 +2,9 @@
  * Brand presets — Theme Builder (/theming).
  *
  * Vérifie que les 8 thèmes de marque (cartoon, apple, geek, glass, editorial,
- * material, ecom, sobre) × 2 modes sont listés dans le select de presets DS
- * et qu'un seed injecte réellement des tokens dans le state du builder.
+ * material, ecom, sobre) + origam sont listés dans le select de presets (un
+ * preset par thème, pas par mode) et qu'un seed injecte réellement des tokens
+ * dans les DEUX modes (light + dark) du state du builder.
  *
  * Prérequis : serveur marketing opérationnel (port 3996 ou MARKETING_BASE_URL).
  * Run : MARKETING_BASE_URL=http://localhost:3996 npx playwright test \
@@ -22,20 +23,28 @@ function parseExportedArray (code: string): Record<string, unknown>[] {
     return new Function(`"use strict"; return (${code.slice(start, end + 1)});`)() as Record<string, unknown>[]
 }
 
-/** Les 16 labels attendus (labelFallback). */
+/** Les 9 labels attendus (un par thème, plus de -light/-dark). */
 const EXPECTED_LABELS = [
+    'Origam',
+    'Cartoon',
+    'Apple',
+    'Geek',
+    'Glass',
+    'Editorial',
+    'Material',
+    'E-commerce',
+    'Sobre',
+]
+
+/** Labels qui NE doivent PAS être présents (ancien format par mode). */
+const UNEXPECTED_LABELS = [
     'Cartoon (light)', 'Cartoon (dark)',
     'Apple (light)',   'Apple (dark)',
-    'Geek (light)',    'Geek (dark)',
-    'Glass (light)',   'Glass (dark)',
-    'Editorial (light)', 'Editorial (dark)',
-    'Material (light)', 'Material (dark)',
-    'E-commerce (light)', 'E-commerce (dark)',
-    'Sobre (light)',   'Sobre (dark)',
+    'Origam light',    'Origam dark',
 ]
 
 test.describe('Brand presets — listing dans le select', () => {
-    test('les 16 brand presets sont listés dans le select de seed', async ({ page }) => {
+    test('les 9 presets (un par thème) sont listés dans le select de seed', async ({ page }) => {
         await page.goto('/theming')
         await page.waitForLoadState('networkidle')
 
@@ -51,17 +60,21 @@ test.describe('Brand presets — listing dans le select', () => {
         const trimmedOptions = options.map(o => o.trim())
 
         for (const label of EXPECTED_LABELS) {
-            const found = trimmedOptions.some(o => o.includes(label))
+            const found = trimmedOptions.some(o => o === label || o.startsWith(label))
             expect(found, `Preset "${label}" manquant dans le select`).toBe(true)
         }
 
-        // Fermer le select
+        for (const label of UNEXPECTED_LABELS) {
+            const found = trimmedOptions.some(o => o.includes(label))
+            expect(found, `Preset "${label}" ne devrait plus être présent (ancien format par mode)`).toBe(false)
+        }
+
         await page.keyboard.press('Escape')
     })
 })
 
-test.describe('Brand presets — seed de tokens', () => {
-    test('cartoon-light seede des tokens dans le state', async ({ page }) => {
+test.describe('Brand presets — seed de tokens (light + dark)', () => {
+    test('cartoon seede des tokens dans light ET dark', async ({ page }) => {
         await page.goto('/theming')
         await page.waitForLoadState('networkidle')
         await page.evaluate(k => window.localStorage.removeItem(k), STORAGE_KEY)
@@ -70,7 +83,7 @@ test.describe('Brand presets — seed de tokens', () => {
         await page.locator('[data-cy="theming-preset"]').click()
         await page.waitForTimeout(400)
 
-        const cartoonOption = page.locator('[role="option"]').filter({ hasText: 'Cartoon (light)' })
+        const cartoonOption = page.locator('[role="option"]').filter({ hasText: 'Cartoon' }).first()
         await cartoonOption.waitFor({ state: 'visible', timeout: 3000 })
         await cartoonOption.click()
         await page.waitForTimeout(400)
@@ -83,16 +96,25 @@ test.describe('Brand presets — seed de tokens', () => {
 
         const arr = parseExportedArray(code)
         const lightEntry = arr.find(e => e.mode === 'light')
-        expect(lightEntry, 'entrée light absente').toBeTruthy()
-        const lightVars = (lightEntry!.cssVars ?? {}) as Record<string, string>
-        expect(Object.keys(lightVars).length, 'aucun token seeded en light').toBeGreaterThan(0)
+        const darkEntry = arr.find(e => e.mode === 'dark')
 
-        // Cartoon caractéristique: 3px borders
-        const hasBorderToken = Object.values(lightVars).some(v => v === '3px')
-        expect(hasBorderToken, 'token border 3px attendu dans cartoon').toBe(true)
+        expect(lightEntry, 'entrée light absente').toBeTruthy()
+        expect(darkEntry, 'entrée dark absente').toBeTruthy()
+
+        const lightVars = (lightEntry!.cssVars ?? {}) as Record<string, string>
+        const darkVars = (darkEntry!.cssVars ?? {}) as Record<string, string>
+
+        expect(Object.keys(lightVars).length, 'aucun token seeded en light').toBeGreaterThan(0)
+        expect(Object.keys(darkVars).length, 'aucun token seeded en dark').toBeGreaterThan(0)
+
+        const hasBorderTokenLight = Object.values(lightVars).some(v => v === '3px')
+        expect(hasBorderTokenLight, 'token border 3px attendu dans cartoon light').toBe(true)
+
+        const hasBorderTokenDark = Object.values(darkVars).some(v => v === '3px')
+        expect(hasBorderTokenDark, 'token border 3px attendu dans cartoon dark').toBe(true)
     })
 
-    test('editorial-light seede des tokens (21 clés builder-exposées)', async ({ page }) => {
+    test('editorial seede des tokens light + dark (border-radius: 0px)', async ({ page }) => {
         await page.goto('/theming')
         await page.waitForLoadState('networkidle')
         await page.evaluate(k => window.localStorage.removeItem(k), STORAGE_KEY)
@@ -101,7 +123,7 @@ test.describe('Brand presets — seed de tokens', () => {
         await page.locator('[data-cy="theming-preset"]').click()
         await page.waitForTimeout(400)
 
-        const editorialOption = page.locator('[role="option"]').filter({ hasText: 'Editorial (light)' })
+        const editorialOption = page.locator('[role="option"]').filter({ hasText: 'Editorial' }).first()
         await editorialOption.waitFor({ state: 'visible', timeout: 3000 })
         await editorialOption.click()
         await page.waitForTimeout(400)
@@ -109,17 +131,20 @@ test.describe('Brand presets — seed de tokens', () => {
         const codeBlock = page.locator('[data-cy="theming-generated-code"]')
         const code = await codeBlock.innerText()
         const arr = parseExportedArray(code)
+
         const lightEntry = arr.find(e => e.mode === 'light')
+        const darkEntry = arr.find(e => e.mode === 'dark')
         const lightVars = (lightEntry?.cssVars ?? {}) as Record<string, string>
+        const darkVars = (darkEntry?.cssVars ?? {}) as Record<string, string>
 
-        expect(Object.keys(lightVars).length, 'editorial-light: au moins 5 tokens attendus').toBeGreaterThanOrEqual(5)
+        expect(Object.keys(lightVars).length, 'editorial light: au moins 5 tokens attendus').toBeGreaterThanOrEqual(5)
+        expect(Object.keys(darkVars).length, 'editorial dark: au moins 5 tokens attendus').toBeGreaterThanOrEqual(5)
 
-        // Editorial caractéristique: border-radius 0px (flat style)
-        const hasZeroRadius = Object.entries(lightVars).some(([k, v]) => k.includes('border-radius') && v === '0px')
-        expect(hasZeroRadius, 'editorial doit avoir border-radius: 0px').toBe(true)
+        const hasZeroRadiusLight = Object.entries(lightVars).some(([k, v]) => k.includes('border-radius') && v === '0px')
+        expect(hasZeroRadiusLight, 'editorial light doit avoir border-radius: 0px').toBe(true)
     })
 
-    test('ecom-light seede des tokens avec des couleurs chaudes', async ({ page }) => {
+    test('ecom seede des tokens light (couleurs chaudes) + dark', async ({ page }) => {
         await page.goto('/theming')
         await page.waitForLoadState('networkidle')
         await page.evaluate(k => window.localStorage.removeItem(k), STORAGE_KEY)
@@ -128,7 +153,7 @@ test.describe('Brand presets — seed de tokens', () => {
         await page.locator('[data-cy="theming-preset"]').click()
         await page.waitForTimeout(400)
 
-        const ecomOption = page.locator('[role="option"]').filter({ hasText: 'E-commerce (light)' })
+        const ecomOption = page.locator('[role="option"]').filter({ hasText: 'E-commerce' }).first()
         await ecomOption.waitFor({ state: 'visible', timeout: 3000 })
         await ecomOption.click()
         await page.waitForTimeout(400)
@@ -136,11 +161,15 @@ test.describe('Brand presets — seed de tokens', () => {
         const codeBlock = page.locator('[data-cy="theming-generated-code"]')
         const code = await codeBlock.innerText()
         const arr = parseExportedArray(code)
+
         const lightEntry = arr.find(e => e.mode === 'light')
+        const darkEntry = arr.find(e => e.mode === 'dark')
         const lightVars = (lightEntry?.cssVars ?? {}) as Record<string, string>
+        const darkVars = (darkEntry?.cssVars ?? {}) as Record<string, string>
 
         expect(Object.keys(lightVars).length).toBeGreaterThan(0)
-        // Ecom: orange warmth → #fed7aa est une couleur de border
+        expect(Object.keys(darkVars).length).toBeGreaterThan(0)
+
         const hasWarmColor = Object.values(lightVars).some(v => v.includes('#fed7aa') || v.includes('#fb923c'))
         expect(hasWarmColor, 'ecom-light doit avoir des couleurs chaudes orange').toBe(true)
     })

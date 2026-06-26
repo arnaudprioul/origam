@@ -167,13 +167,28 @@ test.describe('Theme Builder · persistance localStorage', () => {
 })
 
 test.describe('Theme Builder · import / seed', () => {
-    test('importer un JSON IOrigamTheme unique (mode dark) réhydrate le state', async ({ page }) => {
+    test('ouvrir Import ouvre une dialog (pas un panneau inline)', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+
+        await page.locator('[data-cy="theming-import-toggle"]').click()
+        await page.waitForTimeout(300)
+
+        await expect(page.locator('[data-cy="theming-import-dialog"]')).toBeVisible()
+        await expect(page.locator('[data-cy="theming-import-text"]')).toBeVisible()
+    })
+
+    test('importer un JSON IOrigamTheme unique (mode dark) réhydrate le state + ferme la dialog', async ({ page }) => {
         await page.goto('/theming')
         await page.waitForLoadState('networkidle')
         await page.evaluate(k => window.localStorage.removeItem(k), STORAGE_KEY)
         await page.reload({ waitUntil: 'networkidle' })
 
         await page.locator('[data-cy="theming-import-toggle"]').click()
+        await page.waitForTimeout(300)
+
+        await expect(page.locator('[data-cy="theming-import-dialog"]')).toBeVisible()
+
         const payload = JSON.stringify({
             name: 'imported',
             label: 'Imported theme',
@@ -182,8 +197,9 @@ test.describe('Theme Builder · import / seed', () => {
         })
         await page.locator('[data-cy="theming-import-text"] textarea').fill(payload)
         await page.locator('[data-cy="theming-import-btn"]').click()
-        await page.waitForTimeout(300)
+        await page.waitForTimeout(400)
 
+        await expect(page.locator('[data-cy="theming-import-dialog"]')).not.toBeVisible()
         await expect(page.locator('[data-cy="theming-name"] input')).toHaveValue('imported')
 
         const arr = parseExportedArray(await generatedCode(page))
@@ -198,13 +214,15 @@ test.describe('Theme Builder · import / seed', () => {
         await page.reload({ waitUntil: 'networkidle' })
 
         await page.locator('[data-cy="theming-import-toggle"]').click()
+        await page.waitForTimeout(300)
+
         const payload = JSON.stringify([
             { name: 'dual-light', label: 'Dual (light)', mode: 'light', cssVars: { '--origam-btn---background-color': '#001122' } },
             { name: 'dual-dark', label: 'Dual (dark)', mode: 'dark', cssVars: { '--origam-btn---background-color': '#334455' } }
         ])
         await page.locator('[data-cy="theming-import-text"] textarea').fill(payload)
         await page.locator('[data-cy="theming-import-btn"]').click()
-        await page.waitForTimeout(300)
+        await page.waitForTimeout(400)
 
         const arr = parseExportedArray(await generatedCode(page))
         const lightVars = (arr.find(e => e.mode === 'light')?.cssVars ?? {}) as Record<string, string>
@@ -213,20 +231,23 @@ test.describe('Theme Builder · import / seed', () => {
         expect(darkVars['--origam-btn---background-color']).toBe('#334455')
     })
 
-    test('un import invalide affiche une erreur sans crash', async ({ page }) => {
+    test('un import invalide affiche une erreur dans la dialog sans crash', async ({ page }) => {
         await page.goto('/theming')
         await page.waitForLoadState('networkidle')
 
         await page.locator('[data-cy="theming-import-toggle"]').click()
+        await page.waitForTimeout(300)
+
         await page.locator('[data-cy="theming-import-text"] textarea').fill('this is not a theme {{{')
         await page.locator('[data-cy="theming-import-btn"]').click()
         await page.waitForTimeout(300)
 
         await expect(page.locator('[data-cy="theming-import-error"]')).toBeVisible()
+        await expect(page.locator('[data-cy="theming-import-dialog"]')).toBeVisible()
         await expect(page.locator('[data-cy="page-theming"]')).toBeVisible()
     })
 
-    test('seed depuis un preset DS injecte des tokens réels', async ({ page }) => {
+    test('seed depuis un preset DS injecte des tokens réels dans light + dark', async ({ page }) => {
         await page.goto('/theming')
         await page.waitForLoadState('networkidle')
         await page.evaluate(k => window.localStorage.removeItem(k), STORAGE_KEY)
@@ -234,13 +255,16 @@ test.describe('Theme Builder · import / seed', () => {
 
         await page.locator('[data-cy="theming-preset"]').click()
         await page.waitForTimeout(300)
-        const darkOption = page.locator('[role="option"]', { hasText: /dark/i }).first()
-        await darkOption.waitFor({ state: 'visible', timeout: 3000 })
-        await darkOption.click()
+
+        const origamOption = page.locator('[role="option"]').filter({ hasText: 'Origam' }).first()
+        await origamOption.waitFor({ state: 'visible', timeout: 3000 })
+        await origamOption.click()
         await page.waitForTimeout(400)
 
         const arr = parseExportedArray(await generatedCode(page))
+        const lightVars = (arr.find(e => e.mode === 'light')?.cssVars ?? {}) as Record<string, string>
         const darkVars = (arr.find(e => e.mode === 'dark')?.cssVars ?? {}) as Record<string, string>
+        expect(Object.keys(lightVars).length, 'seed n\'a injecté aucun token dans le mode light').toBeGreaterThan(10)
         expect(Object.keys(darkVars).length, 'seed n\'a injecté aucun token dans le mode dark').toBeGreaterThan(10)
     })
 })

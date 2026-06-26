@@ -247,25 +247,18 @@ async function run() {
 
         presetEntries.push(
             `    {
-        key: '${name}-light',
-        labelKey: 'theming.preset.${name}_light',
-        labelFallback: '${labelFallback} (light)',
-        mode: 'light',
-        cssVars: ${lightConstName}
-    }`,
-            `    {
-        key: '${name}-dark',
-        labelKey: 'theming.preset.${name}_dark',
-        labelFallback: '${labelFallback} (dark)',
-        mode: 'dark',
-        cssVars: ${darkConstName}
+        key: '${name}',
+        labelKey: 'theming.preset.${name}',
+        labelFallback: '${labelFallback}',
+        light: ${lightConstName},
+        dark: ${darkConstName}
     }`
         )
     }
 
     const output = `/**
  * THEME_BUILDER_BRAND_PRESETS — seed values for the /theming builder, one entry
- * per brand theme × mode (light, dark). Each map is the SUBSET of the brand
+ * per brand theme (light + dark bundled). Each map is the SUBSET of the brand
  * theme cssVars that the builder actually exposes (the keys in
  * THEME_BUILDER_PRESET_LIGHT_VARS from theme-builder-presets.const.ts).
  *
@@ -301,7 +294,7 @@ ${presetEntries.join(',\n')}
     } else {
         fs.writeFileSync(OUT_FILE, output, 'utf-8')
         console.log(`\n[generate-brand-presets] Written → ${OUT_FILE}`)
-        console.log(`[generate-brand-presets] ${results.length * 2} presets generated (${results.length} themes × 2 modes).`)
+        console.log(`[generate-brand-presets] ${results.length} presets generated (${results.length} themes, each with light + dark).`)
     }
 }
 

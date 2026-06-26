@@ -470,18 +470,11 @@ export const THEME_BUILDER_PRESET_DARK_VARS: Record<string, string> = {
 
 export const THEME_BUILDER_PRESETS: IThemeBuilderPreset[] = [
     {
-        key: 'origam-light',
-        labelKey: 'theming.preset.origam_light',
-        labelFallback: 'Origam light',
-        mode: 'light',
-        cssVars: THEME_BUILDER_PRESET_LIGHT_VARS
-    },
-    {
-        key: 'origam-dark',
-        labelKey: 'theming.preset.origam_dark',
-        labelFallback: 'Origam dark',
-        mode: 'dark',
-        cssVars: THEME_BUILDER_PRESET_DARK_VARS
+        key: 'origam',
+        labelKey: 'theming.preset.origam',
+        labelFallback: 'Origam',
+        light: THEME_BUILDER_PRESET_LIGHT_VARS,
+        dark: THEME_BUILDER_PRESET_DARK_VARS
     },
     ...THEME_BUILDER_BRAND_PRESETS
 ]

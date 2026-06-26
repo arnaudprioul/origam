@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, onMounted, ref } from 'vue'
+  import { computed, onMounted, ref, watch } from 'vue'
 
   import { useT } from '~/composables/useT'
   import { useThemeBuilder } from '~/composables/useThemeBuilder'
@@ -71,6 +71,13 @@
   const importOpen = ref<boolean>(false)
   const importText = ref<string>('')
   const importError = ref<boolean>(false)
+
+  watch(importOpen, (open) => {
+    if (open) {
+      importText.value = ''
+      importError.value = false
+    }
+  })
 
   const selectedPreset = ref<string>('')
 
@@ -218,7 +225,7 @@
           size="small"
           prepend-icon="mdi-import"
           data-cy="theming-import-toggle"
-          @click="importOpen = !importOpen"
+          @click="importOpen = true"
         >
           {{ t('theming.seed.import_action', 'Import') }}
         </origam-btn>
@@ -244,24 +251,36 @@
       </div>
     </header>
 
-    <section
-      v-if="importOpen"
-      class="theming__import"
-      :aria-label="t('theming.seed.import_label', 'Paste a theme module or JSON')"
-      data-cy="theming-import"
+    <origam-dialog
+      v-model="importOpen"
+      :title="t('theming.seed.import_dialog_title', 'Import a theme')"
+      size="small"
+      data-cy="theming-import-dialog"
     >
-      <origam-textarea-field
-        v-model="importText"
-        :label="t('theming.seed.import_label', 'Paste a theme module or JSON')"
-        :placeholder="t('theming.seed.import_placeholder', 'Paste a theme module or a JSON object…')"
-        variant="outlined"
-        density="compact"
-        hide-details
-        :rows="4"
-        class="theming__import-text"
-        data-cy="theming-import-text"
-      />
-      <div class="theming__import-actions">
+      <template #content>
+        <div class="theming__import-dialog">
+          <origam-textarea-field
+            v-model="importText"
+            :label="t('theming.seed.import_label', 'Paste a theme module or JSON')"
+            :placeholder="t('theming.seed.import_placeholder', 'Paste a theme module or a JSON object…')"
+            variant="outlined"
+            density="compact"
+            hide-details
+            :rows="6"
+            class="theming__import-text"
+            data-cy="theming-import-text"
+          />
+          <origam-alert
+            v-if="importError"
+            type="danger"
+            density="compact"
+            data-cy="theming-import-error"
+          >
+            {{ t('theming.seed.import_error', 'Could not parse that theme — paste a valid IOrigamTheme module or JSON object.') }}
+          </origam-alert>
+        </div>
+      </template>
+      <template #footer>
         <origam-btn
           color="primary"
           variant="tonal"
@@ -271,18 +290,8 @@
         >
           {{ t('theming.seed.import_action', 'Import') }}
         </origam-btn>
-        <origam-alert
-          v-if="importError"
-          type="danger"
-          density="compact"
-          data-cy="theming-import-error"
-        >
-          {{
-            t('theming.seed.import_error', 'Could not parse that theme — paste a valid IOrigamTheme module or JSON object.')
-          }}
-        </origam-alert>
-      </div>
-    </section>
+      </template>
+    </origam-dialog>
 
     <div class="theming__body">
       <ThemeBuilderNav
@@ -484,25 +493,15 @@
       flex: 0 0 auto;
     }
 
-    &__import {
+    &__import-dialog {
       display: flex;
-      align-items: flex-start;
+      flex-direction: column;
       gap: var(--origam-spacing-3, 0.75rem);
-      flex: 0 0 auto;
-      padding: var(--origam-spacing-3, 0.75rem) var(--origam-spacing-5, 1.25rem);
-      background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
-      border-block-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+      padding: var(--origam-spacing-4, 1rem);
     }
 
     &__import-text {
-      flex: 1 1 auto;
-    }
-
-    &__import-actions {
-      display: flex;
-      flex-direction: column;
-      gap: var(--origam-spacing-2, 0.5rem);
-      flex: 0 0 auto;
+      width: 100%;
     }
 
     &__body {

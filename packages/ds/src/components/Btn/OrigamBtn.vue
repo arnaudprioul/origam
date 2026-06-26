@@ -678,6 +678,26 @@
 				var(--origam-color__surface---overlay)
 			) !important;
 			box-shadow: none;
+
+			// Active / selected state (e.g. inside an OrigamBtnToggle):
+			// lift the surface to the "raised" rung so the selected
+			// button is clearly distinct from the resting siblings.
+			// Three axes change on selection:
+			//   1. background → raised surface (white in light / elevated in dark)
+			//   2. box-shadow → xs shadow (segmented-control "pill" lift)
+			//   3. font-weight → semibold (label emphasis)
+			// All three are driven by theme-overridable tokens.
+			&#{$this}--active {
+				background-color: var(
+					--origam-btn---background-color-tonal-active,
+					var(--origam-color__surface---raised, var(--origam-color__surface---overlay))
+				) !important;
+				box-shadow: var(
+					--origam-btn---box-shadow-tonal-active,
+					var(--origam-shadow---xs)
+				);
+				font-weight: 600;
+			}
 		}
 
 		&--variant-outlined {

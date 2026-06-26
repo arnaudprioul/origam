@@ -1,6 +1,6 @@
 /**
  * THEME_BUILDER_BRAND_PRESETS — seed values for the /theming builder, one entry
- * per brand theme × mode (light, dark). Each map is the SUBSET of the brand
+ * per brand theme (light + dark bundled). Each map is the SUBSET of the brand
  * theme cssVars that the builder actually exposes (the keys in
  * THEME_BUILDER_PRESET_LIGHT_VARS from theme-builder-presets.const.ts).
  *
@@ -251,115 +251,59 @@ export const THEME_BUILDER_PRESET_SOBRE_DARK_VARS: Record<string, string> = {
 
 export const THEME_BUILDER_BRAND_PRESETS: IThemeBuilderPreset[] = [
     {
-        key: 'cartoon-light',
-        labelKey: 'theming.preset.cartoon_light',
-        labelFallback: 'Cartoon (light)',
-        mode: 'light',
-        cssVars: THEME_BUILDER_PRESET_CARTOON_LIGHT_VARS
+        key: 'cartoon',
+        labelKey: 'theming.preset.cartoon',
+        labelFallback: 'Cartoon',
+        light: THEME_BUILDER_PRESET_CARTOON_LIGHT_VARS,
+        dark: THEME_BUILDER_PRESET_CARTOON_DARK_VARS
     },
     {
-        key: 'cartoon-dark',
-        labelKey: 'theming.preset.cartoon_dark',
-        labelFallback: 'Cartoon (dark)',
-        mode: 'dark',
-        cssVars: THEME_BUILDER_PRESET_CARTOON_DARK_VARS
+        key: 'apple',
+        labelKey: 'theming.preset.apple',
+        labelFallback: 'Apple',
+        light: THEME_BUILDER_PRESET_APPLE_LIGHT_VARS,
+        dark: THEME_BUILDER_PRESET_APPLE_DARK_VARS
     },
     {
-        key: 'apple-light',
-        labelKey: 'theming.preset.apple_light',
-        labelFallback: 'Apple (light)',
-        mode: 'light',
-        cssVars: THEME_BUILDER_PRESET_APPLE_LIGHT_VARS
+        key: 'geek',
+        labelKey: 'theming.preset.geek',
+        labelFallback: 'Geek',
+        light: THEME_BUILDER_PRESET_GEEK_LIGHT_VARS,
+        dark: THEME_BUILDER_PRESET_GEEK_DARK_VARS
     },
     {
-        key: 'apple-dark',
-        labelKey: 'theming.preset.apple_dark',
-        labelFallback: 'Apple (dark)',
-        mode: 'dark',
-        cssVars: THEME_BUILDER_PRESET_APPLE_DARK_VARS
+        key: 'glass',
+        labelKey: 'theming.preset.glass',
+        labelFallback: 'Glass',
+        light: THEME_BUILDER_PRESET_GLASS_LIGHT_VARS,
+        dark: THEME_BUILDER_PRESET_GLASS_DARK_VARS
     },
     {
-        key: 'geek-light',
-        labelKey: 'theming.preset.geek_light',
-        labelFallback: 'Geek (light)',
-        mode: 'light',
-        cssVars: THEME_BUILDER_PRESET_GEEK_LIGHT_VARS
+        key: 'editorial',
+        labelKey: 'theming.preset.editorial',
+        labelFallback: 'Editorial',
+        light: THEME_BUILDER_PRESET_EDITORIAL_LIGHT_VARS,
+        dark: THEME_BUILDER_PRESET_EDITORIAL_DARK_VARS
     },
     {
-        key: 'geek-dark',
-        labelKey: 'theming.preset.geek_dark',
-        labelFallback: 'Geek (dark)',
-        mode: 'dark',
-        cssVars: THEME_BUILDER_PRESET_GEEK_DARK_VARS
+        key: 'material',
+        labelKey: 'theming.preset.material',
+        labelFallback: 'Material',
+        light: THEME_BUILDER_PRESET_MATERIAL_LIGHT_VARS,
+        dark: THEME_BUILDER_PRESET_MATERIAL_DARK_VARS
     },
     {
-        key: 'glass-light',
-        labelKey: 'theming.preset.glass_light',
-        labelFallback: 'Glass (light)',
-        mode: 'light',
-        cssVars: THEME_BUILDER_PRESET_GLASS_LIGHT_VARS
+        key: 'ecom',
+        labelKey: 'theming.preset.ecom',
+        labelFallback: 'E-commerce',
+        light: THEME_BUILDER_PRESET_ECOM_LIGHT_VARS,
+        dark: THEME_BUILDER_PRESET_ECOM_DARK_VARS
     },
     {
-        key: 'glass-dark',
-        labelKey: 'theming.preset.glass_dark',
-        labelFallback: 'Glass (dark)',
-        mode: 'dark',
-        cssVars: THEME_BUILDER_PRESET_GLASS_DARK_VARS
-    },
-    {
-        key: 'editorial-light',
-        labelKey: 'theming.preset.editorial_light',
-        labelFallback: 'Editorial (light)',
-        mode: 'light',
-        cssVars: THEME_BUILDER_PRESET_EDITORIAL_LIGHT_VARS
-    },
-    {
-        key: 'editorial-dark',
-        labelKey: 'theming.preset.editorial_dark',
-        labelFallback: 'Editorial (dark)',
-        mode: 'dark',
-        cssVars: THEME_BUILDER_PRESET_EDITORIAL_DARK_VARS
-    },
-    {
-        key: 'material-light',
-        labelKey: 'theming.preset.material_light',
-        labelFallback: 'Material (light)',
-        mode: 'light',
-        cssVars: THEME_BUILDER_PRESET_MATERIAL_LIGHT_VARS
-    },
-    {
-        key: 'material-dark',
-        labelKey: 'theming.preset.material_dark',
-        labelFallback: 'Material (dark)',
-        mode: 'dark',
-        cssVars: THEME_BUILDER_PRESET_MATERIAL_DARK_VARS
-    },
-    {
-        key: 'ecom-light',
-        labelKey: 'theming.preset.ecom_light',
-        labelFallback: 'E-commerce (light)',
-        mode: 'light',
-        cssVars: THEME_BUILDER_PRESET_ECOM_LIGHT_VARS
-    },
-    {
-        key: 'ecom-dark',
-        labelKey: 'theming.preset.ecom_dark',
-        labelFallback: 'E-commerce (dark)',
-        mode: 'dark',
-        cssVars: THEME_BUILDER_PRESET_ECOM_DARK_VARS
-    },
-    {
-        key: 'sobre-light',
-        labelKey: 'theming.preset.sobre_light',
-        labelFallback: 'Sobre (light)',
-        mode: 'light',
-        cssVars: THEME_BUILDER_PRESET_SOBRE_LIGHT_VARS
-    },
-    {
-        key: 'sobre-dark',
-        labelKey: 'theming.preset.sobre_dark',
-        labelFallback: 'Sobre (dark)',
-        mode: 'dark',
-        cssVars: THEME_BUILDER_PRESET_SOBRE_DARK_VARS
+        key: 'sobre',
+        labelKey: 'theming.preset.sobre',
+        labelFallback: 'Sobre',
+        light: THEME_BUILDER_PRESET_SOBRE_LIGHT_VARS,
+        dark: THEME_BUILDER_PRESET_SOBRE_DARK_VARS
     }
 ]

@@ -382,16 +382,17 @@ export function useThemeBuilder () {
         }
     }
 
-    /** Seed the builder from a DS preset (origam light / dark). */
+    /** Seed the builder from a theme preset (applies both light AND dark at once). */
     const seedPreset = (key: string): void => {
         const preset = THEME_BUILDER_PRESETS.find(p => p.key === key)
         if (!preset) return
         Object.keys(state.defaults).forEach(k => delete state.defaults[k])
         Object.keys(state.cssVars.light).forEach(k => delete state.cssVars.light[k])
         Object.keys(state.cssVars.dark).forEach(k => delete state.cssVars.dark[k])
-        state.mode = preset.mode
-        const targetMode: TEditMode = preset.mode === 'dark' ? 'dark' : 'light'
-        for (const [k, v] of Object.entries(preset.cssVars)) setToken(targetMode, k, v)
+        state.mode = 'light'
+        state.activeMode = 'light'
+        for (const [k, v] of Object.entries(preset.light)) setToken('light', k, v)
+        for (const [k, v] of Object.entries(preset.dark)) setToken('dark', k, v)
     }
 
     const presets: IThemeBuilderPreset[] = THEME_BUILDER_PRESETS

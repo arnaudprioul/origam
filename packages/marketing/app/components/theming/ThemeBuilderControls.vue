@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 
 import { useT } from '~/composables/useT'
 import type {
@@ -36,7 +36,18 @@ const tab = ref<TTab>('props')
 const propsCount = computed(() => props.entry.controls.length)
 const tokensCount = computed(() => props.entry.tokens.length)
 
-const collapsed = ref<Set<string>>(new Set())
+const buildCollapsedSet = (): Set<string> => {
+    const ids = new Set<string>()
+    for (const g of props.entry.propGroups) ids.add(`p-${g.meta.id}`)
+    for (const g of props.entry.tokenGroups) ids.add(`t-${g.meta.id}`)
+    return ids
+}
+
+const collapsed = ref<Set<string>>(buildCollapsedSet())
+
+watchEffect(() => {
+    collapsed.value = buildCollapsedSet()
+})
 
 const isCollapsed = (id: string): boolean => collapsed.value.has(id)
 

@@ -261,10 +261,21 @@
 	:root {
 		--origam-btn-group---density: 0;
 
-		--origam-btn-group---border-radius: 4px;
-		--origam-btn-group---border-width: 0;
-		--origam-btn-group---border-style: solid;
-		--origam-btn-group---border-color: currentColor;
+		/*
+		 * Border-radius, border-width and border-color deliberately fall back to
+		 * the matching --origam-btn---* variables so that any theme that overrides
+		 * the btn tokens (radius, border) is automatically reflected on the group
+		 * container — no per-theme duplication required.
+		 *
+		 * Token resolution chain:
+		 *   theme override of --origam-btn---border-radius
+		 *     → picked up here as --origam-btn-group---border-radius
+		 *       → used in .origam-btn-group { border-radius: … }
+		 */
+		--origam-btn-group---border-radius: var(--origam-btn---border-radius, 4px);
+		--origam-btn-group---border-width: var(--origam-btn---border-width, 0);
+		--origam-btn-group---border-style: var(--origam-btn---border-style, solid);
+		--origam-btn-group---border-color: var(--origam-btn---border-color, currentColor);
 
 	}
 </style>
