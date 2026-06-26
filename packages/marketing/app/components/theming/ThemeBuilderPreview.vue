@@ -51,6 +51,11 @@ const panes = computed<Array<{ mode: TEditMode; style: Record<string, string> }>
 
 const modeLabel = (mode: TEditMode): string =>
     mode === 'dark' ? t('theming.mode.dark', 'Dark') : t('theming.mode.light', 'Light')
+
+const lightBtnVariant = computed(() => (props.activeMode === 'light' ? 'elevated' : 'outlined'))
+const darkBtnVariant = computed(() => (props.activeMode === 'dark' ? 'elevated' : 'outlined'))
+const lightBtnColor = computed(() => (props.activeMode === 'light' ? 'primary' : undefined))
+const darkBtnColor = computed(() => (props.activeMode === 'dark' ? 'primary' : undefined))
 </script>
 
 <template>
@@ -68,36 +73,36 @@ const modeLabel = (mode: TEditMode): string =>
 
             <div class="tb-preview__spacer" />
 
-            <origam-btn-toggle
+            <div
                 v-if="!split"
-                :model-value="activeMode"
-                mandatory
-                color="primary"
-                density="compact"
-                divided
                 class="tb-preview__mode-toggle"
+                role="group"
+                :aria-label="t('theming.mode.label', 'Preview mode')"
                 data-cy="theming-mode-toggle"
-                @update:model-value="setMode($event as TEditMode)"
             >
                 <origam-btn
-                    value="light"
-                    variant="tonal"
+                    :variant="lightBtnVariant"
+                    :color="lightBtnColor"
                     size="small"
                     prepend-icon="mdi-weather-sunny"
+                    :aria-pressed="activeMode === 'light'"
                     data-cy="theming-mode-light"
+                    @click="setMode('light')"
                 >
                     {{ t('theming.mode.light', 'Light') }}
                 </origam-btn>
                 <origam-btn
-                    value="dark"
-                    variant="tonal"
+                    :variant="darkBtnVariant"
+                    :color="darkBtnColor"
                     size="small"
                     prepend-icon="mdi-weather-night"
+                    :aria-pressed="activeMode === 'dark'"
                     data-cy="theming-mode-dark"
+                    @click="setMode('dark')"
                 >
                     {{ t('theming.mode.dark', 'Dark') }}
                 </origam-btn>
-            </origam-btn-toggle>
+            </div>
 
             <origam-btn
                 :variant="split ? 'tonal' : 'outlined'"
@@ -173,6 +178,12 @@ const modeLabel = (mode: TEditMode): string =>
     display: flex;
     flex-direction: column;
     min-height: 0;
+    height: 100%;
+    overflow: hidden;
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--origam-color-border-default);
+    border-radius: var(--origam-radius-lg, 0.5rem);
     background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
 
     &__bar {
@@ -212,6 +223,17 @@ const modeLabel = (mode: TEditMode): string =>
         flex: 1 1 auto;
     }
 
+    &__mode-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--origam-spacing-1, 0.25rem);
+        flex: 0 0 auto;
+    }
+
+    &__split-btn {
+        flex: 0 0 auto;
+    }
+
     &__stage {
         flex: 1 1 auto;
         min-height: 0;
@@ -234,8 +256,8 @@ const modeLabel = (mode: TEditMode): string =>
         place-items: center;
         min-height: 14rem;
         padding: var(--origam-spacing-8, 2rem);
-        background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
-        background-image: radial-gradient(circle at 1px 1px, var(--origam-color-border-subtle, var(--origam-color-border-default)) 1px, transparent 0);
+        background-color: var(--origam-color-neutral-0, #ffffff);
+        background-image: radial-gradient(circle at 1px 1px, var(--origam-color-neutral-300, #d4d4d4) 1px, transparent 0);
         background-size: 20px 20px;
 
         &--dark {
@@ -276,10 +298,7 @@ const modeLabel = (mode: TEditMode): string =>
         min-inline-size: 16rem;
         min-block-size: 9rem;
         padding: var(--origam-spacing-8, 2rem) var(--origam-spacing-10, 3rem);
-        background-color: var(--origam-color-surface-default);
-        border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
-        border-radius: var(--origam-radius-xl, 0.75rem);
-        box-shadow: var(--origam-shadow-lg, 0 8px 24px rgba(0, 0, 0, 0.1));
+        background-color: transparent;
     }
 
     &__unavailable {

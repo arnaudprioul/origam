@@ -536,6 +536,14 @@
       min-width: 0;
       min-height: 0;
       overflow: hidden;
+      padding: var(--origam-spacing-4, 1rem);
+      background-color: var(--origam-color-surface-sunken, var(--origam-color-surface-subtle));
+      border-inline: 1px solid var(--origam-color-border-default);
+
+      @media (max-width: 48rem) {
+        border-inline: none;
+        border-block: 1px solid var(--origam-color-border-default);
+      }
     }
 
     &__output {
