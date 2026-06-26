@@ -665,8 +665,15 @@
     "validate": "Validate & export",
     "export_json": "Export JSON",
     "preset": {
-      "origam_light": "Origam light",
-      "origam_dark": "Origam dark",
+      "origam": "Origam",
+      "cartoon": "Cartoon",
+      "apple": "Apple",
+      "geek": "Geek",
+      "glass": "Glass",
+      "editorial": "Editorial",
+      "material": "Material",
+      "ecom": "E-commerce",
+      "sobre": "Sobre",
       "label": "Preset",
       "none": "— none —"
     },
@@ -676,7 +683,8 @@
       "import_label": "Paste a theme module or JSON",
       "import_placeholder": "Paste a theme module or a JSON object…",
       "import_action": "Import",
-      "import_error": "Could not parse that theme — paste a valid IOrigamTheme module or JSON object."
+      "import_error": "Could not parse that theme — paste a valid IOrigamTheme module or JSON object.",
+      "import_dialog_title": "Import a theme"
     },
     "nav": {
       "label": "Components",

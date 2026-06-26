@@ -67,16 +67,18 @@ export interface IThemeBuilderState {
 }
 
 /**
- * A reusable theme seed surfaced in the preset picker (origam light / dark).
- * `cssVars` is the SUBSET of the real DS theme cssVars exposed by the builder
- * (see THEME_BUILDER_TOKENS) so seeding never bundles the full origam theme.
+ * A reusable theme seed surfaced in the preset picker.
+ * Carries both light AND dark token maps so seeding applies the full theme
+ * at once — the user picks a theme identity (e.g. "Cartoon"), not a mode.
+ * `light` / `dark` are each a SUBSET of the DS theme cssVars exposed by the
+ * builder (see THEME_BUILDER_TOKENS) so seeding never bundles the full theme.
  */
 export interface IThemeBuilderPreset {
     key: string
     labelKey: string
     labelFallback: string
-    mode: TMode
-    cssVars: Record<string, string>
+    light: Record<string, string>
+    dark: Record<string, string>
 }
 
 /**

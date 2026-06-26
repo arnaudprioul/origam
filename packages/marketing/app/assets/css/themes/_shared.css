@@ -55,6 +55,24 @@
     --origam-color---btn-secondary-text: var(--origam-color__text---secondary, #525252);
     --origam-shadow---btn-secondary: none;
 
+    /*
+     * OrigamBtn / OrigamBtnGroup border-radius live-link.
+     *
+     * Style Dictionary bakes component tokens to literals at build time (e.g.
+     * --origam-btn---border-radius: 4px), so per-theme overrides of the semantic
+     * --origam-radius---btn variable are NOT automatically reflected in the
+     * component token. Re-pointing them here with specificity 0,2,0 means:
+     *   - themes that declare --origam-radius---btn (cartoon 14px, apple 12px,
+     *     glass 999px, geek 4px / 8px, ecom 6px, material 999px …) at 0,3,0
+     *     automatically propagate that value into the button and group border-radius
+     *     without any per-theme duplication of these component tokens.
+     *   - OrigamBtnGroup---border-radius follows btn via the chain:
+     *       --origam-btn-group---border-radius: var(--origam-btn---border-radius)
+     *     declared in OrigamBtnGroup.vue global <style>.
+     */
+    --origam-btn---border-radius: var(--origam-radius---btn, 4px);
+    --origam-btn-group---border-radius: var(--origam-btn---border-radius, var(--origam-radius---btn, 4px));
+
     /* ── OrigamCode — follow the active theme ────────────────────────────────
        Style Dictionary bakes component tokens to literals at build time, so the
        DS code surface keeps the base value (#fafafa) and ignores runtime theme

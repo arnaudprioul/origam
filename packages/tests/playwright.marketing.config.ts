@@ -17,7 +17,7 @@ const REPO_ROOT = resolve(__dirname, '..', '..')
  */
 export default defineConfig({
     testDir: './e2e',
-    testMatch: ['**/marketing-theming.spec.ts', '**/marketing-theme-builder.spec.ts', '**/home-*.spec.ts', '**/why-origam.spec.ts', '**/roadmap.spec.ts', '**/changelog.spec.ts', '**/installation.spec.ts', '**/directives.spec.ts', '**/components.spec.ts', '**/wireframe.spec.ts', '**/types.spec.ts', '**/composables.spec.ts', '**/nav-link-availability.spec.ts', '**/api-docs-generated.spec.ts'],
+    testMatch: ['**/marketing-theming.spec.ts', '**/marketing-theme-builder.spec.ts', '**/marketing-brand-presets.spec.ts', '**/home-*.spec.ts', '**/why-origam.spec.ts', '**/roadmap.spec.ts', '**/changelog.spec.ts', '**/installation.spec.ts', '**/directives.spec.ts', '**/components.spec.ts', '**/wireframe.spec.ts', '**/types.spec.ts', '**/composables.spec.ts', '**/nav-link-availability.spec.ts', '**/api-docs-generated.spec.ts'],
     outputDir: './e2e/.results-marketing',
 
     fullyParallel: false,
