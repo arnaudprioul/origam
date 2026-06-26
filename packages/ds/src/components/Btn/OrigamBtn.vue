@@ -706,6 +706,17 @@
 			border-style: solid;
 			border-color: var(--origam-btn---border-color, currentColor);
 			box-shadow: none;
+
+			// Selected state inside an OrigamBtnToggle: the active option
+			// FILLS like a real default button (using the btn's own bg/fg
+			// tokens, so it follows color/intent and theme), while the resting
+			// siblings stay outlined. This is what makes a btn-toggle read as
+			// a row of real buttons rather than a flat segmented strip.
+			&#{$this}--active {
+				background-color: var(--origam-btn---background-color) !important;
+				color: var(--origam-btn---color);
+				border-color: var(--origam-btn---background-color);
+			}
 		}
 
 		&--variant-plain {

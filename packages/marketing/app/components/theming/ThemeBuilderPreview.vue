@@ -51,11 +51,6 @@ const panes = computed<Array<{ mode: TEditMode; style: Record<string, string> }>
 
 const modeLabel = (mode: TEditMode): string =>
     mode === 'dark' ? t('theming.mode.dark', 'Dark') : t('theming.mode.light', 'Light')
-
-const lightBtnVariant = computed(() => (props.activeMode === 'light' ? 'elevated' : 'outlined'))
-const darkBtnVariant = computed(() => (props.activeMode === 'dark' ? 'elevated' : 'outlined'))
-const lightBtnColor = computed(() => (props.activeMode === 'light' ? 'primary' : undefined))
-const darkBtnColor = computed(() => (props.activeMode === 'dark' ? 'primary' : undefined))
 </script>
 
 <template>
@@ -73,36 +68,37 @@ const darkBtnColor = computed(() => (props.activeMode === 'dark' ? 'primary' : u
 
             <div class="tb-preview__spacer" />
 
-            <div
+            <origam-btn-toggle
                 v-if="!split"
+                :model-value="activeMode"
+                mandatory
+                divided
+                color="primary"
+                density="compact"
                 class="tb-preview__mode-toggle"
-                role="group"
                 :aria-label="t('theming.mode.label', 'Preview mode')"
                 data-cy="theming-mode-toggle"
+                @update:model-value="setMode($event as TEditMode)"
             >
                 <origam-btn
-                    :variant="lightBtnVariant"
-                    :color="lightBtnColor"
+                    value="light"
+                    variant="outlined"
                     size="small"
                     prepend-icon="mdi-weather-sunny"
-                    :aria-pressed="activeMode === 'light'"
                     data-cy="theming-mode-light"
-                    @click="setMode('light')"
                 >
                     {{ t('theming.mode.light', 'Light') }}
                 </origam-btn>
                 <origam-btn
-                    :variant="darkBtnVariant"
-                    :color="darkBtnColor"
+                    value="dark"
+                    variant="outlined"
                     size="small"
                     prepend-icon="mdi-weather-night"
-                    :aria-pressed="activeMode === 'dark'"
                     data-cy="theming-mode-dark"
-                    @click="setMode('dark')"
                 >
                     {{ t('theming.mode.dark', 'Dark') }}
                 </origam-btn>
-            </div>
+            </origam-btn-toggle>
 
             <origam-btn
                 :variant="split ? 'tonal' : 'outlined'"
@@ -124,7 +120,7 @@ const darkBtnColor = computed(() => (props.activeMode === 'dark' ? 'primary' : u
             aria-live="polite"
             data-cy="theming-preview-stage"
         >
-            <ClientOnly>
+            <client-only>
                 <div
                     v-for="pane in panes"
                     :key="pane.mode"
@@ -143,7 +139,7 @@ const darkBtnColor = computed(() => (props.activeMode === 'dark' ? 'primary' : u
                             :style="pane.style"
                             :data-cy="`theming-canvas-${pane.mode}`"
                         >
-                            <NuxtErrorBoundary>
+                            <nuxt-error-boundary>
                                 <component
                                     :is="entry.componentTag"
                                     v-if="entry.previewable"
@@ -164,11 +160,11 @@ const darkBtnColor = computed(() => (props.activeMode === 'dark' ? 'primary' : u
                                         {{ t('theming.preview.error', 'Preview failed to render with the current props.') }}
                                     </p>
                                 </template>
-                            </NuxtErrorBoundary>
+                            </nuxt-error-boundary>
                         </div>
                     </origam-theme-provider>
                 </div>
-            </ClientOnly>
+            </client-only>
         </div>
     </section>
 </template>
