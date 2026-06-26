@@ -1,15 +1,14 @@
 /**
  * THEME_BUILDER_PRESETS — seed values for the /theming builder, one entry per
- * DS preset (origam light, origam dark). Each map is the SUBSET of the real
- * origam theme cssVars that the builder actually exposes (the 226 block-level
- * tokens in THEME_BUILDER_TOKENS), so seeding a preset never pulls the full
- * 327 KB origam.theme.ts into the marketing bundle.
+ * DS preset (origam light, origam dark) plus the 8 brand themes (cartoon,
+ * apple, geek, glass, editorial, material, ecom, sobre) × 2 modes = 18 total.
  *
- * GÉNÉRÉ depuis packages/ds/src/themes/origam.theme.ts
- * (origamLightTheme.cssVars / origamDarkTheme.cssVars). Valeurs RÉELLES du DS —
- * ne PAS éditer à la main. Régénérer si le thème DS change.
+ * Origam presets: GÉNÉRÉ depuis packages/ds/src/themes/origam.theme.ts.
+ * Brand presets: GÉNÉRÉS depuis packages/marketing/app/assets/css/themes/*.css
+ * via scripts/generate-brand-presets.mjs — ne PAS éditer à la main.
  */
 import type { IThemeBuilderPreset } from '~/interfaces/theme-builder.interface'
+import { THEME_BUILDER_BRAND_PRESETS } from '~/consts/theme-builder-brand-presets.const'
 
 export const THEME_BUILDER_PRESET_LIGHT_VARS: Record<string, string> = {
         "--origam-alert---accent-width": "24px",
@@ -483,5 +482,6 @@ export const THEME_BUILDER_PRESETS: IThemeBuilderPreset[] = [
         labelFallback: 'Origam dark',
         mode: 'dark',
         cssVars: THEME_BUILDER_PRESET_DARK_VARS
-    }
+    },
+    ...THEME_BUILDER_BRAND_PRESETS
 ]

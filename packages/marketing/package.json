@@ -15,7 +15,9 @@
     "lint": "eslint .",
     "typecheck": "nuxt typecheck",
     "docs:generate": "node scripts/generate-api-docs.mjs",
-    "docs:generate:check": "node scripts/generate-api-docs.mjs --check"
+    "docs:generate:check": "node scripts/generate-api-docs.mjs --check",
+    "presets:generate": "node scripts/generate-brand-presets.mjs",
+    "presets:generate:check": "node scripts/generate-brand-presets.mjs --check"
   },
   "dependencies": {
     "@nuxtjs/i18n": "^9.0.0",
