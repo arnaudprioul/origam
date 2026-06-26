@@ -627,15 +627,15 @@
       "description": "Configurez visuellement un thème origam par défaut — éditez les props et les tokens CSS des composants avec un aperçu en direct, puis exportez un module de thème prêt à l'emploi."
     },
     "eyebrow": "Theme builder",
-    "title": "Composez votre thème par défaut",
+    "title": "Theme Builder",
     "lead": "Choisissez un composant, ajustez ses props et ses tokens CSS, observez l'aperçu se mettre à jour, puis exportez un module de thème prêt à enregistrer.",
     "name": {
-      "label": "Nom du thème",
+      "label": "Nom",
       "placeholder": "my-theme"
     },
     "label": {
-      "label": "Libellé affiché",
-      "placeholder": "Mon thème"
+      "label": "Libellé",
+      "placeholder": "My theme"
     },
     "mode": {
       "label": "Mode de couleur",
@@ -647,19 +647,28 @@
       "tab_label": "Éditer le mode couleur"
     },
     "split": {
-      "toggle": "Scindé",
+      "toggle": "Côte à côte",
       "switch_mode": "Passer en mode {mode}"
     },
     "controls": {
       "heading": "Contrôles — {component} ({mode})",
-      "panel_label": "Contrôles du composant"
+      "panel_label": "Contrôles du composant",
+      "tabs_label": "Vue des contrôles",
+      "tab_props": "Props",
+      "tab_tokens": "Tokens CSS",
+      "reset": "réinit.",
+      "edited": "Modifié",
+      "no_props": "Ce composant n'expose aucune prop thémable.",
+      "no_tokens": "Aucun token CSS éditable enregistré pour ce composant pour l'instant."
     },
     "reset": "Réinitialiser",
     "validate": "Valider et exporter",
     "export_json": "Exporter en JSON",
     "preset": {
       "origam_light": "Origam clair",
-      "origam_dark": "Origam sombre"
+      "origam_dark": "Origam sombre",
+      "label": "Preset",
+      "none": "— aucun —"
     },
     "seed": {
       "title": "Partir d'un thème existant",
@@ -670,7 +679,11 @@
       "import_error": "Impossible d'analyser ce thème — collez un module ou un objet JSON IOrigamTheme valide."
     },
     "nav": {
-      "label": "Composants"
+      "label": "Composants",
+      "search": "Rechercher un composant…",
+      "no_result": "Aucun composant ne correspond à « {query} ».",
+      "total": "{count} composants",
+      "previewable": "Aperçu en direct disponible"
     },
     "props": {
       "legend": "Props par défaut",
@@ -682,15 +695,47 @@
       "legend_dark": "Tokens CSS — Sombre"
     },
     "preview": {
-      "unavailable": "Aperçu en direct indisponible pour ce composant.",
+      "unavailable": "Aperçu en direct indisponible pour ce composant. Modifiez ses props et tokens CSS — ils sont quand même exportés dans votre thème.",
       "light_label": "Clair",
-      "dark_label": "Sombre"
+      "dark_label": "Sombre",
+      "label": "Aperçu en direct",
+      "error": "Le rendu de l'aperçu a échoué avec les props actuelles."
     },
     "output": {
       "title": "Thème généré"
     },
     "export": {
       "filename": "Télécharge {file}"
+    },
+    "topbar": {
+      "label": "Barre d'outils du theme builder"
+    },
+    "mods": "modifications",
+    "export_ts": "Export .ts",
+    "group": {
+      "color": "Couleur",
+      "size": "Taille & densité",
+      "shape": "Forme",
+      "border": "Bordure",
+      "elevation": "Élévation",
+      "dimension": "Dimensions",
+      "spacing": "Espacement",
+      "state": "États",
+      "icon": "Icônes",
+      "link": "Lien & tag",
+      "layout": "Alignement & position",
+      "content": "Contenu",
+      "other": "Autre"
+    },
+    "category": {
+      "layout": "Layout & Structure",
+      "navigation": "Navigation",
+      "form": "Formulaire & Saisie",
+      "data": "Affichage de données",
+      "feedback": "Retour & Statut",
+      "overlay": "Overlay & Surface",
+      "media": "Média",
+      "utilities": "Utilitaires & Providers"
     }
   },
   "changelog": {

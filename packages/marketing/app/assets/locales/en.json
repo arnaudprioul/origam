@@ -627,14 +627,14 @@
       "description": "Configure a default origam theme visually — edit component props and CSS tokens with a live preview, then export a ready-to-use theme module."
     },
     "eyebrow": "Theme builder",
-    "title": "Design your default theme",
+    "title": "Theme Builder",
     "lead": "Pick a component, tune its props and CSS tokens, watch the preview update, then export a ready-to-register theme module.",
     "name": {
-      "label": "Theme name",
+      "label": "Name",
       "placeholder": "my-theme"
     },
     "label": {
-      "label": "Display label",
+      "label": "Label",
       "placeholder": "My theme"
     },
     "mode": {
@@ -652,14 +652,23 @@
     },
     "controls": {
       "heading": "Controls — {component} ({mode})",
-      "panel_label": "Component controls"
+      "panel_label": "Component controls",
+      "tabs_label": "Controls view",
+      "tab_props": "Props",
+      "tab_tokens": "CSS Tokens",
+      "reset": "reset",
+      "edited": "Edited",
+      "no_props": "This component exposes no themable props.",
+      "no_tokens": "No editable CSS tokens registered for this component yet."
     },
     "reset": "Reset",
     "validate": "Validate & export",
     "export_json": "Export JSON",
     "preset": {
       "origam_light": "Origam light",
-      "origam_dark": "Origam dark"
+      "origam_dark": "Origam dark",
+      "label": "Preset",
+      "none": "— none —"
     },
     "seed": {
       "title": "Start from an existing theme",
@@ -670,7 +679,11 @@
       "import_error": "Could not parse that theme — paste a valid IOrigamTheme module or JSON object."
     },
     "nav": {
-      "label": "Components"
+      "label": "Components",
+      "search": "Search component…",
+      "no_result": "No component matches “{query}”.",
+      "total": "{count} components",
+      "previewable": "Live preview available"
     },
     "props": {
       "legend": "Default props",
@@ -682,15 +695,47 @@
       "legend_dark": "CSS tokens — Dark"
     },
     "preview": {
-      "unavailable": "Live preview unavailable for this component.",
+      "unavailable": "Live preview unavailable for this component. Edit its props and CSS tokens — they still export to your theme.",
       "light_label": "Light",
-      "dark_label": "Dark"
+      "dark_label": "Dark",
+      "label": "Live preview",
+      "error": "Preview failed to render with the current props."
     },
     "output": {
       "title": "Generated theme"
     },
     "export": {
       "filename": "Downloads {file}"
+    },
+    "topbar": {
+      "label": "Theme builder toolbar"
+    },
+    "mods": "modifications",
+    "export_ts": "Export .ts",
+    "group": {
+      "color": "Color",
+      "size": "Size & density",
+      "shape": "Shape",
+      "border": "Border",
+      "elevation": "Elevation",
+      "dimension": "Dimensions",
+      "spacing": "Spacing",
+      "state": "States",
+      "icon": "Icons",
+      "link": "Link & tag",
+      "layout": "Alignment & position",
+      "content": "Content",
+      "other": "Other"
+    },
+    "category": {
+      "layout": "Layout & Structure",
+      "navigation": "Navigation",
+      "form": "Form & Input",
+      "data": "Data Display",
+      "feedback": "Feedback & Status",
+      "overlay": "Overlay & Surface",
+      "media": "Media",
+      "utilities": "Utilities & Providers"
     }
   },
   "changelog": {
