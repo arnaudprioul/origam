@@ -174,14 +174,22 @@ export function useThemeBuilder () {
         return out
     }
 
-    /** Scoped CSS-var overrides for a slug's preview wrapper, scoped to a mode. */
-    const previewStyle = (slug: string, mode: TEditMode): Record<string, string> => {
-        const entry = entries.find(e => e.slug === slug)
-        if (!entry) return {}
+    /**
+     * Scoped CSS-var overrides applied to a mode's preview canvas.
+     *
+     * Returns EVERY seeded/edited cssVar for the mode — not just the ones
+     * owned by the currently displayed component. A preset seeds tokens across
+     * many components at once; scoping the canvas to a single component's tokens
+     * meant picking a preset changed nothing visible when the active component
+     * had no preset-specific override. Applying the full mode map keeps the
+     * preview honest: every override that the export will emit is also painted.
+     * The `slug` argument is kept for API symmetry with the other per-slug
+     * helpers and future per-component scoping.
+     */
+    const previewStyle = (_slug: string, mode: TEditMode): Record<string, string> => {
         const out: Record<string, string> = {}
-        for (const tok of entry.tokens) {
-            const edited = state.cssVars[mode][tok.cssVar]
-            if (edited !== undefined) out[tok.cssVar] = edited
+        for (const [cssVar, value] of Object.entries(state.cssVars[mode])) {
+            if (value !== undefined) out[cssVar] = value
         }
         return out
     }
