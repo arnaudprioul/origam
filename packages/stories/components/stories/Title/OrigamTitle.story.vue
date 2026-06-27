@@ -15,6 +15,7 @@
 						:color="state.color"
 						:bg-color="state.bgColor"
 						:density="state.density"
+						:weight="state.weight"
 						:border="state.border"
 						:border-color="state.borderColor"
 						:border-style="state.borderStyle"
@@ -40,6 +41,21 @@
 				</StoryGroup>
 				<StoryGroup title="Sizing">
 					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect
+						v-model="state.weight"
+						title="Weight"
+						:options="[
+							{ label: '(none)', value: undefined },
+							{ label: 'Regular 400', value: 'regular' },
+							{ label: 'Medium 500', value: 'medium' },
+							{ label: 'Semibold 600', value: 'semibold' },
+							{ label: 'Bold 700', value: 'bold' },
+							{ label: 'Extrabold 800', value: 'extrabold' },
+							{ label: 'Black 900', value: 'black' }
+						]"
+					/>
 				</StoryGroup>
 				<StoryGroup title="Border">
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>

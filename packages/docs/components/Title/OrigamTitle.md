@@ -70,8 +70,13 @@ interface ITitleProps extends ITagProps, ICommonsComponentProps,
     IColorProps, IDensityProps, IPaddingProps, IMarginProps,
     IBorderProps {
     text?: string
+    weight?: TFontWeight // 'regular'|'medium'|'semibold'|'bold'|'extrabold'|'black'
 }
 ```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `weight` | `TFontWeight` | — | Font weight token. Sets `--origam-title---font-weight` to `var(--origam-font__weight---{weight})` (regular 400 · medium 500 · semibold 600 · bold 700 · extrabold 800 · black 900). When unset, the title keeps its theme weight. |
 
 ## Anatomy
 

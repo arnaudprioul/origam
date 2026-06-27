@@ -72,12 +72,18 @@
 	 * @description
 	 * Root element classes and styles.
 	 ********************************************************/
+	const weightStyles = computed(() => {
+		return props.weight
+			? {'--origam-title---font-weight': `var(--origam-font__weight---${props.weight})`}
+			: null
+	})
 	const titleStyles = computed(() => {
 		return [
 			colorStyles.value,
 			borderStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
+			weightStyles.value,
 			props.style
 		] as StyleValue
 	})
