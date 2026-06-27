@@ -77,10 +77,8 @@
 		'origam-chip': {
 			color: props.color,
 			bgColor: props.bgColor,
-			activeColor: props.activeColor,
-			activeBgColor: props.activeBgColor,
-			hoverColor: props.hoverColor,
-			hoverBgColor: props.hoverBgColor
+			active: props.active,
+			hover: props.hover,
 		}
 	}))
 

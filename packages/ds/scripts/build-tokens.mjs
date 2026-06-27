@@ -10,6 +10,7 @@
  */
 
 import StyleDictionary from 'style-dictionary'
+import { getReferences, usesReferences } from 'style-dictionary/utils'
 import { permutateThemes, register } from '@tokens-studio/sd-transforms'
 import { readFileSync, writeFileSync, watch, mkdirSync, existsSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
@@ -67,14 +68,52 @@ function parseBrandTheme (name) {
 }
 
 // ────────────────────────────────────────────────────────────────────────────
+// Reference-preserving CSS value. When a token's SOURCE value is a Tokens-Studio
+// reference (`{color.action.secondary.bg}`), emit `var(--<referenced-token>)`
+// instead of the baked literal, so the chain component → semantic → primitive
+// stays themeable at runtime (overriding an upstream var cascades to every
+// consumer). The computed value in the browser is identical to the literal —
+// references only keep the chain overridable. Falls back to the resolved
+// literal for non-references, or if any `{…}` can't be mapped to a var name.
+// ────────────────────────────────────────────────────────────────────────────
+function tokenCssValue (token, dictionary, useRefs) {
+    const resolved = token.$css?.value ?? token.$value ?? token.value
+    if (!useRefs) return resolved
+
+    const original = token.original?.$value ?? token.original?.value
+    if (typeof original !== 'string' || !usesReferences(original)) return resolved
+
+    // A filtered platform's `dictionary.tokens` drops upstream tiers (e.g. a
+    // component sheet excludes primitives), so resolve references against the
+    // UNFILTERED set — the referenced var is still emitted in its own sheet
+    // (primitive.css / light.css) and resolves at runtime via the cascade.
+    const allTokens = dictionary.unfilteredTokens ?? dictionary.tokens
+    let refs
+    try {
+        refs = getReferences(original, allTokens, { usesDtcg: true, warnImmediately: false })
+    } catch {
+        return resolved
+    }
+
+    let out = original
+    for (const ref of refs) {
+        if (!ref?.name || !Array.isArray(ref.path)) continue
+        out = out.split(`{${ref.path.join('.')}}`).join(`var(--${ref.name})`)
+    }
+    if (/\{[^}]+\}/.test(out)) return resolved
+    return out
+}
+
+// ────────────────────────────────────────────────────────────────────────────
 // CSS format: emits a theme-scoped block of CSS variables.
 // ────────────────────────────────────────────────────────────────────────────
 StyleDictionary.registerFormat({
     name: 'origam/css/themed',
     format: ({ dictionary, options, file }) => {
         const themeName = options.themeName || 'light'
+        const useRefs = options.outputReferences !== false
         const decls = dictionary.allTokens
-            .map(token => `  --${token.name}: ${token.$css?.value ?? token.$value ?? token.value};`)
+            .map(token => `  --${token.name}: ${tokenCssValue(token, dictionary, useRefs)};`)
             .join('\n')
 
         const header = file?.header ? `${file.header}\n` : ''
@@ -123,8 +162,9 @@ StyleDictionary.registerFormat({
     name: 'origam/scss/themed',
     format: ({ dictionary, options, file }) => {
         const themeName = options.themeName || 'light'
+        const useRefs = options.outputReferences !== false
         const decls = dictionary.allTokens
-            .map(token => `  --${token.name}: ${token.$css?.value ?? token.$value ?? token.value};`)
+            .map(token => `  --${token.name}: ${tokenCssValue(token, dictionary, useRefs)};`)
             .join('\n')
 
         const header = file?.header ? `${file.header}\n` : ''
@@ -434,7 +474,7 @@ function buildOneTheme (themeName, sourceSets, allSources) {
                     filter: filterFn,
                     options: {
                         themeName,
-                        outputReferences: false,
+                        outputReferences: true,
                         header: `/* origam tokens — ${themeName} (auto-generated, do not edit) */`
                     }
                 }]
@@ -449,7 +489,7 @@ function buildOneTheme (themeName, sourceSets, allSources) {
                     filter: filterFn,
                     options: {
                         themeName,
-                        outputReferences: false,
+                        outputReferences: true,
                         header: `/* origam tokens — ${themeName} (auto-generated, do not edit) */`
                     }
                 }]

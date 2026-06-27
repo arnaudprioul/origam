@@ -32,7 +32,7 @@ import type { IDefault } from '../DefaultProvider/default-provider.interface'
  *     typo:    { family: { sans: 'Inter, sans-serif' } },
  *     shadow:  { md: '0 2px 8px rgba(0,0,0,.12)' }
  *   },
- *   component: { 'origam-btn': { variant: 'flat', color: 'primary' } }
+ *   components: { 'origam-btn': { variant: 'flat', color: 'primary' } }
  * }
  * ```
  *
@@ -112,11 +112,11 @@ export interface IOrigamTheme {
      * not from hard-coded `withDefaults`" mechanism.
      *
      * @example
-     * component: {
+     * components: {
      *   global:        { density: 'comfortable' },
      *   'origam-btn':  { color: 'primary', rounded: 0 },
      *   'origam-card': { rounded: 'lg', elevation: 2 }
      * }
      */
-    component?: IDefault
+    components?: IDefault
 }

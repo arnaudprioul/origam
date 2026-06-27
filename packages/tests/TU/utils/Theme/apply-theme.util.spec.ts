@@ -94,38 +94,51 @@ describe('resolveThemeVars — precedence: vars < cssVars', () => {
     })
 })
 
-describe('origam theme — cssVars carries the full canonical --origam-* set', () => {
-    it('light mode resolves the exact published var names + values (parity with the token sheets)', () => {
+describe('origam theme — vars carries the semantic + scale surface (a real theme, not a CSS dump)', () => {
+    it('light vars resolve the exact semantic colour names + values', () => {
         const vars = resolveThemeVars(origamLightTheme)
-        // Surface / text / border — values are the raw declarations from
-        // packages/ds/dist/src/assets/css/tokens/light.css (verbatim, lowercase).
+        // Surface / text / border (3-segment semantic paths).
         expect(vars['--origam-color__surface---default']).toBe('#ffffff')
-        expect(vars['--origam-color__surface---raised']).toBe('#ffffff')
-        expect(vars['--origam-color__text---primary']).toBe('#171717')
+        expect(vars['--origam-color__surface---raised']).toBe('#fafafa')
+        expect(vars['--origam-color__text---primary']).toBe('#0a0a0a')
         expect(vars['--origam-color__text---secondary']).toBe('#525252')
         expect(vars['--origam-color__text---onColor']).toBe('#ffffff')
         expect(vars['--origam-color__border---focus']).toBe('#7c3aed')
-        // Action (4-segment, camelCase property preserved)
+        // Action (4-segment, camelCase state property preserved).
         expect(vars['--origam-color__action--primary---bg']).toBe('#7c3aed')
         expect(vars['--origam-color__action--primary---bgHover']).toBe('#6d28d9')
+        expect(vars['--origam-color__action--primary---bgDisabled']).toBe('#e6e6e6')
+        expect(vars['--origam-color__action--secondary---bgHover']).toBe('#e6e6e6')
         expect(vars['--origam-color__action--ghost---bg']).toBe('rgba(0, 0, 0, 0)')
-        // Feedback
-        expect(vars['--origam-color__feedback--success---bg']).toBe('#4caf50')
+        // Feedback (bg / fg / border / subtle).
+        expect(vars['--origam-color__feedback--success---bg']).toBe('#16a34a')
+        expect(vars['--origam-color__feedback--danger---bgSubtle']).toBe('rgba(220, 38, 38, 0.08)')
     })
 
-    it('carries the component tier — a bare createOrigam no longer leaves component vars undefined', () => {
+    it('carries the scale tiers (radius / space / font / shadow / border / motion)', () => {
         const vars = resolveThemeVars(origamLightTheme)
-        // Regression guard for SPEC-021: the component tier (~2700 vars) must be
-        // present, not just the semantic colour tier.
-        expect(vars['--origam-btn---height']).toBe('36px')
-        expect(vars['--origam-toolbar__wrapper---align-items']).toBe('flex-start')
+        expect(vars['--origam-radius---md']).toBe('8px')
+        expect(vars['--origam-radius---full']).toBe('9999px')
+        expect(vars['--origam-space---4']).toBe('16px')
+        expect(vars['--origam-font__size---md']).toBe('0.875rem')
+        expect(vars['--origam-font__family---sans']).toBe("Inter, 'Helvetica Neue', Arial, sans-serif")
+        expect(vars['--origam-font__weight---medium']).toBe(500)
+        expect(vars['--origam-border__width---thin']).toBe('1px')
+        expect(vars['--origam-motion__duration---fast']).toBe('100ms')
     })
 
-    it('carries the published gradient primitives (part of the canonical sheet)', () => {
+    it('does NOT inline the component tier nor a raw dump — those vars come from the imported token sheets', () => {
         const vars = resolveThemeVars(origamLightTheme)
-        const gradientKeys = Object.keys(vars).filter(k => k.startsWith('--origam-gradient'))
-        expect(gradientKeys).toContain('--origam-gradient---sunset')
-        expect(vars['--origam-gradient---sunset']).toBe('linear-gradient(135deg, #ff7e5f, #feb47b)')
+        // The clean theme overrides the SEMANTIC + SCALE layer only. Component
+        // vars (--origam-btn---*, etc.) reference the semantic tier and are
+        // delivered by the published sheets (primitive/light/dark), NOT dumped
+        // into the theme object. This is the "real theme, not simulacrum" rule.
+        expect(vars['--origam-btn---height']).toBeUndefined()
+        expect(vars['--origam-toolbar__wrapper---align-items']).toBeUndefined()
+        // No gradient dump in the theme either.
+        expect(Object.keys(vars).some(k => k.startsWith('--origam-gradient'))).toBe(false)
+        // cssVars escape hatch is intentionally empty.
+        expect(origamLightTheme.cssVars).toEqual({})
     })
 })
 
@@ -134,22 +147,23 @@ describe('themeSelector — name / mode scoping', () => {
         expect(themeSelector({})).toBe(':root')
     })
     it('[data-theme] when name only', () => {
-        expect(themeSelector({ name: 'brand-a' })).toBe('[data-theme="brand-a"]')
+        expect(themeSelector({ name: 'brand-a' })).toBe(':root:root[data-theme="brand-a"], [data-theme="brand-a"]')
     })
     it('[data-mode] when mode only', () => {
         expect(themeSelector({ mode: 'dark' })).toBe('[data-mode="dark"]')
     })
     it('compound when name + mode', () => {
-        expect(themeSelector({ name: 'brand-a', mode: 'dark' })).toBe('[data-theme="brand-a"][data-mode="dark"]')
+        expect(themeSelector({ name: 'brand-a', mode: 'dark' })).toBe(':root:root[data-theme="brand-a"][data-mode="dark"], [data-theme="brand-a"][data-mode="dark"]')
     })
     it('mode "auto" is not scoped', () => {
-        expect(themeSelector({ name: 'brand-a', mode: 'auto' })).toBe('[data-theme="brand-a"]')
+        expect(themeSelector({ name: 'brand-a', mode: 'auto' })).toBe(':root:root[data-theme="brand-a"], [data-theme="brand-a"]')
     })
 })
 
 describe('themeToCss — serialise to a CSS rule', () => {
     it('emits a selector block with declarations', () => {
         const css = themeToCss({ name: 'brand-a', cssVars: { '--origam-radius---md': '0.5rem' } })
+        expect(css).toContain(':root:root[data-theme="brand-a"]')
         expect(css).toContain('[data-theme="brand-a"] {')
         expect(css).toContain('  --origam-radius---md: 0.5rem;')
         expect(css.trimEnd().endsWith('}')).toBe(true)
@@ -162,7 +176,7 @@ describe('applyTheme — runtime injection', () => {
         expect(id).toBe('origam-theme-brand-a')
         const style = document.getElementById('origam-theme-brand-a')
         expect(style).not.toBeNull()
-        expect(style!.textContent).toContain('[data-theme="brand-a"]')
+        expect(style!.textContent).toContain(':root:root[data-theme="brand-a"]')
         expect(style!.textContent).toContain('--origam-radius---md: 0.5rem;')
     })
 
@@ -190,8 +204,8 @@ describe('applyTheme — runtime injection', () => {
         expect(idLight).toBe('origam-theme-brand-a-light')
         expect(idDark).toBe('origam-theme-brand-a-dark')
         // Both blocks coexist — the dark one did not overwrite the light one.
-        expect(document.getElementById('origam-theme-brand-a-light')!.textContent).toContain('[data-theme="brand-a"][data-mode="light"]')
-        expect(document.getElementById('origam-theme-brand-a-dark')!.textContent).toContain('[data-theme="brand-a"][data-mode="dark"]')
+        expect(document.getElementById('origam-theme-brand-a-light')!.textContent).toContain(':root:root[data-theme="brand-a"][data-mode="light"]')
+        expect(document.getElementById('origam-theme-brand-a-dark')!.textContent).toContain(':root:root[data-theme="brand-a"][data-mode="dark"]')
     })
 })
 

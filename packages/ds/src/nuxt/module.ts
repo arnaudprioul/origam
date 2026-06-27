@@ -89,13 +89,20 @@ export default defineNuxtModule<IOrigamNuxtModuleOptions>({
         const autoImport = options.autoImport ?? DEFAULTS.autoImport
         const includeUtilities = options.includeUtilities ?? DEFAULTS.includeUtilities
 
-        // ADR-004: themes are installed as runtime OBJECTS, not pre-generated
-        // CSS files and not preset names. We only load the theme-INVARIANT base
-        // sheets (primitive + utilities) as CSS; the per-brand blocks are
-        // injected at runtime by the plugins via `createOrigam({ themes })`.
+        // The base token sheets carry the FULL --origam-* surface (primitive +
+        // semantic + component). Component variables reference the semantic tier
+        // (`var(--origam-color__…)`), so a runtime brand theme that overrides a
+        // semantic/scale token via `vars` cascades to every component. Load them
+        // as CSS here; the per-brand `vars` / default-props blocks are injected
+        // on top at runtime by the plugins via `createOrigam({ themes })`.
         nuxt.options.css = nuxt.options.css || []
         if (!nuxt.options.css.includes('origam/tokens/css/primitive')) {
             nuxt.options.css.unshift('origam/tokens/css/primitive')
+        }
+        for (const sheet of ['origam/tokens/css/light', 'origam/tokens/css/dark']) {
+            if (!nuxt.options.css.includes(sheet)) {
+                nuxt.options.css.push(sheet)
+            }
         }
         if (includeUtilities && !nuxt.options.css.includes('origam/tokens/css/utilities')) {
             nuxt.options.css.push('origam/tokens/css/utilities')

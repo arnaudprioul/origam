@@ -38,7 +38,7 @@ describe('createOrigam({ themes }) — plural install', () => {
         expect(document.getElementById('origam-theme-sobre-dark')).not.toBeNull()
         expect(document.getElementById('origam-theme-geek-dark')).not.toBeNull()
         expect(document.getElementById('origam-theme-sobre-dark')!.textContent)
-            .toContain('[data-theme="sobre"][data-mode="dark"]')
+            .toContain(':root:root[data-theme="sobre"][data-mode="dark"]')
     })
 
     it('provides the distinct installed brands, read via useInstalledThemes()', () => {
