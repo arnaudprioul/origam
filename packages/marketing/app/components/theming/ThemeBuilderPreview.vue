@@ -74,7 +74,7 @@ const modeLabel = (mode: TEditMode): string =>
                 mandatory
                 divided
                 color="primary"
-                density="compact"
+                size="small"
                 class="tb-preview__mode-toggle"
                 :aria-label="t('theming.mode.label', 'Preview mode')"
                 data-cy="theming-mode-toggle"
@@ -82,8 +82,6 @@ const modeLabel = (mode: TEditMode): string =>
             >
                 <origam-btn
                     value="light"
-                    variant="outlined"
-                    size="small"
                     prepend-icon="mdi-weather-sunny"
                     data-cy="theming-mode-light"
                 >
@@ -91,8 +89,6 @@ const modeLabel = (mode: TEditMode): string =>
                 </origam-btn>
                 <origam-btn
                     value="dark"
-                    variant="outlined"
-                    size="small"
                     prepend-icon="mdi-weather-night"
                     data-cy="theming-mode-dark"
                 >
@@ -220,10 +216,7 @@ const modeLabel = (mode: TEditMode): string =>
     }
 
     &__mode-toggle {
-        display: inline-flex;
-        align-items: center;
-        gap: var(--origam-spacing-1, 0.25rem);
-        flex: 0 0 auto;
+
     }
 
     &__split-btn {

@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useTheme } from 'origam/composables'
 import { useT } from '~/composables/useT'
 import {
-    THEMES_GRID_COLUMNS,
-    THEMES_TILE_RADIUS,
     THEMES_TOOLING_TEXT,
     THEME_CHIPS,
     THEME_PREVIEW_TILES
@@ -12,17 +9,6 @@ import {
 
 const { t } = useT()
 const { theme, setTheme } = useTheme()
-
-const tileStyle = computed(() => (tile: typeof THEME_PREVIEW_TILES[number]) => {
-    const vars: Record<string, string> = {}
-    if (tile.surfaceColor) vars['--themes-tile--surface'] = tile.surfaceColor
-    if (tile.btnBgColor) vars['--themes-tile--btn-bg'] = tile.btnBgColor
-    if (tile.barColors) {
-        vars['--themes-tile--bar-dark'] = tile.barColors[0]
-        vars['--themes-tile--bar-light'] = tile.barColors[1]
-    }
-    return vars
-})
 </script>
 
 <template>
@@ -31,7 +17,7 @@ const tileStyle = computed(() => (tile: typeof THEME_PREVIEW_TILES[number]) => {
         aria-labelledby="themes-title"
     >
         <origam-grid
-            :columns="THEMES_GRID_COLUMNS"
+            columns="repeat(auto-fit, minmax(320px, 1fr))"
             gap="xl"
             align-items="center"
             class="home-themes__grid"
@@ -57,27 +43,29 @@ const tileStyle = computed(() => (tile: typeof THEME_PREVIEW_TILES[number]) => {
                     {{ t('home.themes.subtitle', 'DTCG-compliant design tokens, multi-theme out of the box. Switch between light, dark or your custom brand at runtime — zero remount, zero flicker.') }}
                 </p>
 
-                <ul
+                <origam-chip-group
                     class="home-themes__chips"
                     :aria-label="t('a11y.themes_chips_list', 'Available themes')"
                 >
-                    <li
+                    <template #default>
+                      <div
                         v-for="chip in THEME_CHIPS"
                         :key="chip.key"
                         class="home-themes__chip-item"
-                    >
-                        <button
-                            type="button"
-                            class="home-themes__chip"
-                            :aria-pressed="chip.key === theme"
-                            :data-active="chip.key === theme"
-                            :data-cy="`themes-chip-${chip.key}`"
-                            @click="setTheme(chip.key)"
                         >
-                            {{ t(chip.labelKey, chip.labelFallback) }}
-                        </button>
-                    </li>
-                </ul>
+                          <origam-chip
+                              type="button"
+                              class="home-themes__chip"
+                              :aria-pressed="chip.key === theme"
+                              :data-active="chip.key === theme"
+                              :data-cy="`themes-chip-${chip.key}`"
+                              @click="setTheme(chip.key)"
+                          >
+                              {{ t(chip.labelKey, chip.labelFallback) }}
+                          </origam-chip>
+                      </div>
+                    </template>
+                </origam-chip-group>
 
                 <p
                     class="home-themes__tooling"
@@ -118,12 +106,11 @@ const tileStyle = computed(() => (tile: typeof THEME_PREVIEW_TILES[number]) => {
                         >
                             <origam-sheet
                                 :data-cy="`themes-tile-surface-${tile.key}`"
-                                :rounded="THEMES_TILE_RADIUS"
+                                rounded="lg"
                                 tag="article"
                                 border
                                 border-color="var(--origam-color__border---ghost)"
                                 class="home-themes__preview-tile"
-                                :style="tileStyle(tile)"
                             >
                                 <figure class="home-themes__preview-figure">
                                     <figcaption class="home-themes__preview-label">
@@ -143,11 +130,6 @@ const tileStyle = computed(() => (tile: typeof THEME_PREVIEW_TILES[number]) => {
                                             color="primary"
                                             size="small"
                                             class="home-themes__preview-btn"
-                                            :style="tile.btnBgColor ? {
-                                                '--origam-btn---background-color': tile.btnBgColor,
-                                                '--origam-btn--hover---background-color': tile.btnBgColor,
-                                                '--origam-btn--active---background-color': tile.btnBgColor
-                                            } : {}"
                                             data-cy="themes-tile-button"
                                         >
                                             {{ t('home.themes.preview_button', 'Button') }}
@@ -282,7 +264,7 @@ const tileStyle = computed(() => (tile: typeof THEME_PREVIEW_TILES[number]) => {
     &__preview-tile {
         padding: var(--origam-space---4, 1rem);
         overflow: hidden;
-        background-color: var(--themes-tile--surface, var(--origam-color__surface---default));
+        background-color: var(--origam-color__surface---default);
     }
 
     &__preview-figure {
@@ -310,7 +292,7 @@ const tileStyle = computed(() => (tile: typeof THEME_PREVIEW_TILES[number]) => {
         display: block;
         height: 10px;
         border-radius: var(--origam-radius---sm, 4px);
-        background-color: var(--themes-tile--bar-dark, var(--origam-color__neutral---300, #d4d4d4));
+        background-color: var(--origam-color__neutral---300, #d4d4d4);
 
         &--long {
             width: 100%;
@@ -318,7 +300,7 @@ const tileStyle = computed(() => (tile: typeof THEME_PREVIEW_TILES[number]) => {
 
         &--short {
             width: 72%;
-            background-color: var(--themes-tile--bar-light, var(--origam-color__neutral---200, #e5e5e5));
+            background-color: var(--origam-color__neutral---200, #e5e5e5);
         }
     }
 

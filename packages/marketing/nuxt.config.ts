@@ -4,6 +4,13 @@ import { fileURLToPath } from 'node:url'
 
 import { MARKETING_DEFAULTS } from './app/consts/marketing.const'
 import { I18N_LOCALES, I18N_COOKIE_KEY } from './app/consts/i18n.const'
+import { geekThemes } from './app/themes/geek.theme'
+import { glassThemes } from './app/themes/glass.theme'
+import { cartoonThemes } from './app/themes/cartoon.theme'
+import { editorialThemes } from './app/themes/editorial.theme'
+import { materialThemes } from './app/themes/material.theme'
+import { ecomThemes } from './app/themes/ecom.theme'
+import { appleThemes } from './app/themes/apple.theme'
 
 // Single source of truth for the displayed version: the published `origam`
 // package version. Read at build time so badges/translations never need a
@@ -30,8 +37,22 @@ export default defineNuxtConfig({
     ],
 
     origam: {
-        defaultTheme: 'geek',
-        defaultMode: 'light'
+        defaultTheme: 'origam',
+        defaultMode: 'light',
+        // Brand themes authored as clean IOrigamTheme objects (semantic vars,
+        // light + dark). Component default props are inherited from the origam
+        // base theme (sobre identity, name-less → applies to every brand). The
+        // legacy per-brand CSS sheets still carry bespoke marketing selectors
+        // (.home-* hacks) — to be removed in the themes-showcase cleanup.
+        themes: [
+            ...geekThemes,
+            ...glassThemes,
+            ...cartoonThemes,
+            ...editorialThemes,
+            ...materialThemes,
+            ...ecomThemes,
+            ...appleThemes
+        ]
     },
 
     ogImage: {
@@ -47,19 +68,8 @@ export default defineNuxtConfig({
     },
 
     css: [
-        // DS base identity sheets — light/dark neutral DS root (no brand).
-        // The origam/nuxt module injects the active token block at runtime via
-        // createOrigam({ themes }). These static sheets provide the DS primitive
-        // layer (spaces, radii, shadows, feedback colours) as the neutral base.
         'origam/tokens/css/dark',
-        // Marketing brand themes — autonomous CSS layers, self-contained.
-        // ADR-004: brand themes live in packages/marketing/, not in the DS.
-        // Each file declares :root:root[data-theme="X"] (specificity 0,3,0)
-        // to beat the DS identity root (0,1,0). Order matters: shared geometry
-        // first, then individual brand files. All stay inert until data-theme
-        // is set on <html>.
         '~/assets/css/themes/_shared.css',
-        '~/assets/css/themes/sobre.css',
         '~/assets/css/themes/geek.css',
         '~/assets/css/themes/glass.css',
         '~/assets/css/themes/cartoon.css',
