@@ -152,13 +152,13 @@ useSeoMeta({
                         class="interface-hero__breadcrumb"
                         :aria-label="t('interfaces.detail.breadcrumb_label', 'Page location')"
                     >
-                        <NuxtLink
+                        <nuxt-link
                             to="/interfaces"
                             class="interface-hero__breadcrumb-link"
                             data-cy="interface-breadcrumb-catalog"
                         >
                             {{ t('interfaces.detail.breadcrumb_catalog', 'Interfaces') }}
-                        </NuxtLink>
+                        </nuxt-link>
 
                         <span
                             class="interface-hero__breadcrumb-sep"
@@ -336,7 +336,7 @@ useSeoMeta({
                                     :key="parent.slug"
                                     class="interface-extends__item"
                                 >
-                                    <NuxtLink
+                                    <nuxt-link
                                         :to="`/interfaces/${parent.slug}`"
                                         class="interface-extends__link"
                                         :data-cy="`interface-extends-${parent.slug}`"
@@ -350,7 +350,7 @@ useSeoMeta({
                                         >
                                             {{ parent.name }}
                                         </origam-chip>
-                                    </NuxtLink>
+                                    </nuxt-link>
                                 </li>
                             </ul>
                         </section>
@@ -463,7 +463,7 @@ useSeoMeta({
                                     tag="li"
                                     class="interface-used-by__item"
                                 >
-                                    <NuxtLink
+                                    <nuxt-link
                                         :to="ref.kind === 'composable' ? `/composables/${ref.slug}` : `/components/${ref.slug}`"
                                         class="interface-used-by__link"
                                         :aria-label="`${ref.name} — ${ref.kind}`"
@@ -501,7 +501,7 @@ useSeoMeta({
                                                 </div>
                                             </template>
                                         </origam-card>
-                                    </NuxtLink>
+                                    </nuxt-link>
                                 </origam-grid-item>
                             </origam-grid>
                         </section>

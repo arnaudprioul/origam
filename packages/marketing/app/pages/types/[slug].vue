@@ -156,13 +156,13 @@ useSeoMeta({
                         class="type-hero__breadcrumb"
                         :aria-label="t('types.detail.breadcrumb_label', 'Page location')"
                     >
-                        <NuxtLink
+                        <nuxt-link
                             to="/types"
                             class="type-hero__breadcrumb-link"
                             data-cy="type-breadcrumb-catalog"
                         >
                             {{ t('types.detail.breadcrumb_catalog', 'Types') }}
-                        </NuxtLink>
+                        </nuxt-link>
 
                         <span
                             class="type-hero__breadcrumb-sep"
@@ -430,7 +430,7 @@ useSeoMeta({
                                     tag="li"
                                     class="type-used-by__item"
                                 >
-                                    <NuxtLink
+                                    <nuxt-link
                                         :to="`/components/${ref.slug}`"
                                         class="type-used-by__link"
                                         :aria-label="`${ref.name} — prop: ${ref.propName}`"
@@ -467,7 +467,7 @@ useSeoMeta({
                                                 </div>
                                             </template>
                                         </origam-card>
-                                    </NuxtLink>
+                                    </nuxt-link>
                                 </origam-grid-item>
                             </origam-grid>
                         </section>

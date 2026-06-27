@@ -109,7 +109,7 @@
 
     <origam-app-bar class="site-appbar">
       <template #prepend>
-        <NuxtLink
+        <nuxt-link
           to="/"
           class="brand"
           :aria-label="brandName"
@@ -129,7 +129,7 @@
             color="primary"
             border
           >{{ versionTag }}</origam-chip>
-        </NuxtLink>
+        </nuxt-link>
       </template>
 
       <template #content>
@@ -319,7 +319,7 @@
         tag="div"
       >
         <div class="site-footer__brand">
-          <NuxtLink
+          <nuxt-link
             to="/"
             class="brand"
             :aria-label="brandName"
@@ -332,7 +332,7 @@
               height="26"
             >
             <span class="brand__name">{{ brandName }}</span>
-          </NuxtLink>
+          </nuxt-link>
           <p class="site-footer__tagline">{{ t('footer.tagline', 'The Vue 3 design system that just works.') }}</p>
         </div>
 
@@ -367,13 +367,13 @@
               >
                 {{ t(link.i18nKey, link.i18nFallback) }}
               </a>
-              <NuxtLink
+              <nuxt-link
                 v-else
                 :to="link.href"
                 class="site-footer__link"
               >
                 {{ t(link.i18nKey, link.i18nFallback) }}
-              </NuxtLink>
+              </nuxt-link>
             </origam-grid-item>
           </origam-grid>
         </nav>

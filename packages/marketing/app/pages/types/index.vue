@@ -204,7 +204,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
                             tag="li"
                             class="types-catalog-item"
                         >
-                            <NuxtLink
+                            <nuxt-link
                                 :to="`/types/${entry.slug}`"
                                 class="types-catalog-card__link"
                                 :aria-label="`${entry.name} — ${t(entry.descriptionKey, entry.descriptionFallback)}`"
@@ -251,7 +251,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
                                         </div>
                                     </template>
                                 </origam-card>
-                            </NuxtLink>
+                            </nuxt-link>
                         </origam-grid-item>
                     </origam-grid>
                 </div>

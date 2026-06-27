@@ -154,13 +154,13 @@ useSeoMeta({
                         class="directive-hero__breadcrumb"
                         :aria-label="t('directives.detail.breadcrumb_label', 'Page location')"
                     >
-                        <NuxtLink
+                        <nuxt-link
                             to="/directives"
                             class="directive-hero__breadcrumb-link"
                             data-cy="directive-breadcrumb-catalog"
                         >
                             {{ t('directives.detail.breadcrumb_catalog', 'Directives') }}
-                        </NuxtLink>
+                        </nuxt-link>
 
                         <span
                             class="directive-hero__breadcrumb-sep"
@@ -520,7 +520,7 @@ useSeoMeta({
                                     tag="li"
                                     class="directive-related__item"
                                 >
-                                    <NuxtLink
+                                    <nuxt-link
                                         :to="item.kind === 'directive' ? `/directives/${item.slug}` : `/components/${item.slug}`"
                                         class="directive-related__link"
                                         :aria-label="`${item.name} — ${t(item.descriptionKey, item.descriptionFallback)}`"
@@ -556,7 +556,7 @@ useSeoMeta({
                                                 </div>
                                             </template>
                                         </origam-card>
-                                    </NuxtLink>
+                                    </nuxt-link>
                                 </origam-grid-item>
                             </origam-grid>
                         </section>

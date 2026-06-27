@@ -32,7 +32,7 @@ const hasUsedBy   = computed(() => (displayDoc.value?.usedBy?.length ?? 0) > 0)
 const usedByEntries = computed(() =>
     (displayDoc.value?.usedBy ?? []).map(ref => ({
         name: ref.name,
-        tag: ref.slug ? 'NuxtLink' : 'div',
+        tag: ref.slug ? 'nuxt-link' : 'div',
         to: ref.slug ? `/components/${ref.slug}` : undefined,
         linkable: !!ref.slug
     }))
@@ -160,13 +160,13 @@ useSeoMeta({
                         class="const-hero__breadcrumb"
                         :aria-label="t('consts.detail.breadcrumb_label', 'Page location')"
                     >
-                        <NuxtLink
+                        <nuxt-link
                             to="/consts"
                             class="const-hero__breadcrumb-link"
                             data-cy="const-breadcrumb-catalog"
                         >
                             {{ t('consts.detail.breadcrumb_catalog', 'Constants') }}
-                        </NuxtLink>
+                        </nuxt-link>
 
                         <span
                             class="const-hero__breadcrumb-sep"

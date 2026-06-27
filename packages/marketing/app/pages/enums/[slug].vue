@@ -150,13 +150,13 @@ useSeoMeta({
                         class="enum-hero__breadcrumb"
                         :aria-label="t('enums.detail.breadcrumb_label', 'Page location')"
                     >
-                        <NuxtLink
+                        <nuxt-link
                             to="/enums"
                             class="enum-hero__breadcrumb-link"
                             data-cy="enum-breadcrumb-catalog"
                         >
                             {{ t('enums.detail.breadcrumb_catalog', 'Enums') }}
-                        </NuxtLink>
+                        </nuxt-link>
 
                         <span
                             class="enum-hero__breadcrumb-sep"
@@ -422,7 +422,7 @@ useSeoMeta({
                                     tag="li"
                                     class="enum-used-by__item"
                                 >
-                                    <NuxtLink
+                                    <nuxt-link
                                         :to="`/components/${ref.slug}`"
                                         class="enum-used-by__link"
                                         :aria-label="`${ref.name} — prop: ${ref.propName}`"
@@ -459,7 +459,7 @@ useSeoMeta({
                                                 </div>
                                             </template>
                                         </origam-card>
-                                    </NuxtLink>
+                                    </nuxt-link>
                                 </origam-grid-item>
                             </origam-grid>
                         </section>

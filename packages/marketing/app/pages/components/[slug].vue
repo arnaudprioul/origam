@@ -239,13 +239,13 @@ useSeoMeta({
                         class="component-hero__breadcrumb"
                         :aria-label="t('components.detail.breadcrumb_label', 'Page location')"
                     >
-                        <NuxtLink
+                        <nuxt-link
                             to="/components"
                             class="component-hero__breadcrumb-link"
                             data-cy="component-breadcrumb-catalog"
                         >
                             {{ t('components.detail.breadcrumb_catalog', 'Components') }}
-                        </NuxtLink>
+                        </nuxt-link>
 
                         <span
                             class="component-hero__breadcrumb-sep"
@@ -253,13 +253,13 @@ useSeoMeta({
                         >›</span>
 
                         <template v-if="parentEntry">
-                            <NuxtLink
+                            <nuxt-link
                                 :to="`/components/${parentEntry.slug}`"
                                 class="component-hero__breadcrumb-link"
                                 :data-cy="`component-breadcrumb-parent-${parentEntry.slug}`"
                             >
                                 {{ parentEntry.name }}
-                            </NuxtLink>
+                            </nuxt-link>
                             <span
                                 class="component-hero__breadcrumb-sep"
                                 aria-hidden="true"
@@ -391,8 +391,8 @@ useSeoMeta({
                                 class="component-hero__preview-variant"
                                 :data-cy="`preview-variant-${variant.label.replace(/\s+/g, '-')}`"
                             >
-                                <ClientOnly>
-                                    <NuxtErrorBoundary>
+                                <client-only>
+                                    <nuxt-error-boundary>
                                         <component
                                             :is="`origam-${slug}`"
                                             v-bind="variant.props"
@@ -405,8 +405,8 @@ useSeoMeta({
                                                 {{ t('components.detail.preview.unavailable', 'Live preview unavailable for this component.') }}
                                             </p>
                                         </template>
-                                    </NuxtErrorBoundary>
-                                </ClientOnly>
+                                    </nuxt-error-boundary>
+                                </client-only>
                                 <span class="component-hero__preview-variant-label">{{ variant.label }}</span>
                             </div>
                         </div>
@@ -584,7 +584,7 @@ useSeoMeta({
                                             {{ t('components.detail.props.required', 'required') }}
                                         </origam-chip>
 
-                                        <NuxtLink
+                                        <nuxt-link
                                             v-if="prop.type.kind !== 'primitive' && prop.type.slug"
                                             :to="`/types/${prop.type.slug}`"
                                             class="prop-list__type-link"
@@ -597,7 +597,7 @@ useSeoMeta({
                                             >
                                                 {{ prop.type.label }}
                                             </origam-chip>
-                                        </NuxtLink>
+                                        </nuxt-link>
                                         <origam-chip
                                             v-else
                                             size="x-small"
@@ -709,7 +709,7 @@ useSeoMeta({
                                     <dt class="prop-list__dt">
                                         <span class="prop-list__name-mono">@{{ emit.event }}</span>
 
-                                        <NuxtLink
+                                        <nuxt-link
                                             v-if="emit.payload.kind !== 'primitive' && emit.payload.slug"
                                             :to="`/types/${emit.payload.slug}`"
                                             class="prop-list__type-link"
@@ -722,7 +722,7 @@ useSeoMeta({
                                             >
                                                 {{ emit.payload.label }}
                                             </origam-chip>
-                                        </NuxtLink>
+                                        </nuxt-link>
                                         <origam-chip
                                             v-else
                                             size="x-small"
@@ -1193,8 +1193,8 @@ useSeoMeta({
                                         aria-live="polite"
                                         data-cy="playground-preview"
                                     >
-                                        <ClientOnly>
-                                            <NuxtErrorBoundary>
+                                        <client-only>
+                                            <nuxt-error-boundary>
                                                 <component
                                                     :is="`origam-${slug}`"
                                                     v-bind="Object.fromEntries(
@@ -1209,8 +1209,8 @@ useSeoMeta({
                                                         {{ t('components.detail.preview.unavailable', 'Live preview unavailable for this component.') }}
                                                     </p>
                                                 </template>
-                                            </NuxtErrorBoundary>
-                                        </ClientOnly>
+                                            </nuxt-error-boundary>
+                                        </client-only>
                                     </div>
 
                                 </div>
@@ -1310,7 +1310,7 @@ useSeoMeta({
                                     tag="li"
                                     class="component-family__item"
                                 >
-                                    <NuxtLink
+                                    <nuxt-link
                                         :to="`/components/${member.slug}`"
                                         class="component-family__link"
                                         :aria-label="`${member.name} — ${t(member.descriptionKey, member.descriptionFallback)}`"
@@ -1343,7 +1343,7 @@ useSeoMeta({
                                                 </div>
                                             </template>
                                         </origam-card>
-                                    </NuxtLink>
+                                    </nuxt-link>
                                 </origam-grid-item>
                             </origam-grid>
                         </section>
@@ -1384,7 +1384,7 @@ useSeoMeta({
                                     tag="li"
                                     class="component-related__item"
                                 >
-                                    <NuxtLink
+                                    <nuxt-link
                                         :to="item.kind === 'directive' ? `/directives#${item.slug}` : `/components/${item.slug}`"
                                         class="component-related__link"
                                         :aria-label="`${item.name} — ${t(item.descriptionKey, item.descriptionFallback)}`"
@@ -1419,7 +1419,7 @@ useSeoMeta({
                                                 </div>
                                             </template>
                                         </origam-card>
-                                    </NuxtLink>
+                                    </nuxt-link>
                                 </origam-grid-item>
                             </origam-grid>
                         </section>

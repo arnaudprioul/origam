@@ -294,7 +294,7 @@
     </origam-dialog>
 
     <div class="theming__body">
-      <ThemeBuilderNav
+      <theme-builder-nav
         :categories="nav"
         :active-slug="activeSlug"
         class="theming__col theming__col--nav"
@@ -305,7 +305,7 @@
         v-if="activeEntry"
         class="theming__col theming__col--center"
       >
-        <ThemeBuilderPreview
+        <theme-builder-preview
           :entry="activeEntry"
           :active-mode="state.activeMode"
           :split="split"
@@ -318,7 +318,7 @@
         />
       </div>
 
-      <ThemeBuilderControls
+      <theme-builder-controls
         v-if="activeEntry"
         :entry="activeEntry"
         :active-mode="state.activeMode"
