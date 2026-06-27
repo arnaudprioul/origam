@@ -137,9 +137,12 @@ describe('OrigamChip — visual modifiers', () => {
 // ---------------------------------------------------------------------------
 
 describe('OrigamChip — size', () => {
-    it('applies origam-chip--size-default class by default', () => {
+    it('defaults to size "small" from the origam theme (components[\'origam-chip\'].size)', () => {
+        // The default origam theme sets `'origam-chip': { size: 'small' }` (derived
+        // from the marketing's common chip usage), so a chip with no explicit size
+        // inherits 'small' via useDefaults — proving the theme's component defaults apply.
         const wrapper = mountChip()
-        expect(wrapper.find('.origam-chip').classes().some(c => c.includes('size-default'))).toBe(true)
+        expect(wrapper.find('.origam-chip').classes().some(c => c.includes('size-small'))).toBe(true)
     })
 
     it('applies origam-chip--size-small when size="small"', () => {

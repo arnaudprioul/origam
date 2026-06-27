@@ -111,10 +111,18 @@ export function themeSelector (theme: IOrigamTheme): string {
 
     if (!hasName && !hasMode) return ':root'
 
-    let selector = ''
-    if (hasName) selector += `[data-theme="${theme.name}"]`
-    if (hasMode) selector += `[data-mode="${theme.mode}"]`
-    return selector
+    // A mode-only theme (the DS dark baseline) keeps the plain attribute selector.
+    if (!hasName) return `[data-mode="${theme.mode}"]`
+
+    // Named brand themes emit TWO selectors:
+    //   - `:root:root[data-theme=…]` (specificity 0,3,0) → wins at the document
+    //     root over consumer base layers that use the `:root:root { … }` boosting
+    //     trick (e.g. marketing `_shared.css`), so full-page brand switching works.
+    //   - `[data-theme=…]` (0,1,0) → applies inside a SUB-TREE
+    //     (`<OrigamThemeProvider theme>`), where the `:root:root` form can't match
+    //     because the wrapper element isn't the document root.
+    const attrs = `[data-theme="${theme.name}"]${hasMode ? `[data-mode="${theme.mode}"]` : ''}`
+    return `:root:root${attrs}, ${attrs}`
 }
 
 /**

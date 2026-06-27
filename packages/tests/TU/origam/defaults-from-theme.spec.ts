@@ -30,12 +30,12 @@ const FakeBtn = defineComponent({
     }
 })
 
-describe('createOrigam — component defaults from theme.component', () => {
-    it('a theme with component.{origam-btn}.color resolves an un-passed prop', () => {
+describe('createOrigam — component defaults from theme.components', () => {
+    it('a theme with components.{origam-btn}.color resolves an un-passed prop', () => {
         const theme: IOrigamTheme = {
             name: 'brandx',
             mode: 'light',
-            component: { 'origam-btn': { color: 'primary' } },
+            components: { 'origam-btn': { color: 'primary' } },
             vars: {}
         }
         const origam = createOrigam({ themes: [theme] })
@@ -49,10 +49,10 @@ describe('createOrigam — component defaults from theme.component', () => {
 
     it('reassigning _defaultsRef.value (theme switch) flips the resolved default reactively', async () => {
         const themeA: IOrigamTheme = {
-            name: 'a', mode: 'light', component: { 'origam-btn': { color: 'primary' } }, vars: {}
+            name: 'a', mode: 'light', components: { 'origam-btn': { color: 'primary' } }, vars: {}
         }
         const themeB: IOrigamTheme = {
-            name: 'b', mode: 'light', component: { 'origam-btn': { color: 'danger' } }, vars: {}
+            name: 'b', mode: 'light', components: { 'origam-btn': { color: 'danger' } }, vars: {}
         }
         const origam = createOrigam({ themes: [themeA, themeB] })
         origam._defaultsRef.value = origam._activeDefaultsFor('a', 'light')
@@ -68,7 +68,7 @@ describe('createOrigam — component defaults from theme.component', () => {
 
     it('a prop explicitly passed by the parent always wins over the theme default', () => {
         const theme: IOrigamTheme = {
-            name: 'a', mode: 'light', component: { 'origam-btn': { color: 'primary' } }, vars: {}
+            name: 'a', mode: 'light', components: { 'origam-btn': { color: 'primary' } }, vars: {}
         }
         const origam = createOrigam({ themes: [theme] })
         origam._defaultsRef.value = origam._activeDefaultsFor('a', 'light')
@@ -95,9 +95,9 @@ describe('createOrigam — component defaults from theme.component', () => {
 
 describe('activeDefaultsFor — collapse rules', () => {
     const themes: IOrigamTheme[] = [
-        { name: 'a', mode: 'light', component: { global: { density: 'compact' }, 'origam-btn': { color: 'primary' } }, vars: {} },
-        { name: 'a', mode: 'dark', component: { 'origam-btn': { color: 'secondary' } }, vars: {} },
-        { name: 'b', mode: 'light', component: { 'origam-btn': { color: 'danger' } }, vars: {} }
+        { name: 'a', mode: 'light', components: { global: { density: 'compact' }, 'origam-btn': { color: 'primary' } }, vars: {} },
+        { name: 'a', mode: 'dark', components: { 'origam-btn': { color: 'secondary' } }, vars: {} },
+        { name: 'b', mode: 'light', components: { 'origam-btn': { color: 'danger' } }, vars: {} }
     ]
 
     it('matches name + mode and ignores other brands/modes', () => {
@@ -115,7 +115,7 @@ describe('activeDefaultsFor — collapse rules', () => {
 
     it('a mode-agnostic theme (no mode) matches any active mode', () => {
         const agnostic: IOrigamTheme[] = [
-            { name: 'c', component: { 'origam-btn': { rounded: 0 } }, vars: {} }
+            { name: 'c', components: { 'origam-btn': { rounded: 0 } }, vars: {} }
         ]
         expect(activeDefaultsFor(agnostic, 'c', 'dark')).toEqual({ 'origam-btn': { rounded: 0 } })
         expect(activeDefaultsFor(agnostic, 'c', 'light')).toEqual({ 'origam-btn': { rounded: 0 } })

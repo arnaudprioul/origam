@@ -174,7 +174,7 @@ export function createOrigam (origam: IOrigamOptions = {}) {
 }
 
 /**
- * Collapse the per-component DEFAULT PROPS (`theme.component`) of the themes
+ * Collapse the per-component DEFAULT PROPS (`theme.components`) of the themes
  * matching the ACTIVE brand×mode into a single `IDefault`. A theme matches when
  * its `name` equals `brand` AND its `mode` is compatible with the active `mode`:
  *   - the theme is mode-agnostic (`mode` unset or `'auto'`), OR
@@ -193,14 +193,14 @@ export function activeDefaultsFor (
 ): IDefault {
     let merged: IDefault = {}
     for (const theme of themes) {
-        if (!theme.component) continue
+        if (!theme.components) continue
         // A name-less theme is the ROOT baseline (`origam`) — its component
         // defaults ALWAYS apply; the active brand is layered on top.
         const brandMatches = !theme.name || theme.name === brand
         const themeModeAgnostic = theme.mode === undefined || theme.mode === 'auto'
         const modeMatches = themeModeAgnostic || mode === undefined || theme.mode === mode
         if (brandMatches && modeMatches) {
-            merged = mergeDeep(merged, theme.component) as IDefault
+            merged = mergeDeep(merged, theme.components) as IDefault
         }
     }
     return merged
