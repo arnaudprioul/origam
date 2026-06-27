@@ -13,37 +13,37 @@ useSeoMeta({
 
 <template>
     <article class="home">
-        <HomeHero
+        <home-hero
             id="hero"
             data-cy="section-hero"
         />
 
-        <HomeKpis
+        <home-kpis
             id="kpis"
             data-cy="section-kpis"
         />
 
-        <HomeFeatures
+        <home-features
             id="features"
             data-cy="section-features"
         />
 
-        <HomePlayground
+        <home-playground
             id="playground"
             data-cy="section-playground"
         />
 
-        <HomeShowcase
+        <home-showcase
             id="showcase"
             data-cy="section-showcase"
         />
 
-        <HomeThemes
+        <home-themes
             id="themes"
             data-cy="section-themes"
         />
 
-        <HomeCta
+        <home-cta
             id="cta"
             data-cy="section-cta"
         />

@@ -152,13 +152,13 @@ useSeoMeta({
                         class="composable-hero__breadcrumb"
                         :aria-label="t('composables.detail.breadcrumb_label', 'Page location')"
                     >
-                        <NuxtLink
+                        <nuxt-link
                             to="/composables"
                             class="composable-hero__breadcrumb-link"
                             data-cy="composable-breadcrumb-catalog"
                         >
                             {{ t('composables.detail.breadcrumb_catalog', 'Composables') }}
-                        </NuxtLink>
+                        </nuxt-link>
 
                         <span
                             class="composable-hero__breadcrumb-sep"
@@ -607,7 +607,7 @@ useSeoMeta({
                                     tag="li"
                                     class="composable-related__item"
                                 >
-                                    <NuxtLink
+                                    <nuxt-link
                                         :to="`/composables/${relSlug}`"
                                         class="composable-related__link"
                                         :data-cy="`composable-related-card-${relSlug}`"
@@ -637,7 +637,7 @@ useSeoMeta({
                                                 </div>
                                             </template>
                                         </origam-card>
-                                    </NuxtLink>
+                                    </nuxt-link>
                                 </origam-grid-item>
                             </origam-grid>
                         </section>

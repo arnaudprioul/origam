@@ -123,7 +123,7 @@ useSeoMeta({
                                         :data-cy="`wireframe-preview-${layout.id}`"
                                         inert
                                     >
-                                        <ClientOnly>
+                                        <client-only>
                                             <template v-if="layout.id === 'dashboard'">
                                                 <div class="wf wf--dashboard">
                                                     <div class="wf__sidebar">
@@ -718,7 +718,7 @@ useSeoMeta({
                                                     </origam-card>
                                                 </div>
                                             </template>
-                                        </ClientOnly>
+                                        </client-only>
                                     </div>
 
                                     <footer class="wireframe-card__footer">

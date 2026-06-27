@@ -26,7 +26,7 @@ void store.setFiles({ 'App.vue': PLAYGROUND_REPL_SNIPPET }, 'App.vue').catch(() 
 </script>
 
 <template>
-    <Repl
+    <repl
         :store="store"
         :editor="CodeMirrorEditor"
         :show-compile-output="false"
