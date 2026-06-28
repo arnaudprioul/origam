@@ -46,6 +46,15 @@ top of the `error` preset).
 | `size`        | `'sm' \| 'md' \| 'lg'`                                         | `'md'`       | Drives icon size, font sizes, padding, gap.                            |
 | `align`       | `'center' \| 'left'`                                           | `'center'`   | Horizontal alignment of the stack.                                     |
 | `tag`         | `string`                                                       | `'div'`      | Root element tag.                                                      |
+| `fontFamily`  | `TFontFamily`                                                  | `undefined`  | Font family token applied to **both** the title and description (`sans` · `mono` · `serif`).        |
+| `fontSize`    | `TFontSize`                                                    | `undefined`  | Font size token applied to **both** surfaces. **Overrides the `size`-driven font-size** when set; `size` drives when unset. |
+| `fontWeight`  | `TFontWeight`                                                  | `undefined`  | Font weight token applied to both surfaces.                            |
+| `lineHeight`  | `TLineHeight`                                                  | `undefined`  | Line-height token applied to both surfaces.                            |
+
+> Typography props come from the shared `ITypographyProps` surface and act on
+> **both** text surfaces (title + description) at once. `letterSpacing` is part
+> of the surface but inert here — neither surface declares a `letter-spacing`
+> rule.
 
 ## Slots
 

@@ -24,6 +24,7 @@
 			<div
 					v-if="hasTitle"
 					class="origam-empty-state__title"
+					:style="titleTypographyStyles"
 			>
 				<slot name="title">{{ title }}</slot>
 			</div>
@@ -31,6 +32,7 @@
 			<div
 					v-if="hasDescription"
 					class="origam-empty-state__description"
+					:style="descriptionTypographyStyles"
 			>
 				<slot name="description">{{ description }}</slot>
 			</div>
@@ -56,6 +58,8 @@
 	} from 'vue'
 
 	import { OrigamIcon } from '../Icon'
+
+	import { useTypography } from '../../composables'
 
 	import { EMPTY_STATE_PRESET_CONFIG } from '../../consts/EmptyState/empty-state.const'
 
@@ -139,6 +143,19 @@
 	})
 
 	/*********************************************************
+	 * Typography
+	 *
+	 * @description
+	 * The shared `ITypographyProps` set drives BOTH text surfaces at
+	 * once: one `useTypography` call per BEM surface, each re-pointing the
+	 * matching `--origam-empty-state__{title|description}---*` variable.
+	 * `fontSize` overrides the size-driven font-size via the generic-first
+	 * read in the `font-size` declaration of each surface.
+	 ********************************************************/
+	const {typographyStyles: titleTypographyStyles} = useTypography(props, 'empty-state__title')
+	const {typographyStyles: descriptionTypographyStyles} = useTypography(props, 'empty-state__description')
+
+	/*********************************************************
 	 * Expose
 	 ********************************************************/
 	defineExpose({
@@ -194,7 +211,7 @@
 		color: var(--origam-empty-state---resolved-title-color);
 		font-family: var(--origam-empty-state__title---font-family, Inter, system-ui, sans-serif);
 		font-weight: var(--origam-empty-state__title---font-weight, 600);
-		font-size: var(--origam-empty-state---resolved-title-font-size);
+		font-size: var(--origam-empty-state__title---font-size, var(--origam-empty-state---resolved-title-font-size));
 		line-height: var(--origam-empty-state__title---line-height, 1.375);
 		margin: 0;
 	}
@@ -203,7 +220,7 @@
 		color: var(--origam-empty-state---resolved-description-color);
 		font-family: var(--origam-empty-state__description---font-family, Inter, system-ui, sans-serif);
 		font-weight: var(--origam-empty-state__description---font-weight, 400);
-		font-size: var(--origam-empty-state---resolved-description-font-size);
+		font-size: var(--origam-empty-state__description---font-size, var(--origam-empty-state---resolved-description-font-size));
 		line-height: var(--origam-empty-state__description---line-height, 1.625);
 		max-width: var(--origam-empty-state---resolved-max-width);
 		margin: 0;

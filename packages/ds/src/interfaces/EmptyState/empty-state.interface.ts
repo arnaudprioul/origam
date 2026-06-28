@@ -1,6 +1,7 @@
 import type {
     ICommonsComponentProps,
-    ITagProps
+    ITagProps,
+    ITypographyProps
 } from '../../interfaces'
 
 import type {
@@ -21,8 +22,15 @@ import type {
  * sides can be overridden via the `icon` and `iconColor` props for the
  * 5% case. Slots are provided to replace the icon (with an SVG / img),
  * title, description, or the entire layout for custom illustrations.
+ *
+ * Typography (`ITypographyProps`): `fontFamily` / `fontSize` / `fontWeight`
+ * / `lineHeight` apply to BOTH text surfaces (title + description) at once,
+ * each re-pointing the matching `--origam-empty-state__{title|description}---*`
+ * variable. `fontSize` overrides the size-driven font-size (generic-first).
+ * `letterSpacing` is inert here — neither text surface reads a
+ * `letter-spacing` rule.
  */
-export interface IEmptyStateProps extends ICommonsComponentProps, ITagProps {
+export interface IEmptyStateProps extends ICommonsComponentProps, ITagProps, ITypographyProps {
     /**
      * Visual preset. Bundles a default icon and intent — see
      * `EMPTY_STATE_PRESET_CONFIG`. The preset is the starting point;
