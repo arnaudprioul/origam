@@ -1,9 +1,10 @@
-// Unit tests for <OrigamTitle> — focus on the `weight`, `family`, `size`,
-// `lineHeight`, and `letterSpacing` typography props.
+// Unit tests for <OrigamTitle> — focus on the `fontWeight`, `fontFamily`,
+// `fontSize`, `lineHeight`, and `letterSpacing` typography props
+// (the shared ITypographyProps surface wired by useTypography).
 //
 // Each prop maps a font token key to an inline custom property so that a single
 // title can override its theme typography without touching CSS.
-// The `size` prop additionally overrides the density-driven font-size when set,
+// The `fontSize` prop additionally overrides the density-driven font-size when set,
 // and leaves density in control when absent.
 
 import { describe, expect, it, vi } from 'vitest'
@@ -33,62 +34,62 @@ function mountTitle (props: Record<string, unknown> = {}) {
     })
 }
 
-describe('OrigamTitle — weight prop', () => {
-    it('emits no font-weight override when weight is unset', () => {
+describe('OrigamTitle — fontWeight prop', () => {
+    it('emits no font-weight override when fontWeight is unset', () => {
         const style = mountTitle().find('.origam-title').attributes('style') || ''
         expect(style).not.toContain('--origam-title---font-weight')
     })
 
-    it('weight="black" sets the font-weight var to the black token (900)', () => {
-        const style = mountTitle({ weight: 'black' }).find('.origam-title').attributes('style') || ''
+    it('fontWeight="black" sets the font-weight var to the black token (900)', () => {
+        const style = mountTitle({ fontWeight: 'black' }).find('.origam-title').attributes('style') || ''
         expect(style).toContain('--origam-title---font-weight: var(--origam-font__weight---black)')
     })
 
-    it('weight="bold" sets the font-weight var to the bold token (700)', () => {
-        const style = mountTitle({ weight: 'bold' }).find('.origam-title').attributes('style') || ''
+    it('fontWeight="bold" sets the font-weight var to the bold token (700)', () => {
+        const style = mountTitle({ fontWeight: 'bold' }).find('.origam-title').attributes('style') || ''
         expect(style).toContain('--origam-title---font-weight: var(--origam-font__weight---bold)')
     })
 })
 
-describe('OrigamTitle — family prop', () => {
-    it('emits no font-family override when family is unset', () => {
+describe('OrigamTitle — fontFamily prop', () => {
+    it('emits no font-family override when fontFamily is unset', () => {
         const style = mountTitle().find('.origam-title').attributes('style') || ''
         expect(style).not.toContain('--origam-title---font-family')
     })
 
-    it('family="mono" sets the font-family var to the mono token', () => {
-        const style = mountTitle({ family: 'mono' }).find('.origam-title').attributes('style') || ''
+    it('fontFamily="mono" sets the font-family var to the mono token', () => {
+        const style = mountTitle({ fontFamily: 'mono' }).find('.origam-title').attributes('style') || ''
         expect(style).toContain('--origam-title---font-family: var(--origam-font__family---mono)')
     })
 
-    it('family="serif" sets the font-family var to the serif token', () => {
-        const style = mountTitle({ family: 'serif' }).find('.origam-title').attributes('style') || ''
+    it('fontFamily="serif" sets the font-family var to the serif token', () => {
+        const style = mountTitle({ fontFamily: 'serif' }).find('.origam-title').attributes('style') || ''
         expect(style).toContain('--origam-title---font-family: var(--origam-font__family---serif)')
     })
 })
 
-describe('OrigamTitle — size prop', () => {
-    it('emits no font-size override when size is unset', () => {
+describe('OrigamTitle — fontSize prop', () => {
+    it('emits no font-size override when fontSize is unset', () => {
         const style = mountTitle().find('.origam-title').attributes('style') || ''
         expect(style).not.toContain('--origam-title---font-size:')
     })
 
-    it('size="5xl" sets the font-size var to the 5xl token', () => {
-        const style = mountTitle({ size: '5xl' }).find('.origam-title').attributes('style') || ''
+    it('fontSize="5xl" sets the font-size var to the 5xl token', () => {
+        const style = mountTitle({ fontSize: '5xl' }).find('.origam-title').attributes('style') || ''
         expect(style).toContain('--origam-title---font-size: var(--origam-font__size---5xl)')
     })
 
-    it('size="xs" sets the font-size var to the xs token', () => {
-        const style = mountTitle({ size: 'xs' }).find('.origam-title').attributes('style') || ''
+    it('fontSize="xs" sets the font-size var to the xs token', () => {
+        const style = mountTitle({ fontSize: 'xs' }).find('.origam-title').attributes('style') || ''
         expect(style).toContain('--origam-title---font-size: var(--origam-font__size---xs)')
     })
 
-    it('size="5xl" overrides density — the inline var is present regardless of density', () => {
-        const style = mountTitle({ size: '5xl', density: 'compact' }).find('.origam-title').attributes('style') || ''
+    it('fontSize="5xl" overrides density — the inline var is present regardless of density', () => {
+        const style = mountTitle({ fontSize: '5xl', density: 'compact' }).find('.origam-title').attributes('style') || ''
         expect(style).toContain('--origam-title---font-size: var(--origam-font__size---5xl)')
     })
 
-    it('without size, the density class is still emitted and no font-size inline override is set', () => {
+    it('without fontSize, the density class is still emitted and no font-size inline override is set', () => {
         const wrapper = mountTitle({ density: 'compact' })
         const el = wrapper.find('.origam-title')
         const style = el.attributes('style') || ''

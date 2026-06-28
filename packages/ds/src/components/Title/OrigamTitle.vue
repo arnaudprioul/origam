@@ -27,7 +27,8 @@
 	useMargin,
 	usePadding,
 	useProps,
-	useStyle
+	useStyle,
+	useTypography
 } from '../../composables'
 
 	import { vContrast } from '../../directives'
@@ -61,6 +62,7 @@
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
+	const {typographyStyles} = useTypography(props, 'title')
 
 	const hasContent = computed(() => {
 		return slots.default || props.text
@@ -72,42 +74,13 @@
 	 * @description
 	 * Root element classes and styles.
 	 ********************************************************/
-	const familyStyles = computed(() => {
-		return props.family
-			? {'--origam-title---font-family': `var(--origam-font__family---${props.family})`}
-			: null
-	})
-	const sizeStyles = computed(() => {
-		return props.size
-			? {'--origam-title---font-size': `var(--origam-font__size---${props.size})`}
-			: null
-	})
-	const weightStyles = computed(() => {
-		return props.weight
-			? {'--origam-title---font-weight': `var(--origam-font__weight---${props.weight})`}
-			: null
-	})
-	const lineHeightStyles = computed(() => {
-		return props.lineHeight
-			? {'--origam-title---line-height': `var(--origam-font__lineHeight---${props.lineHeight})`}
-			: null
-	})
-	const letterSpacingStyles = computed(() => {
-		return props.letterSpacing
-			? {'--origam-title---letter-spacing': `var(--origam-font__letterSpacing---${props.letterSpacing})`}
-			: null
-	})
 	const titleStyles = computed(() => {
 		return [
 			colorStyles.value,
 			borderStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
-			familyStyles.value,
-			sizeStyles.value,
-			weightStyles.value,
-			lineHeightStyles.value,
-			letterSpacingStyles.value,
+			typographyStyles.value,
 			props.style
 		] as StyleValue
 	})

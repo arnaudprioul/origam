@@ -15,9 +15,9 @@
 						:color="state.color"
 						:bg-color="state.bgColor"
 						:density="state.density"
-						:family="state.family"
-						:size="state.size"
-						:weight="state.weight"
+						:font-family="state.fontFamily"
+						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
 						:line-height="state.lineHeight"
 						:letter-spacing="state.letterSpacing"
 						:border="state.border"
@@ -47,70 +47,11 @@
 					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
-					<HstSelect
-						v-model="state.family"
-						title="Family"
-						:options="[
-							{ label: '(none)', value: undefined },
-							{ label: 'Sans', value: 'sans' },
-							{ label: 'Mono', value: 'mono' },
-							{ label: 'Serif', value: 'serif' }
-						]"
-					/>
-					<HstSelect
-						v-model="state.size"
-						title="Size"
-						:options="[
-							{ label: '(none — density drives)', value: undefined },
-							{ label: 'xs (0.625rem)', value: 'xs' },
-							{ label: 'sm (0.75rem)', value: 'sm' },
-							{ label: 'md (0.875rem)', value: 'md' },
-							{ label: 'lg (1rem)', value: 'lg' },
-							{ label: 'xl (1.125rem)', value: 'xl' },
-							{ label: '2xl (1.25rem)', value: '2xl' },
-							{ label: '3xl (1.5rem)', value: '3xl' },
-							{ label: '4xl (1.875rem)', value: '4xl' },
-							{ label: '5xl (2.25rem)', value: '5xl' }
-						]"
-					/>
-					<HstSelect
-						v-model="state.weight"
-						title="Weight"
-						:options="[
-							{ label: '(none)', value: undefined },
-							{ label: 'Regular 400', value: 'regular' },
-							{ label: 'Medium 500', value: 'medium' },
-							{ label: 'Semibold 600', value: 'semibold' },
-							{ label: 'Bold 700', value: 'bold' },
-							{ label: 'Extrabold 800', value: 'extrabold' },
-							{ label: 'Black 900', value: 'black' }
-						]"
-					/>
-					<HstSelect
-						v-model="state.lineHeight"
-						title="Line Height"
-						:options="[
-							{ label: '(none)', value: undefined },
-							{ label: 'none (1)', value: 'none' },
-							{ label: 'tight (1.25)', value: 'tight' },
-							{ label: 'snug (1.375)', value: 'snug' },
-							{ label: 'normal (1.5)', value: 'normal' },
-							{ label: 'relaxed (1.625)', value: 'relaxed' },
-							{ label: 'loose (2)', value: 'loose' }
-						]"
-					/>
-					<HstSelect
-						v-model="state.letterSpacing"
-						title="Letter Spacing"
-						:options="[
-							{ label: '(none)', value: undefined },
-							{ label: 'tight (-0.025em)', value: 'tight' },
-							{ label: 'normal (0em)', value: 'normal' },
-							{ label: 'wide (0.0094em)', value: 'wide' },
-							{ label: 'wider (0.0125em)', value: 'wider' },
-							{ label: 'widest (0.0893em)', value: 'widest' }
-						]"
-					/>
+					<HstSelect v-model="state.fontFamily"    title="Font Family"    :options="FONT_FAMILY_OPTIONS"/>
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Border">
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
@@ -180,7 +121,12 @@
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_RAW_OPTIONS,
-		DENSITY_OPTIONS
+		DENSITY_OPTIONS,
+		FONT_FAMILY_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
+		LETTER_SPACING_OPTIONS,
+		LINE_HEIGHT_OPTIONS
 	} from '@stories/const'
 
 	const TITLE_TAG_OPTIONS: Array<IOptions<string>> = [

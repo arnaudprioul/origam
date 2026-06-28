@@ -149,6 +149,7 @@
 		useStateEffect,
 		useStatus,
 		useStyle,
+		useTypography,
 		useVariant
 	} from '../../composables'
 
@@ -271,6 +272,7 @@
 	const {locationStyles} = useLocation(props)
 	const {positionClasses} = usePosition(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
+	const {typographyStyles} = useTypography(props, 'btn')
 
 	/*********************************************************
 	 * Icon
@@ -400,6 +402,7 @@
 			roundedStyles.value,
 			sizeStyles.value,
 			elevationStyles.value,
+			typographyStyles.value,
 			props.style
 		] as StyleValue
 	})
