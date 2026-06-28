@@ -14,7 +14,7 @@
 		lang="ts"
 		setup
 >
-	import { useDensity, useProps , useStyle} from "../../composables"
+	import { useDensity, useProps, useStyle, useTypography } from "../../composables"
 	import type { ICardTextProps } from '../../interfaces'
 
 	import { computed, StyleValue } from 'vue'
@@ -33,6 +33,17 @@
 	const {densityClasses} = useDensity(props)
 
 	/*********************************************************
+	 * Typography
+	 *
+	 * @description
+	 * SCSS reads: font-size · font-weight · letter-spacing.
+	 * lineHeight and fontFamily emit their vars but card-text SCSS has no
+	 * corresponding rules — no visual effect for those two.
+	 ********************************************************/
+
+	const {typographyStyles} = useTypography(props, 'card-text')
+
+	/*********************************************************
 	 * Class & Style
 	 *
 	 * @description
@@ -41,6 +52,7 @@
 
 	const cardTextStyles = computed(() => {
 		return [
+			typographyStyles.value,
 			props.style
 		] as StyleValue
 	})

@@ -9,7 +9,9 @@
 				:init-state="() => useStoryInitState<Partial<IPaginationProps>>({
 					color: 'primary',
 					length: 10,
-					totalVisible: 7
+					totalVisible: 7,
+					withInfo: true,
+					total: 100
 				})"
 		>
 			<template #default="{ state }">
@@ -27,6 +29,10 @@
 						:border-style="state.borderStyle"
 						:length="state.length"
 						:total-visible="state.totalVisible"
+						:with-info="state.withInfo"
+						:total="state.total"
+						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -53,6 +59,10 @@
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.padding" title="Padding"/>
 					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -250,6 +260,8 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		SIZE_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'

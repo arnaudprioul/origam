@@ -11,6 +11,7 @@
 		<span
 				v-if="withInfo"
 				class="origam-pagination__info"
+				:style="typographyStyles"
 				data-cy="pagination-info"
 		>
 			<slot
@@ -180,7 +181,7 @@
 	import { ComponentPublicInstance, computed, nextTick, ref, shallowRef, StyleValue } from "vue"
 	import { OrigamBtn } from "../../components"
 
-	import { useDensity, useDisplay, useLocale, useProps, useRefs, useResizeObserver, useSize, useVModel , useStyle} from "../../composables"
+	import { useDensity, useDisplay, useLocale, useProps, useRefs, useResizeObserver, useSize, useTypography, useVModel , useStyle} from "../../composables"
 
 	import { KEYBOARD_VALUES, MDI_ICONS } from "../../enums"
 
@@ -637,6 +638,7 @@
 
 	const { sizeClasses } = useSize(props)
 	const { densityClasses } = useDensity(props)
+	const { typographyStyles } = useTypography(props, 'pagination--info')
 
 	const paginationClasses = computed(() => {
 		return [

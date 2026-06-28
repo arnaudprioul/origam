@@ -10,7 +10,8 @@
 					intent: 'info',
 					title: 'Notification title',
 					message: 'A body message with more context.',
-					icon: undefined
+					icon: undefined,
+					fontSize: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -19,11 +20,15 @@
 						:title="state.title"
 						:message="state.message"
 						:icon="state.icon"
+						:font-size="state.fontSize"
 				/>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Intent">
 					<HstSelect v-model="state.intent" title="Intent" :options="INTENT_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize" title="Font Size" :options="FONT_SIZE_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Icons">
 					<HstSelect v-model="state.icon" title="Icon Override" :options="ICON_OPTIONS"/>
@@ -147,6 +152,9 @@
 					<HstSelect v-model="state.intent" title="Intent" :options="INTENT_OPTIONS"/>
 					<HstSelect v-model="state.icon"   title="Icon"   :options="ICON_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize" title="Font Size" :options="FONT_SIZE_OPTIONS"/>
+				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.dismissible" title="Dismissible"/>
 					<HstText     v-model="state.dismissLabel" title="Dismiss Label"/>
@@ -169,6 +177,7 @@
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
+		FONT_SIZE_OPTIONS,
 		ICON_OPTIONS,
 		INTENT_OPTIONS
 	} from '@stories/const'

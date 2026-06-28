@@ -21,6 +21,9 @@
 							:padding-inline="state.paddingInline"
 							:margin="state.margin"
 							:tag="state.tag"
+							:font-size="state.fontSize"
+							:font-weight="state.fontWeight"
+							:line-height="state.lineHeight"
 							:title="state.title"
 					/>
 					<origam-list-item title="Item one"/>
@@ -32,6 +35,11 @@
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"    :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight"  :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight" title="Line Height"  :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Shape">
 					<HstSelect v-model="state.rounded" title="Rounded" :options="ROUNDED_OPTIONS"/>
@@ -132,6 +140,9 @@
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
+		LINE_HEIGHT_OPTIONS,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'

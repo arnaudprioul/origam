@@ -31,7 +31,8 @@
 	usePadding,
 	useProps,
 	useRounded,
-	useStyle
+	useStyle,
+	useTypography
 } from '../../composables'
 
 	import { vContrast } from '../../directives'
@@ -56,6 +57,7 @@
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
+	const {typographyStyles} = useTypography(props, 'list-subheader')
 	const slots = useSlots()
 
 	const hasText = computed(() => {
@@ -72,6 +74,7 @@
 			borderStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
+			typographyStyles.value,
 			props.style
 		] as StyleValue
 	})

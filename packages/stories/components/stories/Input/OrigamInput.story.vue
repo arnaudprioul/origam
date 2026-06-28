@@ -6,7 +6,13 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IInputProps>>({ color: 'primary', label: 'Input' })"
+				:init-state="() => useStoryInitState<Partial<IInputProps>>({
+					color: 'primary',
+					label: 'Input',
+					fontSize: undefined,
+					fontWeight: undefined,
+					lineHeight: undefined
+				})"
 		>
 			<template #default="{ state }">
 				<origam-input
@@ -29,6 +35,9 @@
 						:center-affix="state.centerAffix"
 						:width="state.width"
 						:height="state.height"
+						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
+						:line-height="state.lineHeight"
 						:label="state.label"
 				>
 					<template #default="{ id, isDisabled, isReadonly }">
@@ -59,6 +68,11 @@
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
 					<HstText   v-model="state.borderColor" title="Border Color"/>
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Icons">
 					<HstSelect v-model="state.prependIcon"   title="Prepend Icon"   :options="ICON_OPTIONS"/>
@@ -327,6 +341,9 @@
 					disabled: false,
 					readonly: false,
 					error: false,
+					fontSize: undefined,
+					fontWeight: undefined,
+					lineHeight: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -362,6 +379,11 @@
 					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
 					<HstSelect v-model="state.border"    title="Border"    :options="BORDER_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
+				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
 					<HstCheckbox v-model="state.readonly"      title="Readonly"/>
@@ -394,7 +416,10 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		ICON_OPTIONS,
+		LINE_HEIGHT_OPTIONS,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS
 	} from '@stories/const'

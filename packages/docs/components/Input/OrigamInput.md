@@ -91,6 +91,14 @@ need the messages + validation chrome around a fully custom control.
 | `focus` | `FocusEvent` | Focus propagated |
 | `blur` | `FocusEvent` | Blur propagated |
 
+## Typography props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `fontSize` | `TFontSize` | `undefined` | Font size token (`xs` · `sm` · `md` · `lg` · `xl` · `2xl` · `3xl` · `4xl` · `5xl`). Sets `--origam-input---font-size`. |
+| `fontWeight` | `TFontWeight` | `undefined` | Font weight token (`regular` · `medium` · `semibold` · `bold` · `extrabold` · `black`). Sets `--origam-input---font-weight`. |
+| `lineHeight` | `TLineHeight` | `undefined` | Line-height token (`none` · `tight` · `snug` · `normal` · `relaxed` · `loose`). Sets `--origam-input---line-height`. |
+
 ## Design tokens
 
 | CSS variable | Default | Description |

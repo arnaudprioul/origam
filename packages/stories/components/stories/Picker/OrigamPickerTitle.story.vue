@@ -14,12 +14,20 @@
 						:color="state.color"
 						:bg-color="state.bgColor"
 						:tag="state.tag"
+						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
+						:letter-spacing="state.letterSpacing"
 				/>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Tag">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
@@ -68,6 +76,11 @@
 					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
 				</StoryGroup>
@@ -87,6 +100,9 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		COLOR_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
+		LETTER_SPACING_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'
 </script>

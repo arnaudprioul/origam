@@ -9,12 +9,13 @@ import type {
     IMarginProps,
     IPaddingProps,
     ISizeProps,
-    ITagProps
+    ITagProps,
+    ITypographyProps
 } from "../../interfaces"
 
 import type { TColor, TIcon } from "../../types"
 
-export interface IPaginationProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IBorderProps, IPaddingProps, IMarginProps, IElevationProps, ISizeProps, IDensityProps {
+export interface IPaginationProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IBorderProps, IPaddingProps, IMarginProps, IElevationProps, ISizeProps, IDensityProps, ITypographyProps {
     start?: number
     modelValue?: number
     disabled?: boolean

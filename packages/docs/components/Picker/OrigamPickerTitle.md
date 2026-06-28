@@ -43,13 +43,17 @@ sits in a region that would benefit from semantic structure.
 |---|---|---|
 | `default` | — | Replaces the rendered `title` prop. |
 
-## Props (interface)
+## Props
 
-```ts
-interface IPickerTitleProps extends ICommonsComponentProps, ITagProps {
-    title?: string
-}
-```
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `title` | `string` | `undefined` | Text rendered inside the title. Override via the `default` slot for rich content. |
+| `color` | `TColor` | `undefined` | Text colour. Intent value or custom CSS colour. |
+| `bgColor` | `TColor` | `undefined` | Background colour of the title bar. |
+| `tag` | `string` | `'div'` | Polymorphic tag. Use `'h2'`/`'h3'` for semantic heading structure. |
+| `fontSize` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl' \| '3xl' \| '4xl' \| '5xl'` | `undefined` | Overrides `--origam-picker-title---font-size` with the matching primitive token. Default is `0.75rem`. |
+| `fontWeight` | `'regular' \| 'medium' \| 'semibold' \| 'bold' \| 'extrabold' \| 'black'` | `undefined` | Overrides `--origam-picker-title---font-weight` with the matching primitive token. Default is `400`. |
+| `letterSpacing` | `'tight' \| 'normal' \| 'wide' \| 'wider' \| 'widest'` | `undefined` | Overrides `--origam-picker-title---letter-spacing` with the matching primitive token. Default is `0.1666666667em`. |
 
 ## Anatomy
 

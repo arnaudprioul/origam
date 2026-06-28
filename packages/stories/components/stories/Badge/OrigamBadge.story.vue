@@ -26,12 +26,18 @@
 							:location="state.location"
 							:offset-x="state.offsetX"
 							:offset-y="state.offsetY"
+							:font-size="state.fontSize"
+							:font-weight="state.fontWeight"
 					>
 						<origam-avatar text="AP"/>
 					</origam-badge>
 				</div>
 			</template>
 			<template #controls="{ state }">
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
+				</StoryGroup>
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
@@ -208,6 +214,8 @@
 					<HstSelect v-model="state.border"    title="Border"    :options="BORDER_OPTIONS"/>
 					<HstSelect v-model="state.status"    title="Status"    :options="STATUS_OPTIONS"/>
 					<HstSelect v-model="state.location"  title="Location"  :options="LOCATION_OPTIONS"/>
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.modelValue" title="Model Value"/>
@@ -243,6 +251,8 @@
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		HOVER_OPTIONS,
 		resolveHoverState,
 		ICON_OPTIONS,

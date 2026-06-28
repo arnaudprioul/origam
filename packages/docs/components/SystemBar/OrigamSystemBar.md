@@ -106,10 +106,19 @@ shells.
 ```ts
 interface ISystemBarProps extends ICommonsComponentProps, ITagProps,
     IElevationProps, IColorProps, ILayoutItemProps, IRoundedProps,
-    IBorderProps, IDimensionProps {
+    IBorderProps, IDimensionProps, ITypographyProps {
     window?: boolean
 }
 ```
+
+### Typography props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `fontSize` | `TFontSize` | — | Font size token override (`xs` · `sm` · `md` · `lg` · `xl` · `2xl` · `3xl` · `4xl` · `5xl`). Maps to `--origam-system-bar---font-size`. |
+| `fontWeight` | `TFontWeight` | — | Font weight token override (`regular` · `medium` · `semibold` · `bold` · `extrabold` · `black`). Maps to `--origam-system-bar---font-weight`. |
+| `letterSpacing` | `TLetterSpacing` | — | Letter-spacing token override (`tight` · `normal` · `wide` · `wider` · `widest`). Maps to `--origam-system-bar---letter-spacing`. |
+| `lineHeight` | `TLineHeight` | — | Line-height token override (`none` · `tight` · `snug` · `normal` · `relaxed` · `loose`). Maps to `--origam-system-bar---line-height`. |
 
 ## Anatomy
 

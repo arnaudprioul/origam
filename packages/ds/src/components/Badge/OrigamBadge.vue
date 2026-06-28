@@ -17,6 +17,7 @@
 		        v-contrast
 		        :aria-label="t(label, content)"
 		        :class="badgeContentClasses"
+		        :style="typographyStyles"
 		        aria-atomic="true"
 		        aria-live="polite"
 		        role="status"
@@ -75,7 +76,8 @@
 		useProps,
 		useStateEffect,
 		useStatus,
-		useStyle
+		useStyle,
+		useTypography
 	} from '../../composables'
 
 	import type { IBadgeProps } from '../../interfaces'
@@ -135,6 +137,8 @@
 	/*********************************************************
 	 * Icon
 	 ********************************************************/
+
+	const {typographyStyles} = useTypography(props, 'badge__badge')
 
 	const {icon, prependIcon, appendIcon, statusClasses} = useStatus(props)
 	const {locationStyles} = useLocation(props, true, side => {

@@ -8,10 +8,11 @@ import type {
     IPaddingProps,
     IRoundedProps,
     ITagProps,
-    ITransitionComponentProps
+    ITransitionComponentProps,
+    ITypographyProps
 } from '../../interfaces'
 
-export interface IMessagesProps extends ICommonsComponentProps, ITagProps, ITransitionComponentProps, IColorProps, IBorderProps, IPaddingProps, IMarginProps, IRoundedProps, IDensityProps, IElevationProps {
+export interface IMessagesProps extends ICommonsComponentProps, ITagProps, ITransitionComponentProps, IColorProps, IBorderProps, IPaddingProps, IMarginProps, IRoundedProps, IDensityProps, IElevationProps, ITypographyProps {
     active?: boolean
     messages?: Array<string> | string
 }

@@ -15,7 +15,11 @@
 					borderColor: undefined,
 					borderStyle: undefined,
 					width: undefined,
-					height: undefined
+					height: undefined,
+					fontSize: undefined,
+					fontWeight: undefined,
+					letterSpacing: undefined,
+					lineHeight: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -33,6 +37,10 @@
 								:border-style="state.borderStyle"
 								:width="state.width"
 								:height="state.height"
+								:font-size="state.fontSize"
+								:font-weight="state.fontWeight"
+								:letter-spacing="state.letterSpacing"
+								:line-height="state.lineHeight"
 						>
 							<span>SystemBar — design preview</span>
 						</origam-system-bar>
@@ -59,6 +67,12 @@
 				<StoryGroup title="Dimension">
 					<HstText v-model="state.width"  title="Width"/>
 					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -159,6 +173,12 @@
 					<HstText   v-model="state.borderColor" title="Border Color"/>
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
+				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.window"   title="Window (32px)"/>
 					<HstCheckbox v-model="state.absolute" title="Absolute"/>
@@ -183,6 +203,10 @@
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
+		LETTER_SPACING_OPTIONS,
+		LINE_HEIGHT_OPTIONS,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'

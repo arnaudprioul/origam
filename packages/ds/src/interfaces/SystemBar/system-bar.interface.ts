@@ -7,9 +7,10 @@ import type {
     IElevationProps,
     ILayoutItemProps,
     IRoundedProps,
-    ITagProps
+    ITagProps,
+    ITypographyProps
 } from "../../interfaces"
 
-export interface ISystemBarProps extends ICommonsComponentProps, ITagProps, IElevationProps, IColorProps, IBgColorProps, ILayoutItemProps, IRoundedProps, IBorderProps, IDimensionProps {
+export interface ISystemBarProps extends ICommonsComponentProps, ITagProps, IElevationProps, IColorProps, IBgColorProps, ILayoutItemProps, IRoundedProps, IBorderProps, IDimensionProps, ITypographyProps {
     window?: boolean
 }

@@ -425,6 +425,26 @@ describe('OrigamPagination — disabled state', () => {
     })
 })
 
+describe('OrigamPagination — typography (withInfo info surface)', () => {
+    it('sets --origam-pagination--info---font-size when fontSize prop is passed', () => {
+        const wrapper = mountPagination({ withInfo: true, total: 100, fontSize: 'xl' })
+        const info = wrapper.find('.origam-pagination__info')
+        expect(info.exists()).toBe(true)
+        expect((info.element as HTMLElement).style.getPropertyValue('--origam-pagination--info---font-size'))
+            .toBe('var(--origam-font__size---xl)')
+        wrapper.unmount()
+    })
+
+    it('sets --origam-pagination--info---font-weight when fontWeight prop is passed', () => {
+        const wrapper = mountPagination({ withInfo: true, total: 100, fontWeight: 'bold' })
+        const info = wrapper.find('.origam-pagination__info')
+        expect(info.exists()).toBe(true)
+        expect((info.element as HTMLElement).style.getPropertyValue('--origam-pagination--info---font-weight'))
+            .toBe('var(--origam-font__weight---bold)')
+        wrapper.unmount()
+    })
+})
+
 describe('OrigamPagination — withInfo range computation', () => {
     it('shows correct start=1 end=10 for page 1 with perPage=10', () => {
         let slotProps: any = null

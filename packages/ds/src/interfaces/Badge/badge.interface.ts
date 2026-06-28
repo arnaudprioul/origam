@@ -9,10 +9,11 @@ import type {
     IRoundedProps,
     IStatusProps,
     ITagProps,
-    ITransitionComponentProps
+    ITransitionComponentProps,
+    ITypographyProps
 } from '../../interfaces'
 
-export interface IBadgeProps extends ICommonsComponentProps, ITagProps, IBorderProps, IColorProps, IBgColorProps, ILocationProps, IRoundedProps, ITransitionComponentProps, IStatusProps, IHoverProps, IElevationProps {
+export interface IBadgeProps extends ICommonsComponentProps, ITagProps, IBorderProps, IColorProps, IBgColorProps, ILocationProps, IRoundedProps, ITransitionComponentProps, IStatusProps, IHoverProps, IElevationProps, ITypographyProps {
     content?: number | string
     dot?: boolean
     floating?: boolean
