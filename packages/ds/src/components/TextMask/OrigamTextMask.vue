@@ -21,6 +21,7 @@
 	} from 'vue'
 
 	import { resolveGradient } from '../../utils/Commons/gradient.util'
+	import { useTypography } from '../../composables'
 
 	import type { ITextMaskProps } from '../../interfaces'
 
@@ -43,10 +44,6 @@
 		animated: false,
 		animationDuration: '3s',
 		animationType: 'pan',
-		fontSize: 'inherit',
-		fontWeight: 'inherit',
-		fontFamily: 'inherit',
-		lineHeight: 1.1,
 		align: 'left'
 	})
 
@@ -69,23 +66,16 @@
 	})
 
 	/*********************************************************
-	 * Font-size / font-weight / line-height normalisation
+	 * Typography
 	 *
 	 * @description
-	 * Numbers are interpreted as `px` (font-size, letter-spacing) or
-	 * unitless multipliers (line-height) — matches the rest of the DS.
-	 * Strings are passed through untouched so callers can pass `'6rem'`,
-	 * `'clamp(2rem, 8vw, 8rem)'`, etc.
+	 * Delegates the five font props (fontFamily / fontSize / fontWeight /
+	 * lineHeight / letterSpacing) to the shared `useTypography` surface.
+	 * Each set prop emits an inline custom property pointing at the matching
+	 * primitive token; when unset, the SCSS fallback
+	 * (`--origam-text-mask---font-size-default`, …) stays in control.
 	 ********************************************************/
-	const cssDimension = (v: string | number | undefined, fallback: string) => {
-		if (v === undefined || v === null || v === '') return fallback
-		return typeof v === 'number' ? `${v}px` : v
-	}
-
-	const cssUnitless = (v: string | number | undefined, fallback: string) => {
-		if (v === undefined || v === null || v === '') return fallback
-		return String(v)
-	}
+	const { typographyStyles } = useTypography(props, 'text-mask')
 
 	const hasSlot = computed(() => Boolean(slots.default))
 
@@ -113,13 +103,9 @@
 		return [
 			{
 				'--origam-text-mask---bg': resolvedBackground.value,
-				'--origam-text-mask---duration': props.animationDuration,
-				'--origam-text-mask---font-size': cssDimension(props.fontSize, 'inherit'),
-				'--origam-text-mask---font-weight': cssUnitless(props.fontWeight, 'inherit'),
-				'--origam-text-mask---font-family': props.fontFamily ?? 'inherit',
-				'--origam-text-mask---line-height': cssUnitless(props.lineHeight, '1.1'),
-				'--origam-text-mask---letter-spacing': props.letterSpacing ?? 'normal'
+				'--origam-text-mask---duration': props.animationDuration
 			},
+			typographyStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -147,11 +133,11 @@
 		background-clip: text;
 		-webkit-text-fill-color: transparent;
 		color: transparent;
-		font-size: var(--origam-text-mask---font-size);
-		font-weight: var(--origam-text-mask---font-weight);
-		font-family: var(--origam-text-mask---font-family);
-		line-height: var(--origam-text-mask---line-height);
-		letter-spacing: var(--origam-text-mask---letter-spacing);
+		font-size:      var(--origam-text-mask---font-size, var(--origam-text-mask---font-size-default));
+		font-weight:    var(--origam-text-mask---font-weight, var(--origam-text-mask---font-weight-default));
+		font-family:    var(--origam-text-mask---font-family, inherit);
+		line-height:    var(--origam-text-mask---line-height, var(--origam-text-mask---line-height-default));
+		letter-spacing: var(--origam-text-mask---letter-spacing, normal);
 	}
 
 	.origam-text-mask--align-left {
