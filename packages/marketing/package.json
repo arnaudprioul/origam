@@ -14,10 +14,17 @@
     "postinstall": "nuxt prepare || [ \"$CI\" = \"true\" ]",
     "lint": "eslint .",
     "typecheck": "nuxt typecheck",
-    "docs:generate": "node scripts/generate-api-docs.mjs",
-    "docs:generate:check": "node scripts/generate-api-docs.mjs --check",
+    "docs:generate": "node scripts/generate-api-docs.mjs --files",
+    "docs:generate:check": "node scripts/generate-api-docs.mjs --files --check",
+    "docs:seed": "node scripts/generate-api-docs.mjs --seed",
+    "docs:seed:check": "node scripts/generate-api-docs.mjs --seed --check",
+    "docs:sync": "node scripts/generate-api-docs.mjs",
+    "docs:sync:check": "node scripts/generate-api-docs.mjs --check",
     "presets:generate": "node scripts/generate-brand-presets.mjs",
-    "presets:generate:check": "node scripts/generate-brand-presets.mjs --check"
+    "presets:generate:check": "node scripts/generate-brand-presets.mjs --check",
+    "db:migrate": "node server/db/migrate.mjs run",
+    "db:rollback": "node server/db/migrate.mjs revert",
+    "db:migrate:status": "node server/db/migrate.mjs show"
   },
   "dependencies": {
     "@nuxtjs/i18n": "^9.0.0",
@@ -25,6 +32,8 @@
     "@vue/repl": "^4.4.0",
     "nuxt": "^4.0.0",
     "origam": "workspace:*",
+    "pg": "^8.22.0",
+    "typeorm": "^1.0.0",
     "vue": "^3.5.0",
     "vue-i18n": "^11.0.0",
     "vue-router": "^4.5.0"

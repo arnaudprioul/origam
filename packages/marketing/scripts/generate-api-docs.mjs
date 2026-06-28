@@ -1,67 +1,190 @@
 #!/usr/bin/env node
 /**
- * generate-api-docs.mjs — (re)generate the per-slug `_DOC` data files for the
- * marketing API Reference pages (/enums, /interfaces, /consts, /utils) from
- * the design-system source under packages/ds/src.
+ * generate-api-docs.mjs — keep the marketing API-Reference doc in sync with the
+ * design-system source. (ADR 0001 — ticket B.)
  *
- * WHY
- *   The detail pages read app/consts/<domain>/<slug>.const.ts via
- *   import.meta.glob and render the `*_DOC` export. Those files mix
- *   STRUCTURAL facts (definition, signature, members, props, params) that
- *   can be derived from the DS source, with CURATED prose (descriptions,
- *   examples, "used by") written by hand. This script resyncs the structural
- *   half whenever the DS evolves, WITHOUT clobbering the curated half.
+ * Its write target was REORIENTED from per-slug `.const.ts` files to the
+ * PostgreSQL doc store. Three pipelines share the same libs (extract / merge /
+ * read-existing) — no logic is duplicated:
  *
- * WHAT IT DOES
- *   1. Parses every exported enum / interface / const / util in
- *      packages/ds/src/{enums,interfaces,consts,utils} (TypeScript compiler API).
- *   2. For each symbol, computes its kebab slug (matching the historical
- *      per-domain convention) and the target file path.
- *   3. Reads the existing _DOC (if any) and MERGES: structural fields are
- *      regenerated; curated fields (descriptions, examples, usedBy, related,
- *      icon, category, notes) are preserved verbatim.
- *   4. Writes (or, with --check, diffs) the deterministic TS output.
+ *   --seed     First load. Reads the 1758 existing app/consts/**.const.ts `_DOC`
+ *              objects (curated prose, all 8 families) and UPSERTs them into the
+ *              DB without loss. Idempotent; respects the editorial lock.
  *
- * VERACITY
- *   No prose is invented. A description is only filled from source JSDoc when
- *   it is real (not the DS placeholder "@param x …"). Otherwise the curated
- *   value is kept, or the field is left empty for later manual enrichment.
+ *   (default)  Re-sync. Re-extracts STRUCTURAL facts from packages/ds/src for the
+ *              4 auto-derivable families (enums, interfaces, consts, utils) and
+ *              UPSERTs ONLY the [SRC] columns. Editorial fields are never touched.
+ *
+ *   --files    Legacy file writer (the original behaviour, unchanged). Kept until
+ *              the pages are rebranched on the API and the const files are removed
+ *              (ticket F). Lets the transition stay non-destructive.
+ *
+ * Every DB run is wrapped in a single transaction and recorded in doc_sync_run.
+ * `--check` is a dry-run drift gate (rolls back, exits 1 if anything would change).
  *
  * USAGE
- *   node scripts/generate-api-docs.mjs [--check] [--domain=enums|interfaces|consts|utils] [--limit=N] [--verbose]
- *   pnpm -F @origam/marketing docs:generate            # write all domains
- *   pnpm -F @origam/marketing docs:generate:check       # dry-run, diff only
+ *   node scripts/generate-api-docs.mjs --seed [--check] [--domain=<kind>] [--verbose]
+ *   node scripts/generate-api-docs.mjs        [--check] [--domain=<dir>]  [--verbose]
+ *   node scripts/generate-api-docs.mjs --files [--check] [--domain=<dir>] [--limit=N]
  *
- * FLAGS
- *   --check        dry-run; report what WOULD change, write nothing. Exit 1 if
- *                  any file would change (CI-friendly drift gate).
- *   --domain=<d>   restrict to one domain.
- *   --limit=N      process only the first N symbols per domain (for sampling).
- *   --new-only     write/diff only slugs that have no existing _DOC yet.
- *   --verbose      list every per-file decision.
+ * VERACITY
+ *   No prose is invented. [ÉDIT] content always comes from the curated files
+ *   (seed) or is left as-is in the DB (re-sync). [SRC] always comes from the DS.
  */
 
 import fs from 'node:fs'
 import path from 'node:path'
+
 import {
     DOMAINS, listSourceFiles, extractFile, createProgram, REPO_ROOT,
 } from './lib/extract.mjs'
 import { MERGERS } from './lib/merge.mjs'
 import { serialize } from './lib/serialize.mjs'
 import { readExistingDoc } from './lib/read-existing.mjs'
+import { mapDoc } from './lib/doc-to-rows.mjs'
+import { ingestFull, ingestSrc } from './lib/db-upsert.mjs'
+import { getDb, closeDb, sourceCommit } from './lib/db.mjs'
+import { DOC_KIND_DIRS } from '../server/db/db.const.mjs'
+import { DocEntry, DocSyncRun } from '../server/db/entities.mjs'
 
 const ARGS = process.argv.slice(2)
 const CHECK = ARGS.includes('--check')
 const VERBOSE = ARGS.includes('--verbose')
+const SEED = ARGS.includes('--seed')
+const FILES = ARGS.includes('--files')
 const NEW_ONLY = ARGS.includes('--new-only')
 const DOMAIN_ARG = (ARGS.find(a => a.startsWith('--domain=')) || '').split('=')[1]
 const LIMIT = Number((ARGS.find(a => a.startsWith('--limit=')) || '').split('=')[1]) || 0
 
 const MKT_CONSTS = path.join(REPO_ROOT, 'packages', 'marketing', 'app', 'consts')
+const ROLLBACK = '__ROLLBACK_CHECK__'
 
+const blank = () => ({ created: 0, updated: 0, unchanged: 0, orphaned: 0 })
+const add = (a, b) => { a.created += b.created; a.updated += b.updated; a.unchanged += b.unchanged; a.orphaned += b.orphaned }
+
+// ─── DB seed: ingest the existing curated files (all 8 families) ────────────
+async function runSeed (manager) {
+    const total = blank()
+    const kinds = DOMAIN_ARG ? [DOMAIN_ARG] : Object.keys(DOC_KIND_DIRS)
+
+    for (const kind of kinds) {
+        const dir = DOC_KIND_DIRS[kind]
+        if (!dir) { console.error(`Unknown kind: ${kind}`); continue }
+        const dirPath = path.join(MKT_CONSTS, dir)
+        let files = fs.existsSync(dirPath)
+            ? fs.readdirSync(dirPath).filter(f => f.endsWith('.const.ts')).sort()
+            : []
+        if (LIMIT) files = files.slice(0, LIMIT)
+
+        const c = blank()
+        for (const file of files) {
+            const existing = await readExistingDoc(path.join(dirPath, file))
+            if (!existing?.doc) { console.error(`  ! no _DOC in ${dir}/${file}`); continue }
+            const record = mapDoc(kind, existing.doc)
+            const r = await ingestFull(manager, record)
+            add(c, r); add(total, r)
+            if (VERBOSE) console.log(`  ${kind}/${record.entry.slug}: +${r.created} ~${r.updated} =${r.unchanged} ⌀${r.orphaned}`)
+        }
+        console.log(`[${kind}] files=${files.length} created=${c.created} updated=${c.updated} unchanged=${c.unchanged} orphaned=${c.orphaned}`)
+    }
+    return total
+}
+
+// ─── DB re-sync: structural [SRC] facts from the DS source (4 families) ──────
+async function runResync (manager) {
+    const total = blank()
+    const { program, checker } = createProgram()
+    const domains = DOMAIN_ARG ? [DOMAIN_ARG] : Object.keys(DOMAINS)
+
+    for (const domainKey of domains) {
+        if (!DOMAINS[domainKey]) { console.error(`Unknown domain: ${domainKey}`); continue }
+        const kind = DOMAINS[domainKey].kind
+        const files = listSourceFiles(domainKey)
+        let symbols = []
+        for (const f of files) symbols.push(...extractFile(domainKey, f, program, checker))
+        const seen = new Set()
+        symbols = symbols.filter(s => (seen.has(s.slug) ? false : (seen.add(s.slug), true)))
+        if (LIMIT) symbols = symbols.slice(0, LIMIT)
+
+        const c = blank()
+        for (const src of symbols) {
+            // util: extract exposes `returnType`; normalise to the _DOC `returns` shape.
+            const doc = kind === 'util' ? { ...src, returns: { type: src.returnType } } : src
+            const record = mapDoc(kind, doc)
+            const r = await ingestSrc(manager, record)
+            add(c, r); add(total, r)
+            if (VERBOSE) console.log(`  ${kind}/${record.entry.slug}: +${r.created} ~${r.updated} =${r.unchanged} ⌀${r.orphaned}`)
+        }
+        console.log(`[${domainKey}] symbols=${symbols.length} created=${c.created} updated=${c.updated} unchanged=${c.unchanged} orphaned=${c.orphaned}`)
+    }
+    return total
+}
+
+async function recordRun (db, { domain, counts, status, error }) {
+    await db.getRepository(DocSyncRun).insert({
+        finished_at: new Date(),
+        domain: domain ?? null,
+        created_count: counts.created,
+        updated_count: counts.updated,
+        unchanged_count: counts.unchanged,
+        orphaned_count: counts.orphaned,
+        source_commit: sourceCommit(),
+        status,
+        error: error ?? null,
+    })
+}
+
+async function reportKindCounts (db) {
+    const rows = await db.getRepository(DocEntry)
+        .createQueryBuilder('e')
+        .select('e.kind', 'kind').addSelect('COUNT(*)', 'n')
+        .groupBy('e.kind').orderBy('e.kind')
+        .getRawMany()
+    console.log('\ndoc_entry by kind:')
+    let total = 0
+    for (const r of rows) { console.log(`  ${r.kind.padEnd(12)} ${r.n}`); total += Number(r.n) }
+    console.log(`  ${'TOTAL'.padEnd(12)} ${total}`)
+}
+
+async function runDb () {
+    const db = await getDb()
+    const mode = SEED ? 'seed' : 'resync'
+    let counts = blank()
+
+    try {
+        await db.transaction(async (manager) => {
+            counts = SEED ? await runSeed(manager) : await runResync(manager)
+            if (CHECK) throw new Error(ROLLBACK)
+        })
+    } catch (e) {
+        if (e.message !== ROLLBACK) {
+            if (!CHECK) await recordRun(db, { domain: DOMAIN_ARG, counts, status: 'failed', error: String(e.message) }).catch(() => {})
+            throw e
+        }
+    }
+
+    const drift = counts.created + counts.updated + counts.orphaned
+    console.log(
+        `\n${CHECK ? 'CHECK' : mode.toUpperCase()} summary — created: ${counts.created}, ` +
+        `updated: ${counts.updated}, unchanged: ${counts.unchanged}, orphaned: ${counts.orphaned}`
+    )
+
+    if (!CHECK) {
+        await recordRun(db, { domain: DOMAIN_ARG, counts, status: 'success' })
+        await reportKindCounts(db)
+    }
+    if (CHECK && drift > 0) {
+        console.log('\n--check: the database WOULD change. Run without --check to apply.')
+        await closeDb()
+        process.exit(1)
+    }
+    await closeDb()
+}
+
+// ─── Legacy file writer (unchanged original behaviour, kept for transition) ──
 const norm = (s) => s.replace(/\r\n/g, '\n').replace(/[ \t]+\n/g, '\n').trim()
 
-async function run () {
+async function runFiles () {
     const { program, checker } = createProgram()
     const domains = DOMAIN_ARG ? [DOMAIN_ARG] : Object.keys(DOMAINS)
     let totalChanged = 0, totalNew = 0, totalSame = 0, totalWritten = 0, totalErrors = 0
@@ -74,7 +197,6 @@ async function run () {
 
         let symbols = []
         for (const f of files) symbols.push(...extractFile(domainKey, f, program, checker))
-        // dedupe by slug (first wins) — defensive against rare cross-file collisions
         const seen = new Set()
         symbols = symbols.filter(s => (seen.has(s.slug) ? false : (seen.add(s.slug), true)))
         if (LIMIT) symbols = symbols.slice(0, LIMIT)
@@ -96,41 +218,26 @@ async function run () {
 
             const merged = merger(src, existing)
             const output = serialize(kind, merged)
-
             const current = exists ? fs.readFileSync(target, 'utf-8') : null
             const isSame = current !== null && norm(current) === norm(output)
 
-            if (!exists) {
-                created++
-                if (VERBOSE) console.log(`  + NEW   ${domainKey}/${src.slug}`)
-                if (!CHECK) { fs.writeFileSync(target, output); written++ }
-            } else if (!isSame) {
-                changed++
-                if (VERBOSE) console.log(`  ~ CHG   ${domainKey}/${src.slug}`)
-                if (!CHECK) { fs.writeFileSync(target, output); written++ }
-            } else {
-                same++
-                if (VERBOSE) console.log(`  = same  ${domainKey}/${src.slug}`)
-            }
+            if (!exists) { created++; if (!CHECK) { fs.writeFileSync(target, output); written++ } }
+            else if (!isSame) { changed++; if (!CHECK) { fs.writeFileSync(target, output); written++ } }
+            else { same++ }
         }
 
-        console.log(
-            `[${domainKey}] symbols=${symbols.length} new=${created} changed=${changed} unchanged=${same}` +
-            (CHECK ? '' : ` written=${written}`)
-        )
+        console.log(`[${domainKey}] symbols=${symbols.length} new=${created} changed=${changed} unchanged=${same}` + (CHECK ? '' : ` written=${written}`))
         totalChanged += changed; totalNew += created; totalSame += same; totalWritten += written
     }
 
-    console.log(
-        `\n${CHECK ? 'CHECK' : 'WRITE'} summary — new: ${totalNew}, changed: ${totalChanged}, unchanged: ${totalSame}` +
-        (CHECK ? '' : `, written: ${totalWritten}`) + (totalErrors ? `, errors: ${totalErrors}` : '')
-    )
-
-    if (CHECK && (totalNew + totalChanged) > 0) {
-        console.log('\n--check: files WOULD change. Run without --check to apply.')
-        process.exit(1)
-    }
+    console.log(`\n${CHECK ? 'CHECK' : 'WRITE'} summary — new: ${totalNew}, changed: ${totalChanged}, unchanged: ${totalSame}` + (CHECK ? '' : `, written: ${totalWritten}`) + (totalErrors ? `, errors: ${totalErrors}` : ''))
+    if (CHECK && (totalNew + totalChanged) > 0) { console.log('\n--check: files WOULD change.'); process.exit(1) }
     if (totalErrors) process.exit(2)
 }
 
-run().catch(e => { console.error(e); process.exit(2) })
+async function run () {
+    if (FILES) return runFiles()
+    return runDb()
+}
+
+run().catch(async (e) => { console.error(e); await closeDb().catch(() => {}); process.exit(2) })

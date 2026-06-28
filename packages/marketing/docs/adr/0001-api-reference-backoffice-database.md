@@ -12,6 +12,15 @@
 > Tout ce document est basé sur la lecture du code, pas sur des suppositions.
 > Les points non vérifiés sont signalés explicitement.
 
+> **⚠️ CORRECTION (2026-06-28) — ORM : TypeORM, pas Knex.**
+> Décision utilisateur (préférence permanente, cf. `~/.claude/CLAUDE.md`) :
+> la couche d'accès aux données est **TypeORM** sur tous les projets. Le moteur
+> **PostgreSQL** du §2 reste valide ; partout où ce document écrit « Knex » (§2,
+> §3.2, §4, §7, §8), lire **TypeORM** : entities `@Entity`/`@Column`/relations,
+> migrations TypeORM (`migration:generate`/`run`/`revert`, up+down), `DataSource`
+> via env. L'UPSERT du seed (§4) se fait via repository TypeORM
+> (`upsert` / QueryBuilder `orUpdate`).
+
 ---
 
 ## 1. Contexte (faits vérifiés)
