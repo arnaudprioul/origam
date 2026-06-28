@@ -72,9 +72,29 @@
 	 * @description
 	 * Root element classes and styles.
 	 ********************************************************/
+	const familyStyles = computed(() => {
+		return props.family
+			? {'--origam-title---font-family': `var(--origam-font__family---${props.family})`}
+			: null
+	})
+	const sizeStyles = computed(() => {
+		return props.size
+			? {'--origam-title---font-size': `var(--origam-font__size---${props.size})`}
+			: null
+	})
 	const weightStyles = computed(() => {
 		return props.weight
 			? {'--origam-title---font-weight': `var(--origam-font__weight---${props.weight})`}
+			: null
+	})
+	const lineHeightStyles = computed(() => {
+		return props.lineHeight
+			? {'--origam-title---line-height': `var(--origam-font__lineHeight---${props.lineHeight})`}
+			: null
+	})
+	const letterSpacingStyles = computed(() => {
+		return props.letterSpacing
+			? {'--origam-title---letter-spacing': `var(--origam-font__letterSpacing---${props.letterSpacing})`}
 			: null
 	})
 	const titleStyles = computed(() => {
@@ -83,7 +103,11 @@
 			borderStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
+			familyStyles.value,
+			sizeStyles.value,
 			weightStyles.value,
+			lineHeightStyles.value,
+			letterSpacingStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -136,15 +160,15 @@
 		margin-block-end:   var(--origam-title---margin-block-end);
 
 		&--density-compact {
-			font-size: var(--origam-title---font-size-xs);
+			font-size: var(--origam-title---font-size, var(--origam-title---font-size-xs));
 		}
 
 		&--density-default {
-			font-size: var(--origam-title---font-size-md);
+			font-size: var(--origam-title---font-size, var(--origam-title---font-size-md));
 		}
 
 		&--density-comfortable {
-			font-size: var(--origam-title---font-size-xl);
+			font-size: var(--origam-title---font-size, var(--origam-title---font-size-xl));
 		}
 	}
 </style>
