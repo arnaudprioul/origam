@@ -5,6 +5,33 @@
 	>
 
 		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<ITypographyProps & { errorMessages: string[] }>({
+					errorMessages: ['Form-level validation error']
+				})"
+		>
+			<template #default="{ state }">
+				<origam-form
+						:error-messages="state.errorMessages"
+						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
+						:letter-spacing="state.letterSpacing"
+						:line-height="state.lineHeight"
+						data-cy="form-design"
+						@submit.prevent
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<IFormProps>({
 					disabled: false,
@@ -145,6 +172,12 @@
 					<HstCheckbox v-model="state.fastFail"   title="Fast Fail"/>
 					<HstSelect   v-model="state.validateOn" title="Validate On" :options="VALIDATE_ON_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 	</Story>
@@ -159,10 +192,16 @@
 
 	import { OrigamBtn, OrigamForm, OrigamNumberField, OrigamTextField } from '@origam/components'
 	import { VALIDATE_ON } from '@origam/enums'
-	import type { IFormProps } from '@origam/interfaces'
+	import type { IFormProps, ITypographyProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
+		LETTER_SPACING_OPTIONS,
+		LINE_HEIGHT_OPTIONS
+	} from '@stories/const'
 
 	const VALIDATE_ON_OPTIONS = Object.values(VALIDATE_ON).map(v => ({ label: v, value: v }))
 

@@ -103,6 +103,7 @@
 					<h2
 							v-if="section.label"
 							class="origam-bracket__de-label"
+							:style="typographyStyles"
 					>
 						{{ section.label }}
 					</h2>
@@ -253,7 +254,8 @@
 		useDimension,
 		useMargin,
 		usePadding,
-		useProps
+		useProps,
+		useTypography
 	} from '../../composables'
 
 	import {
@@ -909,6 +911,7 @@
 	const {dimensionStyles} = useDimension(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {typographyStyles} = useTypography(props, 'bracket-double-label')
 
 	const rootStyles = computed<StyleValue>(() => {
 		return [

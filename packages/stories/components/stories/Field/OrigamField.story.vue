@@ -21,6 +21,7 @@
 						:prefix="state.prefix"
 						:suffix="state.suffix"
 						:label="state.label"
+						:font-size="state.fontSize"
 						:prepend-inner-icon="state.prependInnerIcon || undefined"
 						:append-inner-icon="state.appendInnerIcon || undefined"
 				>
@@ -40,6 +41,9 @@
 				<StoryGroup title="Sizing">
 					<HstSelect v-model="state.size"    title="Size"    :options="SIZE_OPTIONS"/>
 					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize" title="Label Font Size" :options="FONT_SIZE_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Shape">
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
@@ -342,6 +346,7 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS,

@@ -15,6 +15,7 @@
 				</div>
 				<div
 						v-if="hasTitle"
+						:style="typographyStyles"
 						class="origam-toolbar__title"
 				>
 					<slot name="title">
@@ -50,7 +51,8 @@
 		useProps,
 		useRtl,
 		useStateEffect,
-		useStyle
+		useStyle,
+		useTypography
 	} from '../../composables'
 
 	import { vContrast } from '../../directives'
@@ -125,6 +127,11 @@
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
 	const {positionStyles, positionClasses} = usePosition(props)
+
+	// fontSize, fontWeight, letterSpacing, lineHeight are read by .origam-title
+	// inside __title via --origam-toolbar__title---* vars. Binding typographyStyles
+	// on the __title div makes the vars available to the descendant .origam-title.
+	const {typographyStyles} = useTypography(props, 'toolbar__title')
 
 	const barStyles = computed(() => {
 		return [

@@ -67,6 +67,37 @@ const visible = ref(true)
 </template>
 ```
 
+## Typography (title surface)
+
+`fontSize`, `fontWeight`, `letterSpacing`, and `lineHeight` override the
+corresponding CSS variables on the `__title` BEM child (`<span class="origam-alert__title">`).
+The styles are bound inline on that element via `useTypography(props, 'alert__title')`.
+
+> `fontFamily` is part of `ITypographyProps` but is not read by the `__title`
+> SCSS — it emits its var but has no visual effect on this component.
+
+```vue
+<template>
+    <OrigamAlert
+        title="Bold large title"
+        text="Body text remains at theme size."
+        font-size="xl"
+        font-weight="bold"
+        letter-spacing="wide"
+        line-height="loose"
+    />
+</template>
+```
+
+### Typography props
+
+| Prop | Type | CSS variable set | Effect |
+|---|---|---|---|
+| `fontSize` | `TFontSize` | `--origam-alert__title---font-size` | Title font-size token. |
+| `fontWeight` | `TFontWeight` | `--origam-alert__title---font-weight` | Title font-weight token. |
+| `letterSpacing` | `TLetterSpacing` | `--origam-alert__title---letter-spacing` | Title letter-spacing token. |
+| `lineHeight` | `TLineHeight` | `--origam-alert__title---line-height` | Title line-height token. |
+
 ## Emits
 
 | Event              | Payload      | Description                                     |

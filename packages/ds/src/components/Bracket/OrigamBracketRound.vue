@@ -10,6 +10,7 @@
 		<h3
 				v-if="showRoundTitle"
 				:id="titleId"
+				:style="typographyStyles"
 				class="origam-bracket-round__title"
 		>
 			<slot
@@ -57,7 +58,7 @@
 
 	import OrigamBracketMatch from './OrigamBracketMatch.vue'
 
-	import { useProps } from '../../composables'
+	import { useProps, useTypography } from '../../composables'
 
 	import { DIRECTION } from '../../enums'
 
@@ -84,6 +85,8 @@
 	}>()
 
 	const {filterProps} = useProps<IBracketRoundProps>(props)
+
+	const {typographyStyles} = useTypography(props, 'bracket-round-title')
 
 	const resolvedId = computed(() => props.id ?? `origam-bracket-round-${props.round.id}`)
 	const titleId = computed(() => `${resolvedId.value}-title`)

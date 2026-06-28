@@ -184,6 +184,7 @@
 		useSize,
 		useStateEffect,
 		useStyle,
+		useTypography,
 		useVariant
 } from '../../composables'
 
@@ -301,6 +302,19 @@
 	})
 
 	/*********************************************************
+	 * Typography — BEM child surface
+	 *
+	 * @description
+	 * Emits --origam-field__label---font-size on the __label child element.
+	 * The SCSS reads this var on &__label--floating (the animated floating
+	 * label). The var is also consumed by the JS animation scale calculation
+	 * (line: `getPropertyValue('--origam-field__label---font-size')`).
+	 * Only fontSize has a real visual effect — fontWeight / lineHeight / etc.
+	 * are not read by the __label SCSS.
+	 ********************************************************/
+	const {typographyStyles} = useTypography(props, 'field__label')
+
+	/*********************************************************
 	 * Label
 	 *
 	 * @description
@@ -324,6 +338,9 @@
 			for: id.value,
 			text: props.label,
 			...defaultLabelProps,
+			// BEM-child typography — emits --origam-field__label---font-size on the
+			// label element so the SCSS floating rule and JS animation scale read it.
+			style: typographyStyles.value,
 			// The field's `border` / `rounded` visual props belong to
 			// the FIELD outline (the input box). Forwarding them onto
 			// the `<origam-label>` would draw a chip-like border + 8px
@@ -359,6 +376,9 @@
 			floating: true,
 			ref: 'origamFloatingLabelRef',
 			...defaultFloatingLabelProps,
+			// BEM-child typography — same var as labelProps so the floating
+			// label's font-size SCSS rule and the JS scale animation both read it.
+			style: typographyStyles.value,
 			// Same reason as `labelProps` above — the field's `border` /
 			// `rounded` defaults belong to the field outline, NOT to the
 			// floating label that animates above/inside the input on focus.

@@ -6,7 +6,11 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IClipboardProps>>({ value: 'arnaud@example.com' })"
+				:init-state="() => useStoryInitState<Partial<IClipboardProps>>({
+					value: 'arnaud@example.com',
+					fontSize: undefined,
+					fontWeight: undefined
+				})"
 		>
 			<template #default="{ state }">
 				<origam-clipboard
@@ -20,6 +24,8 @@
 						:border-style="state.borderStyle"
 						:rounded="state.rounded"
 						:tag="state.tag"
+						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -34,6 +40,10 @@
 				</StoryGroup>
 				<StoryGroup title="Shape">
 					<HstSelect v-model="state.rounded" title="Rounded" :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Tag">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
@@ -125,7 +135,9 @@
 					value: 'arnaud@example.com',
 					feedbackDuration: 2000,
 					feedbackText: 'Copied!',
-					disabled: false
+					disabled: false,
+					fontSize: undefined,
+					fontWeight: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -149,6 +161,10 @@
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
 					<HstSelect v-model="state.rounded"     title="Rounded"      :options="ROUNDED_OPTIONS"/>
 					<HstSelect v-model="state.tag"         title="Tag"          :options="TAG_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstNumber   v-model="state.feedbackDuration" title="Feedback Duration (ms)" :min="500" :max="10000" :step="100"/>
@@ -174,6 +190,8 @@
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'

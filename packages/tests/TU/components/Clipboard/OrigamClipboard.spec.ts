@@ -140,3 +140,50 @@ describe('OrigamClipboard', () => {
         expect(errEvent[0]).toBeInstanceOf(Error)
     })
 })
+
+// ---------------------------------------------------------------------------
+// Typography props (ITypographyProps surface via useTypography 'clipboard__feedback')
+//
+// The BEM-child surface is .origam-clipboard__default-trigger which reads:
+//   font-size:   var(--origam-clipboard__feedback---font-size, 0.75rem)
+//   font-weight: var(--origam-clipboard__feedback---font-weight, 500)
+// typographyStyles is bound directly on the <button> element (not the root).
+// line-height and font-family are NOT read by the SCSS → not exposed.
+// ---------------------------------------------------------------------------
+describe('OrigamClipboard — typography props (BEM-child: __feedback trigger)', () => {
+    it('emits no font-size override when fontSize is unset', () => {
+        const wrapper = mountClipboard()
+        const style = wrapper.find('[data-cy="origam-clipboard-default-trigger"]').attributes('style') || ''
+        expect(style).not.toContain('--origam-clipboard__feedback---font-size')
+    })
+
+    it('fontSize="xl" → --origam-clipboard__feedback---font-size: var(--origam-font__size---xl)', () => {
+        const wrapper = mountClipboard({ fontSize: 'xl' })
+        const style = wrapper.find('[data-cy="origam-clipboard-default-trigger"]').attributes('style') || ''
+        expect(style).toContain('--origam-clipboard__feedback---font-size: var(--origam-font__size---xl)')
+    })
+
+    it('fontSize="sm" → --origam-clipboard__feedback---font-size: var(--origam-font__size---sm)', () => {
+        const wrapper = mountClipboard({ fontSize: 'sm' })
+        const style = wrapper.find('[data-cy="origam-clipboard-default-trigger"]').attributes('style') || ''
+        expect(style).toContain('--origam-clipboard__feedback---font-size: var(--origam-font__size---sm)')
+    })
+
+    it('emits no font-weight override when fontWeight is unset', () => {
+        const wrapper = mountClipboard()
+        const style = wrapper.find('[data-cy="origam-clipboard-default-trigger"]').attributes('style') || ''
+        expect(style).not.toContain('--origam-clipboard__feedback---font-weight')
+    })
+
+    it('fontWeight="bold" → --origam-clipboard__feedback---font-weight: var(--origam-font__weight---bold)', () => {
+        const wrapper = mountClipboard({ fontWeight: 'bold' })
+        const style = wrapper.find('[data-cy="origam-clipboard-default-trigger"]').attributes('style') || ''
+        expect(style).toContain('--origam-clipboard__feedback---font-weight: var(--origam-font__weight---bold)')
+    })
+
+    it('fontWeight="semibold" → --origam-clipboard__feedback---font-weight: var(--origam-font__weight---semibold)', () => {
+        const wrapper = mountClipboard({ fontWeight: 'semibold' })
+        const style = wrapper.find('[data-cy="origam-clipboard-default-trigger"]').attributes('style') || ''
+        expect(style).toContain('--origam-clipboard__feedback---font-weight: var(--origam-font__weight---semibold)')
+    })
+})

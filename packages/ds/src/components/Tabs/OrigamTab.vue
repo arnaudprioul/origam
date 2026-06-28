@@ -59,7 +59,8 @@
 		useDefaults,
 		useGroupItem,
 		useProps,
-		useStyle
+		useStyle,
+		useTypography
 	} from '../../composables'
 
 	import { vContrast } from '../../directives'
@@ -161,10 +162,16 @@
 	const hasIndicator = computed(() => props.variant === 'underline')
 
 	/*********************************************************
+	 * Typography
+	 ********************************************************/
+	const {typographyStyles} = useTypography(props, 'tabs__item')
+
+	/*********************************************************
 	 * Class & Style
 	 ********************************************************/
 	const tabStyles = computed(() => {
 		return [
+			typographyStyles.value,
 			props.style
 		] as StyleValue
 	})
