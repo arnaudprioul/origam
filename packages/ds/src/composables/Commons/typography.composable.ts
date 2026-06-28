@@ -69,6 +69,64 @@ import type { ITypographyProps } from '../../interfaces'
  *      `FONT_*_OPTIONS` selects (only the props that have a real effect).
  *   5. Doc: add the Props rows. Spec: ≥1 unit test per effective prop
  *      asserting the inline var, façon `OrigamTitle.spec.ts`.
+ *
+ * ------------------------------------------------------------------------
+ * CONVENTION — generic var is the override channel (fontSize vs size/density)
+ * ------------------------------------------------------------------------
+ * `--origam-{prefix}---font-size` (no suffix) IS the channel through which the
+ * `fontSize` prop overrides a component's own size/density variant. Therefore:
+ *
+ *   • NEVER pre-define the generic `--origam-{prefix}---font-size` as a token
+ *     when per-size tokens (`--origam-{prefix}---font-size-{xs|sm|…}`) exist.
+ *     If it is emitted, it always resolves and collapses every size variant to
+ *     that one value (the Chip/Kbd bug). Keep per-size tokens; drop the generic.
+ *   • Each `&--size-*` / `&--density-*` rule must read GENERIC-FIRST:
+ *       font-size: var(--origam-{prefix}---font-size,
+ *                      var(--origam-{prefix}---font-size-{size}, <literal default>));
+ *     so `useTypography` (which sets the generic inline only when `fontSize` is
+ *     passed) wins, and the per-size token drives when `fontSize` is unset.
+ *   • If a component has per-size tokens but NO generic token (suffixed-only,
+ *     e.g. Icon), there is nothing to delete — just add the generic-first read.
+ *
+ * Components touched by this convention so far: Chip, Kbd (fixed), Title (via
+ * its density rules). EmptyState is the remaining suffixed-size case (BEM-child
+ * prefixes). Icon is excluded from the typography surface (its `size` IS its
+ * font-size).
+ *
+ * ------------------------------------------------------------------------
+ * VAGUE-2 ROLLOUT TARGETS — `component → varPrefix → carrier surface`
+ * ------------------------------------------------------------------------
+ * Bind `typographyStyles` on the carrier surface; props with real effect are
+ * those whose var the SCSS actually reads. (✓ = done.)
+ *
+ *   ROOT prefix (style on the component root):
+ *     CardText           card-text          | Input        input
+ *     ListSubheader ✓    list-subheader     | SystemBar    system-bar
+ *     PickerTitle ✓      picker-title       | TextMask     text-mask (full surface)
+ *     Messages ✓         messages
+ *
+ *   BEM-CHILD prefix (style on the named child element, NOT the root):
+ *     Field        field__label            | Toolbar  toolbar__title
+ *     ExpansionPanelHeader expansion-panel__header | Alert  alert__title
+ *     Clipboard    clipboard__feedback     | Form     form__details
+ *     Tab          tabs__item              | Bracket  bracket-double-label
+ *     BracketRound bracket-round-title
+ *     Pagination ✓ pagination--info  (carrier = .origam-pagination__info)
+ *     Badge        badge__badge      (⚠ floating: the pill, not the overlay)
+ *
+ *   TELEPORT (style on the visible item, never the teleport root):
+ *     SnackbarItem snackbar-item (+ __title/__message for fontWeight)
+ *
+ *   MULTI-SURFACE — pending a design decision (one prop → which surface?):
+ *     CardHeader (__title/__subtitle), ListItem (__title/__subtitle),
+ *     DataList (__title/__text), Table (root/__caption/__header-cell).
+ *
+ *   SUFFIXED-SIZE — needs the generic-first fix above, on its child prefixes:
+ *     EmptyState (empty-state__title / empty-state__description).
+ *
+ *   OUT OF SCOPE: Icon (size IS font-size); BottomNav (inherits btn vars);
+ *     Breadcrumb / Counter / Stepper / Timeline and pure containers (no own
+ *     font var); Charts (SVG <text>, separate track).
  */
 const TYPOGRAPHY_TOKEN_MAP = [
     ['fontFamily', 'font-family', 'font__family'],
