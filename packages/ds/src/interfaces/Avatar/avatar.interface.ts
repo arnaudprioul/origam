@@ -14,12 +14,13 @@ import type {
     IRoundedProps,
     ISizeProps,
     ISrcObject,
-    ITagProps
+    ITagProps,
+    ITypographyProps
 } from '../../interfaces'
 
 import type { TIcon } from '../../types'
 
-export interface IAvatarProps extends ICommonsComponentProps, IDensityProps, IRoundedProps, ISizeProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IElevationProps, IHoverProps, IActiveProps {
+export interface IAvatarProps extends ICommonsComponentProps, IDensityProps, IRoundedProps, ISizeProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IElevationProps, IHoverProps, IActiveProps, ITypographyProps {
     /**
      * Renders an icon inside the avatar (centered). Mutually exclusive
      * with `image` and `text`: image wins, then icon, then text.

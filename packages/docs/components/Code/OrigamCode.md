@@ -48,6 +48,9 @@ automatic theme integration with the origam design system.
 | `filename` | `string` | `undefined` | Display the filename on the left of the header bar. Without a filename the header still renders (showing the language badge) as long as `copyable` is on, so the chrome stays consistent with or without a filename. |
 | `compact` | `boolean` | `false` | Render a single-line **pill** instead of a multi-line surface — ideal for an install command. Suppresses header / filename / line-numbers, shrinks vertical padding to one line, and collapses the copy control to a small inline icon button at the end of the row. `<figure><pre><code>` semantics are preserved. |
 | `prompt` | `string` | `undefined` | Decorative prompt prefix rendered before the code (e.g. `'$'`). Purely visual — it is NOT part of the highlighted code and is NEVER included in the clipboard copy. Most useful with `compact`. |
+| `fontFamily` | `TFontFamily` | `undefined` | Font family token (`sans` · `mono` · `serif`). Overrides the theme font-family on the code surface. When unset the theme value stays in control. |
+| `fontSize` | `TFontSize` | `undefined` | Font size token (`xs` · `sm` · `md` · `lg` · `xl` · `2xl` · `3xl` · `4xl` · `5xl`). Overrides the theme font-size. |
+| `lineHeight` | `TLineHeight` | `undefined` | Line-height token (`none` · `tight` · `snug` · `normal` · `relaxed` · `loose`). Overrides the theme line-height. |
 
 ## Events
 

@@ -98,6 +98,38 @@ describe('OrigamTitle — fontSize prop', () => {
     })
 })
 
+// The base `.origam-title` rule now declares `font-size: var(--origam-title---font-size)`
+// (no fallback), so fontSize takes effect STANDALONE — without a density class.
+// Zero-regression: when fontSize is unset the var is undefined, the declaration is
+// invalid and font-size simply inherits (exactly the prior behaviour). The density
+// rules keep priority (later source order, equal specificity) when a density is set.
+describe('OrigamTitle — fontSize standalone (base rule, zero-regression)', () => {
+    it('fontSize="5xl" without density sets the inline var and emits no density class', () => {
+        const el = mountTitle({ fontSize: '5xl' }).find('.origam-title')
+        const style = el.attributes('style') || ''
+        expect(style).toContain('--origam-title---font-size: var(--origam-font__size---5xl)')
+        expect(el.classes()).not.toContain('origam-title--density-compact')
+        expect(el.classes()).not.toContain('origam-title--density-default')
+        expect(el.classes()).not.toContain('origam-title--density-comfortable')
+    })
+
+    it('without fontSize and without density, no font-size inline override is emitted (inherits, no regression)', () => {
+        const el = mountTitle().find('.origam-title')
+        const style = el.attributes('style') || ''
+        expect(style).not.toContain('--origam-title---font-size:')
+        expect(el.classes()).not.toContain('origam-title--density-compact')
+        expect(el.classes()).not.toContain('origam-title--density-default')
+        expect(el.classes()).not.toContain('origam-title--density-comfortable')
+    })
+
+    it('density="compact" + fontSize="xs" keeps the inline var present (density override unchanged)', () => {
+        const el = mountTitle({ density: 'compact', fontSize: 'xs' }).find('.origam-title')
+        const style = el.attributes('style') || ''
+        expect(style).toContain('--origam-title---font-size: var(--origam-font__size---xs)')
+        expect(el.classes()).toContain('origam-title--density-compact')
+    })
+})
+
 describe('OrigamTitle — lineHeight prop', () => {
     it('emits no line-height override when lineHeight is unset', () => {
         const style = mountTitle().find('.origam-title').attributes('style') || ''

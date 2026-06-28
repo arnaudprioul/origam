@@ -58,7 +58,8 @@
 		useElevation,
 		useMargin,
 		usePadding,
-		useRounded
+		useRounded,
+		useTypography
 	} from '../../composables'
 
 	import { QUOTE_MARKS_BY_LANG } from '../../consts/Blockquote/blockquote.const'
@@ -160,6 +161,7 @@
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
+	const {typographyStyles} = useTypography(props, 'blockquote')
 
 	/*********************************************************
 	 * Colour axes — `color` = text, `bgColor` = accent
@@ -220,6 +222,7 @@
 			borderStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
+			typographyStyles.value,
 			customColorStyles.value,
 			props.style
 		] as StyleValue

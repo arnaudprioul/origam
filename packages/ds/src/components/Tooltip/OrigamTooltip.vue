@@ -26,7 +26,7 @@
 			<div
 					v-contrast
 					:class="tooltipContentClasses"
-					:style="colorStyles"
+					:style="[colorStyles, typographyStyles]"
 			>
 				<slot name="default">
 					<span>{{ text }}</span>
@@ -48,6 +48,7 @@
 	useProps,
 	useScopeId,
 	useStyle,
+	useTypography,
 	useVModel
 } from '../../composables'
 
@@ -99,6 +100,7 @@
 	 ********************************************************/
 
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {typographyStyles} = useTypography(props, 'tooltip')
 
 	/*********************************************************
 	 * Value

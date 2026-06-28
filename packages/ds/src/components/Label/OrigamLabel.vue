@@ -27,7 +27,8 @@
 	usePadding,
 	useProps,
 	useRounded,
-	useStyle
+	useStyle,
+	useTypography
 } from '../../composables'
 
 	import { vContrast } from '../../directives'
@@ -76,6 +77,16 @@
 
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
+	/*********************************************************
+	 * Typography
+	 *
+	 * @description
+	 * SCSS reads: font-size · font-weight · line-height · letter-spacing.
+	 * fontFamily emits its var but label SCSS has no font-family rule — no visual effect.
+	 ********************************************************/
+
+	const {typographyStyles} = useTypography(props, 'label')
+
 	const labelStyles = computed(() => {
 		return [
 			roundedStyles.value,
@@ -83,6 +94,7 @@
 			paddingStyles.value,
 			marginStyles.value,
 			colorStyles.value,
+			typographyStyles.value,
 			props.style
 		] as StyleValue
 	})

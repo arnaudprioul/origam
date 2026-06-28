@@ -59,7 +59,8 @@
 		useProps,
 		useSize,
 		useStateEffect,
-		useStyle
+		useStyle,
+		useTypography
 	} from '../../composables'
 
 	import type { IAvatarProps, ISrcObject} from '../../interfaces'
@@ -107,6 +108,11 @@
 	/*********************************************************
 	 * Composables
 	 ********************************************************/
+	/*********************************************************
+	 * Typography
+	 ********************************************************/
+	const {typographyStyles} = useTypography(props, 'avatar')
+
 	/*********************************************************
 	 * Slots
 	 *
@@ -159,6 +165,7 @@
 			sizeStyles.value,
 			colorStyles.value,
 			elevationStyles.value,
+			typographyStyles.value,
 			props.style
 		] as StyleValue
 	})

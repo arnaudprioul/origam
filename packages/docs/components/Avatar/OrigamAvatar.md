@@ -176,13 +176,22 @@ clickable contexts:
 interface IAvatarProps extends ICommonsComponentProps, IDensityProps,
     IRoundedProps, ISizeProps, ITagProps, IColorProps, IPaddingProps,
     IMarginProps, IBorderProps, IStatusProps, IElevationProps,
-    IHoverProps, IActiveProps {
+    IHoverProps, IActiveProps, ITypographyProps {
     start?: boolean
     end?: boolean
     image?: string | ISrcObject
     text?: string
 }
 ```
+
+### Typography props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `fontSize` | `TFontSize` | — | Override the initials font-size. Maps to `--origam-avatar---font-size` via `--origam-font__size---{value}`. |
+| `fontWeight` | `TFontWeight` | — | Override the initials font-weight. Maps to `--origam-avatar---font-weight` via `--origam-font__weight---{value}`. |
+| `lineHeight` | `TLineHeight` | — | Override the avatar line-height. Maps to `--origam-avatar---line-height` via `--origam-font__lineHeight---{value}`. |
+| `letterSpacing` | `TLetterSpacing` | — | Override the initials letter-spacing. Maps to `--origam-avatar---letter-spacing` via `--origam-font__letterSpacing---{value}`. |
 
 ## Anatomy
 

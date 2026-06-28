@@ -163,3 +163,52 @@ describe('OrigamCode — copy-to-clipboard', () => {
         wrapper.unmount()
     })
 })
+
+// ---------------------------------------------------------------------------
+// Typography props (ITypographyProps surface via useTypography 'code')
+//
+// The component's SCSS reads:
+//   font-family: var(--origam-code---font-family)
+//   font-size:   var(--origam-code---font-size)
+//   line-height: var(--origam-code---line-height)
+// on the root .origam-code element — all three are therefore effective.
+// fontWeight and letterSpacing are NOT part of OrigamCode's effective set
+// per the useTypography RECIPE (Code | code | fontFamily fontSize lineHeight).
+// ---------------------------------------------------------------------------
+describe('OrigamCode — typography props', () => {
+    function mountCode (props: Record<string, unknown> = {}) {
+        return mount(OrigamCode, {
+            props: { code: 'const x = 1', ...props },
+            attachTo: document.body,
+            global: { plugins: [createOrigam()] }
+        })
+    }
+
+    it('emits no font-family override when fontFamily is unset', () => {
+        const wrapper = mountCode()
+        const style = wrapper.find('.origam-code').attributes('style') || ''
+        expect(style).not.toContain('--origam-code---font-family')
+        wrapper.unmount()
+    })
+
+    it('fontFamily="mono" → --origam-code---font-family: var(--origam-font__family---mono)', () => {
+        const wrapper = mountCode({ fontFamily: 'mono' })
+        const style = wrapper.find('.origam-code').attributes('style') || ''
+        expect(style).toContain('--origam-code---font-family: var(--origam-font__family---mono)')
+        wrapper.unmount()
+    })
+
+    it('fontSize="xl" → --origam-code---font-size: var(--origam-font__size---xl)', () => {
+        const wrapper = mountCode({ fontSize: 'xl' })
+        const style = wrapper.find('.origam-code').attributes('style') || ''
+        expect(style).toContain('--origam-code---font-size: var(--origam-font__size---xl)')
+        wrapper.unmount()
+    })
+
+    it('lineHeight="relaxed" → --origam-code---line-height: var(--origam-font__lineHeight---relaxed)', () => {
+        const wrapper = mountCode({ lineHeight: 'relaxed' })
+        const style = wrapper.find('.origam-code').attributes('style') || ''
+        expect(style).toContain('--origam-code---line-height: var(--origam-font__lineHeight---relaxed)')
+        wrapper.unmount()
+    })
+})

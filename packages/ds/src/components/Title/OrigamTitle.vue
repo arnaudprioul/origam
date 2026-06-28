@@ -126,6 +126,7 @@
 	.origam-title {
 		color:          var(--origam-title---color);
 		font-family:    var(--origam-title---font-family);
+		font-size:      var(--origam-title---font-size);
 		font-weight:    var(--origam-title---font-weight);
 		letter-spacing: var(--origam-title---letter-spacing);
 		line-height:    var(--origam-title---line-height);

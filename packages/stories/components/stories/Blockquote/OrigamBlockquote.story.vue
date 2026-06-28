@@ -28,6 +28,10 @@
 						:margin="state.margin"
 						:align="state.align"
 						:lang="state.lang"
+						:font-family="state.fontFamily"
+						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
+						:line-height="state.lineHeight"
 						author="Linus Torvalds"
 						source="LKML, 2003"
 						cite="https://lkml.org/lkml/2003/8/26/142"
@@ -44,6 +48,12 @@
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color"   title="Color (text)"      :options="INTENT_OPTIONS"/>
 					<HstSelect v-model="state.bgColor" title="Bg Color (accent)" :options="INTENT_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontFamily" title="Font Family" :options="FONT_FAMILY_OPTIONS"/>
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Shape">
 					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
@@ -169,6 +179,12 @@
 					<HstSelect v-model="state.align"     title="Align"             :options="BLOCKQUOTE_ALIGN_OPTIONS"/>
 					<HstSelect v-model="state.lang"      title="Lang"              :options="BLOCKQUOTE_LANG_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontFamily" title="Font Family" :options="FONT_FAMILY_OPTIONS"/>
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
+				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
 				</StoryGroup>
@@ -195,7 +211,11 @@
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_FAMILY_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		INTENT_OPTIONS,
+		LINE_HEIGHT_OPTIONS,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'
