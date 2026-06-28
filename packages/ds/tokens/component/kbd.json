@@ -8,7 +8,6 @@
     "padding-block":     { "$type": "dimension",  "$value": "0.125em" },
     "padding-inline":    { "$type": "dimension",  "$value": "0.4em" },
     "font-family":       { "$type": "fontFamily", "$value": "{font.family.mono}" },
-    "font-size":         { "$type": "dimension",  "$value": "0.875em" },
     "font-weight":       { "$type": "fontWeight", "$value": "{font.weight.medium}" },
     "box-shadow":        { "$type": "shadow",     "$value": "{shadow.xs}" },
     "gap":               { "$type": "dimension",  "$value": "{space.1}" },

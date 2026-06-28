@@ -8,7 +8,6 @@
     "border-radius":     { "$type": "dimension",  "$value": "{radius.full}" },
     "border-radius-label": { "$type": "dimension","$value": "{radius.sm}" },
     "font-weight":       { "$type": "fontWeight", "$value": "{font.weight.regular}" },
-    "font-size":         { "$type": "dimension",  "$value": "{font.size.md}" },
     "opacity-disabled":  { "$type": "number",     "$value": "{opacity.32}" },
     "density":           { "$type": "dimension",  "$value": "0px" },
     "overlay-opacity":         { "$type": "number", "$value": "{opacity.0}" },

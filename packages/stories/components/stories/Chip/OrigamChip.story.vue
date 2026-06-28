@@ -16,6 +16,8 @@
 						:bg-color="state.bgColor"
 						:size="state.size"
 						:density="state.density"
+						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
 						:border="state.border"
@@ -36,6 +38,10 @@
 				<StoryGroup title="Sizing">
 					<HstSelect v-model="state.size"    title="Size"    :options="SIZE_OPTIONS"/>
 					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Shape">
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
@@ -281,6 +287,8 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		HOVER_OPTIONS,
 		resolveHoverState,
 		ICON_OPTIONS,

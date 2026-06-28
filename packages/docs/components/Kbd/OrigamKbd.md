@@ -91,6 +91,9 @@ The default slot overrides `text` and `combination` entirely, enabling rich cont
 | `bgColor` | `TColor` | — | Background color intent |
 | `rounded` | `TRounded \| boolean` | — | Corner-radius override |
 | `border` | `boolean \| string` | — | Border override |
+| `fontFamily` | `TFontFamily` | — | Font family token override (`sans` · `mono` · `serif`). Maps to `--origam-kbd---font-family`. |
+| `fontSize` | `TFontSize` | — | Font size token override (`xs` · `sm` · `md` · `lg` · `xl` · `2xl` · `3xl` · `4xl` · `5xl`). Maps to `--origam-kbd---font-size`. |
+| `fontWeight` | `TFontWeight` | — | Font weight token override (`regular` · `medium` · `semibold` · `bold` · `extrabold` · `black`). Maps to `--origam-kbd---font-weight`. |
 
 ## Accessibility
 

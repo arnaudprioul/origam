@@ -5,6 +5,15 @@
 // falls back gracefully (group is null). Tests cover the API surface that
 // does NOT need a parent group (closable, click emit, disabled, size,
 // density, label, pill, rounded) and a few edge cases.
+//
+// Typography props (ITypographyProps surface, useTypography with 'chip' prefix):
+// Chip's SCSS reads `--origam-chip---font-weight` at root level and resolves
+// `--origam-chip---font-size` generic-first in each `&--size-*` rule
+// (`var(--origam-chip---font-size, var(--origam-chip---font-size-{size}, …))`),
+// so `fontSize` overrides the size-variant font-size when set and the per-size
+// value stays in control when unset. Runtime px proof lives in the e2e layer;
+// these unit tests assert the emitted custom property via `wrapper.vm.css`
+// (injected through useStyle, same pattern as OrigamBtn).
 
 import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -33,6 +42,10 @@ function mountChip(props: Record<string, unknown> = {}, slots: Record<string, un
         slots,
         global: { plugins: [createOrigam()] }
     })
+}
+
+function cssOf(props: Record<string, unknown> = {}): string {
+    return (mountChip(props).vm as unknown as { css: string }).css || ''
 }
 
 // ---------------------------------------------------------------------------
@@ -202,5 +215,41 @@ describe('OrigamChip — prepend and append', () => {
         const wrapper = mountChip()
         expect(wrapper.find('.origam-chip__prepend').exists()).toBe(false)
         expect(wrapper.find('.origam-chip__append').exists()).toBe(false)
+    })
+})
+
+// ---------------------------------------------------------------------------
+// Typography — fontSize
+// ---------------------------------------------------------------------------
+
+describe('OrigamChip — fontSize prop', () => {
+    it('emits no font-size override when fontSize is unset', () => {
+        expect(cssOf()).not.toContain('--origam-chip---font-size:')
+    })
+
+    it('fontSize="xl" sets the font-size var to the xl token', () => {
+        expect(cssOf({ fontSize: 'xl' })).toContain('--origam-chip---font-size: var(--origam-font__size---xl)')
+    })
+
+    it('fontSize="xs" sets the font-size var to the xs token', () => {
+        expect(cssOf({ fontSize: 'xs' })).toContain('--origam-chip---font-size: var(--origam-font__size---xs)')
+    })
+})
+
+// ---------------------------------------------------------------------------
+// Typography — fontWeight
+// ---------------------------------------------------------------------------
+
+describe('OrigamChip — fontWeight prop', () => {
+    it('emits no font-weight override when fontWeight is unset', () => {
+        expect(cssOf()).not.toContain('--origam-chip---font-weight:')
+    })
+
+    it('fontWeight="bold" sets the font-weight var to the bold token (700)', () => {
+        expect(cssOf({ fontWeight: 'bold' })).toContain('--origam-chip---font-weight: var(--origam-font__weight---bold)')
+    })
+
+    it('fontWeight="black" sets the font-weight var to the black token (900)', () => {
+        expect(cssOf({ fontWeight: 'black' })).toContain('--origam-chip---font-weight: var(--origam-font__weight---black)')
     })
 })
