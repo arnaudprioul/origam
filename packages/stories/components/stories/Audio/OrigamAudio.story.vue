@@ -18,7 +18,10 @@
 					width: undefined,
 					height: undefined,
 					padding: undefined,
-					margin: undefined
+					margin: undefined,
+					fontSize: undefined,
+					fontWeight: undefined,
+					lineHeight: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -42,6 +45,9 @@
 							:margin="state.margin"
 							:waveform="state.waveform"
 							:waveform-color="state.waveformColor || undefined"
+							:font-size="state.fontSize || undefined"
+							:font-weight="state.fontWeight || undefined"
+							:line-height="state.lineHeight || undefined"
 							class="story-audio"
 					/>
 				</div>
@@ -75,6 +81,11 @@
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.padding" title="Padding"/>
 					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -425,6 +436,9 @@
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
+		LINE_HEIGHT_OPTIONS,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'

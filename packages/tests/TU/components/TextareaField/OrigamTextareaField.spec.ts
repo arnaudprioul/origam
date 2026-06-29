@@ -271,3 +271,55 @@ describe('OrigamTextareaField — resize grip', () => {
         expect(wrapper.find('.origam-textarea-field__grip').exists()).toBe(false)
     })
 })
+
+// ---------------------------------------------------------------------------
+// Tests — typography (lineHeight — rich mode surface only)
+//
+// The rich host element (.origam-textarea-field__rich, data-cy="origam-textarea-rich-host")
+// reads `var(--origam-textarea-field__rich-content---line-height)` in its SCSS.
+// useTypography(props, 'textarea-field__rich-content') binds the override inline
+// on that element when `lineHeight` is set.
+//
+// Only `lineHeight` has a real SCSS effect on this component — the other four
+// ITypographyProps (fontSize, fontWeight, fontFamily, letterSpacing) emit vars
+// that no SCSS rule on OrigamTextareaField currently reads, so they are not
+// tested here.
+//
+// The rich host is only rendered when mode='rich', so every test below passes
+// that prop.
+// ---------------------------------------------------------------------------
+
+describe('OrigamTextareaField — typography (lineHeight, rich mode surface)', () => {
+    it('renders the rich host element when mode="rich"', () => {
+        const wrapper = mountTextareaField({ props: { mode: 'rich' } })
+        expect(wrapper.find('[data-cy="origam-textarea-rich-host"]').exists()).toBe(true)
+    })
+
+    it('emits no typography override when no typo prop is set', () => {
+        const wrapper = mountTextareaField({ props: { mode: 'rich' } })
+        const style = wrapper.find('[data-cy="origam-textarea-rich-host"]').attributes('style') || ''
+        expect(style).not.toContain('--origam-textarea-field__rich-content---')
+    })
+
+    it('lineHeight="normal" → --origam-textarea-field__rich-content---line-height: var(--origam-font__lineHeight---normal)', () => {
+        const wrapper = mountTextareaField({ props: { mode: 'rich', lineHeight: 'normal' } })
+        const style = wrapper.find('[data-cy="origam-textarea-rich-host"]').attributes('style') || ''
+        expect(style).toContain(
+            '--origam-textarea-field__rich-content---line-height: var(--origam-font__lineHeight---normal)'
+        )
+    })
+
+    it('lineHeight="loose" → --origam-textarea-field__rich-content---line-height: var(--origam-font__lineHeight---loose)', () => {
+        const wrapper = mountTextareaField({ props: { mode: 'rich', lineHeight: 'loose' } })
+        const style = wrapper.find('[data-cy="origam-textarea-rich-host"]').attributes('style') || ''
+        expect(style).toContain(
+            '--origam-textarea-field__rich-content---line-height: var(--origam-font__lineHeight---loose)'
+        )
+    })
+
+    it('emits no line-height override when lineHeight is unset', () => {
+        const wrapper = mountTextareaField({ props: { mode: 'rich' } })
+        const style = wrapper.find('[data-cy="origam-textarea-rich-host"]').attributes('style') || ''
+        expect(style).not.toContain('---line-height:')
+    })
+})

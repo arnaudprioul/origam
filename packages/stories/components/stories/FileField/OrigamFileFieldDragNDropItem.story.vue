@@ -15,6 +15,8 @@
 						:color="state.color"
 						:file-icon="state.fileIcon || undefined"
 						:remove-icon="state.removeIcon || undefined"
+						:font-size="state.fontSize || undefined"
+						:font-weight="state.fontWeight || undefined"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -24,6 +26,10 @@
 				<StoryGroup title="Icons">
 					<HstSelect v-model="state.fileIcon"   title="File Icon"   :options="ICON_OPTIONS"/>
 					<HstSelect v-model="state.removeIcon" title="Remove Icon" :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -115,6 +121,8 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		COLOR_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		ICON_OPTIONS
 	} from '@stories/const'
 

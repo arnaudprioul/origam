@@ -131,6 +131,7 @@
 				role="status"
 				:aria-label="t('origam.loading')"
 				data-cy="origam-video-loading"
+				:style="typographyLoadingStyles"
 		>
 			<slot name="loading">
 				<origam-icon
@@ -146,6 +147,7 @@
 				class="origam-video__error"
 				role="alert"
 				data-cy="origam-video-error"
+				:style="typographyErrorStyles"
 		>
 			<slot
 					name="error"
@@ -233,7 +235,7 @@
 	import { OrigamMediaController } from '../Media'
 	import { OrigamResponsive } from '../Responsive'
 
-	import { shouldSuppressAutoplay, useBorder, useColorEffect, useDimension, useElevation, useLocale, useMargin, usePadding, useRounded, useVideoPlayer } from '../../composables'
+	import { shouldSuppressAutoplay, useBorder, useColorEffect, useDimension, useElevation, useLocale, useMargin, usePadding, useRounded, useTypography, useVideoPlayer } from '../../composables'
 
 	import { MDI_ICONS } from '../../enums'
 
@@ -838,6 +840,15 @@
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { elevationClasses } = useElevation(props)
 	const { dimensionStyles } = useDimension(props)
+
+	/*********************************************************
+	 * Typography — per-surface tokens.
+	 *   video__loading → font-size (état overlay)
+	 *   video--error   → font-size (état overlay)
+	 * useColorEffect drives color; typographyStyles only sets font vars.
+	 ********************************************************/
+	const { typographyStyles: typographyLoadingStyles } = useTypography(props, 'video__loading')
+	const { typographyStyles: typographyErrorStyles } = useTypography(props, 'video--error')
 
 	/*********************************************************
 	 * scrubberColorStyle — drives `--origam-media-controller__scrubber---color`

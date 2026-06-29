@@ -19,7 +19,8 @@
 					color: undefined,
 					bgColor: undefined,
 					width: undefined,
-					height: undefined
+					height: undefined,
+					fontSize: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -40,6 +41,7 @@
 							:bg-color="state.bgColor"
 							:width="state.width"
 							:height="state.height"
+							:font-size="state.fontSize || undefined"
 							class="story-video"
 					/>
 				</div>
@@ -69,6 +71,9 @@
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.padding" title="Padding"/>
 					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize" title="Font Size (state overlays)" :options="FONT_SIZE_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -435,6 +440,7 @@
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
 		ROUNDED_OPTIONS
 	} from '@stories/const'
 

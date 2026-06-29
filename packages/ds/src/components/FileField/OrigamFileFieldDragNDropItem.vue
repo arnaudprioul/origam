@@ -9,7 +9,10 @@
           class="origam-file-field-dragndrop-item__icon"
       />
       <div class="origam-file-field-dragndrop-item__content">
-        <div class="origam-file-field-dragndrop-item__name">
+        <div
+            class="origam-file-field-dragndrop-item__name"
+            :style="typographyStyles"
+        >
           {{ file.name }}
         </div>
         <div class="origam-file-field-dragndrop-item__meta">
@@ -47,7 +50,8 @@
   import {
 	useDefaults,
 	useProps,
-	useStyle
+	useStyle,
+	useTypography
 } from '../../composables'
   import { MDI_ICONS } from '../../enums'
   import type { IFileFieldDragNDropItemProps, IFileFieldDragNDropItemSlots} from '../../interfaces'
@@ -129,6 +133,10 @@
    * Exposes functions and components to the world.
    *    filterProps is a function that filters out props that are not defined in the `IFileFieldDragNDropItemProps` interface.
    ********************************************************/
+  // BEM-child surface: vars are read by .origam-file-field-dragndrop-item__name
+  // (font-size / font-weight). Bound directly on that element, not the root.
+  const { typographyStyles } = useTypography(props, 'file-field-dragndrop-item__name')
+
   const { filterProps } = useProps<IFileFieldDragNDropItemProps>(props)
 	const {id, css, load, isLoaded, unload} = useStyle(dragNDropItemStyles)
 

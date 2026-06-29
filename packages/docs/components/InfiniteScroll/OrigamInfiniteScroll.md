@@ -51,8 +51,19 @@ const loadMore = ({ side, done }) => {
 |---|---|---|
 | `load` | `{ side: TInfiniteScrollSide, done: (status: TInfiniteScrollStatus) => void }` | Fires when more data should be loaded |
 
+## Typography
+
+Controls the font size of the loading / empty / error text inside the side panels.
+Only `fontSize` has a real visual effect; the SCSS reads
+`--origam-infinite-scroll__loader---font-size` on `.origam-infinite-scroll__side`.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `fontSize` | `TFontSize` | — | Font-size token (`xs` · `sm` · `md` · `lg` · `xl` · `2xl` · `3xl` · `4xl` · `5xl`). Overrides the loader text size without touching other text in the scroll area. |
+
 ## Design tokens
 
 | Token | Description |
 |---|---|
 | `--origam-infinite-scroll---*` | Component-level token namespace |
+| `--origam-infinite-scroll__loader---font-size` | Font size of the side-panel loader text (default `0.875rem`) |

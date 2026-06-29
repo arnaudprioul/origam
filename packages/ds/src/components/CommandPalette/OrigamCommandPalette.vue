@@ -34,6 +34,7 @@
 								:aria-controls="listboxId"
 								:aria-expanded="hasResults"
 								:placeholder="placeholder"
+								:style="inputTypographyStyles"
 								aria-autocomplete="list"
 								autocomplete="off"
 								class="origam-command-palette__input"
@@ -75,6 +76,7 @@
 							>
 								<div
 										v-if="group.label"
+										:style="groupTitleTypographyStyles"
 										class="origam-command-palette__group-title"
 								>
 									{{ group.label }}
@@ -172,6 +174,8 @@
 	import { useCommand } from '../../composables/CommandPalette/command.composable'
 
 	import { useHotkey } from '../../composables/Commons/hotkey.composable'
+
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 
@@ -520,6 +524,22 @@
 	const selectText = 'Select'
 	const closeText = 'Close'
 	const hasDefaultFooter = computed<boolean>(() => true)
+
+	/*********************************************************
+	 * Typography
+	 *
+	 * @description
+	 * Two BEM surfaces consume a font-size token:
+	 *   __group-title  → --origam-command-palette__group-title---font-size
+	 *   __input        → --origam-command-palette__input---font-size
+	 * Both are driven by the same `fontSize` prop (ITypographyProps).
+	 * Other typography props (fontWeight, letterSpacing, …) emit their
+	 * CSS vars but the SCSS does not read them on either surface — they
+	 * have no visual effect and are not exposed in the story controls.
+	 ********************************************************/
+
+	const { typographyStyles: groupTitleTypographyStyles } = useTypography(props, 'command-palette__group-title')
+	const { typographyStyles: inputTypographyStyles } = useTypography(props, 'command-palette__input')
 
 	/*********************************************************
 	 * Class & Style

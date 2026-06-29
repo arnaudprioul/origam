@@ -118,6 +118,20 @@ are all unset (and no `#metadata` slot is provided), only the cover
 | `margin`        | `IMarginProps['margin']`                                         | `undefined`   | Margin tokens (axis or per-side).                                                                                                                      |
 | `tag`           | `string`                                                         | `'article'`   | `IAudioProps` extends `ITagProps`. The root is always rendered as `<article>` for HTML semantics; the prop is preserved for typed consumers.            |
 
+### Typography props (`ITypographyProps`) — per-surface
+
+A single set of `ITypographyProps` drives all four text surfaces. Each surface reads only the variables its SCSS declares; unset props emit nothing.
+
+| Prop            | Type          | Default     | Surfaces with visual effect                                                                      |
+|-----------------|---------------|-------------|--------------------------------------------------------------------------------------------------|
+| `fontSize`      | `TFontSize`   | `undefined` | `audio__title` (font-size), `audio__meta` (font-size), `audio__loading` (font-size), `audio--error` (font-size) |
+| `fontWeight`    | `TFontWeight` | `undefined` | `audio__title` (font-weight) only                                                                |
+| `lineHeight`    | `TLineHeight` | `undefined` | `audio__title` (line-height) only                                                                |
+| `letterSpacing` | `TLetterSpacing` | `undefined` | No SCSS rule in current surfaces — prop accepted, var emitted, no visible effect               |
+| `fontFamily`    | `TFontFamily` | `undefined` | No SCSS rule in current surfaces — prop accepted, var emitted, no visible effect               |
+
+> `audio__loading` and `audio--error` are state overlays — only visible when the player is loading or in error state. The CSS var is always set via inline `:style`; the rendered effect requires triggering the matching player state.
+
 ### Media
 
 | Prop                  | Type                                              | Default                          | Description                                                                                                              |

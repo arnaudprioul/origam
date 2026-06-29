@@ -82,6 +82,25 @@ When `<OrigamCommandPalette>` is mounted **without** an explicit
 addressing the same singleton share the same command list — by design,
 the registry is process-wide.
 
+## Typography
+
+`fontSize` drives the font size of two BEM surfaces simultaneously. The
+prop maps a primitive font token key to the matching component CSS
+variable via `useTypography`.
+
+| Surface | CSS variable | Effective props |
+|---|---|---|
+| `__input` (search field) | `--origam-command-palette__input---font-size` | `fontSize` |
+| `__group-title` (group header) | `--origam-command-palette__group-title---font-size` | `fontSize` |
+
+`fontWeight` and `letterSpacing` have hardcoded values in the SCSS
+(`600` and `0.04em` on `__group-title`) — they are NOT token-driven and
+passing those props has no visual effect.
+
+```vue
+<OrigamCommandPalette v-model="open" :commands="commands" font-size="sm"/>
+```
+
 ## Props
 
 | Prop | Type | Default | Description |
@@ -97,6 +116,11 @@ the registry is process-wide.
 | `closeOnSelect` | `boolean` | `true` | Close the palette automatically when a command is selected. |
 | `closeOnEscape` | `boolean` | `true` | Close on `Escape`. |
 | `closeOnBackdrop` | `boolean` | `true` | Close when the user clicks the backdrop. |
+| `fontSize` | `TFontSize` | — | Font size token applied to both `__input` and `__group-title` surfaces. |
+| `fontFamily` | `TFontFamily` | — | Font family token (emitted but no SCSS rule on these surfaces — no visual effect). |
+| `fontWeight` | `TFontWeight` | — | Font weight token (emitted but hardcoded in SCSS — no visual effect). |
+| `lineHeight` | `TLineHeight` | — | Line-height token (emitted but no SCSS rule on these surfaces — no visual effect). |
+| `letterSpacing` | `TLetterSpacing` | — | Letter-spacing token (emitted but hardcoded in SCSS — no visual effect). |
 
 ## Events
 

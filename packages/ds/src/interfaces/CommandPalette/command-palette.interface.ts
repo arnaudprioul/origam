@@ -1,5 +1,6 @@
 import type { ICommand } from './command.interface'
 import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
 /**
  * A hotkey is either a single combination (`['meta', 'k']`) or an
@@ -12,7 +13,7 @@ import type { ICommonsComponentProps } from '../Commons/commons.interface'
  */
 export type TCommandPaletteHotkey = ReadonlyArray<string> | ReadonlyArray<ReadonlyArray<string>>
 
-export interface ICommandPaletteProps extends ICommonsComponentProps {
+export interface ICommandPaletteProps extends ICommonsComponentProps, ITypographyProps {
     /** v-model — whether the palette is open. */
     modelValue?: boolean
     /**

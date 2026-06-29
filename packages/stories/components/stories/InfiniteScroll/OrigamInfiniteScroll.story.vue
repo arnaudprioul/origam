@@ -20,6 +20,7 @@
 						:max-height="state.maxHeight"
 						:min-width="state.minWidth"
 						:max-width="state.maxWidth"
+						:font-size="state.fontSize"
 						side="end"
 						mode="intersect"
 						@load="handleDesignLoad"
@@ -37,6 +38,9 @@
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize" title="Font Size" :options="FONT_SIZE_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Dimension">
 					<HstText v-model="state.width"     title="Width"/>
@@ -230,6 +234,9 @@
 					<HstSelect v-model="state.direction" title="Direction" :options="DIRECTION_OPTIONS"/>
 					<HstSelect v-model="state.tag"       title="Tag"       :options="TAG_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize" title="Font Size" :options="FONT_SIZE_OPTIONS"/>
+				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstSelect v-model="state.side" title="Side" :options="SIDE_OPTIONS"/>
 					<HstSelect v-model="state.mode" title="Mode" :options="MODE_OPTIONS"/>
@@ -255,6 +262,7 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		COLOR_OPTIONS,
+		FONT_SIZE_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'
 

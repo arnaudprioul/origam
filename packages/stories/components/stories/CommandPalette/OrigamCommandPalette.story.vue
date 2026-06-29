@@ -15,7 +15,8 @@
 					loading: false,
 					closeOnSelect: true,
 					closeOnEscape: true,
-					closeOnBackdrop: true
+					closeOnBackdrop: true,
+					fontSize: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -38,6 +39,7 @@
 							:close-on-select="state.closeOnSelect"
 							:close-on-escape="state.closeOnEscape"
 							:close-on-backdrop="state.closeOnBackdrop"
+							:font-size="state.fontSize"
 					/>
 				</div>
 			</template>
@@ -57,6 +59,9 @@
 					<HstCheckbox v-model="state.closeOnSelect"  title="Close on Select"/>
 					<HstCheckbox v-model="state.closeOnEscape"  title="Close on Escape"/>
 					<HstCheckbox v-model="state.closeOnBackdrop" title="Close on Backdrop"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize" title="Font Size" :options="FONT_SIZE_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -187,7 +192,8 @@
 					loading: false,
 					closeOnSelect: true,
 					closeOnEscape: true,
-					closeOnBackdrop: true
+					closeOnBackdrop: true,
+					fontSize: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -223,6 +229,9 @@
 					<HstCheckbox v-model="state.closeOnEscape"    title="Close on Escape"/>
 					<HstCheckbox v-model="state.closeOnBackdrop"  title="Close on Backdrop"/>
 				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize" title="Font Size" :options="FONT_SIZE_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 	</Story>
@@ -241,6 +250,7 @@
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import { FONT_SIZE_OPTIONS } from '@stories/const'
 
 	const lastSelectedLabel = ref<string>('')
 	const selectCount = ref<number>(0)

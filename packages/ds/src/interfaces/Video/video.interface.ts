@@ -13,6 +13,7 @@ import type {
     IMediaPlayerState,
     IPaddingProps,
     IRoundedProps,
+    ITypographyProps,
     IUseMediaPlayerOptions,
     IVideoSource,
     IVideoTrack
@@ -90,7 +91,7 @@ export interface IVideoSlots {
 /**
  * Props for `<OrigamVideo>`.
  */
-export interface IVideoProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IDimensionProps, IRoundedProps, IBorderProps, IMarginProps, IPaddingProps, IElevationProps {
+export interface IVideoProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IDimensionProps, IRoundedProps, IBorderProps, IMarginProps, IPaddingProps, IElevationProps, ITypographyProps {
     /**
      * Media URL — either a single string for `<video src>`, or an array
      * of `<source>` descriptors when multiple formats are provided. The

@@ -16,6 +16,7 @@ import type {
     IRoundedProps,
     ISrcObject,
     ITagProps,
+    ITypographyProps,
     IVideoTrack
 } from '../../interfaces'
 
@@ -132,7 +133,8 @@ export interface IAudioProps
         IElevationProps,
         IPositionProps,
         IColorProps,
-        IBgColorProps {
+        IBgColorProps,
+        ITypographyProps {
     /**
      * Visual variant of the audio surface.
      *

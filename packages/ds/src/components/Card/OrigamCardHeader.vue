@@ -41,6 +41,7 @@
 						v-if="hasTitle"
 						key="title"
 						class="origam-card-header__title"
+						:style="titleTypographyStyles"
 				>
 					<slot
 							name="title"
@@ -53,6 +54,7 @@
 						v-if="hasSubtitle"
 						key="subtitle"
 						class="origam-card-header__subtitle"
+						:style="subtitleTypographyStyles"
 				>
 					<slot
 							name="subtitle"
@@ -99,7 +101,8 @@
 	useAdjacent,
 	useDensity,
 	useProps,
-	useStyle
+	useStyle,
+	useTypography
 } from '../../composables'
 
 	import type { ICardHeaderProps} from '../../interfaces'
@@ -128,6 +131,21 @@
 	 ********************************************************/
 
 	const {densityClasses} = useDensity(props)
+
+	/*********************************************************
+	 * Typography
+	 *
+	 * @description
+	 * The shared `ITypographyProps` set drives BOTH text surfaces at
+	 * once: one `useTypography` call per BEM child, each re-pointing the
+	 * matching `--origam-card-header__{title|subtitle}---*` variable.
+	 * Effective props on both surfaces: fontSize / fontWeight /
+	 * lineHeight / letterSpacing (SCSS reads all four). fontFamily emits
+	 * its var but neither surface has a font-family SCSS rule.
+	 ********************************************************/
+
+	const {typographyStyles: titleTypographyStyles} = useTypography(props, 'card-header__title')
+	const {typographyStyles: subtitleTypographyStyles} = useTypography(props, 'card-header__subtitle')
 
 	/*********************************************************
 	 * Adjacent (prepend / append)

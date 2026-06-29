@@ -9,7 +9,10 @@
           class="origam-file-field-list-item__icon"
       />
       <div class="origam-file-field-list-item__content">
-        <div class="origam-file-field-list-item__name">
+        <div
+            class="origam-file-field-list-item__name"
+            :style="typographyStyles"
+        >
           {{ file.name }}
         </div>
         <div class="origam-file-field-list-item__meta">
@@ -47,7 +50,8 @@
   import {
 	useDefaults,
 	useProps,
-	useStyle
+	useStyle,
+	useTypography
 } from '../../composables'
   import { MDI_ICONS } from '../../enums'
   import type { IFileFieldListItemProps, IFileFieldListItemSlots} from '../../interfaces'
@@ -129,6 +133,10 @@
    * Exposes functions and components to the world.
    *    filterProps is a function that filters out props that are not defined in the `IFileFieldListItemProps` interface.
    ********************************************************/
+  // BEM-child surface: vars are read by .origam-file-field-list-item__name
+  // (font-size / font-weight). Bound directly on that element, not the root.
+  const { typographyStyles } = useTypography(props, 'file-field-list-item__name')
+
   const { filterProps } = useProps<IFileFieldListItemProps>(props)
 	const {id, css, load, isLoaded, unload} = useStyle(listItemStyles)
 
