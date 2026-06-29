@@ -1,0 +1,80 @@
+# -----------------------------------------------------------------------------
+# Local / self-hosted stack for the marketing site + its API-Reference database.
+#
+#   db      — PostgreSQL 16 (persistent volume), the API-Reference store.
+#   migrate — one-shot: runs the TypeORM migrations then seeds + syncs the doc
+#             data from the DS source. Exits 0 when the DB is ready. Built from
+#             the lightweight `tools` stage (no nuxt build).
+#   app     — the Nuxt 4 / Nitro SSR server (built from the `runtime` stage),
+#             serving the site + embedded /docs + /stories on port 3000.
+#
+# Build context is the monorepo root (../..) because the Dockerfile needs the
+# full pnpm workspace. Connection settings come from .env (see .env.example);
+# no secret is hardcoded.
+#
+# Usage:
+#   cp packages/marketing/.env.example packages/marketing/.env   # then edit
+#   docker compose -f packages/marketing/docker-compose.yml up --build
+#   # → http://localhost:3000  (API at /api/reference/:kind)
+#
+# Re-sync the docs after a DS update (without rebuilding the app):
+#   docker compose -f packages/marketing/docker-compose.yml run --rm migrate
+# -----------------------------------------------------------------------------
+
+name: origam-marketing
+
+services:
+    db:
+        image: postgres:16-alpine
+        restart: unless-stopped
+        environment:
+            POSTGRES_USER: ${DB_USER:-origam}
+            POSTGRES_PASSWORD: ${DB_PASSWORD:-origam}
+            POSTGRES_DB: ${DB_NAME:-origam_docs}
+        ports:
+            - "${DB_PORT:-5432}:5432"
+        volumes:
+            - origam-marketing-db:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-origam} -d ${DB_NAME:-origam_docs}"]
+            interval: 5s
+            timeout: 5s
+            retries: 20
+
+    migrate:
+        build:
+            context: ../..
+            dockerfile: packages/marketing/Dockerfile
+            target: tools
+        environment:
+            DATABASE_URL: postgres://${DB_USER:-origam}:${DB_PASSWORD:-origam}@db:5432/${DB_NAME:-origam_docs}
+        depends_on:
+            db:
+                condition: service_healthy
+        command: >
+            sh -c "pnpm -F @origam/marketing db:migrate &&
+                   pnpm -F @origam/marketing docs:seed &&
+                   pnpm -F @origam/marketing docs:sync"
+        restart: "no"
+
+    app:
+        build:
+            context: ../..
+            dockerfile: packages/marketing/Dockerfile
+            target: runtime
+        restart: unless-stopped
+        environment:
+            DATABASE_URL: postgres://${DB_USER:-origam}:${DB_PASSWORD:-origam}@db:5432/${DB_NAME:-origam_docs}
+            NITRO_PORT: "3000"
+            NITRO_HOST: 0.0.0.0
+            NUXT_PUBLIC_GITHUB_REPO: ${NUXT_PUBLIC_GITHUB_REPO:-arnaudprioul/origam}
+        ports:
+            - "${APP_PORT:-3000}:3000"
+        depends_on:
+            db:
+                condition: service_healthy
+            migrate:
+                condition: service_completed_successfully
+
+volumes:
+    origam-marketing-db:

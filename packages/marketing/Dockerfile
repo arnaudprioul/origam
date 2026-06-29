@@ -13,7 +13,7 @@
 # (VitePress) + /stories (Histoire) static bundles (copied into public/ by
 # `build:embeds`). One container = the whole origam.* site.
 # -----------------------------------------------------------------------------
-FROM node:22-alpine AS build
+FROM node:22-alpine AS base
 
 WORKDIR /app
 
@@ -29,6 +29,7 @@ ENV NODE_OPTIONS=--max-old-space-size=8192
 RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 
 # --- Dependency layer: only invalidated when manifests / lockfile change. ---
+FROM base AS deps
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json .npmrc ./
 COPY packages/ds/package.json packages/ds/package.json
 COPY packages/docs/package.json packages/docs/package.json
@@ -41,12 +42,21 @@ RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
     pnpm install --frozen-lockfile
 
 # --- Source: everything the marketing build (and its embeds) needs. ---
+FROM deps AS source
 COPY tsconfig*.json ./
 COPY packages/ds packages/ds
 COPY packages/docs packages/docs
 COPY packages/stories packages/stories
 COPY packages/marketing packages/marketing
 
+# --- Tools stage: deps + source + tsx, WITHOUT the heavy lib/embeds/nuxt build.
+#     Consumed by the docker-compose `migrate` service to run the TypeORM
+#     migrations and the ingestion pipeline (db:migrate + docs:seed + docs:sync)
+#     against the database. Cheap — it stops right after the source COPY. ---
+FROM source AS tools
+
+# --- Build stage: compile the lib, the embeds, and the Nuxt/Nitro app output.
+FROM source AS build
 # 1. Build the published lib (tokens + unbuild) — marketing imports `origam`.
 RUN pnpm -F origam build
 # 2. Build the embeds (Histoire stories + VitePress docs) into marketing/public.
