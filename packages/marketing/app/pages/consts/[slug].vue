@@ -3,6 +3,7 @@ import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useT } from '~/composables/useT'
 import { useCopy } from '~/composables/useCopy'
+import { useReferenceDoc } from '~/composables/useApiReference'
 import type { IConstDoc } from '~/interfaces/consts-catalog.interface'
 
 const { t } = useT()
@@ -11,18 +12,7 @@ const { copy: copyValue } = useCopy()
 
 const slug = computed(() => route.params.slug as string)
 
-const allDocs = import.meta.glob('~/consts/consts/*.const.ts', { eager: true }) as Record<string, Record<string, unknown> | undefined>
-
-const constDoc = computed<IConstDoc | null>(() => {
-    const key = Object.keys(allDocs).find(k => k.includes(`/${slug.value}.const`))
-    if (!key) return null
-    const mod = allDocs[key]
-    if (!mod) return null
-    const exportKey = Object.keys(mod).find(k => k.endsWith('_CONST_DOC'))
-    return exportKey ? (mod[exportKey] as IConstDoc) : null
-})
-
-const displayDoc = computed(() => constDoc.value)
+const { data: displayDoc } = await useReferenceDoc<IConstDoc>('const', slug)
 
 const hasValues   = computed(() => (displayDoc.value?.values?.length ?? 0) > 0)
 const hasValue    = computed(() => !hasValues.value && !!displayDoc.value?.value)

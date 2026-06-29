@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useT } from '~/composables/useT'
-import type { IInterfaceDoc, IInterfaceEntry } from '~/interfaces/interfaces-catalog.interface'
+import { useReferenceCatalog, useReferenceCategories } from '~/composables/useApiReference'
+import type { IInterfaceEntry } from '~/interfaces/interfaces-catalog.interface'
 
 const { t } = useT()
 
@@ -12,29 +13,12 @@ useSeoMeta({
     ogDescription: () => t('interfaces.meta.description', 'TypeScript prop interfaces used across origam components.')
 })
 
-const allDocs = import.meta.glob('~/consts/interfaces/*.const.ts', { eager: true }) as Record<string, Record<string, unknown>>
+const { data: catalogData } = await useReferenceCatalog<IInterfaceEntry>('interface')
 
-const INTERFACES_CATALOG = computed<IInterfaceEntry[]>(() =>
-    Object.values(allDocs)
-        .map((mod) => {
-            const key = Object.keys(mod).find(k => k.endsWith('_INTERFACE_DOC'))
-            return key ? (mod[key] as IInterfaceDoc) : null
-        })
-        .filter((d): d is IInterfaceDoc => !!d)
-        .map(d => ({
-            slug: d.slug,
-            name: d.name,
-            category: d.category,
-            icon: 'mdi-shape-outline',
-            descriptionKey: d.descriptionKey,
-            descriptionFallback: d.descriptionFallback
-        }))
-        .sort((a, b) => a.name.localeCompare(b.name))
-)
+const INTERFACES_CATALOG = computed<IInterfaceEntry[]>(() => catalogData.value ?? [])
 
-const INTERFACES_CATEGORIES = computed(() =>
-    [...new Set(INTERFACES_CATALOG.value.map(e => e.category))].sort()
-)
+const { data: catsData } = await useReferenceCategories('interface')
+const INTERFACES_CATEGORIES = computed<string[]>(() => catsData.value ?? [])
 
 const searchQuery = ref('')
 

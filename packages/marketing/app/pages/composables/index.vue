@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useT } from '~/composables/useT'
-import type { IComposableDoc, IComposableEntry } from '~/interfaces/composables-catalog.interface'
+import { useReferenceCatalog } from '~/composables/useApiReference'
+import type { IComposableEntry } from '~/interfaces/composables-catalog.interface'
 
 const { t } = useT()
 
@@ -12,28 +13,9 @@ useSeoMeta({
     ogDescription: () => t('composables.meta.description', 'Browse 80+ composables grouped by domain.')
 })
 
-const allDocs = import.meta.glob('~/consts/composables/*.const.ts', { eager: true }) as Record<string, Record<string, unknown>>
+const { data: catalogData } = await useReferenceCatalog<IComposableEntry>('composable')
 
-const COMPOSABLES_CATALOG = computed<IComposableEntry[]>(() =>
-    Object.values(allDocs)
-        .map((mod) => {
-            const key = Object.keys(mod).find(k => k.endsWith('_DOC'))
-            return key ? (mod[key] as IComposableDoc) : null
-        })
-        .filter((d): d is IComposableDoc => !!d)
-        .map(d => ({
-            slug: d.slug,
-            name: d.name,
-            domain: d.domain,
-            icon: d.icon ?? 'mdi-function-variant',
-            descriptionKey: d.descriptionKey ?? '',
-            descriptionFallback: d.descriptionFallback ?? '',
-            related: Array.isArray(d.related)
-                ? d.related.map((r: unknown) => (typeof r === 'string' ? r : (r as { slug: string }).slug))
-                : []
-        }))
-        .sort((a, b) => a.name.localeCompare(b.name))
-)
+const COMPOSABLES_CATALOG = computed<IComposableEntry[]>(() => catalogData.value ?? [])
 
 const COMPOSABLES_DOMAINS = computed(() =>
     [...new Set(COMPOSABLES_CATALOG.value.map(e => e.domain))].sort()

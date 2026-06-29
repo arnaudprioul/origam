@@ -2,6 +2,7 @@
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useT } from '~/composables/useT'
+import { useReferenceDoc } from '~/composables/useApiReference'
 import type { IInterfaceDoc } from '~/interfaces/interfaces-catalog.interface'
 
 const { t } = useT()
@@ -9,18 +10,7 @@ const route = useRoute()
 
 const slug = computed(() => route.params.slug as string)
 
-const allDocs = import.meta.glob('~/consts/interfaces/*.const.ts', { eager: true }) as Record<string, Record<string, unknown> | undefined>
-
-const interfaceDoc = computed<IInterfaceDoc | null>(() => {
-    const key = Object.keys(allDocs).find(k => k.includes(`/${slug.value}.const`))
-    if (!key) return null
-    const mod = allDocs[key]
-    if (!mod) return null
-    const exportKey = Object.keys(mod).find(k => k.endsWith('_INTERFACE_DOC'))
-    return exportKey ? (mod[exportKey] as IInterfaceDoc) : null
-})
-
-const displayDoc = computed(() => interfaceDoc.value)
+const { data: displayDoc } = await useReferenceDoc<IInterfaceDoc>('interface', slug)
 
 const hasProps    = computed(() => (displayDoc.value?.props?.length ?? 0) > 0)
 const hasExtends  = computed(() => (displayDoc.value?.extends?.length ?? 0) > 0)

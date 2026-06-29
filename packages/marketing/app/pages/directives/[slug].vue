@@ -3,7 +3,7 @@ import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useT } from '~/composables/useT'
 import { useCopy } from '~/composables/useCopy'
-import { DIRECTIVES_CATALOG } from '~/consts/directives-catalog.const'
+import { useReferenceDoc } from '~/composables/useApiReference'
 import type { IDirectiveDoc } from '~/interfaces/directive-doc.interface'
 
 const { t } = useT()
@@ -12,23 +12,9 @@ const { copy: copySignature, copied: signatureCopied } = useCopy()
 
 const slug = computed(() => route.params.slug as string)
 
-const catalogEntry = computed(() =>
-    DIRECTIVES_CATALOG.find(e => e.slug === slug.value)
-)
+const { data: displayDoc } = await useReferenceDoc<IDirectiveDoc>('directive', slug)
 
-/* ── Eager glob — zero flash, zero hydration mismatch ─────────────── */
-const allDocs = import.meta.glob('~/consts/directives/*.const.ts', { eager: true }) as Record<string, Record<string, unknown> | undefined>
-
-const directiveDoc = computed<IDirectiveDoc | null>(() => {
-    const key = Object.keys(allDocs).find(k => k.includes(`/${slug.value}.const`))
-    if (!key) return null
-    const mod = allDocs[key]
-    if (!mod) return null
-    const exportKey = Object.keys(mod).find(k => k.endsWith('_DOC'))
-    return exportKey ? (mod[exportKey] as IDirectiveDoc) : null
-})
-
-const displayDoc = computed(() => directiveDoc.value)
+const catalogEntry = computed(() => displayDoc.value)
 
 const hasArgs      = computed(() => (displayDoc.value?.args?.length ?? 0) > 0)
 const hasModifiers = computed(() => (displayDoc.value?.modifiers?.length ?? 0) > 0)

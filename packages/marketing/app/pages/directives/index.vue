@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import type { CSSProperties } from 'vue'
 import { useT } from '~/composables/useT'
-import { DIRECTIVES_CATALOG, DIRECTIVES_HERO_BADGE_VARS } from '~/consts/directives-catalog.const'
+import { useReferenceCatalog } from '~/composables/useApiReference'
+import type { IDirectiveEntry } from '~/interfaces/directives-catalog.interface'
 
 const { t } = useT()
 
@@ -12,19 +14,27 @@ useSeoMeta({
     ogDescription: () => t('directives.meta.description', 'Six runtime directives that extend Vue templates with click-outside detection, contrast enforcement, hover classes, intersection tracking, ripple effects, and touch/swipe gestures.')
 })
 
+const DIRECTIVES_HERO_BADGE_VARS: CSSProperties = {
+    '--origam-chip---background-color': 'transparent'
+} as CSSProperties
+
+const { data: catalogData } = await useReferenceCatalog<IDirectiveEntry>('directive')
+
+const DIRECTIVES_CATALOG = computed<IDirectiveEntry[]>(() => catalogData.value ?? [])
+
 const searchQuery = ref('')
 
 const filteredDirectives = computed(() => {
     const query = searchQuery.value.toLowerCase().trim()
-    if (!query) return DIRECTIVES_CATALOG
-    return DIRECTIVES_CATALOG.filter(entry => {
+    if (!query) return DIRECTIVES_CATALOG.value
+    return DIRECTIVES_CATALOG.value.filter(entry => {
         const nameMatch = entry.name.toLowerCase().includes(query)
         const descMatch = entry.descriptionFallback.toLowerCase().includes(query)
         return nameMatch || descMatch
     })
 })
 
-const totalCount = computed(() => DIRECTIVES_CATALOG.length)
+const totalCount = computed(() => DIRECTIVES_CATALOG.value.length)
 const filteredCount = computed(() => filteredDirectives.value.length)
 const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 </script>
