@@ -20,8 +20,10 @@ WORKDIR /app
 # Native build deps (style-dictionary / sass / sharp / histoire).
 RUN apk add --no-cache python3 make g++ libc6-compat
 
-# Histoire's 200+ story build needs more heap than the default.
-ENV NODE_OPTIONS=--max-old-space-size=6144
+# Histoire's 200+ story build AND the Nuxt/Nitro marketing build (heavy: embeds
+# + 1758 API-reference consts + the TypeORM server bundle) need more heap than
+# the default, which otherwise OOMs ("Reached heap limit") during the Nitro build.
+ENV NODE_OPTIONS=--max-old-space-size=8192
 
 # Enable pnpm via corepack (pinned to the repo's package manager).
 RUN corepack enable && corepack prepare pnpm@9.15.0 --activate

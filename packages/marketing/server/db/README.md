@@ -166,3 +166,11 @@ Properties:
 **not** configured the endpoint stays `200 ok` (the site still runs on the
 static const files). When it **is** configured but unreachable, it returns
 `503 degraded` so orchestrators can gate readiness on the database.
+
+## Build heap
+
+`nuxt build` for this package is heavy (embeds + 1758 API-reference consts + the
+TypeORM server bundle) and OOMs at Node's default heap
+(`FATAL ERROR: Reached heap limit` during "Building Nuxt Nitro server"). Build
+with `NODE_OPTIONS=--max-old-space-size=8192` (already set in the `Dockerfile`
+build stage). Pre-existing constraint — not specific to the TypeORM migration.
