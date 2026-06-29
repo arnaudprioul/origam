@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-radar"
 			:class="rootClasses"
-			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
+			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-radar"
@@ -147,6 +147,7 @@
 	} from 'vue'
 
 	import {
+		useChartHeaderTypography,
 		useBackgroundColor,
 		useChart,
 		useDimension,
@@ -201,6 +202,7 @@
 	const { marginClasses, marginStyles } = useMargin(props)
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
+	const { headerTypographyStyles } = useChartHeaderTypography(props)
 
 	const SVG_WIDTH = 600
 	const SVG_HEIGHT = 360

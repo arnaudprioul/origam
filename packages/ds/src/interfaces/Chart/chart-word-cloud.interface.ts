@@ -43,7 +43,12 @@ export interface IChartWordCloudWord extends IChartWordCloudDatum {
  * `{ text, value, color? }` object or a plain number (ignored — use
  * object form for word clouds).
  */
-export interface IChartWordCloudProps extends IChartBaseProps {
+// WordCloud owns domain `fontWeight` (number | string — the weight of the
+// rendered WORDS), which collides with the chart-header typography
+// `fontWeight: TFontWeight` inherited from IChartBaseProps. Omit the inherited
+// one so the word-rendering prop wins; WordCloud's title/subtitle keep their
+// theme weight (header fontSize still applies via the inherited prop).
+export interface IChartWordCloudProps extends Omit<IChartBaseProps, 'fontWeight'> {
     /**
      * Minimum font size in px applied to the word with the lowest value.
      * Default `12`.

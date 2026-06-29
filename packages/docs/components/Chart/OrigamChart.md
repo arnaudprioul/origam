@@ -62,6 +62,8 @@ function onPointClick(point: IChartPoint) {
 | `colorScheme` | `Array<TIntent \| string>` | 8-intent cycle | Palette applied when a series omits its own `color`. Pass intent names (e.g. `'primary'`) or raw CSS values. Cycles by index. |
 | `title` | `string` | `undefined` | Optional title rendered above the plotting area. Replaceable via the `#title` slot. |
 | `subtitle` | `string` | `undefined` | Optional subtitle rendered below the title. |
+| `fontSize` | `TFontSize` | `undefined` | Header typography token applied to the title + subtitle (`xs` → `5xl`). Inherited from `IChartBaseProps`. |
+| `fontWeight` | `TFontWeight` | `undefined` | Header weight token applied to the title (`regular` → `black`). Inherited from `IChartBaseProps`. |
 
 ### Behaviour
 
@@ -99,6 +101,15 @@ function onPointClick(point: IChartPoint) {
 | `gaugeMin` | `number` | `0` | Lower bound of the gauge range. Ignored unless `type='gauge'`. |
 | `gaugeMax` | `number` | `100` | Upper bound of the gauge range. Ignored unless `type='gauge'`. |
 | `gaugeUnit` | `string` | `''` | Unit string appended to the centre label (e.g. `'%'`, `' rpm'`). Ignored unless `type='gauge'`. |
+
+> **Typography scope.** The `fontSize` / `fontWeight` props target the chart
+> **header** (title + subtitle) only. Axis labels and per-type data labels
+> (gauge value, sankey/treemap/pyramid/… labels, annotations, breadcrumbs) stay
+> **theme-driven** — they are intentionally not exposed on the component API.
+> Only `fontSize` and `fontWeight` have an effect on SVG `<text>`; `fontFamily`,
+> `lineHeight` and `letterSpacing` are not part of the chart typography surface.
+> `<OrigamChartWordCloud>` is excluded from header `fontWeight` (its `fontWeight`
+> prop sets the rendered word weight).
 
 ## Emits
 

@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-polar"
 			:class="rootClasses"
-			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
+			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-polar"
@@ -171,6 +171,7 @@
 	} from 'vue'
 
 	import {
+		useChartHeaderTypography,
 		useBackgroundColor,
 		useChart,
 		useDimension,
@@ -308,6 +309,7 @@
 	const { marginClasses, marginStyles } = useMargin(props)
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
+	const { headerTypographyStyles } = useChartHeaderTypography(props)
 
 	/*********************************************************
 	 * Static — polar charts need less padding than cartesian

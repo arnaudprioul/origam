@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-cartesian"
 			:class="rootClasses"
-			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
+			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-cartesian"
@@ -495,6 +495,7 @@
 	} from 'vue'
 
 	import {
+		useChartHeaderTypography,
 		useBackgroundColor,
 		useChart,
 		useChartZoom,
@@ -669,6 +670,7 @@
 	const { marginClasses, marginStyles } = useMargin(props)
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
+	const { headerTypographyStyles } = useChartHeaderTypography(props)
 
 	/*********************************************************
 	 * Static — viewBox geometry. SVG renders into a fixed coordinate

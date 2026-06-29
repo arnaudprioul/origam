@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-streamgraph"
 			:class="rootClasses"
-			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
+			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-streamgraph"
@@ -190,6 +190,7 @@
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
 	import {
+		useChartHeaderTypography,
 		useBackgroundColor,
 		useDimension,
 		useElevation,
@@ -260,6 +261,7 @@
 	const { marginClasses, marginStyles } = useMargin(props)
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
+	const { headerTypographyStyles } = useChartHeaderTypography(props)
 
 	/*********************************************************
 	 * SVG coordinate space — fixed logical box; CSS scales it

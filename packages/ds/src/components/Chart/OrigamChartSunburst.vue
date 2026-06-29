@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-sunburst"
 			:class="rootClasses"
-			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
+			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-sunburst"
@@ -189,6 +189,7 @@
 	} from '../../interfaces/Chart/chart-sunburst.interface'
 
 	import {
+		useChartHeaderTypography,
 		useBackgroundColor,
 		useDimension,
 		useElevation,
@@ -244,6 +245,7 @@
 	const { marginClasses, marginStyles } = useMargin(props)
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
+	const { headerTypographyStyles } = useChartHeaderTypography(props)
 
 	/*********************************************************
 	 * Static SVG box — square coordinate space; CSS scales it.
