@@ -31,6 +31,8 @@ PostgreSQL schema backing the marketing API Reference. Accessed through
 
 No credential is ever hardcoded — every value is read from the environment.
 
+### Database connection
+
 | Variable | Required | Default | Notes |
 |---|---|---|---|
 | `DATABASE_URL` | one of the two | — | Canonical form, e.g. `postgres://user:pass@host:5432/db`. Preferred (Coolify injects this). |
@@ -40,6 +42,29 @@ No credential is ever hardcoded — every value is read from the environment.
 | `DB_PASSWORD` | fallback | — | |
 | `DB_NAME` | fallback | — | |
 | `DB_SSL` | no | off | `true` → TLS accepting the provider's self-signed chain (managed PG). |
+
+### Admin backoffice auth (ticket E1)
+
+| Variable | Required | Notes |
+|---|---|---|
+| `NUXT_ADMIN_PASSWORD_HASH` | yes (for backoffice) | Scrypt hash of the admin password in `<salt-hex>:<hash-hex>` format (see below). Read by `server/utils/admin-auth.ts`. |
+| `NUXT_SESSION_PASSWORD` | yes (for backoffice) | Session seal secret — minimum 32 random characters. Read by h3 `useSession`. |
+
+**Generating the password hash** (no external dep — plain Node.js):
+
+```bash
+node -e "
+  const { scryptSync, randomBytes } = require('crypto')
+  const s = randomBytes(16).toString('hex')
+  console.log(s + ':' + scryptSync('YOUR_PASSWORD', s, 64).toString('hex'))
+"
+```
+
+**Generating the session secret**:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
 
 Copy these into a local `.env` (git-ignored) for development; in stage/prod
 Coolify provisions a PostgreSQL service (port `Y432`) and injects `DATABASE_URL`.
