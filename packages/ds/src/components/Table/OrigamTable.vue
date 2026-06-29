@@ -17,6 +17,7 @@
 					<caption
 							v-if="caption"
 							:class="['origam-table__caption', {'origam-table__caption--visible': captionVisible}]"
+							:style="captionTypographyStyles"
 					>{{ caption }}</caption>
 					<slot name="default"/>
 				</table>
@@ -38,7 +39,8 @@
 		useHover,
 		useProps,
 		useStateEffect,
-		useStyle
+		useStyle,
+		useTypography
 } from '../../composables'
 
 	import { DENSITY } from '../../enums'
@@ -83,12 +85,22 @@
 		marginClasses, marginStyles,
 	} = useStateEffect(props, isHover, undefined, hoverState)
 
+	// Typography — 3 surfaces:
+	//   'table'             → --origam-table---font-size         (root body)
+	//   'table__caption'    → --origam-table__caption---font-size (caption element)
+	//   'table__header-cell'→ --origam-table__header-cell---font-weight (cascades to :deep(th))
+	const { typographyStyles: tableTypographyStyles } = useTypography(props, 'table')
+	const { typographyStyles: captionTypographyStyles } = useTypography(props, 'table__caption')
+	const { typographyStyles: headerCellTypographyStyles } = useTypography(props, 'table__header-cell')
+
 	const tableStyles = computed(() => {
 		return [
 			borderStyles.value,
 			roundedStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
+			tableTypographyStyles.value,
+			headerCellTypographyStyles.value,
 			props.style
 		] as StyleValue
 	})

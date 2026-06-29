@@ -41,6 +41,21 @@ The full cross-cutting surface (rounded, elevation, border, density,
 dimension, padding, margin) is supported via the standard Commons
 composables, so a standalone row behaves like any other origam component.
 
+### Typography (`ITypographyProps`)
+
+`fontSize` and `fontWeight` override the matching font variable on **all four
+text surfaces** simultaneously. Each surface reads its own CSS variable so
+they can also be overridden independently via CSS.
+
+| Prop         | Type          | Applied to surfaces (CSS var prefix)                                     |
+|--------------|---------------|--------------------------------------------------------------------------|
+| `fontSize`   | `TFontSize`   | root (`bracket-competitor`), seed (`bracket-seed`), score (`bracket-score`), advantage (`bracket-advantage`) |
+| `fontWeight` | `TFontWeight` | root (`bracket-competitor`), seed (`bracket-seed`), score (`bracket-score`), advantage (`bracket-advantage`) |
+
+`fontFamily`, `lineHeight`, and `letterSpacing` are inherited via
+`ITypographyProps` (vars are emitted) but the SCSS reads no matching var on
+any surface — they have no visual effect until the SCSS is extended.
+
 - `isWinner` bolds the row + tints its background; `isLoser` de-emphasises
   it (lower opacity). `null` competitor → italic "TBD".
 - `advantageRounds > 0` renders a `+N` badge next to the name — the Winner

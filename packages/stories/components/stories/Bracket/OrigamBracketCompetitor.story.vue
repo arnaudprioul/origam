@@ -9,7 +9,7 @@
 				:init-state="() => useStoryInitState<Partial<IBracketCompetitorProps>>({
 					color: 'primary',
 					showScore: true,
-					showSeed: false
+					showSeed: true
 				})"
 		>
 			<template #default="{ state }">
@@ -17,6 +17,7 @@
 					<origam-bracket-competitor
 							:competitor="COMPETITOR"
 							:score="2"
+							:advantage-rounds="2"
 							:color="state.color"
 							:bg-color="state.bgColor"
 							:rounded="state.rounded"
@@ -31,6 +32,8 @@
 							:margin="state.margin"
 							:show-score="state.showScore"
 							:show-seed="state.showSeed"
+							:font-size="state.fontSize"
+							:font-weight="state.fontWeight"
 					/>
 				</div>
 			</template>
@@ -62,6 +65,10 @@
 				<StoryGroup title="Display">
 					<HstCheckbox v-model="state.showScore" title="Show Score"/>
 					<HstCheckbox v-model="state.showSeed"  title="Show Seed"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -166,6 +173,10 @@
 					<HstCheckbox v-model="state.isLoser"  title="Is Loser"/>
 					<HstNumber   v-model="state.advantageRounds" title="Advantage Rounds"/>
 				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
+				</StoryGroup>
 				<StoryGroup title="Display">
 					<HstCheckbox v-model="state.showScore" title="Show Score"/>
 					<HstCheckbox v-model="state.showSeed"  title="Show Seed"/>
@@ -197,6 +208,8 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		HOVER_OPTIONS,
 		resolveActiveState,
 		resolveHoverState,

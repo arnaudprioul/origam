@@ -9,7 +9,9 @@
 				:init-state="() => useStoryInitState<Partial<IInlineEditProps>>({
 					modelValue: 'Inline edit value',
 					placeholder: 'Click to edit',
-					tag: 'span'
+					tag: 'span',
+					fontSize: undefined,
+					fontWeight: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -18,6 +20,8 @@
 							v-model="state.modelValue"
 							:placeholder="state.placeholder"
 							:tag="state.tag"
+							:font-size="state.fontSize"
+							:font-weight="state.fontWeight"
 					/>
 					<output class="story-state">{{ state.modelValue }}</output>
 				</div>
@@ -28,6 +32,10 @@
 				</StoryGroup>
 				<StoryGroup title="Content">
 					<HstText v-model="state.placeholder" title="Placeholder"/>
+				</StoryGroup>
+				<StoryGroup title="Typography (error + action-btn)">
+					<HstSelect v-model="state.fontSize"   title="Font Size (error + btn)" :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight (error only)" :options="FONT_WEIGHT_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -297,7 +305,7 @@
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { TAG_OPTIONS } from '@stories/const'
+	import { FONT_SIZE_OPTIONS, FONT_WEIGHT_OPTIONS, TAG_OPTIONS } from '@stories/const'
 
 	const INPUT_TYPE_OPTIONS: Array<{ label: string; value: TInlineEditInputType }> = [
 		{ label: 'text', value: 'text' },

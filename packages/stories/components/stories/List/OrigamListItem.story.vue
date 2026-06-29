@@ -22,6 +22,10 @@
 					lines: undefined,
 					width: undefined,
 					height: undefined,
+					fontSize: undefined,
+					fontWeight: undefined,
+					lineHeight: undefined,
+					letterSpacing: undefined,
 				})"
 		>
 			<template #default="{ state }">
@@ -44,6 +48,10 @@
 							:lines="state.lines"
 							:width="state.width"
 							:height="state.height"
+							:font-size="state.fontSize"
+							:font-weight="state.fontWeight"
+							:line-height="state.lineHeight"
+							:letter-spacing="state.letterSpacing"
 					/>
 				</origam-list>
 			</template>
@@ -80,6 +88,12 @@
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.padding" title="Padding"/>
 					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"       :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"     :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"     :options="LINE_HEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing"  :options="LETTER_SPACING_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -315,9 +329,13 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		HOVER_OPTIONS,
 		resolveHoverState,
 		ICON_OPTIONS,
+		LETTER_SPACING_OPTIONS,
+		LINE_HEIGHT_OPTIONS,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS,
 	} from '@stories/const'

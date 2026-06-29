@@ -187,7 +187,8 @@
 		usePadding,
 		useProps,
 		useRounded,
-		useStyle
+		useStyle,
+		useTypography
 	} from "../../composables"
 	import type {
 		IDataItem,
@@ -233,6 +234,8 @@
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
+	const {typographyStyles: titleTypographyStyles} = useTypography(props, 'data-list__title')
+	const {typographyStyles: textTypographyStyles} = useTypography(props, 'data-list__text')
 
 	const isKvMode = computed(() => props.mode === 'kv')
 
@@ -316,6 +319,8 @@
 			marginStyles.value,
 			colorStyles.value,
 			roundedStyles.value,
+			titleTypographyStyles.value,
+			textTypographyStyles.value,
 			props.style
 		] as StyleValue
 	})

@@ -14,6 +14,7 @@
 	>
 		<span
 				v-if="showSeed && competitor?.seed != null"
+				:style="seedTypographyStyles"
 				class="origam-bracket-competitor__seed"
 		>
 			{{ competitor.seed }}
@@ -40,6 +41,7 @@
 		<span
 				v-if="hasAdvantage"
 				:aria-label="advantageAriaLabel"
+				:style="advantageTypographyStyles"
 				:title="advantageAriaLabel"
 				class="origam-bracket-competitor__advantage"
 		>
@@ -48,6 +50,7 @@
 
 		<span
 				v-if="showScore"
+				:style="scoreTypographyStyles"
 				class="origam-bracket-competitor__score"
 		>
 			{{ displayScore }}
@@ -67,7 +70,8 @@
 		useDimension,
 		useHover,
 		useProps,
-		useStateEffect
+		useStateEffect,
+		useTypography
 	} from '../../composables'
 
 	import { isIntent, tokenForegroundForIntent } from '../../utils/Commons/color.util'
@@ -90,6 +94,11 @@
 	}>()
 
 	const {filterProps} = useProps<IBracketCompetitorProps>(props)
+
+	const {typographyStyles: competitorTypographyStyles} = useTypography(props, 'bracket-competitor')
+	const {typographyStyles: seedTypographyStyles} = useTypography(props, 'bracket-seed')
+	const {typographyStyles: scoreTypographyStyles} = useTypography(props, 'bracket-score')
+	const {typographyStyles: advantageTypographyStyles} = useTypography(props, 'bracket-advantage')
 
 	const isTbd = computed<boolean>(() => props.competitor === null)
 
@@ -186,6 +195,7 @@
 			paddingStyles.value,
 			marginStyles.value,
 			dimensionStyles.value,
+			competitorTypographyStyles.value,
 			props.style
 		] as StyleValue
 	})
