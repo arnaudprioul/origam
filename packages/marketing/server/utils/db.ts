@@ -2,7 +2,7 @@
  * db.ts — Nitro-side TypeORM DataSource singleton for the API-Reference store.
  *
  * The DataSource definition (entities + connection) is shared with the
- * migrations and the ingestion pipeline (server/db/data-source.mjs). Connection
+ * migrations and the ingestion pipeline (server/db/data-source.ts). Connection
  * options are resolved from the environment — no credential is hardcoded. The
  * DataSource is lazily initialized and reused across requests within the Nitro
  * process.
@@ -10,8 +10,9 @@
 
 import type { DataSource } from 'typeorm'
 
-// `.mjs` modules are imported as-is; they carry no Nuxt/TS dependency.
-import { createDataSource } from '../db/data-source.mjs'
+// The import-safe DataSource factory (no eager instance → never throws at
+// import when the DB is unconfigured). `connection.mjs` stays a pure `.mjs`.
+import { createDataSource } from '../db/data-source'
 import { isConfigured } from '../db/connection.mjs'
 
 let ds: DataSource | null = null

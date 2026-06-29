@@ -3,11 +3,13 @@
 PostgreSQL schema backing the marketing API Reference. Accessed through
 [TypeORM](https://typeorm.io/) (client `pg`, pure JS — no native binary).
 
-> Entities are declared with TypeORM's decorator-free `EntitySchema`: the
-> migrations and the ingestion pipeline run as plain `.mjs` under `node` (no TS
-> compiler), and Nitro's esbuild bundle does not emit the decorator metadata
-> that decorator entities need. `EntitySchema` is the supported alternative —
-> same repositories, migrations and `upsert`.
+> Entities are declared with TypeORM **decorator** classes (`@Entity` /
+> `@Column`) in `.ts`. The migrations and the ingestion pipeline therefore run
+> through [`tsx`](https://tsx.is/) (not plain `node`). Every `@Column` carries
+> an **explicit `type`**, so the entities never depend on `emitDecoratorMetadata`
+> (unsupported by esbuild/Nitro) — only `experimentalDecorators` is needed, which
+> both `tsx` and Nitro's esbuild support. Property names are kept in snake_case
+> (identical to the columns); `SnakeNamingStrategy` enforces the same mapping.
 
 > At this stage the site still reads the static `app/consts/**.const.ts` files.
 > Nothing is rebranched yet. This layer only provisions the database, the schema
@@ -19,10 +21,10 @@ PostgreSQL schema backing the marketing API Reference. Accessed through
 |---|---|
 | `db.const.mjs` | Single source of truth: table names, kinds, relation types, env var names. Shared by the migrations, the ingestion script (ticket B) and the Nitro runtime. |
 | `connection.mjs` | Resolves the TypeORM pg connection options from the environment. No secret hardcoded. |
-| `entities.mjs` | `EntitySchema` definitions for every table (snake_case columns). |
-| `data-source.mjs` | The shared TypeORM `DataSource` (entities + migrations + connection). |
-| `migrations/*.mjs` | Versioned TypeORM migrations (`up` + `down`). |
-| `migrate.mjs` | Thin migration runner (`run` / `revert` / `show`) around the DataSource. |
+| `entities/*.entity.ts` | One TypeORM decorator entity per table (snake_case columns) + `base.entity.ts` (shared id / timestamps, imports `reflect-metadata`) + `index.ts` barrel (`ENTITIES`). |
+| `data-source.ts` | Import-safe `DataSource` factory (entities + migrations + `SnakeNamingStrategy` + connection). Builds nothing at import time. |
+| `data-source.cli.ts` | Eager `DataSource` instance — default export consumed by the TypeORM CLI (`-d`) ONLY. The runtime/pipeline never import it. |
+| `migrations/*.ts` | Versioned TypeORM migrations (raw SQL via `queryRunner`, `up` + `down`). |
 | `../utils/db.ts` | Nitro-side lazy DataSource singleton (`useDb`, `pingDb`, `isDbConfigured`). |
 
 ## Environment variables
@@ -53,7 +55,28 @@ pnpm -F @origam/marketing db:rollback
 
 # Report whether pending migrations exist
 pnpm -F @origam/marketing db:migrate:status
+
+# Scaffold a NEW migration from the current entity/DB diff (hand-edit after):
+pnpm -F @origam/marketing db:migrate:make -- ./server/db/migrations/MyChange
 ```
+
+> All four scripts run the TypeORM CLI through `tsx` with an EXPLICIT
+> `--tsconfig ./tsconfig.typeorm.json`
+> (`tsx --tsconfig ./tsconfig.typeorm.json ./node_modules/typeorm/cli.js … -d ./server/db/data-source.cli.ts`).
+> That flag is **mandatory**: `tsx` resolves the tsconfig from the CWD, and the
+> package `tsconfig.json` `extends ./.nuxt/tsconfig.json`, across which
+> `tsx`/`get-tsconfig` drops `experimentalDecorators`. esbuild then emits
+> standard (TC39) decorators, which crash TypeORM's legacy decorators
+> (`Cannot read properties of undefined (reading 'constructor')` at the first
+> `@PrimaryGeneratedColumn`). `tsconfig.typeorm.json` is a standalone config (no
+> nuxt `extends`) that keeps `experimentalDecorators` on. The same flag is wired
+> into the `docs:*` pipeline scripts. The Nuxt runtime bundle uses
+> `nitro.esbuild.options.tsconfigRaw.experimentalDecorators` instead;
+> `nuxt typecheck` uses the package `tsconfig.json`.
+>
+> The initial `InitDocReference` migration is **hand-written** (raw SQL) — do
+> NOT regenerate it; `migration:generate` cannot express the functional unique
+> indexes (`md5` / `coalesce`), CHECK constraints and the shared trigger.
 
 ## Schema (ADR §3)
 

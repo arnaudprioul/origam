@@ -1,22 +1,26 @@
 /**
  * InitDocReference — initial schema for the API-Reference store (ADR 0001 §3),
- * as a TypeORM migration. Raw DDL via queryRunner gives full control over the
- * Postgres specifics TypeORM's schema builder can't express here: gen_random_uuid
- * defaults, CHECK constraints, functional unique indexes (md5/coalesce) and the
- * shared updated_at trigger.
+ * as a TypeORM migration. Raw DDL via `queryRunner.query` gives full control
+ * over the Postgres specifics TypeORM's schema builder can't express here:
+ * `gen_random_uuid()` defaults, CHECK constraints, FUNCTIONAL unique indexes
+ * (md5 / coalesce) and the shared `updated_at` trigger.
  *
  * Editorial vs source boundary (ADR §3.3): [ÉDIT] columns carry a row-level
- * lock (edited_by_user + editorial_locked_at); the re-sync only writes [SRC].
- * Items removed from the source are flagged via orphaned_at, never deleted.
+ * lock (`edited_by_user` + `editorial_locked_at`); the re-sync only writes
+ * [SRC]. Items removed from the source are flagged via `orphaned_at`, never
+ * deleted.
  *
- * Rollback (`down`) drops every object created here in FK-safe order, including
- * the trigger function — fully reversible.
+ * Rollback (`down`) drops every object created here in FK-safe order
+ * (children → root → standalone), including the trigger function — fully
+ * reversible.
  */
+
+import type { MigrationInterface, QueryRunner } from 'typeorm'
 
 import { DB_TABLES, DOC_KINDS, REL_TYPES, SYNC_STATUSES } from '../db.const.mjs'
 
 const FN = 'doc_set_updated_at'
-const list = (arr) => arr.map(v => `'${v}'`).join(', ')
+const list = (arr: readonly string[]): string => arr.map(v => `'${v}'`).join(', ')
 
 const BASE = `
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -29,10 +33,10 @@ const ORPHAN = 'orphaned_at timestamptz'
 const POS = 'position integer NOT NULL DEFAULT 0'
 const ENTRY_FK = `entry_id uuid NOT NULL REFERENCES ${DB_TABLES.DOC_ENTRY}(id) ON DELETE CASCADE`
 
-export class InitDocReference1719600000001 {
+export class InitDocReference1719600000001 implements MigrationInterface {
     name = 'InitDocReference1719600000001'
 
-    async up (q) {
+    public async up (q: QueryRunner): Promise<void> {
         await q.query('CREATE EXTENSION IF NOT EXISTS pgcrypto;')
         await q.query(`
             CREATE OR REPLACE FUNCTION ${FN}() RETURNS trigger AS $$
@@ -158,7 +162,7 @@ export class InitDocReference1719600000001 {
         }
     }
 
-    async down (q) {
+    public async down (q: QueryRunner): Promise<void> {
         const dropOrder = [
             DB_TABLES.DOC_PROP, DB_TABLES.DOC_VALUE, DB_TABLES.DOC_PARAM, DB_TABLES.DOC_RETURN,
             DB_TABLES.DOC_EMIT, DB_TABLES.DOC_SLOT, DB_TABLES.DOC_EXAMPLE,

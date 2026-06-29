@@ -378,11 +378,11 @@
         },
         "marketing_db": {
           "title": "Marketing — base de données + sync DS auto",
-          "description": "Persister tout le catalogue référentiel (composants, composables, types, enums, interfaces, utils, consts) en base de données (Nitro + Knex / PostgreSQL) au lieu de fichiers glob statiques. Un job de sync lit le code du DS et upsert la BDD à chaque release, pour que la doc référentielle suive automatiquement le design system. Le contenu éditorial vit dans les mêmes tables avec un flag « DS auto » vs « édité »."
+          "description": "Persister tout le catalogue référentiel (composants, composables, types, enums, interfaces, utils, consts) en base de données (Nitro + TypeORM / PostgreSQL) au lieu de fichiers glob statiques. Un job de sync lit le code du DS et upsert la BDD à chaque release, pour que la doc référentielle suive automatiquement le design system. Le contenu éditorial vit dans les mêmes tables avec un flag « DS auto » vs « édité »."
         },
         "marketing_cms": {
           "title": "Marketing — backend d'administration (CMS)",
-          "description": "Un back-office pour gérer tout le contenu du site quand l'auto-génération est imparfaite : éditer n'importe quelle page (référentiel + éditorial), réordonner, publier/masquer, sans toucher au code. Entièrement traduisible (i18n piloté par la BDD, complétude par langue) et construit avec origam lui-même — une vitrine grandeur nature du DS. Auth + rôles, audit des modifications, garde-fou pré-publication. Stack : Nitro + Knex/PostgreSQL + Redis."
+          "description": "Un back-office pour gérer tout le contenu du site quand l'auto-génération est imparfaite : éditer n'importe quelle page (référentiel + éditorial), réordonner, publier/masquer, sans toucher au code. Entièrement traduisible (i18n piloté par la BDD, complétude par langue) et construit avec origam lui-même — une vitrine grandeur nature du DS. Auth + rôles, audit des modifications, garde-fou pré-publication. Stack : Nitro + TypeORM/PostgreSQL + Redis."
         }
       }
     },

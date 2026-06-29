@@ -1,5 +1,5 @@
 /**
- * doc-to-rows.mjs — map a family `*_DOC` object onto the normalised DB shape.
+ * doc-to-rows.ts — map a family `*_DOC` object onto the normalised DB shape.
  *
  * One mapper per kind translates the curated `_DOC` (8 different shapes, see
  * app/interfaces/*-catalog.interface.ts) into a uniform internal record:

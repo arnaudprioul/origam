@@ -378,11 +378,11 @@
         },
         "marketing_db": {
           "title": "Marketing — database + auto DS sync",
-          "description": "Persist the whole reference catalogue (components, composables, types, enums, interfaces, utils, consts) in a database (Nitro + Knex / PostgreSQL) instead of static glob files. A sync job reads the DS source and upserts the DB on every release, so the reference docs follow the design system automatically. Editorial content lives in the same tables with a DS-auto vs edited flag."
+          "description": "Persist the whole reference catalogue (components, composables, types, enums, interfaces, utils, consts) in a database (Nitro + TypeORM / PostgreSQL) instead of static glob files. A sync job reads the DS source and upserts the DB on every release, so the reference docs follow the design system automatically. Editorial content lives in the same tables with a DS-auto vs edited flag."
         },
         "marketing_cms": {
           "title": "Marketing — admin backend (CMS)",
-          "description": "A back-office to manage all site content when auto-generation falls short: edit any page (reference + editorial), reorder, publish/hide, without touching code. Fully translatable (DB-driven i18n, per-locale completeness) and built with origam itself — a full-scale DS showcase. Auth + roles, change audit, pre-publish guardrail. Stack: Nitro + Knex/PostgreSQL + Redis."
+          "description": "A back-office to manage all site content when auto-generation falls short: edit any page (reference + editorial), reorder, publish/hide, without touching code. Fully translatable (DB-driven i18n, per-locale completeness) and built with origam itself — a full-scale DS showcase. Auth + roles, change audit, pre-publish guardrail. Stack: Nitro + TypeORM/PostgreSQL + Redis."
         }
       }
     },

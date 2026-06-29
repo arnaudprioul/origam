@@ -118,6 +118,18 @@ export default defineNuxtConfig({
         transpile: ['origam']
     },
 
+    nitro: {
+        esbuild: {
+            options: {
+                tsconfigRaw: {
+                    compilerOptions: {
+                        experimentalDecorators: true
+                    }
+                }
+            }
+        }
+    },
+
     i18n: {
         locales: I18N_LOCALES,
         defaultLocale: 'en',

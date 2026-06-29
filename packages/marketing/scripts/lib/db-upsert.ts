@@ -1,6 +1,6 @@
 /**
- * db-upsert.mjs — idempotent, non-destructive ingestion of a normalised doc
- * record (from doc-to-rows.mjs) into the database via the TypeORM repository /
+ * db-upsert.ts — idempotent, non-destructive ingestion of a normalised doc
+ * record (from doc-to-rows.ts) into the database via the TypeORM repository /
  * EntityManager API.
  *
  * Two masks enforce the ADR §3.3 boundary:
@@ -16,10 +16,12 @@
  * (the EntityManager passed in by dataSource.transaction()).
  */
 
+import type { EntityManager } from 'typeorm'
+
 import {
     DocEntry, DocProp, DocValue, DocParam, DocReturn, DocEmit, DocSlot,
     DocExample, DocDirectiveArg, DocDirectiveModifier, DocRelation,
-} from '../../server/db/entities.mjs'
+} from '../../server/db/entities'
 
 const NULL_KEY = ' null'
 
@@ -32,7 +34,7 @@ const ENTRY_EDIT = [
 
 /**
  * Per-collection reconciliation spec.
- *   entity— the TypeORM EntitySchema
+ *   entity— the TypeORM entity class
  *   key   — natural-identity columns (matched across runs)
  *   src   — [SRC] columns (written by both seed and re-sync)
  *   edit  — [ÉDIT] columns (written only by seed, and only when unlocked)
@@ -208,7 +210,7 @@ async function reconcile (manager, specName, entryId, rows, mask, relTypeScope) 
  * Ingest a full record (first seed): entry + every collection, mask 'all'.
  * Returns aggregated counts.
  */
-export async function ingestFull (manager, record) {
+export async function ingestFull (manager: EntityManager, record) {
     const total = blankCounts()
     const { id, counts } = await upsertEntry(manager, record.entry, 'all')
     bump(total, counts)
@@ -222,7 +224,7 @@ export async function ingestFull (manager, record) {
  * Ingest structural facts only (re-sync): entry [SRC] + the [SRC] collections,
  * plus `extends` relation edges. Editorial collections are left untouched.
  */
-export async function ingestSrc (manager, record) {
+export async function ingestSrc (manager: EntityManager, record) {
     const total = blankCounts()
     const { id, counts } = await upsertEntry(manager, record.entry, 'src')
     bump(total, counts)

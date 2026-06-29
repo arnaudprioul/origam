@@ -41,11 +41,11 @@ import {
 import { MERGERS } from './lib/merge.mjs'
 import { serialize } from './lib/serialize.mjs'
 import { readExistingDoc } from './lib/read-existing.mjs'
-import { mapDoc } from './lib/doc-to-rows.mjs'
-import { ingestFull, ingestSrc } from './lib/db-upsert.mjs'
-import { getDb, closeDb, sourceCommit } from './lib/db.mjs'
+import { mapDoc } from './lib/doc-to-rows.ts'
+import { ingestFull, ingestSrc } from './lib/db-upsert.ts'
+import { getDb, closeDb, sourceCommit } from './lib/db.ts'
 import { DOC_KIND_DIRS } from '../server/db/db.const.mjs'
-import { DocEntry, DocSyncRun } from '../server/db/entities.mjs'
+import { DocEntry, DocSyncRun } from '../server/db/entities/index.ts'
 
 const ARGS = process.argv.slice(2)
 const CHECK = ARGS.includes('--check')

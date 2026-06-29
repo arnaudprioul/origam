@@ -1,0 +1,13 @@
+{
+  "//": "Standalone tsconfig for tsx-run TypeORM tooling (migrations CLI + ingestion pipeline). It deliberately does NOT extend ./.nuxt/tsconfig.json: tsx/get-tsconfig drops `experimentalDecorators` across that specific extends chain, which makes esbuild emit standard (TC39) decorators incompatible with TypeORM's legacy decorators. Passed explicitly via tsx --tsconfig in the db:* / docs:* scripts. The Nuxt runtime uses nitro.esbuild.options.tsconfigRaw; nuxt typecheck uses ./tsconfig.json.",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  }
+}
