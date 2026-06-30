@@ -47,7 +47,9 @@
     },
     "pnpm": {
         "overrides": {
-            "vue": "3.5.35"
+            "vue": "3.5.35",
+            "vite": "~7.3.6",
+            "ws": ">=8.21.0"
         }
     },
     "devDependencies": {
