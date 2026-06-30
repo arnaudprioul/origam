@@ -60,7 +60,22 @@ const GREEN_SPECS = [
     'grid.spec.ts',
     'progress.spec.ts',
     'carousel.spec.ts',
-    'counter.spec.ts'
+    'counter.spec.ts',
+    // wave 6 — specs réconciliées (drift variant-title résolu, commit 8bbe9ca4).
+    // Flakiness cold-start mitigée en CI (workers=1, retries=1) ; durcissement +
+    // ajout des specs -debug et des 12 specs complexes suivis dans le ticket DS #9.
+    'app.spec.ts',
+    'toolbar.spec.ts',
+    'pagination.spec.ts',
+    'parallax.spec.ts',
+    'table.spec.ts',
+    'timeline-debug.spec.ts',
+    'color-picker.spec.ts',
+    'color-picker-field.spec.ts',
+    'theme-provider.spec.ts',
+    'textarea-richtext.spec.ts',
+    'defaults-provider.spec.ts',
+    'field-height.spec.ts'
 ]
 
 /**
