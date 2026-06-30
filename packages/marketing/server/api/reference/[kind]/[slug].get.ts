@@ -101,10 +101,6 @@ export default defineCachedEventHandler(
 
 // ─── Helpers: ordered child-table queries ──────────────────────────────────
 
-function byPosition (qb: any) {
-    return qb.orderBy('r.position', 'ASC')
-}
-
 async function fetchProps (db: any, entryId: string) {
     return db
         .getRepository(DocProp)

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { MDI_ICONS } from 'origam/enums'
 import { useT } from '~/composables/useT'
 import { useAdminReference } from '~/composables/useAdminReference'
