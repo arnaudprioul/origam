@@ -75,6 +75,50 @@
 			</template>
 		</Variant>
 
+
+		<Variant
+				title="Prop — icon (class string)"
+				:init-state="() => useStoryInitState<IIconComponentProps>({ icon: MDI_HOME })"
+		>
+			<template #default="{ state }">
+				<origam-class-icon :icon="state.icon"/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Icon">
+					<HstSelect v-model="state.icon" title="Icon" :options="ICON_CLASS_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — size"
+				:init-state="() => useStoryInitState<IIconComponentProps>({ icon: MDI_HOME, size: undefined })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+					<origam-class-icon :icon="MDI_HOME" :size="state.size"/>
+					<origam-class-icon :icon="MDI_HOME" size="x-small"/>
+					<origam-class-icon :icon="MDI_HOME" size="small"/>
+					<origam-class-icon :icon="MDI_HOME" size="default"/>
+					<origam-class-icon :icon="MDI_HOME" size="large"/>
+					<origam-class-icon :icon="MDI_HOME" size="x-large"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.size" title="Size" :options="SIZE_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — size (numeric override)">
+			<div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+				<origam-class-icon :icon="MDI_HOME" :size="16"/>
+				<origam-class-icon :icon="MDI_HOME" :size="24"/>
+				<origam-class-icon :icon="MDI_HOME" :size="36"/>
+				<origam-class-icon :icon="MDI_HOME" :size="48"/>
+			</div>
+		</Variant>
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IIconComponentProps>({ icon: MDI_HOME })"

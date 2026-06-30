@@ -15,7 +15,7 @@ import { expect, test, type Page } from '@playwright/test'
  *  - point-click emit fires when a candle is activated.
  */
 
-const CANDLESTICK_STORY = '/story/components-stories-chart-origamchartcandlestick-story-vue'
+const CANDLESTICK_STORY = '/stories/story/components-stories-chart-origamchartcandlestick-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

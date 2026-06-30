@@ -18,7 +18,7 @@ import { expect, test, type Page } from '@playwright/test'
  *   - Rich slot markup is preserved in the DOM.
  */
 
-const STORY = '/story/components-stories-textmask-origamtextmask-story-vue'
+const STORY = '/stories/story/components-stories-textmask-origamtextmask-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

@@ -29,7 +29,7 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.waitForTimeout(900)
 }
 
-const SLIDE_GROUP_PATH = '/story/components-stories-slide-origamslidegroup-story-vue'
+const SLIDE_GROUP_PATH = '/stories/story/components-stories-slide-origamslidegroup-story-vue'
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 

@@ -134,6 +134,28 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop — multiple (checkbox-style tiles)">
+			<div style="padding: 24px;">
+				<origam-item-group v-model="tilesModel" multiple data-cy="item-tiles">
+					<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+						<origam-item v-for="opt in tilePlans" :key="opt.value" :value="opt.value">
+							<template #default="{ isSelected, toggle }">
+								<button
+										:class="['demo-tile', { 'demo-tile--active': isSelected }]"
+										:aria-pressed="isSelected"
+										@click="toggle"
+										:data-cy="`item-tile-${opt.value}`"
+								>{{ opt.title }}</button>
+							</template>
+						</origam-item>
+					</div>
+				</origam-item-group>
+				<p style="margin: 12px 0 0; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
+					selected = <strong>{{ JSON.stringify(tilesModel) }}</strong>
+				</p>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IItemGroupItemProps & Pick<IItemGroupProps, 'multiple' | 'mandatory'>>({
@@ -214,13 +236,40 @@
 		{ value: 'team',    title: 'Team',    price: '$96 /mo', hint: 'Multi-seat + SSO' },
 	]
 
+	const tilePlans = [
+		{ value: 't-starter', title: 'Starter' },
+		{ value: 't-pro',     title: 'Pro' },
+		{ value: 't-team',    title: 'Team' },
+		{ value: 't-enterprise', title: 'Enterprise' },
+	]
+
 	const functionalModel = ref<any>(undefined)
 	const emitModel = ref<any>(undefined)
 	const slotModel = ref<any>(undefined)
 	const playgroundModel = ref<any>('pro')
+	const tilesModel = ref<any>([])
 </script>
 
 <style scoped>
+.demo-tile {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16px;
+	box-sizing: border-box;
+	text-align: center;
+	background: var(--origam-color__surface---default);
+	border: 1px solid var(--origam-color__border---subtle);
+	border-radius: 8px;
+	cursor: pointer;
+	font-weight: 600;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.demo-tile:hover { border-color: var(--origam-color__border---default); }
+.demo-tile--active {
+	border-color: var(--origam-color__action--primary---bg);
+	box-shadow: 0 0 0 1px var(--origam-color__action--primary---bg);
+}
 .demo-card {
 	display: flex;
 	flex-direction: column;

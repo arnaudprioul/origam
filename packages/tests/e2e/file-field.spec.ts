@@ -24,7 +24,7 @@ import { expect, test } from '@playwright/test'
  *   - Cross-Variant assertions are the bare minimum to detect a silently
  *     broken prop (per the "test-as-you-build" rule in CLAUDE.md).
  */
-const STORY_PATH = '/story/components-stories-filefield-origamfilefield-story-vue'
+const STORY_PATH = '/stories/story/components-stories-filefield-origamfilefield-story-vue'
 
 const navigateToVariant = async (page: import('@playwright/test').Page, name: string) => {
     await page.goto(STORY_PATH)

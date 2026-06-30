@@ -1,12 +1,28 @@
 import { test } from '@playwright/test'
 
-const STORY_PATH = '/story/components-stories-btn-origambtn-story-vue'
+/**
+ * Pattern canonique — navigation directe par variantId (cf. btn.spec.ts).
+ * JAMAIS networkidle (Histoire garde un WS HMR ouvert → timeout garanti).
+ *
+ * Variants OrigamBtn (0-based) — état au 2026-06-30 :
+ *   0  → Design
+ *   1  → State
+ *   2  → Functional
+ *   3  → Prop — color & bgColor
+ *   4  → Prop — loading (interactive)
+ *   5  → Events - click
+ *   …
+ *  14  → Default (playground)
+ */
+
+const STORY_ID   = 'components-stories-btn-origambtn-story-vue'
+const STORY_PATH = '/stories/story/' + STORY_ID
+
+const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
 test('DEBUG btn loader — inspect line / circular / skeleton DOM + styles', async ({ page }) => {
-    await page.goto(STORY_PATH)
-    await page.waitForLoadState('networkidle')
-    await page.getByText('Prop — loading (interactive)', { exact: true }).last().click({ timeout: 5000 })
-    await page.waitForTimeout(800)
+    // Navigate directly to "Prop — loading (interactive)" (index 4).
+    await page.goto(variantUrl(4))
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 
@@ -35,9 +51,9 @@ test('DEBUG btn loader — inspect line / circular / skeleton DOM + styles', asy
                 overlayStroke:  overlay  ? getComputedStyle(overlay).stroke  : null,
             }
         })
-         
+
         console.log(`\n=== ${dataCy} ===`)
-         
+
         console.log(JSON.stringify(report, null, 2))
     }
 })

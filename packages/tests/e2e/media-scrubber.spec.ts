@@ -40,12 +40,12 @@ import { expect, test, type Page } from '@playwright/test'
  * Once created, the STORY_PATH below and the test.fixme calls can be removed.
  *
  * STORY_PATH (once the story exists):
- *   '/story/components-stories-mediascrubber-origammediascrubber-story-vue'
+ *   '/stories/story/components-stories-mediascrubber-origammediascrubber-story-vue'
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
 // BLOCKED: story does not exist yet — path kept for when it is created
-const STORY = '/story/components-stories-mediascrubber-origammediascrubber-story-vue'
+const STORY = '/stories/story/components-stories-mediascrubber-origammediascrubber-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

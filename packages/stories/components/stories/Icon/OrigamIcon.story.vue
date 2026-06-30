@@ -87,6 +87,62 @@
 			<origam-icon>mdi-heart</origam-icon>
 		</Variant>
 
+				<Variant
+				title="Prop — size"
+				:init-state="() => useStoryInitState<Partial<IIconComponentProps>>({ icon: MDI_ICONS.HOME, size: undefined })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+					<origam-icon :icon="MDI_ICONS.HOME" :size="state.size"/>
+					<origam-icon :icon="MDI_ICONS.HOME" size="x-small"/>
+					<origam-icon :icon="MDI_ICONS.HOME" size="small"/>
+					<origam-icon :icon="MDI_ICONS.HOME" size="default"/>
+					<origam-icon :icon="MDI_ICONS.HOME" size="large"/>
+					<origam-icon :icon="MDI_ICONS.HOME" size="x-large"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.size" title="Size" :options="SIZE_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — color & bgColor"
+				:init-state="() => useStoryInitState<Partial<IIconComponentProps>>({ icon: MDI_ICONS.HOME, color: undefined, bgColor: undefined })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+					<origam-icon :icon="MDI_ICONS.HOME" :color="state.color" :bg-color="state.bgColor"/>
+					<origam-icon :icon="MDI_ICONS.HOME" color="primary"/>
+					<origam-icon :icon="MDI_ICONS.HOME" color="success"/>
+					<origam-icon :icon="MDI_ICONS.HOME" color="danger"/>
+					<origam-icon :icon="MDI_ICONS.HOME" color="warning"/>
+					<origam-icon :icon="MDI_ICONS.HOME" color="info"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Emit — click (button mode)">
+			<origam-icon
+					:icon="MDI_ICONS.CLOSE"
+					aria-label="Close"
+					@click="logEvent('click', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Prop — icon (SVG path dispatch)">
+			<origam-icon :icon="ICON_SVG_PATH_STAR"/>
+		</Variant>
+
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IIconComponentProps>({ icon: MDI_ICONS.HOME })"
@@ -135,6 +191,8 @@
 		SIZE_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'
+
+	const ICON_SVG_PATH_STAR = 'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'
 </script>
 
 <docs lang="md" src="@docs/components/Icon/OrigamIcon.md"/>

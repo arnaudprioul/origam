@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/components-stories-confirmwrapper-origamconfirmwrapper-story-vue'
+const STORY_PATH = '/stories/story/components-stories-confirmwrapper-origamconfirmwrapper-story-vue'
 
 test.describe('OrigamConfirmWrapper', () => {
 	test('Default (field shorthand) — wrapper renders with two inputs', async ({ page }) => {

@@ -138,6 +138,63 @@
 			</origam-form>
 		</Variant>
 
+		<Variant title="Prop — basic wiring (TextField + NumberField)">
+			<origam-form data-cy="form-basic" @submit.prevent="basicHandleSubmit">
+				<origam-text-field
+						v-model="basicName"
+						label="Name"
+						:rules="[v => !!v || 'Name is required']"
+						data-cy="form-basic-name"
+				/>
+				<origam-number-field
+						v-model="basicAge"
+						label="Age"
+						:min="0"
+						:max="150"
+						data-cy="form-basic-age"
+				/>
+				<origam-btn type="submit" text="Submit" color="primary" data-cy="form-basic-submit"/>
+				<p data-cy="form-basic-submit-status">submitted = {{ basicSubmitted }}</p>
+			</origam-form>
+		</Variant>
+
+		<Variant title="Prop — validateOn">
+			<origam-form validate-on="input" data-cy="form-validateon" @submit.prevent>
+				<origam-text-field
+						v-model="validateOnName"
+						label="Name"
+						:rules="[v => !!v || 'Name is required']"
+						data-cy="form-validateon-field"
+				/>
+				<origam-btn type="submit" text="Submit" color="primary" data-cy="form-validateon-submit"/>
+			</origam-form>
+		</Variant>
+
+		<Variant title="Prop — disabled">
+			<origam-form disabled data-cy="form-disabled" @submit.prevent>
+				<origam-text-field v-model="disabledName" label="Name" data-cy="form-disabled-name"/>
+				<origam-btn type="submit" text="Submit" color="primary" data-cy="form-disabled-submit"/>
+			</origam-form>
+		</Variant>
+
+		<Variant title="Prop — fastFail">
+			<origam-form :fast-fail="true" data-cy="form-fastfail" @submit.prevent>
+				<origam-text-field
+						v-model="fastFailF1"
+						label="Field 1"
+						:rules="[v => !!v || 'Field 1 is required']"
+						data-cy="form-fastfail-f1"
+				/>
+				<origam-text-field
+						v-model="fastFailF2"
+						label="Field 2"
+						:rules="[v => !!v || 'Field 2 is required']"
+						data-cy="form-fastfail-f2"
+				/>
+				<origam-btn type="submit" text="Submit" color="primary" data-cy="form-fastfail-submit"/>
+			</origam-form>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IFormProps>({
@@ -215,6 +272,19 @@
 
 	const playgroundName = ref('')
 	const playgroundAge  = ref<number | null>(null)
-</script>
+
+	const basicName      = ref('')
+	const basicAge       = ref<number | null>(null)
+	const basicSubmitted = ref(false)
+	const basicHandleSubmit = () => { basicSubmitted.value = true }
+
+	const validateOnName = ref('')
+
+	const disabledName = ref('')
+
+	const fastFailF1 = ref('')
+	const fastFailF2 = ref('')
+
+	</script>
 
 <docs lang="md" src="@docs/components/Form/OrigamForm.md"/>

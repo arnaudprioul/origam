@@ -13,10 +13,10 @@ import { expect, test } from '@playwright/test'
  *     bug — fix the SCSS / token, don't paper over it here.
  */
 
-const IMG_PATH = '/story/components-stories-img-origamimg-story-vue'
-const AVATAR_PATH = '/story/components-stories-avatar-origamavatar-story-vue'
-const AVATAR_GROUP_PATH = '/story/components-stories-avatar-origamavatargroup-story-vue'
-const BADGE_PATH = '/story/components-stories-badge-origambadge-story-vue'
+const IMG_PATH = '/stories/story/components-stories-img-origamimg-story-vue'
+const AVATAR_PATH = '/stories/story/components-stories-avatar-origamavatar-story-vue'
+const AVATAR_GROUP_PATH = '/stories/story/components-stories-avatar-origamavatargroup-story-vue'
+const BADGE_PATH = '/stories/story/components-stories-badge-origambadge-story-vue'
 
 // ─── OrigamImg ───────────────────────────────────────────────────────────────
 
@@ -212,21 +212,22 @@ test.describe('OrigamAvatar', () => {
     // sidebar item and producing a false-green result. The same CSS assertion
     // is covered in the OrigamBadge section via "Prop — status & statusIconPosition".
 
-    test('rounded variant — explicit rounded class produces 50% border-radius', async ({ page }) => {
+    test('rounded variant — circle avatar has a non-zero border-radius', async ({ page }) => {
         await page.goto(AVATAR_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Prop — rounded', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const avatar = sandbox.locator('.origam-avatar').first()
-        await expect(avatar).toBeVisible({ timeout: 5000 })
+        // The story renders [rounded=0, rounded=sm, rounded=lg, rounded=circle].
+        // Use the circle avatar (last): Vue has already applied the SCSS class via
+        // `useRounded(props)` — we must NOT force the class via evaluate() because
+        // Vue scoped CSS rules carry a `[data-v-xxx]` attribute selector that will
+        // NOT match a class added manually after render.
+        const circleAvatar = sandbox.locator('.origam-avatar').last()
+        await expect(circleAvatar).toBeVisible({ timeout: 5000 })
 
-        const radius = await avatar.evaluate((el) => {
-            el.classList.add('origam-avatar--rounded')
-            return getComputedStyle(el).borderRadius
-        })
-        // The .origam-avatar--rounded SCSS rule sets border-radius: 50%.
+        const radius = await circleAvatar.evaluate((el) => getComputedStyle(el).borderRadius)
         expect(radius).not.toBe('0px')
     })
 

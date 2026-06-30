@@ -14,8 +14,8 @@ import { expect, test, type Page } from '@playwright/test'
  *  - Empty slot renders when series is empty.
  */
 
-const HONEYCOMB_STORY = '/story/components-stories-chart-origamcharthoneycomb-story-vue'
-const CHART_STORY = '/story/components-stories-chart-origamchart-story-vue'
+const HONEYCOMB_STORY = '/stories/story/components-stories-chart-origamcharthoneycomb-story-vue'
+const CHART_STORY = '/stories/story/components-stories-chart-origamchart-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

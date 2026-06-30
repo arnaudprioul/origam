@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/components-stories-contextualmenu-origamcontextualmenu-story-vue'
+const STORY_PATH = '/stories/story/components-stories-contextualmenu-origamcontextualmenu-story-vue'
 
 test.describe('OrigamContextualMenu', () => {
 	test('Default — right-click zone renders', async ({ page }) => {

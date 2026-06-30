@@ -133,6 +133,37 @@
 			</template>
 		</Variant>
 
+		<Variant title="Prop — color & bgColor">
+			<origam-toolbar title="Colored Toolbar" color="white" bg-color="primary" data-cy="toolbar-color"/>
+		</Variant>
+
+		<Variant title="Prop — elevation">
+			<origam-toolbar title="Elevated Toolbar" :elevation="4" data-cy="toolbar-elevation"/>
+		</Variant>
+
+		<Variant title="Prop — rounded">
+			<origam-toolbar title="Rounded Toolbar" rounded="lg" data-cy="toolbar-rounded"/>
+		</Variant>
+
+		<Variant title="Prop — density">
+			<origam-toolbar title="Compact Toolbar" density="compact" data-cy="toolbar-density"/>
+		</Variant>
+
+		<Variant title="Prop — collapse, flat & floating">
+			<origam-toolbar title="Modifiers" :collapse="true" :flat="true" data-cy="toolbar-modifiers"/>
+		</Variant>
+
+		<Variant title="Prop — border">
+			<div style="display: flex; flex-direction: column; gap: 8px;">
+				<origam-toolbar title="No border (default)" data-cy="toolbar-border-default"/>
+				<origam-toolbar title="border=true" :border="true" data-cy="toolbar-border-true"/>
+				<origam-toolbar title="border=bottom" border="bottom" data-cy="toolbar-border-bottom"/>
+				<origam-toolbar title="border=top" border="top" data-cy="toolbar-border-top"/>
+				<origam-toolbar title="border=right" border="right" data-cy="toolbar-border-right"/>
+				<origam-toolbar title="border=left" border="left" data-cy="toolbar-border-left"/>
+			</div>
+		</Variant>
+
 		<Variant title="Slots - Default">
 			<origam-toolbar title="With Default Slot">
 				<span>Custom slot content</span>
@@ -140,7 +171,7 @@
 		</Variant>
 
 		<Variant title="Slots - Prepend">
-			<origam-toolbar title="With Prepend">
+			<origam-toolbar title="With Prepend" data-cy="toolbar-slot-prepend">
 				<template #prepend>
 					<origam-btn :icon="menuIcon" aria-label="Navigation menu"/>
 				</template>
@@ -148,7 +179,7 @@
 		</Variant>
 
 		<Variant title="Slots - Append">
-			<origam-toolbar title="With Append">
+			<origam-toolbar title="With Append" data-cy="toolbar-slot-append">
 				<template #append>
 					<origam-btn :icon="accountIcon" aria-label="Account"/>
 					<origam-btn :icon="moreIcon"    aria-label="More"/>
@@ -157,7 +188,7 @@
 		</Variant>
 
 		<Variant title="Slots - Content">
-			<origam-toolbar title="With Content">
+			<origam-toolbar title="With Content" data-cy="toolbar-slot-content">
 				<template #content>
 					<span style="flex: 1;"/>
 					<origam-btn text="Action" color="primary"/>
@@ -166,7 +197,7 @@
 		</Variant>
 
 		<Variant title="Slots - Title">
-			<origam-toolbar>
+			<origam-toolbar data-cy="toolbar-slot-title">
 				<template #title>
 					<span style="font-style: italic; font-weight: 600;">Custom title</span>
 				</template>
@@ -178,7 +209,8 @@
 				:init-state="() => useStoryInitState<IToolbarProps>({ title: 'My App', bgColor: 'primary', color: 'white' })"
 		>
 			<template #default="{ state }">
-				<origam-toolbar v-bind="state"/>
+				<origam-toolbar title="Basic Toolbar" data-cy="toolbar-basic" style="margin-bottom: 8px;"/>
+				<origam-toolbar v-bind="state" data-cy="toolbar-playground"/>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Content">

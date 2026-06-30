@@ -65,6 +65,16 @@
 			</template>
 		</Variant>
 
+		<Variant title="Size / Density">
+			<origam-timeline :items="releaseEntries" size="default" density="default" data-cy="timeline-size-density"/>
+		</Variant>
+
+		<Variant title="Prop — orientation (horizontal, scroll-snap slider)">
+			<div style="max-width: 560px; overflow: hidden;">
+				<origam-timeline :items="releaseEntries" orientation="horizontal" data-cy="timeline-horizontal"/>
+			</div>
+		</Variant>
+
 		<Variant title="Slots - Default">
 			<origam-timeline>
 				<origam-timeline-item

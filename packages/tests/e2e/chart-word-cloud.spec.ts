@@ -16,7 +16,7 @@ import { expect, test, type Page } from '@playwright/test'
  * This is documented as an accepted v1 limitation.
  */
 
-const WORD_CLOUD_STORY = '/story/components-stories-chart-origamchartwordcloud-story-vue'
+const WORD_CLOUD_STORY = '/stories/story/components-stories-chart-origamchartwordcloud-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

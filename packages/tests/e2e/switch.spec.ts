@@ -38,7 +38,7 @@ import { expect, test } from '@playwright/test'
  *   Le playwright.config.ts déclare baseURL = 'http://localhost:6006/stories' — donc
  *   les chemins relatifs 'story/...' résolvent correctement vers
  *   'http://localhost:6006/stories/story/...'. Avec ce chemin correct, le sandbox se
- *   monte en ~1.3s en headless. Utiliser un slash initial ('/story/...') bypasse le
+ *   monte en ~1.3s en headless. Utiliser un slash initial ('/stories/story/...') bypasse le
  *   préfixe /stories/ et atterrit sur la page "wrong base URL" → timeout garanti.
  */
 

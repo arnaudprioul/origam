@@ -14,7 +14,7 @@ import { expect, test, type Page } from '@playwright/test'
  * Base URL: http://localhost:6006
  */
 
-const STORY = '/story/components-stories-chart-origamchartstreamgraph-story-vue'
+const STORY = '/stories/story/components-stories-chart-origamchartstreamgraph-story-vue'
 
 const sandboxOf = (page: Page) =>
 	page.frameLocator('iframe[src*="__sandbox"]')

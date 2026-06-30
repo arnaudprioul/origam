@@ -38,7 +38,7 @@ const openVariant = async (page: Page, variant: string) => {
     await page.waitForTimeout(800)
 }
 
-const STORY = '/story/components-stories-snackbar-origamsnackbargroup-story-vue'
+const STORY = '/stories/story/components-stories-snackbar-origamsnackbargroup-story-vue'
 
 test.describe('OrigamSnackbarGroup — Default', () => {
     test('notify renders an item, dismiss-all empties the stack', async ({ page }) => {

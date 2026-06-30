@@ -204,7 +204,127 @@
 			</origam-img>
 		</Variant>
 
+		<Variant title="Prop — src & alt">
+			<origam-img
+					alt="Demo image"
+					:aspect-ratio="16 / 9"
+					src="https://picsum.photos/seed/origam-img-basic/640/360"
+					style="max-width: 480px;"
+			/>
+		</Variant>
+
 		<Variant
+				title="Prop — cover & position"
+				:init-state="() => useStoryInitState<Partial<IImgProps>>({ cover: false })"
+		>
+			<template #default="{ state }">
+				<origam-img
+						alt="Cover demo"
+						:aspect-ratio="1"
+						:cover="state.cover"
+						:position="state.position"
+						src="https://picsum.photos/seed/origam-img-cover/640/360"
+						style="max-width: 480px;"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Fit">
+					<HstCheckbox v-model="state.cover"    title="Cover (object-fit: cover)"/>
+					<HstText     v-model="state.position" title="Position (object-position)"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — rounded"
+				:init-state="() => useStoryInitState<Partial<IImgProps>>({ rounded: 'default' })"
+		>
+			<template #default="{ state }">
+				<origam-img
+						alt="Rounded demo"
+						:aspect-ratio="1"
+						cover
+						:rounded="state.rounded"
+						src="https://picsum.photos/seed/origam-img-rounded/640/640"
+						style="max-width: 240px;"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded" title="Rounded" :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — aspectRatio"
+				:init-state="() => useStoryInitState<Partial<IImgProps>>({ aspectRatio: 16 / 9 })"
+		>
+			<template #default="{ state }">
+				<origam-img
+						alt="Aspect ratio demo"
+						:aspect-ratio="state.aspectRatio"
+						cover
+						src="https://picsum.photos/seed/origam-img-ar/640/360"
+						style="max-width: 480px;"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Dimension">
+					<HstNumber v-model="state.aspectRatio" title="Aspect Ratio" :step="0.1"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — lazySrc (preload blur)">
+			<origam-img
+					alt="Lazy src demo"
+					:aspect-ratio="16 / 9"
+					cover
+					lazy-src="https://picsum.photos/seed/origam-img-lazy/40/22"
+					src="https://picsum.photos/seed/origam-img-lazy/1600/900"
+					style="max-width: 480px;"
+			/>
+		</Variant>
+
+		<Variant
+				title="Prop — gradient"
+				:init-state="() => useStoryInitState<Partial<IImgProps>>({ gradient: 'to bottom, transparent 40%, rgba(0,0,0,0.6) 100%' })"
+		>
+			<template #default="{ state }">
+				<origam-img
+						alt="Gradient demo"
+						:aspect-ratio="16 / 9"
+						cover
+						:gradient="state.gradient"
+						src="https://picsum.photos/seed/origam-img-grad/640/360"
+						style="max-width: 480px;"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Overlay">
+					<HstText v-model="state.gradient" title="Gradient (CSS linear-gradient args)"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Slot — error">
+			<origam-img
+					:aspect-ratio="16 / 9"
+					alt="Error slot demo"
+					eager
+					src="https://this-host-does-not-exist.invalid/broken.png"
+					style="max-width: 480px; background: var(--origam-color__surface---overlay, #f3f4f6);"
+			>
+				<template #error>
+					<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; color: var(--origam-color__feedback--danger---fg, #b91c1c);">
+						Failed to load image
+					</div>
+				</template>
+			</origam-img>
+		</Variant>
+
+				<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IImgProps>>({
 					src: 'https://picsum.photos/seed/origam-img-playground/640/360',

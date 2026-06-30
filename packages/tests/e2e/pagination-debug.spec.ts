@@ -1,18 +1,25 @@
 import { test } from '@playwright/test'
 
-const STORY_PATH = '/story/components-stories-pagination-origampagination-story-vue'
+/**
+ * Pattern canonique — navigation directe par variantId (cf. btn.spec.ts).
+ * JAMAIS networkidle (Histoire garde un WS HMR ouvert → timeout garanti).
+ *
+ * Variants OrigamPagination (0-based) :
+ *  19  → With info
+ *  20  → Prop — size (small / default / large)
+ *  21  → Default (playground)
+ */
+
+const STORY_ID   = 'components-stories-pagination-origampagination-story-vue'
+const STORY_PATH = '/stories/story/' + STORY_ID
+
+const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
 test.setTimeout(180_000)
 
 test('DEBUG pagination — size cascade + withInfo Prev/Next text', async ({ page }) => {
-    await page.goto(STORY_PATH)
-    await page.waitForLoadState('networkidle')
-
     // ── Sizes Variant ───────────────────────────────────────────────
-    await page.getByText('Prop — size (small / default / large)', { exact: true })
-        .last()
-        .click({ timeout: 10_000 })
-    await page.waitForTimeout(1500)
+    await page.goto(variantUrl(20))
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 
@@ -31,15 +38,14 @@ test('DEBUG pagination — size cascade + withInfo Prev/Next text', async ({ pag
                 btnAttrs: btnAllAttrs,
             }
         })
-         
+
         console.log(`\n=== size="${size}" ===`)
-         
+
         console.log(JSON.stringify(report, null, 2))
     }
 
     // ── With Info Variant ───────────────────────────────────────────
-    await page.getByText('With info', { exact: true }).last().click({ timeout: 10_000 })
-    await page.waitForTimeout(1500)
+    await page.goto(variantUrl(19))
 
     const info = await sandbox.locator('[data-cy="pagination-with-info"]').first().evaluate((el) => {
         const infoLabel = el.querySelector('.origam-pagination__info')
@@ -65,8 +71,8 @@ test('DEBUG pagination — size cascade + withInfo Prev/Next text', async ({ pag
             pageBtnShape: shape(pageBtn),
         }
     })
-     
+
     console.log(`\n=== withInfo ===`)
-     
+
     console.log(JSON.stringify(info, null, 2))
 })

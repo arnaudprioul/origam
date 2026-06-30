@@ -177,6 +177,34 @@
 			</origam-sheet>
 		</Variant>
 
+				<Variant title="Prop — elevation">
+			<origam-sheet elevation="4" style="padding: 16px; width: 240px;">
+				Sheet with elevation=4 — box-shadow is non-none.
+			</origam-sheet>
+		</Variant>
+
+		<Variant title="Prop — rounded">
+			<origam-sheet rounded style="padding: 16px; width: 240px;">
+				Sheet with rounded — border-radius is &gt; 0.
+			</origam-sheet>
+		</Variant>
+
+		<Variant title="Prop — position">
+			<div style="position: relative; height: 120px; width: 300px; background: var(--origam-color__surface---overlay, #f5f5f5);">
+				<origam-sheet position="absolute" style="padding: 16px;">
+					Sheet with position=absolute.
+				</origam-sheet>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — color & bgColor">
+			<div style="display: flex; gap: 12px; flex-wrap: wrap;">
+				<origam-sheet bg-color="primary" style="padding: 16px; width: 120px;">bgColor=primary</origam-sheet>
+				<origam-sheet color="primary" border style="padding: 16px; width: 120px;">color=primary</origam-sheet>
+			</div>
+		</Variant>
+
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ISheetProps>({

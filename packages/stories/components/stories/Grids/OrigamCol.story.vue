@@ -256,6 +256,45 @@
 			</origam-container>
 		</Variant>
 
+		<Variant title="Prop — cols">
+			<origam-container>
+				<origam-row>
+					<origam-col cols="6">
+						<div class="demo-cell">col A (6/12)</div>
+					</origam-col>
+					<origam-col cols="6">
+						<div class="demo-cell">col B (6/12)</div>
+					</origam-col>
+				</origam-row>
+			</origam-container>
+		</Variant>
+
+		<Variant title="Prop — align (align-self)">
+			<origam-container>
+				<origam-row style="min-height: 100px; background: var(--origam-color__surface---overlay, #ececec);">
+					<origam-col cols="4" align="start">
+						<div class="demo-cell">start</div>
+					</origam-col>
+					<origam-col cols="4" align="center">
+						<div class="demo-cell">center</div>
+					</origam-col>
+					<origam-col cols="4" align="end">
+						<div class="demo-cell">end</div>
+					</origam-col>
+				</origam-row>
+			</origam-container>
+		</Variant>
+
+		<Variant title="Prop — offset">
+			<origam-container>
+				<origam-row>
+					<origam-col cols="4" offset="2">
+						<div class="demo-cell">offset 2</div>
+					</origam-col>
+				</origam-row>
+			</origam-container>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IColProps>>({

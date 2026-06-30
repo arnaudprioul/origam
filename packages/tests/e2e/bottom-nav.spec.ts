@@ -9,7 +9,7 @@ import { expect, test, type Page } from '@playwright/test'
 const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
 
 const openVariant = async (page: Page, variant: string) => {
-    await page.goto('/story/components-stories-bottomnav-origambottomnav-story-vue')
+    await page.goto('/stories/story/components-stories-bottomnav-origambottomnav-story-vue')
     await page.waitForLoadState('networkidle')
     // Wait for Histoire to hydrate and render the variant list before clicking.
     // `networkidle` fires before Vue has mounted the sidebar items, which makes

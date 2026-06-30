@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/components-stories-form-origamform-story-vue'
+const STORY_PATH = '/stories/story/components-stories-form-origamform-story-vue'
 
 test.describe('OrigamForm', () => {
     test('Basic wiring — form with TextField and NumberField renders', async ({ page }) => {
@@ -64,18 +64,18 @@ test.describe('OrigamForm', () => {
     test('Slot actions — submit and reset buttons visible', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Slot — actions', { exact: true }).first().click()
+        await page.getByText('Slots - Actions', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('[data-cy="form-actions-submit"]')).toBeVisible({ timeout: 5000 })
-        await expect(sandbox.locator('[data-cy="form-actions-reset"]')).toBeVisible({ timeout: 3000 })
+        await expect(sandbox.locator('[data-cy="form-slot-actions-submit"]')).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.locator('[data-cy="form-slot-actions-reset"]')).toBeVisible({ timeout: 3000 })
     })
 
     test('Emit submit — clicking submit fires the event', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Emit — submit', { exact: true }).first().click()
+        await page.getByText('Events - submit', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -88,7 +88,7 @@ test.describe('OrigamForm', () => {
     test('Emit reset — clicking reset fires the event', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Emit — reset', { exact: true }).first().click()
+        await page.getByText('Events - reset', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

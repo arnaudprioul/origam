@@ -107,6 +107,28 @@
 			</origam-responsive>
 		</Variant>
 
+				<Variant title="Prop — aspectRatio">
+			<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-start;">
+				<origam-responsive aspect-ratio="16/9" :max-width="200">
+					<div style="width:100%;height:100%;background:var(--origam-color__surface---overlay,#ececec);display:flex;align-items:center;justify-content:center;">16/9</div>
+				</origam-responsive>
+				<origam-responsive aspect-ratio="4/3" :max-width="200">
+					<div style="width:100%;height:100%;background:var(--origam-color__surface---overlay,#ececec);display:flex;align-items:center;justify-content:center;">4/3</div>
+				</origam-responsive>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — inline">
+			<p>
+				Inline mode:
+				<origam-responsive aspect-ratio="1/1" :inline="true" :width="40" :height="40">
+					<div style="width:100%;height:100%;background:var(--origam-color__surface---overlay,#ececec);"/>
+				</origam-responsive>
+				renders inside text flow as inline-flex.
+			</p>
+		</Variant>
+
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IResponsiveProps>({

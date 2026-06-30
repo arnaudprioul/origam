@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/components-stories-input-origaminput-story-vue'
+const STORY_PATH = '/stories/story/components-stories-input-origaminput-story-vue'
 
 test.describe('OrigamInput', () => {
     test('Color variant — renders outer wrapper with label', async ({ page }) => {

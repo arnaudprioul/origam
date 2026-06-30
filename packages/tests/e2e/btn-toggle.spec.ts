@@ -25,7 +25,7 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.waitForTimeout(800)
 }
 
-const STORY = '/story/components-stories-btn-origambtntoggle-story-vue'
+const STORY = '/stories/story/components-stories-btn-origambtntoggle-story-vue'
 
 // `useGroup` toggles `origam-btn--active` on each child via the
 // `selectedClass` ref it injects through `useGroupItem`. That's our

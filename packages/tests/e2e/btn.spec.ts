@@ -33,22 +33,24 @@ import { expect, test } from '@playwright/test'
  *     sandbox.locator('.origam-btn__append')
  *     sandbox.locator('.origam-progress--circular')
  *
- * ## 3. Titres réels des Variants (Btn — état au 2026-06-22)
+ * ## 3. Titres réels des Variants (Btn — état au 2026-06-28)
  *
  *   Index → Titre (tel que dans la sidebar Histoire)
  *     0  → Design         (props visuelles : variant, color, bgColor, size, …)
  *     1  → State          (hover / active surface)
  *     2  → Functional     (disabled, readonly, loading, block, slim, stacked, …)
- *     3  → Events - click
- *     4  → Events - click:prepend
- *     5  → Events - click:append
- *     6  → Events - group:selected
- *     7  → Slots - Default
- *     8  → Slots - Prepend
- *     9  → Slots - Append
- *    10  → Slots - Loader
- *    11  → Slots - Wrapper
- *    12  → Default (playground)
+ *     3  → Prop — color & bgColor
+ *     4  → Prop — loading (interactive)
+ *     5  → Events - click
+ *     6  → Events - click:prepend
+ *     7  → Events - click:append
+ *     8  → Events - group:selected
+ *     9  → Slots - Default
+ *    10  → Slots - Prepend
+ *    11  → Slots - Append
+ *    12  → Slots - Loader
+ *    13  → Slots - Wrapper
+ *    14  → Default (playground)
  *
  *   ⚠️  Les titres StoryGroup visibles dans les #controls (Color, Sizing, Shape…)
  *   sont des fieldsets DANS la sidebar — PAS des Variants séparés. Ne pas les cibler.
@@ -256,12 +258,12 @@ test.describe('OrigamBtn', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // EVENTS (indexes 3–6)                                                 //
+    // EVENTS (indexes 5–8)                                                 //
     // ------------------------------------------------------------------ //
 
     test.describe('Events - click', () => {
         test('renders a clickable button labelled "Click me"', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(5))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -269,7 +271,7 @@ test.describe('OrigamBtn', () => {
         })
 
         test('click does not throw (logEvent side-effect is not assertable headlessly)', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(5))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -283,7 +285,7 @@ test.describe('OrigamBtn', () => {
 
     test.describe('Events - click:prepend', () => {
         test('renders btn with a prepend slot area', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(6))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -292,21 +294,21 @@ test.describe('OrigamBtn', () => {
         })
 
         test('click on prepend area does not throw', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(6))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const prepend = sandbox.locator('.origam-btn__prepend').first()
-            // Variant 4 with MDI icon can take up to ~15s on cold Playwright context
+            // Variant 6 with MDI icon can take up to ~15s on cold Playwright context
             await expect(prepend).toBeVisible({ timeout: 20000 })
             await prepend.click()
         })
     })
 
     test.describe('Events - click:append', () => {
-        // Variant 5 (Events - click:append) loads the MDI ARROW_RIGHT icon asynchronously.
+        // Variant 7 (Events - click:append) loads the MDI ARROW_RIGHT icon asynchronously.
         // In a cold Playwright context, the sandbox takes ~10-12s to mount all icon fonts
         // and render the component. We use a 20s timeout for this variant only.
         test('renders btn with an append slot area', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(7))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 20000 })
@@ -314,7 +316,7 @@ test.describe('OrigamBtn', () => {
         })
 
         test('click on append area does not throw', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(7))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const append = sandbox.locator('.origam-btn__append').first()
             await expect(append).toBeVisible({ timeout: 20000 })
@@ -324,7 +326,7 @@ test.describe('OrigamBtn', () => {
 
     test.describe('Events - group:selected', () => {
         test('renders a standard btn (group context not available standalone)', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(8))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -332,12 +334,12 @@ test.describe('OrigamBtn', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // SLOTS (indexes 7–11)                                                 //
+    // SLOTS (indexes 9–13)                                                 //
     // ------------------------------------------------------------------ //
 
     test.describe('Slots - Default', () => {
         test('default slot renders custom content ("Custom content")', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(9))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -349,7 +351,7 @@ test.describe('OrigamBtn', () => {
 
     test.describe('Slots - Prepend', () => {
         test('prepend slot renders an origam-icon inside the prepend area', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(10))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -359,7 +361,7 @@ test.describe('OrigamBtn', () => {
 
     test.describe('Slots - Append', () => {
         test('append slot renders an origam-icon inside the append area', async ({ page }) => {
-            await page.goto(variantUrl(9))
+            await page.goto(variantUrl(11))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -381,7 +383,7 @@ test.describe('OrigamBtn', () => {
          * The test asserts the loading state via the circular progress.
          */
         test('loading=true mounts a circular progress overlay', async ({ page }) => {
-            await page.goto(variantUrl(10))
+            await page.goto(variantUrl(12))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -391,7 +393,7 @@ test.describe('OrigamBtn', () => {
         })
 
         test('loading=true: pointer-events are disabled on the btn', async ({ page }) => {
-            await page.goto(variantUrl(10))
+            await page.goto(variantUrl(12))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -402,7 +404,7 @@ test.describe('OrigamBtn', () => {
 
     test.describe('Slots - Wrapper', () => {
         test('wrapper slot replaces btn inner content with custom markup', async ({ page }) => {
-            await page.goto(variantUrl(11))
+            await page.goto(variantUrl(13))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -413,13 +415,13 @@ test.describe('OrigamBtn', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // DEFAULT — playground (index 12)                                      //
+    // DEFAULT — playground (index 14)                                      //
     // init: { color: 'primary', text: 'Button' }                          //
     // ------------------------------------------------------------------ //
 
     test.describe('Default (playground)', () => {
         test('renders a btn with color=primary and text "Button"', async ({ page }) => {
-            await page.goto(variantUrl(12))
+            await page.goto(variantUrl(14))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -428,7 +430,7 @@ test.describe('OrigamBtn', () => {
         })
 
         test('is a native <button> element by default (tag=button)', async ({ page }) => {
-            await page.goto(variantUrl(12))
+            await page.goto(variantUrl(14))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })

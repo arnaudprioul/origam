@@ -110,6 +110,43 @@
 			</template>
 		</Variant>
 
+		<Variant title="Prop — modelValue (single date)">
+			<origam-date-picker v-model="singleDate" data-cy="date-picker-single"/>
+		</Variant>
+
+		<Variant title="Prop — range">
+			<origam-date-picker v-model="rangeValue" range data-cy="date-picker-range"/>
+		</Variant>
+
+		<Variant title="Prop — multiple">
+			<origam-date-picker v-model="multipleValue" multiple data-cy="date-picker-multiple"/>
+		</Variant>
+
+		<Variant title="Prop — min & max (date constraints)">
+			<origam-date-picker v-model="constrainedDate" :min="minDate" :max="maxDate" data-cy="date-picker-constraints"/>
+		</Variant>
+
+		<Variant title="Prop — showWeek">
+			<origam-date-picker v-model="showWeekDate" :show-week="true" data-cy="date-picker-show-week"/>
+		</Variant>
+
+		<Variant title="Slot — actions">
+			<origam-date-picker v-model="slotActionsDate" data-cy="date-picker-slot-actions">
+				<template #actions>
+					<origam-btn color="primary" text="OK" size="small"/>
+					<origam-btn text="Cancel" size="small"/>
+				</template>
+			</origam-date-picker>
+		</Variant>
+
+		<Variant title="Emit — update:modelValue">
+			<origam-date-picker
+					v-model="emitDate"
+					data-cy="date-picker-emit-model-value"
+					@update:model-value="logEvent('update:modelValue', $event)"
+			/>
+		</Variant>
+
 		<Variant title="Events - update:modelValue">
 			<origam-date-picker
 					v-model="date"
@@ -177,6 +214,7 @@
 				<origam-date-picker
 						v-model="date"
 						v-bind="state"
+						data-cy="date-picker-playground"
 						@update:model-value="logEvent('update:modelValue', $event)"
 				/>
 			</template>
@@ -227,8 +265,18 @@
 		ROUNDED_OPTIONS
 	} from '@stories/const'
 
-	const today = new Date().toISOString().slice(0, 10)
-	const date = ref<string>(today)
+	const today           = new Date().toISOString().slice(0, 10)
+	const date            = ref<string>(today)
+	const singleDate      = ref<string>(today)
+	const rangeValue      = ref<string[]>([])
+	const multipleValue   = ref<string[]>([])
+	const constrainedDate = ref<string>(today)
+	const showWeekDate    = ref<string>(today)
+	const slotActionsDate = ref<string>(today)
+	const emitDate        = ref<string>(today)
+
+	const minDate = new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().slice(0, 10)
+	const maxDate = new Date(new Date().setDate(new Date().getDate() + 30)).toISOString().slice(0, 10)
 
 	const VIEW_MODE_OPTIONS = [
 		{ label: 'Month', value: DATE_MODE.MONTH },

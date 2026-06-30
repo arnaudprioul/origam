@@ -135,6 +135,76 @@
 			</template>
 		</Variant>
 
+		<Variant title="Prop — items (right-click a zone)">
+			<div style="padding: 48px; display: flex; align-items: center; justify-content: center;">
+				<div
+						style="padding: 40px; border: 2px dashed var(--origam-color__border---subtle, #ccc); text-align: center; border-radius: 8px; cursor: context-menu;"
+						data-cy="contextual-menu-default-zone"
+				>
+					Right-click to open menu
+				</div>
+				<origam-contextual-menu :items="defaultItems"/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — title">
+			<div style="padding: 48px; display: flex; align-items: center; justify-content: center;">
+				<div
+						style="padding: 40px; border: 2px dashed var(--origam-color__border---subtle, #ccc); text-align: center; border-radius: 8px; cursor: context-menu;"
+						data-cy="contextual-menu-title-zone"
+				>
+					Right-click to open menu with title
+				</div>
+				<origam-contextual-menu :items="defaultItems" title="Actions"/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — items with icons">
+			<div style="padding: 48px; display: flex; align-items: center; justify-content: center;">
+				<div
+						style="padding: 40px; border: 2px dashed var(--origam-color__border---subtle, #ccc); text-align: center; border-radius: 8px; cursor: context-menu;"
+						data-cy="contextual-menu-icons-zone"
+				>
+					Right-click to see icon items
+				</div>
+				<origam-contextual-menu :items="richItems"/>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — default (custom content)">
+			<div style="padding: 48px; display: flex; align-items: center; justify-content: center;">
+				<div
+						style="padding: 40px; border: 2px dashed var(--origam-color__border---subtle, #ccc); text-align: center; border-radius: 8px; cursor: context-menu;"
+						data-cy="contextual-menu-slot-zone"
+				>
+					Right-click for custom slot content
+				</div>
+				<origam-contextual-menu>
+					<template #default>
+						<div style="padding: 8px 16px; min-width: 180px;">
+							<p style="margin: 0; font-weight: 700;">Custom menu</p>
+							<p style="margin: 4px 0 0; font-size: 0.875rem;">Slot content here.</p>
+						</div>
+					</template>
+				</origam-contextual-menu>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — update:modelValue">
+			<div style="padding: 48px; display: flex; align-items: center; justify-content: center;">
+				<div
+						style="padding: 40px; border: 2px dashed var(--origam-color__border---subtle, #ccc); text-align: center; border-radius: 8px; cursor: context-menu;"
+						data-cy="contextual-menu-emit-zone"
+				>
+					Right-click to open/close
+				</div>
+				<origam-contextual-menu
+						:items="defaultItems"
+						@update:model-value="logEvent('update:modelValue', $event)"
+				/>
+			</div>
+		</Variant>
+
 		<Variant title="Events - update:modelValue">
 			<div style="padding: 48px; display: flex; align-items: center; justify-content: center;">
 				<div
@@ -209,6 +279,7 @@
 				<div style="padding: 48px; display: flex; align-items: center; justify-content: center;">
 					<div
 							style="padding: 40px; border: 2px dashed var(--origam-color__border---subtle, #ccc); text-align: center; border-radius: 8px; cursor: context-menu;"
+							data-cy="contextual-menu-playground-zone"
 					>
 						Right-click to open menu
 					</div>

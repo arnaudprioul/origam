@@ -1,23 +1,23 @@
 import { test, expect } from '@playwright/test'
 
-const STORY_PATH = '/story/components-stories-pagination-origampagination-story-vue'
+/**
+ * Pattern canonique — navigation directe par variantId (cf. btn.spec.ts).
+ * JAMAIS networkidle (Histoire garde un WS HMR ouvert → timeout garanti).
+ *
+ * Variant utilisé : Default (playground, index 21) — expose
+ * toujours au moins un OrigamPagination, idéal pour auditer les styles
+ * actif/inactif sans dépendre d'un nommage de variant fragile.
+ */
+
+const STORY_ID   = 'components-stories-pagination-origampagination-story-vue'
+const STORY_PATH = '/stories/story/' + STORY_ID
+
+const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
 test.setTimeout(180_000)
 
 test('DEBUG pagination — default mode active is neutral gray (not violet)', async ({ page }) => {
-    await page.goto(STORY_PATH)
-    await page.waitForLoadState('networkidle')
-    // Activate the first available Variant so the sandbox iframe mounts.
-    // We try a few common titles in order; the first match wins.
-    const candidates = ['Default', 'Default', 'Basic', 'Sizes — small · default · large (stacked rows)']
-    for (const title of candidates) {
-        const loc = page.getByText(title, { exact: true }).last()
-        if (await loc.count().catch(() => 0)) {
-            await loc.click({ timeout: 5_000 }).catch(() => {})
-            break
-        }
-    }
-    await page.waitForTimeout(2000)
+    await page.goto(variantUrl(21))
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
     // Wait for at least one pagination root inside the sandbox
@@ -53,9 +53,8 @@ test('DEBUG pagination — default mode active is neutral gray (not violet)', as
         }
     })
 
-     
     console.log('=== pagination active vs inactive ===')
-     
+
     console.log(JSON.stringify(sample, null, 2))
 
     await sandbox.locator('.origam-pagination').first().screenshot({ path: '/tmp/pagination-active.png' })
@@ -72,19 +71,8 @@ test('DEBUG pagination — default mode active is neutral gray (not violet)', as
 })
 
 test('DEBUG pagination — colored mode active stays primary fill', async ({ page }) => {
-    await page.goto(STORY_PATH)
-    await page.waitForLoadState('networkidle')
-    // Try to land on a primary/colored variant if exposed; otherwise
-    // any variant works — the test will look for a `--colored` modifier.
-    const coloredCandidates = ['Primary', 'Colored', 'With color']
-    for (const title of coloredCandidates) {
-        const loc = page.getByText(title, { exact: true }).last()
-        if (await loc.count().catch(() => 0)) {
-            await loc.click({ timeout: 5_000 }).catch(() => {})
-            break
-        }
-    }
-    await page.waitForTimeout(2000)
+    // "Color — default vs primary" (index 15) exposes both default and colored paginations.
+    await page.goto(variantUrl(15))
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
     const colored = sandbox.locator('.origam-pagination.origam-pagination--colored').first()
@@ -92,7 +80,6 @@ test('DEBUG pagination — colored mode active stays primary fill', async ({ pag
     if (!exists) {
         // No colored variant available in the story — that's fine,
         // just log it so the user sees we tried.
-         
         console.log('(no --colored variant exposed in story — skipping colored mode assertion)')
         return
     }
@@ -102,7 +89,7 @@ test('DEBUG pagination — colored mode active stays primary fill', async ({ pag
         const cs = getComputedStyle(active)
         return { bg: cs.backgroundColor, color: cs.color }
     })
-     
+
     console.log('=== colored mode active ===', JSON.stringify(sample))
     expect(sample?.bg).toBe('rgb(124, 58, 237)') // primary violet
 })

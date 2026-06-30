@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/components-stories-defaultsprovider-origamdefaultsprovider-story-vue'
+const STORY_PATH = '/stories/story/components-stories-defaultsprovider-origamdefaultsprovider-story-vue'
 
 test.describe('OrigamDefaultsProvider', () => {
     test('Global defaults — buttons receive density from global defaults', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — defaults (global density)', { exact: true }).first().click()
+        await page.getByText('Functional - defaults global', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -17,7 +17,7 @@ test.describe('OrigamDefaultsProvider', () => {
     test('Component-level defaults — buttons receive injected color', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — defaults (component-level)', { exact: true }).first().click()
+        await page.getByText('Functional - defaults component-level', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -27,7 +27,7 @@ test.describe('OrigamDefaultsProvider', () => {
     test('Scoped — inner provider does not inherit outer defaults', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — scoped (no parent inheritance)', { exact: true }).first().click()
+        await page.getByText('Functional - scoped (no parent inheritance)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -37,7 +37,7 @@ test.describe('OrigamDefaultsProvider', () => {
     test('Disabled — inner provider passes through outer defaults', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — disabled (pass-through)', { exact: true }).first().click()
+        await page.getByText('Functional - disabled (pass-through)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -48,7 +48,7 @@ test.describe('OrigamDefaultsProvider', () => {
     test('Slot — default renders button from slot', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Slot — default', { exact: true }).first().click()
+        await page.getByText('Slots - Default', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

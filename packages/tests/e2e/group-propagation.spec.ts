@@ -26,12 +26,12 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
 
 // ─── Story URL constants ───────────────────────────────────────────────────
 
-const AVATAR_GROUP = '/story/components-stories-avatar-origamavatargroup-story-vue'
-const BREADCRUMB   = '/story/components-stories-breadcrumb-origambreadcrumb-story-vue'
-const BOTTOM_NAV   = '/story/components-stories-bottomnav-origambottomnav-story-vue'
-const LIST         = '/story/components-stories-list-origamlist-story-vue'
-const EXPANSION    = '/story/components-stories-expansionpanel-origamexpansionpanels-story-vue'
-const SELECTION    = '/story/components-stories-selectioncontrol-origamselectioncontrolgroup-story-vue'
+const AVATAR_GROUP = '/stories/story/components-stories-avatar-origamavatargroup-story-vue'
+const BREADCRUMB   = '/stories/story/components-stories-breadcrumb-origambreadcrumb-story-vue'
+const BOTTOM_NAV   = '/stories/story/components-stories-bottomnav-origambottomnav-story-vue'
+const LIST         = '/stories/story/components-stories-list-origamlist-story-vue'
+const EXPANSION    = '/stories/story/components-stories-expansionpanel-origamexpansionpanels-story-vue'
+const SELECTION    = '/stories/story/components-stories-selectioncontrol-origamselectioncontrolgroup-story-vue'
 
 // ─── 1. OrigamAvatarGroup → OrigamAvatar ──────────────────────────────────
 

@@ -152,6 +152,33 @@
 			</template>
 		</Variant>
 
+		<Variant title="Prop — closeOnSelect">
+			<origam-color-picker-field
+					v-model="functionalColor"
+					label="Colour (closeOnSelect)"
+					close-on-select
+					style="max-width: 320px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — disabled & readonly">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px; max-width: 320px;">
+				<origam-color-picker-field v-model="functionalColor" label="Disabled" disabled/>
+				<origam-color-picker-field v-model="functionalColor" label="Readonly" readonly/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — rules">
+			<origam-color-picker-field
+					v-model="rulesColor"
+					label="Required colour"
+					:rules="colorRequiredRule"
+					validate-on="blur"
+					style="max-width: 320px"
+					data-cy="colorpickerfield-rules"
+			/>
+		</Variant>
+
 		<Variant title="Events - update:modelValue">
 			<origam-color-picker-field
 					v-model="emitColor"
@@ -341,6 +368,7 @@
 	const designColor     = ref(null)
 	const stateColor      = ref(null)
 	const functionalColor = ref(null)
+	const rulesColor      = ref(null)
 	const emitColor       = ref(null)
 	const slotColor       = ref(null)
 	const playgroundColor = ref(null)

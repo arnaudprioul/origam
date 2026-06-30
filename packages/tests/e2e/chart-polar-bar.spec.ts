@@ -14,7 +14,7 @@ import { expect, test, type Page } from '@playwright/test'
  * Elements live inside the Histoire sandbox iframe — accessed via frameLocator.
  */
 
-const STORY_PATH = '/story/components-stories-chart-origamchartpolarbar-story-vue'
+const STORY_PATH = '/stories/story/components-stories-chart-origamchartpolarbar-story-vue'
 
 const sandboxOf = (page: Page) =>
 	page.frameLocator('iframe[src*="__sandbox"]')

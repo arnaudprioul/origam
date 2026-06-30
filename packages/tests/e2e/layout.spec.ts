@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test'
 
-const SHEET_PATH = '/story/components-stories-sheet-origamsheet-story-vue'
-const RESPONSIVE_PATH = '/story/components-stories-responsive-origamresponsive-story-vue'
-const SYSTEMBAR_PATH = '/story/components-stories-systembar-origamsystembar-story-vue'
-const MAIN_PATH = '/story/components-stories-main-origammain-story-vue'
+const SHEET_PATH = '/stories/story/components-stories-sheet-origamsheet-story-vue'
+const RESPONSIVE_PATH = '/stories/story/components-stories-responsive-origamresponsive-story-vue'
+const SYSTEMBAR_PATH = '/stories/story/components-stories-systembar-origamsystembar-story-vue'
+const MAIN_PATH = '/stories/story/components-stories-main-origammain-story-vue'
 
 /**
  * Layout components — OrigamSheet / OrigamResponsive / OrigamSystemBar / OrigamMain

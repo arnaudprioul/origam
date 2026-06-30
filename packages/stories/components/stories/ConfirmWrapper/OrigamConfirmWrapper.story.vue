@@ -111,6 +111,117 @@
 			</template>
 		</Variant>
 
+		<Variant title="Prop — field (shorthand)">
+			<div style="padding: 24px; max-width: 400px;" data-cy="confirm-wrapper-default">
+				<origam-confirm-wrapper
+						v-model="designValue"
+						v-model:confirm="designConfirm"
+						field="text-field"
+						:defaults="{ label: 'Email' }"
+						data-cy="confirm-wrapper-default-input"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — direction">
+			<div style="padding: 24px; max-width: 600px;">
+				<origam-confirm-wrapper
+						v-model="designValue"
+						v-model:confirm="designConfirm"
+						field="text-field"
+						:defaults="{ label: 'Email' }"
+						:direction="DIRECTION.HORIZONTAL"
+						data-cy="confirm-wrapper-direction"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — label & prependIcon">
+			<div style="padding: 24px; max-width: 400px;">
+				<origam-confirm-wrapper
+						v-model="designValue"
+						v-model:confirm="designConfirm"
+						label="Email address"
+						confirm-label="Confirm email"
+						:prepend-icon="iconHeart"
+						field="text-field"
+						data-cy="confirm-wrapper-label"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — disabled, readonly & error">
+			<div style="padding: 24px; max-width: 400px; display: flex; flex-direction: column; gap: 16px;">
+				<origam-confirm-wrapper
+						v-model="functionalValue"
+						v-model:confirm="functionalConfirm"
+						field="text-field"
+						:defaults="{ label: 'Disabled' }"
+						disabled
+						data-cy="confirm-wrapper-states"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — confirm (mismatch validation)">
+			<div style="padding: 24px; max-width: 400px;">
+				<origam-confirm-wrapper
+						v-model="propValidValue"
+						v-model:confirm="propValidConfirm"
+						field="text-field"
+						:defaults="{ label: 'Password', type: 'password' }"
+						data-cy="confirm-wrapper-validation"
+				/>
+				<p data-cy="confirm-wrapper-validation-status" style="margin-top: 8px; font-size: 0.875rem;">
+					{{ propValidValue === propValidConfirm ? 'Match' : 'Mismatch' }}
+				</p>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — header">
+			<div style="padding: 24px; max-width: 400px;">
+				<origam-confirm-wrapper
+						v-model="slotHeaderValue"
+						v-model:confirm="slotHeaderConfirm"
+						field="text-field"
+						:defaults="{ label: 'Email' }"
+						data-cy="confirm-wrapper-slot-header"
+				>
+					<template #header>
+						<div style="padding-bottom: 8px; font-weight: 700;">Custom header slot</div>
+					</template>
+				</origam-confirm-wrapper>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — default & confirm">
+			<div style="padding: 24px; max-width: 400px;">
+				<origam-confirm-wrapper
+						v-model="slotDefaultValue"
+						v-model:confirm="slotDefaultConfirm"
+				>
+					<origam-text-field v-model="slotDefaultValue" label="Custom primary" data-cy="confirm-wrapper-custom-field"/>
+					<template #confirm>
+						<origam-text-field v-model="slotDefaultConfirm" label="Confirm custom" data-cy="confirm-wrapper-confirm-field"/>
+					</template>
+				</origam-confirm-wrapper>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — update:modelValue & update:confirm">
+			<div style="padding: 24px; max-width: 400px;">
+				<origam-confirm-wrapper
+						v-model="emitModelValue"
+						v-model:confirm="emitModelConfirm"
+						field="text-field"
+						:defaults="{ label: 'Email' }"
+						data-cy="confirm-wrapper-emit"
+						@update:model-value="logEvent('update:modelValue', $event)"
+						@update:confirm="logEvent('update:confirm', $event)"
+				/>
+			</div>
+		</Variant>
+
 		<Variant title="Events - update:modelValue">
 			<div style="padding: 24px; max-width: 400px;">
 				<origam-confirm-wrapper
@@ -392,6 +503,9 @@
 
 	const iconHeart = MDI_ICONS.HEART
 	const iconArrowRight = MDI_ICONS.ARROW_RIGHT
+
+	const propValidValue = ref('')
+	const propValidConfirm = ref('')
 
 	const designValue = ref('')
 	const designConfirm = ref('')

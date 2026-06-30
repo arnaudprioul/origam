@@ -147,6 +147,26 @@
 			</template>
 		</Variant>
 
+		<Variant title="Prop — color & bgColor">
+			<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+				<origam-btn text="Default"/>
+				<origam-btn text="Color primary"   color="primary"/>
+				<origam-btn text="BgColor primary" bg-color="primary" data-cy="btn-color-primary"/>
+				<origam-btn text="BgColor success" bg-color="success"/>
+				<origam-btn text="BgColor danger"  bg-color="danger"/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — loading (interactive)">
+			<div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+				<origam-btn :loading="{ type: 'line' }"     text="Line"             data-cy="btn-loading-line"/>
+				<origam-btn :loading="{ type: 'line' }"     text="Line primary"     color="primary" data-cy="btn-loading-line-primary"/>
+				<origam-btn :loading="{ type: 'circular' }" text="Circular"         bg-color="info" data-cy="btn-loading-circular-override"/>
+				<origam-btn :loading="{ type: 'circular' }" text="Circular success" bg-color="success" data-cy="btn-loading-circular-success"/>
+				<origam-btn :loading="{ type: 'skeleton' }" text="Skeleton"         data-cy="btn-loading-skeleton"/>
+			</div>
+		</Variant>
+
 		<Variant title="Events - click">
 			<origam-btn color="primary" text="Click me" @click="logEvent('click', $event)"/>
 		</Variant>

@@ -134,6 +134,20 @@
 			</div>
 		</Variant>
 
+				<Variant title="Prop — window">
+			<div style="height: 200px; border: 1px dashed var(--origam-color__border---default, #ccc); overflow: hidden;">
+				<origam-layout>
+					<origam-system-bar name="systembar-window-prop" order="0" :window="true">
+						<span>SystemBar — window mode (32px)</span>
+					</origam-system-bar>
+					<origam-main>
+						<p style="padding: 12px;">Main content — bar height is 32px in window mode.</p>
+					</origam-main>
+				</origam-layout>
+			</div>
+		</Variant>
+
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ISystemBarProps>({

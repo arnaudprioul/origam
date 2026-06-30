@@ -168,6 +168,75 @@
 		</Variant>
 
 		<Variant
+				title="Prop — direction"
+				:init-state="() => useStoryInitState<{ direction: TDirection }>({ direction: DIRECTION.HORIZONTAL })"
+		>
+			<template #default="{ state }">
+				<origam-avatar-group
+						:items="people"
+						:max="4"
+						:direction="state.direction"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Direction">
+					<HstSelect v-model="state.direction" title="Direction" :options="DIRECTION_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — max"
+				:init-state="() => useStoryInitState<{ max: number }>({ max: 3 })"
+		>
+			<template #default="{ state }">
+				<origam-avatar-group
+						:items="people"
+						:max="state.max"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Data">
+					<HstNumber v-model="state.max" title="Max" :min="1" :max="10"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — expandOnClick">
+			<origam-avatar-group
+					:items="people"
+					:max="4"
+					expand-on-click
+			/>
+		</Variant>
+
+		<Variant title="Prop — expandOnHover">
+			<origam-avatar-group
+					:items="people"
+					:max="4"
+					expand-on-hover
+			/>
+		</Variant>
+
+		<Variant
+				title="Prop — density"
+				:init-state="() => useStoryInitState<Partial<IAvatarGroupProps>>({ density: undefined })"
+		>
+			<template #default="{ state }">
+				<origam-avatar-group
+						:items="people"
+						:max="4"
+						:density="state.density"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+				<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Omit<IAvatarGroupProps, 'items'>>({
 					max: 4,

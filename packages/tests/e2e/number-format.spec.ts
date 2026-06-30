@@ -14,7 +14,7 @@ import { expect, test, type Page } from '@playwright/test'
  * asserting on the exact glyph layout.
  */
 
-const STORY = '/story/components-stories-numberformat-origamnumberformat-story-vue'
+const STORY = '/stories/story/components-stories-numberformat-origamnumberformat-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

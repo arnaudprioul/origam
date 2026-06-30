@@ -14,8 +14,8 @@ import { expect, test, type Page } from '@playwright/test'
  *    present for screen-reader support.
  */
 
-const PYRAMID_STORY = '/story/components-stories-chart-origamchartpyramid-story-vue'
-const CHART_STORY = '/story/components-stories-chart-origamchart-story-vue'
+const PYRAMID_STORY = '/stories/story/components-stories-chart-origamchartpyramid-story-vue'
+const CHART_STORY = '/stories/story/components-stories-chart-origamchart-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

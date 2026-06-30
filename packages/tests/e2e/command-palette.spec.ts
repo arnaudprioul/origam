@@ -34,7 +34,7 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.waitForTimeout(600)
 }
 
-const STORY = '/story/components-stories-commandpalette-origamcommandpalette-story-vue'
+const STORY = '/stories/story/components-stories-commandpalette-origamcommandpalette-story-vue'
 
 test.describe('OrigamCommandPalette — Default (open via trigger / v-model)', () => {
     test('opens when the trigger button is clicked', async ({ page }) => {

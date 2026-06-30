@@ -282,12 +282,142 @@
 		</Variant>
 
 		<Variant
+				title="Prop — variant"
+				:init-state="() => useStoryInitState<{ variant: string }>({ variant: 'outlined' })"
+		>
+			<template #default="{ state }">
+				<origam-field
+						:variant="state.variant"
+						label="Variant field"
+						data-cy="field-variant"
+				>
+					<template #default="{ id, onFocus, onBlur }">
+						<input :id="id" class="origam-field__input" data-cy="field-variant-input" @focus="onFocus" @blur="onBlur"/>
+					</template>
+				</origam-field>
+			</template>
+			<template #controls="{ state }">
+				<HstSelect v-model="state.variant" title="Variant" :options="VARIANT_INPUT_OPTIONS"/>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — variant (all)">
+			<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+				<origam-field variant="outlined"   label="Outlined"   data-cy="field-showcase-outlined">
+					<template #default="{ id, onFocus, onBlur }"><input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/></template>
+				</origam-field>
+				<origam-field variant="filled"     label="Filled"     data-cy="field-showcase-filled">
+					<template #default="{ id, onFocus, onBlur }"><input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/></template>
+				</origam-field>
+				<origam-field variant="plain"      label="Plain"      data-cy="field-showcase-plain">
+					<template #default="{ id, onFocus, onBlur }"><input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/></template>
+				</origam-field>
+				<origam-field variant="underlined" label="Underlined" data-cy="field-showcase-underlined">
+					<template #default="{ id, onFocus, onBlur }"><input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/></template>
+				</origam-field>
+				<origam-field variant="solo"       label="Solo"       data-cy="field-showcase-solo">
+					<template #default="{ id, onFocus, onBlur }"><input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/></template>
+				</origam-field>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — color">
+			<origam-field label="Colored field" color="primary" variant="outlined" data-cy="field-color">
+				<template #default="{ id, onFocus, onBlur }">
+					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+				</template>
+			</origam-field>
+		</Variant>
+
+		<Variant title="Prop — density">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+				<origam-field label="Compact field" density="compact" variant="outlined" data-cy="field-density">
+					<template #default="{ id, onFocus, onBlur }">
+						<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+					</template>
+				</origam-field>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — prefix & suffix">
+			<origam-field label="Amount" prefix="$" suffix="USD" variant="outlined" data-cy="field-prefix">
+				<template #default="{ id, onFocus, onBlur }">
+					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+				</template>
+			</origam-field>
+		</Variant>
+
+		<Variant title="Prop — disabled, error & dirty">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;" data-cy="field-states">
+				<origam-field label="Disabled" disabled variant="outlined">
+					<template #default="{ id, onFocus, onBlur }">
+						<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+					</template>
+				</origam-field>
+				<origam-field label="Error" error variant="outlined">
+					<template #default="{ id, onFocus, onBlur }">
+						<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+					</template>
+				</origam-field>
+				<origam-field label="Dirty" dirty variant="outlined">
+					<template #default="{ id, onFocus, onBlur }">
+						<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+					</template>
+				</origam-field>
+			</div>
+		</Variant>
+
+		<Variant title="Slot — prependInner / appendInner">
+			<origam-field label="Inner slots" variant="outlined" data-cy="field-slot-inner">
+				<template #prependInner>
+					<origam-icon :icon="prependInnerIcon" size="small"/>
+				</template>
+				<template #appendInner>
+					<origam-icon :icon="appendInnerIcon" size="small"/>
+				</template>
+				<template #default="{ id, onFocus, onBlur }">
+					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+				</template>
+			</origam-field>
+		</Variant>
+
+		<Variant title="Emit — focus & blur">
+			<origam-field
+					label="Focus / blur events"
+					variant="outlined"
+					data-cy="field-emit-focus"
+					@focus="logEvent('focus', $event)"
+					@blur="logEvent('blur', $event)"
+			>
+				<template #default="{ id, onFocus, onBlur }">
+					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+				</template>
+			</origam-field>
+		</Variant>
+
+		<Variant title="Prop — rounded">
+			<div style="display: flex; gap: 24px; padding: 16px;">
+				<origam-field label="Theme default" variant="outlined" data-cy="field-rounded-default">
+					<template #default="{ id, onFocus, onBlur }">
+						<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+					</template>
+				</origam-field>
+				<origam-field label="Rounded md" rounded="md" variant="outlined" data-cy="field-rounded-prop">
+					<template #default="{ id, onFocus, onBlur }">
+						<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+					</template>
+				</origam-field>
+			</div>
+		</Variant>
+
+		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IFieldProps>({ label: 'Field label', color: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-field
 						v-bind="state"
+						data-cy="field-playground"
 						@focus="logEvent('focus', $event)"
 						@blur="logEvent('blur', $event)"
 						@click:clear="logEvent('click:clear', $event)"

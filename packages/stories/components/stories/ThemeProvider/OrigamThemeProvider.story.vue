@@ -40,6 +40,67 @@
 			</template>
 		</Variant>
 
+		<Variant title="Prop — theme (light)">
+			<origam-theme-provider theme="light">
+				<origam-btn text="Light theme button" color="primary"/>
+			</origam-theme-provider>
+		</Variant>
+
+		<Variant title="Prop — theme (dark)">
+			<origam-theme-provider theme="dark">
+				<origam-btn text="Dark theme button" color="primary"/>
+			</origam-theme-provider>
+		</Variant>
+
+		<Variant title="Prop — mode (light)">
+			<origam-theme-provider mode="light">
+				<origam-btn text="Light mode button" color="primary"/>
+			</origam-theme-provider>
+		</Variant>
+
+		<Variant title="Prop — mode (dark)">
+			<origam-theme-provider mode="dark">
+				<origam-btn text="Dark mode button" color="primary"/>
+			</origam-theme-provider>
+		</Variant>
+
+		<Variant title="Prop — theme + mode">
+			<origam-theme-provider theme="brand-a" mode="dark">
+				<origam-btn text="Brand-a dark button" color="primary"/>
+			</origam-theme-provider>
+		</Variant>
+
+		<Variant title="Prop — theme (auto)">
+			<origam-theme-provider theme="auto">
+				<origam-btn text="Auto theme button" color="primary"/>
+			</origam-theme-provider>
+		</Variant>
+
+		<Variant title="Prop — nested providers">
+			<div style="display: flex; gap: 16px;">
+				<origam-theme-provider theme="light">
+					<origam-btn text="Light inner" color="primary"/>
+				</origam-theme-provider>
+				<origam-theme-provider theme="dark">
+					<origam-btn text="Dark inner" color="primary"/>
+				</origam-theme-provider>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — tag">
+			<origam-theme-provider theme="light" tag="section">
+				<origam-btn text="Section tag button" color="primary"/>
+			</origam-theme-provider>
+		</Variant>
+
+		<Variant title="Slot — default">
+			<origam-theme-provider theme="dark">
+				<template #default>
+					<origam-btn text="From slot content" color="primary"/>
+				</template>
+			</origam-theme-provider>
+		</Variant>
+
 		<Variant title="Slots - Default">
 			<origam-theme-provider theme="dark">
 				<template #default>
