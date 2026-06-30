@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useT } from '~/composables/useT'
-import type { IEnumDoc, IEnumEntry } from '~/interfaces/enums-catalog.interface'
+import { useReferenceCatalog, useReferenceCategories } from '~/composables/useApiReference'
+import type { IEnumEntry } from '~/interfaces/enums-catalog.interface'
 
 const { t } = useT()
 
@@ -12,29 +13,12 @@ useSeoMeta({
     ogDescription: () => t('enums.meta.description', 'TypeScript enums used across origam props.')
 })
 
-const allDocs = import.meta.glob('~/consts/enums/*.const.ts', { eager: true }) as Record<string, Record<string, unknown>>
+const { data: catalogData } = await useReferenceCatalog<IEnumEntry>('enum')
 
-const ENUMS_CATALOG = computed<IEnumEntry[]>(() =>
-    Object.values(allDocs)
-        .map((mod) => {
-            const key = Object.keys(mod).find(k => k.endsWith('_ENUM_DOC'))
-            return key ? (mod[key] as IEnumDoc) : null
-        })
-        .filter((d): d is IEnumDoc => !!d)
-        .map(d => ({
-            slug: d.slug,
-            name: d.name,
-            category: d.category,
-            icon: 'mdi-format-list-numbered',
-            descriptionKey: d.descriptionKey,
-            descriptionFallback: d.descriptionFallback
-        }))
-        .sort((a, b) => a.name.localeCompare(b.name))
-)
+const ENUMS_CATALOG = computed<IEnumEntry[]>(() => catalogData.value ?? [])
 
-const ENUMS_CATEGORIES = computed(() =>
-    [...new Set(ENUMS_CATALOG.value.map(e => e.category))].sort()
-)
+const { data: catsData } = await useReferenceCategories('enum')
+const ENUMS_CATEGORIES = computed<string[]>(() => catsData.value ?? [])
 
 const searchQuery = ref('')
 

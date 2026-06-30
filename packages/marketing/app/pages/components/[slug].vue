@@ -3,7 +3,7 @@ import { computed, ref, reactive, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useT } from '~/composables/useT'
 import { useCopy } from '~/composables/useCopy'
-import { COMPONENTS_CATALOG } from '~/consts/components-catalog.const'
+import { useReferenceDoc } from '~/composables/useApiReference'
 import type { IComponentDoc } from '~/interfaces/components-catalog.interface'
 
 const { t } = useT()
@@ -23,29 +23,12 @@ const propCopyAttr = (name: string, typeLabel: string): string => {
 
 const slug = computed(() => route.params.slug as string)
 
-const catalogEntry = computed(() =>
-    COMPONENTS_CATALOG.find(e => e.slug === slug.value)
-)
+const { data: displayDoc } = await useReferenceDoc<IComponentDoc>('component', slug)
 
-const parentEntry = computed(() =>
-    catalogEntry.value?.parentSlug
-        ? COMPONENTS_CATALOG.find(e => e.slug === catalogEntry.value!.parentSlug)
-        : null
-)
+const catalogEntry = computed(() => displayDoc.value)
 
-/* ── Eager glob — zero flash, zero hydration mismatch ─────────────── */
-const allDocs = import.meta.glob('~/consts/components/*.const.ts', { eager: true }) as Record<string, Record<string, unknown> | undefined>
-
-const componentDoc = computed<IComponentDoc | null>(() => {
-    const key = Object.keys(allDocs).find(k => k.includes(`/${slug.value}.const`))
-    if (!key) return null
-    const mod = allDocs[key]
-    if (!mod) return null
-    const exportKey = Object.keys(mod).find(k => k.endsWith('_DOC'))
-    return exportKey ? (mod[exportKey] as IComponentDoc) : null
-})
-
-const displayDoc = computed(() => componentDoc.value)
+const parentSlug = computed(() => displayDoc.value?.parentSlug ?? null)
+const { data: parentEntry } = await useReferenceDoc<IComponentDoc>('component', parentSlug)
 
 const hasProps    = computed(() => (displayDoc.value?.props?.length ?? 0) > 0)
 const hasEmits    = computed(() => (displayDoc.value?.emits?.length ?? 0) > 0)

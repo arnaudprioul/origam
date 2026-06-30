@@ -15,6 +15,11 @@
 						:color="state.color"
 						:bg-color="state.bgColor"
 						:density="state.density"
+						:font-family="state.fontFamily"
+						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
+						:line-height="state.lineHeight"
+						:letter-spacing="state.letterSpacing"
 						:border="state.border"
 						:border-color="state.borderColor"
 						:border-style="state.borderStyle"
@@ -40,6 +45,13 @@
 				</StoryGroup>
 				<StoryGroup title="Sizing">
 					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontFamily"    title="Font Family"    :options="FONT_FAMILY_OPTIONS"/>
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Border">
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
@@ -109,7 +121,12 @@
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_RAW_OPTIONS,
-		DENSITY_OPTIONS
+		DENSITY_OPTIONS,
+		FONT_FAMILY_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
+		LETTER_SPACING_OPTIONS,
+		LINE_HEIGHT_OPTIONS
 	} from '@stories/const'
 
 	const TITLE_TAG_OPTIONS: Array<IOptions<string>> = [

@@ -21,6 +21,13 @@ export { tagList as TAG_OPTIONS } from './tag.const'
 export { localeList as LOCALE_OPTIONS } from './locale.const'
 export { imgPositionList as IMG_POSITION_OPTIONS } from './img-position.const'
 export { borderList as BORDER_OPTIONS, borderStyleList as BORDER_STYLE_OPTIONS } from './border.const'
+export {
+    fontFamilyList as FONT_FAMILY_OPTIONS,
+    fontSizeList as FONT_SIZE_OPTIONS,
+    fontWeightList as FONT_WEIGHT_OPTIONS,
+    lineHeightList as LINE_HEIGHT_OPTIONS,
+    letterSpacingList as LETTER_SPACING_OPTIONS
+} from './font.const'
 
 export { alignList as ALIGN_OPTIONS } from './align.const'
 export { colsList as COLS_OPTIONS } from './cols.const'

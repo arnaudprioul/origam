@@ -89,7 +89,8 @@
 		useLocale,
 		useMargin,
 		usePadding,
-		useRounded
+		useRounded,
+		useTypography
 	} from '../../composables'
 
 	import { vContrast } from '../../directives'
@@ -149,6 +150,7 @@
 	const { marginClasses, marginStyles } = useMargin(props)
 	const { colorClasses, colorStyles } = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const { dimensionStyles } = useDimension(props)
+	const { typographyStyles } = useTypography(props, 'code')
 	const { highlight } = useCode()
 	const { t } = useLocale()
 
@@ -362,7 +364,7 @@
 		marginStyles.value,
 		colorStyles.value,
 		dimensionStyles.value,
-		{}
+		typographyStyles.value
 	])
 
 	const preClasses = computed(() => ({

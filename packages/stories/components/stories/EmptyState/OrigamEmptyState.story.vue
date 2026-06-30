@@ -24,6 +24,10 @@
 							:icon="state.icon || undefined"
 							:title="state.title"
 							:description="state.description"
+							:font-family="state.fontFamily"
+							:font-size="state.fontSize"
+							:font-weight="state.fontWeight"
+							:line-height="state.lineHeight"
 					/>
 				</div>
 			</template>
@@ -33,6 +37,12 @@
 				</StoryGroup>
 				<StoryGroup title="Sizing">
 					<HstSelect v-model="state.size"  title="Size"  :options="EMPTY_SIZE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontFamily" title="Font Family" :options="FONT_FAMILY_OPTIONS"/>
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Align">
 					<HstSelect v-model="state.align" title="Align" :options="EMPTY_ALIGN_OPTIONS"/>
@@ -220,8 +230,12 @@
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
+		FONT_FAMILY_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		ICON_OPTIONS,
 		INTENT_OPTIONS,
+		LINE_HEIGHT_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'
 

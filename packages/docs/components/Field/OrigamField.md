@@ -94,6 +94,16 @@ value.
 </template>
 ```
 
+## Props — Typography (label surface)
+
+The `fontSize` prop targets the floating label only (BEM child `__label--floating`).
+It sets `--origam-field__label---font-size` on the `.origam-field__label` element,
+which the SCSS reads for the floating label text size and the JS animation scale.
+
+| Prop       | Type        | Default | Description                                                                       |
+|------------|-------------|---------|-----------------------------------------------------------------------------------|
+| `fontSize` | `TFontSize` | —       | Font-size token (xs · sm · md · lg · xl · 2xl · …). Sets `--origam-field__label---font-size`. When unset the theme default applies. |
+
 ## Slots
 
 | Slot | Scope | Description |

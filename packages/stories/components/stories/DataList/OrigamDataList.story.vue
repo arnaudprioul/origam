@@ -16,7 +16,11 @@
 					borderColor: undefined,
 					borderStyle: undefined,
 					padding: undefined,
-					margin: undefined
+					margin: undefined,
+					fontSize: undefined,
+					fontWeight: undefined,
+					lineHeight: undefined,
+					letterSpacing: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -32,6 +36,10 @@
 						:border-style="state.borderStyle"
 						:padding="state.padding"
 						:margin="state.margin"
+						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
+						:line-height="state.lineHeight"
+						:letter-spacing="state.letterSpacing"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -54,6 +62,12 @@
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.padding" title="Padding"/>
 					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -201,7 +215,11 @@
 					elevation: undefined,
 					border: false,
 					prependIcon: undefined,
-					appendIcon: undefined
+					appendIcon: undefined,
+					fontSize: undefined,
+					fontWeight: undefined,
+					lineHeight: undefined,
+					letterSpacing: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -226,6 +244,12 @@
 					<HstSelect v-model="state.prependIcon" title="Prepend Icon" :options="ICON_OPTIONS"/>
 					<HstSelect v-model="state.appendIcon"  title="Append Icon"  :options="ICON_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 	</Story>
@@ -248,7 +272,11 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		ICON_OPTIONS,
+		LETTER_SPACING_OPTIONS,
+		LINE_HEIGHT_OPTIONS,
 		ROUNDED_OPTIONS
 	} from '@stories/const'
 

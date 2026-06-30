@@ -82,6 +82,18 @@ Use the `default` slot for rich tooltip content.
 |---|---|---|
 | `update:modelValue` | `boolean` | Tooltip opens / closes. |
 
+## Props — Typography
+
+These props override the matching `--origam-tooltip---font-*` CSS variable via an
+inline custom property on the tooltip content surface. Unset props leave the theme
+value in control.
+
+| Prop | Type | Values | Description |
+|---|---|---|---|
+| `fontSize` | `TFontSize` | `xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl` | Overrides `--origam-tooltip---font-size`. |
+| `fontWeight` | `TFontWeight` | `regular · medium · semibold · bold · extrabold · black` | Overrides `--origam-tooltip---font-weight`. |
+| `lineHeight` | `TLineHeight` | `none · tight · snug · normal · relaxed · loose` | Overrides `--origam-tooltip---line-height`. |
+
 ## Design tokens
 
 | CSS variable | Description |
@@ -90,6 +102,7 @@ Use the `default` slot for rich tooltip content.
 | `--origam-tooltip---color` | Text color (defaults to inverse text). |
 | `--origam-tooltip---font-size` | Font size (0.75 rem). |
 | `--origam-tooltip---font-weight` | Font weight (500). |
+| `--origam-tooltip---line-height` | Line height (1.5). |
 | `--origam-tooltip---padding-block` | Vertical padding. |
 | `--origam-tooltip---padding-inline` | Horizontal padding. |
 | `--origam-tooltip---border-radius` | Border radius. |

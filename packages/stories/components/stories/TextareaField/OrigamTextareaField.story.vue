@@ -191,6 +191,41 @@
 			</template>
 		</Variant>
 
+		<Variant title="Mode — rich (HTML output)">
+			<div data-cy="textarea-rich-html">
+				<origam-textarea-field
+						v-model="richHtmlModel"
+						mode="rich"
+						output="html"
+						label="Rich editor (HTML)"
+				/>
+				<pre data-cy="textarea-rich-html-output" style="margin-top: 8px; padding: 8px; background: var(--origam-color__surface---subtle); border-radius: 4px; font-size: 0.75rem; white-space: pre-wrap;">{{ richHtmlModel }}</pre>
+			</div>
+		</Variant>
+
+		<Variant title="Mode — rich (Markdown output)">
+			<div data-cy="textarea-rich-markdown">
+				<origam-textarea-field
+						v-model="richMarkdownModel"
+						mode="rich"
+						output="markdown"
+						label="Rich editor (Markdown)"
+				/>
+				<pre data-cy="textarea-rich-markdown-output" style="margin-top: 8px; padding: 8px; background: var(--origam-color__surface---subtle); border-radius: 4px; font-size: 0.75rem; white-space: pre-wrap;">{{ richMarkdownModel }}</pre>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — toolbar (filtered)">
+			<div data-cy="textarea-rich-toolbar-filtered">
+				<origam-textarea-field
+						v-model="richFilteredModel"
+						mode="rich"
+						:toolbar="['bold', 'italic']"
+						label="Filtered toolbar"
+				/>
+			</div>
+		</Variant>
+
 		<Variant title="Events - update:modelValue">
 			<origam-textarea-field
 					v-model="emitModel"
@@ -239,13 +274,18 @@
 		</Variant>
 
 		<Variant title="Events - format">
-			<origam-textarea-field
-					v-model="emitFormatModel"
-					mode="rich"
-					label="Rich — format emit"
-					data-cy="textarea-emit-format"
-					@format="logEvent('format', $event)"
-			/>
+			<div data-cy="textarea-rich-emit-format">
+				<origam-textarea-field
+						v-model="emitFormatModel"
+						mode="rich"
+						label="Rich — format emit"
+						@format="handleFormatEvent"
+				/>
+				<div style="margin-top: 8px; font-size: 0.75rem; font-family: monospace;">
+					Count: <span data-cy="textarea-rich-emit-format-count">{{ formatEventCount }}</span>
+					— Last: <span data-cy="textarea-rich-emit-format-last">{{ lastFormatName }}</span>
+				</div>
+			</div>
 		</Variant>
 
 		<Variant title="Slots - Default">
@@ -367,15 +407,22 @@
 		</Variant>
 
 		<Variant title="Slots - Toolbar">
-			<origam-textarea-field v-model="slotToolbarModel" mode="rich" label="Custom toolbar slot" data-cy="textarea-slot-toolbar">
-				<template #toolbar="{ format, isFormat }">
-					<div role="toolbar" aria-label="Custom toolbar" style="display: flex; gap: 8px; padding: 8px;">
-						<button type="button" :aria-pressed="isFormat('bold') ? 'true' : 'false'" @click="format('bold')">B</button>
-						<button type="button" :aria-pressed="isFormat('italic') ? 'true' : 'false'" @click="format('italic')">I</button>
-						<button type="button" :aria-pressed="isFormat('list-bullet') ? 'true' : 'false'" @click="format('list-bullet')">UL</button>
-					</div>
-				</template>
-			</origam-textarea-field>
+			<div data-cy="textarea-rich-slot-toolbar">
+				<origam-textarea-field v-model="slotToolbarModel" mode="rich" label="Custom toolbar slot">
+					<template #toolbar="{ format, isFormat }">
+						<div
+								role="toolbar"
+								aria-label="Custom toolbar"
+								data-cy="textarea-rich-slot-toolbar-custom"
+								style="display: flex; gap: 8px; padding: 8px;"
+						>
+							<button type="button" :aria-pressed="isFormat('bold') ? 'true' : 'false'" @click="format('bold')">B</button>
+							<button type="button" :aria-pressed="isFormat('italic') ? 'true' : 'false'" @click="format('italic')">I</button>
+							<button type="button" :aria-pressed="isFormat('list-bullet') ? 'true' : 'false'" @click="format('list-bullet')">UL</button>
+						</div>
+					</template>
+				</origam-textarea-field>
+			</div>
 		</Variant>
 
 		<Variant
@@ -498,12 +545,24 @@
 	const stateModel            = ref('')
 	const functionalModel       = ref('')
 	const richModel             = ref('')
+	const richHtmlModel         = ref('')
+	const richMarkdownModel     = ref('')
+	const richFilteredModel     = ref('')
 	const emitModel             = ref('')
 	const emitFocusModel        = ref('')
 	const emitControlModel      = ref('')
 	const emitMousedownModel    = ref('')
 	const emitHeightModel       = ref('')
 	const emitFormatModel       = ref('')
+	const formatEventCount      = ref(0)
+	const lastFormatName        = ref('')
+
+	function handleFormatEvent(name: string) {
+		logEvent('format', name)
+		formatEventCount.value++
+		lastFormatName.value = name
+	}
+
 	const slotOuterModel        = ref('')
 	const slotInnerModel        = ref('')
 	const slotClearModel        = ref('')

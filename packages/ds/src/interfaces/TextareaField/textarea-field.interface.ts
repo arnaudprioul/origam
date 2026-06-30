@@ -14,7 +14,8 @@ import type {
     IMarginProps,
     IPaddingProps,
     IRoundedProps,
-    ITextareaToolbarSlotProps
+    ITextareaToolbarSlotProps,
+    ITypographyProps
 } from '../../interfaces'
 
 import type {
@@ -24,7 +25,7 @@ import type {
     TTextareaToolbarPosition
 } from '../../types'
 
-export interface ITextareaFieldProps extends ICommonsComponentProps, IColorProps, IDensityProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IAdjacentInnerProps {
+export interface ITextareaFieldProps extends ICommonsComponentProps, IColorProps, IDensityProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IAdjacentInnerProps, ITypographyProps {
     autoGrow?: boolean
     autofocus?: boolean
     counter?: boolean | number | string

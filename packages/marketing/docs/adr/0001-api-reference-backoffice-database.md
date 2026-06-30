@@ -12,6 +12,15 @@
 > Tout ce document est basé sur la lecture du code, pas sur des suppositions.
 > Les points non vérifiés sont signalés explicitement.
 
+> **⚠️ CORRECTION (2026-06-28) — ORM : TypeORM, pas Knex.**
+> Décision utilisateur (préférence permanente, cf. `~/.claude/CLAUDE.md`) :
+> la couche d'accès aux données est **TypeORM** sur tous les projets. Le moteur
+> **PostgreSQL** du §2 reste valide ; partout où ce document écrit « Knex » (§2,
+> §3.2, §4, §7, §8), lire **TypeORM** : entities `@Entity`/`@Column`/relations,
+> migrations TypeORM (`migration:generate`/`run`/`revert`, up+down), `DataSource`
+> via env. L'UPSERT du seed (§4) se fait via repository TypeORM
+> (`upsert` / QueryBuilder `orUpdate`).
+
 ---
 
 ## 1. Contexte (faits vérifiés)
@@ -166,12 +175,13 @@ quasiment pas. C'est ce qui rend la migration incrémentale et non destructive.
 
 ## 2. Décision — Moteur de base de données
 
-### Reco tranchée : **PostgreSQL** (service séparé), via **Knex.js**.
+### Reco tranchée : **PostgreSQL** (service séparé), via **TypeORM**.
 
-> Knex est déjà la baseline du projet (cf. CLAUDE.md racine utilisateur :
-> « Knex.js — SQL query builder (SQLite, PostgreSQL, MySQL) »). On le réutilise —
-> pas de nouvelle abstraction (règle anti-duplication). Le même code Knex tourne
-> sur SQLite en dev local et Postgres en stage/prod si on le souhaite.
+> TypeORM est la couche d'accès aux données standard de l'utilisateur sur tous
+> les projets (préférence permanente, cf. `~/.claude/CLAUDE.md`). On la réutilise —
+> pas de nouvelle abstraction (règle anti-duplication). Le même code TypeORM
+> (entities + `DataSource`) cible Postgres en dev/stage/prod ; le pilote `pg` est
+> pur JS, sans binaire natif.
 
 ### Comparatif factuel
 
@@ -181,8 +191,8 @@ quasiment pas. C'est ce qui rend la migration incrémentale et non destructive.
 | 3 envs (dev/stage/prod) | 3 volumes à gérer + sauvegardes fichier par env | 3 bases, backups/restore standard Coolify/PG, snapshots |
 | Écritures concurrentes (backoffice multi-éditeur + SSR lecture) | Verrou écrivain unique (acceptable à faible charge, mais le backoffice peut écrire pendant que le SSR lit) | MVCC, conçu pour lecture/écriture concurrentes |
 | Build Docker | better-sqlite3 est **natif** → recompilation (`python3/make/g++` déjà présents), risque de mismatch ABI alpine | Client `pg` pur JS, aucun binaire natif |
-| Migrations / rollback | Knex migrations OK ; ALTER limité sur SQLite (recréation de table fréquente) | Knex migrations + ALTER complet, rollback propre |
-| Cohérence baseline projet | Knex supporté mais SQLite = scénario « zéro service » | **Postgres = port `Y432` déjà prévu dans la stack baseline** |
+| Migrations / rollback | TypeORM migrations OK ; ALTER limité sur SQLite (recréation de table fréquente) | TypeORM migrations + ALTER complet, rollback propre |
+| Cohérence baseline projet | TypeORM supporté mais SQLite = scénario « zéro service » | **Postgres = port `Y432` déjà prévu dans la stack baseline** |
 | Recherche full-text (catalogues filtrables) | FTS5 (extension) | `tsvector` / `pg_trgm` natifs, plus riches |
 
 ### Pourquoi Postgres l'emporte ici
@@ -205,8 +215,8 @@ SQLite + `better-sqlite3` reste viable **à condition** de :
   `.output`, sinon écrasé) ;
 - gérer 3 fichiers + 3 backups (un par env) ;
 - accepter le verrou écrivain-unique (charge backoffice faible → OK).
-Le code Knex étant identique, basculer SQLite ↔ Postgres est une question de
-config de connexion. Cette dérogation devra être approuvée par l'utilisateur et
+Le code TypeORM étant identique, basculer SQLite ↔ Postgres est une question de
+config de connexion (`type` du `DataSource`). Cette dérogation devra être approuvée par l'utilisateur et
 tracée (cf. politique d'exception du repo).
 
 ---
@@ -492,9 +502,9 @@ n'est pas mergé, les pages continuent de lire les `.const.ts` ; la suppression 
 const (ticket F) n'arrive qu'après bascule + validation.
 
 1. **(A) Infra DB + schéma + migrations**
-   Choix Postgres, connexion Knex (réutiliser la baseline), migrations versionnées
-   (up/down) pour toutes les tables §3, **rollback documenté**. Connexion via
-   `runtimeConfig` (env, aucun secret hardcodé). Coolify : provisionner le service
+   Choix Postgres, accès via TypeORM (`DataSource` + entities), migrations
+   versionnées (up/down) pour toutes les tables §3, **rollback documenté**.
+   Connexion via env / `runtimeConfig` (aucun secret hardcodé). Coolify : provisionner le service
    PG sur les 3 envs (`Y432`). Healthcheck DB ajouté à `/api/health`.
    → *Le site continue de tourner sur les const ; rien n'est rebranché.*
 
@@ -552,7 +562,7 @@ explicites.
 
 | # | Ticket | Rôle | Dépend de | Parallélisable avec |
 |---|---|---|---|---|
-| **A** | Infra DB Postgres + schéma + migrations Knex (up/down + rollback doc) + connexion via env + provisioning Coolify 3 envs + healthcheck DB | backend-lead + backend-dev | — | G (en partie) |
+| **A** | Infra DB Postgres + schéma + migrations TypeORM (up/down + rollback doc) + connexion via env + provisioning Coolify 3 envs + healthcheck DB | backend-lead + backend-dev | — | G (en partie) |
 | **B** | Pipeline seed/ingestion : réorienter `generate-api-docs.mjs` vers UPSERT DB (réutilise extract/merge/read-existing), premier seed depuis les 1758 const, `doc_sync_run`, mode `--check` | backend-dev | A | — |
 | **C** | API lecture publique `server/api/reference/**` (cacheable, validation, mapping → `*Doc`) + doc API | backend-dev | A (schéma) ; B utile pour données réelles | E1 (auth) |
 | **D** | `composables/useApiReference` + rebranchement des 16 pages (8 index + 8 détail) du glob/catalogue vers l'API ; `<template>` inchangés ; e2e par route | frontend-lead + frontend-dev | C | E2 |
@@ -587,4 +597,4 @@ se développe en parallèle de C/D une fois A livré. G est transverse.
 
 ### Dérogation possible (à approuver par l'utilisateur)
 - SQLite + volume persistant Coolify au lieu de Postgres (cf. §2 fallback). Même
-  code Knex, bascule par config.
+  code TypeORM, bascule par config (`type` du `DataSource`).

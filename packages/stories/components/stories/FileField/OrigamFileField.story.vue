@@ -201,6 +201,15 @@
 			</template>
 		</Variant>
 
+		<Variant title="Prop — single + paperclip">
+			<origam-file-field
+					v-model="singleFile"
+					label="Document"
+					display="list"
+					style="max-width: 400px"
+			/>
+		</Variant>
+
 		<Variant title="Events - click:control">
 			<origam-file-field
 					v-model="emitFiles"
@@ -638,6 +647,7 @@
 		{ label: 'auto', value: 'auto' },
 	]
 
+	const singleFile = ref(null)
 	const designFiles = ref(null)
 	const functionalFiles = ref(null)
 	const emitFiles = ref(null)

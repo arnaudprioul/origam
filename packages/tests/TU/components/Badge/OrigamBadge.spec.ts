@@ -158,6 +158,56 @@ describe('OrigamBadge — status modifier classes', () => {
 })
 
 // ---------------------------------------------------------------------------
+// Typography props (ITypographyProps surface)
+// ---------------------------------------------------------------------------
+// Effective props on Badge: fontSize → --origam-badge__badge---font-size
+//                           fontWeight → --origam-badge__badge---font-weight
+// Both are read by the __badge SCSS block.
+// Assertion targets the inline style attribute on .origam-badge__badge —
+// useActive drives the visible state, not a utility class, so getComputedStyle
+// is unreliable in jsdom; the inline style attribute is the reliable signal.
+
+describe('OrigamBadge — fontSize prop', () => {
+    it('emits no font-size override when fontSize is unset', () => {
+        const wrapper = mountBadge()
+        const style = wrapper.find('.origam-badge__badge').attributes('style') || ''
+        expect(style).not.toContain('--origam-badge__badge---font-size')
+    })
+
+    it('fontSize="xl" sets --origam-badge__badge---font-size to the xl token', () => {
+        const wrapper = mountBadge({ fontSize: 'xl' })
+        const style = wrapper.find('.origam-badge__badge').attributes('style') || ''
+        expect(style).toContain('--origam-badge__badge---font-size: var(--origam-font__size---xl)')
+    })
+
+    it('fontSize="sm" sets --origam-badge__badge---font-size to the sm token', () => {
+        const wrapper = mountBadge({ fontSize: 'sm' })
+        const style = wrapper.find('.origam-badge__badge').attributes('style') || ''
+        expect(style).toContain('--origam-badge__badge---font-size: var(--origam-font__size---sm)')
+    })
+})
+
+describe('OrigamBadge — fontWeight prop', () => {
+    it('emits no font-weight override when fontWeight is unset', () => {
+        const wrapper = mountBadge()
+        const style = wrapper.find('.origam-badge__badge').attributes('style') || ''
+        expect(style).not.toContain('--origam-badge__badge---font-weight')
+    })
+
+    it('fontWeight="bold" sets --origam-badge__badge---font-weight to the bold token', () => {
+        const wrapper = mountBadge({ fontWeight: 'bold' })
+        const style = wrapper.find('.origam-badge__badge').attributes('style') || ''
+        expect(style).toContain('--origam-badge__badge---font-weight: var(--origam-font__weight---bold)')
+    })
+
+    it('fontWeight="semibold" sets --origam-badge__badge---font-weight to the semibold token', () => {
+        const wrapper = mountBadge({ fontWeight: 'semibold' })
+        const style = wrapper.find('.origam-badge__badge').attributes('style') || ''
+        expect(style).toContain('--origam-badge__badge---font-weight: var(--origam-font__weight---semibold)')
+    })
+})
+
+// ---------------------------------------------------------------------------
 // ARIA attributes on the pill
 // ---------------------------------------------------------------------------
 

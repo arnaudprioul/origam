@@ -53,7 +53,7 @@ const STORY_ID   = 'components-stories-menu-origammenu-story-vue'
 // Histoire dev server uses vite.base = '/stories/' → story URLs are under /stories/story/...
 // Use absolute URL to avoid baseURL resolution ambiguity.
 const STORY_BASE = 'http://localhost:6006/stories'
-const STORY_PATH = STORY_BASE + '/story/' + STORY_ID
+const STORY_PATH = STORY_BASE + '/stories/story/' + STORY_ID
 
 const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 

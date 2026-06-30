@@ -15,7 +15,7 @@
 		setup
 >
 	import { computed, StyleValue, toRef } from "vue"
-	import { useBothColor, useProps , useStyle} from "../../composables"
+	import { useBothColor, useProps, useStyle, useTypography } from "../../composables"
 
 	import type { IPickerTitleProps } from "../../interfaces"
 
@@ -42,6 +42,7 @@
 	 ********************************************************/
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {typographyStyles} = useTypography(props, 'picker-title')
 
 	/*********************************************************
 	 * Class & Style
@@ -52,6 +53,7 @@
 	const pickerTitleStyles = computed(() => {
 		return [
 			colorStyles.value,
+			typographyStyles.value,
 			props.style
 		] as StyleValue
 	})

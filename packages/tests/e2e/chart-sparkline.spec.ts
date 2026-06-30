@@ -22,7 +22,7 @@ import { expect, test, type Page } from '@playwright/test'
  *     story, not on the component.
  */
 
-const STORY = '/story/components-stories-chart-origamchartsparkline-story-vue'
+const STORY = '/stories/story/components-stories-chart-origamchartsparkline-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

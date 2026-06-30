@@ -111,6 +111,67 @@
 			</template>
 		</Variant>
 
+		<Variant title="Emit — scroll">
+			<origam-parallax :style="hostStyleTall" :event="PARALLAX_EVENT.SCROLL">
+				<origam-parallax-element :strength="40" type="translate">
+					<div :style="layerMid">Scroll the page to see movement</div>
+				</origam-parallax-element>
+			</origam-parallax>
+			<div :style="scrollFiller"></div>
+		</Variant>
+
+		<Variant title="Emit — orientation">
+			<origam-parallax :style="hostStyleTall" :event="PARALLAX_EVENT.ORIENTATION">
+				<origam-parallax-element :strength="40" type="translate">
+					<div :style="layerMid">Tilt your device to see movement</div>
+				</origam-parallax-element>
+			</origam-parallax>
+		</Variant>
+
+		<Variant title="Mode — multi-layer (scroll-driven)">
+			<origam-parallax :style="hostStyleTall" :event="PARALLAX_EVENT.SCROLL" :easing="PARALLAX_EASING.SPRING">
+				<origam-parallax-layer :speed="0.2">
+					<div :style="{ ...layerMid, backgroundColor: 'rgba(33, 150, 243, 0.5)' }">Layer 1 (slow)</div>
+				</origam-parallax-layer>
+				<origam-parallax-layer :speed="0.5">
+					<div :style="{ ...layerMid, backgroundColor: 'rgba(255, 64, 128, 0.5)' }">Layer 2 (mid)</div>
+				</origam-parallax-layer>
+				<origam-parallax-layer :speed="0.8">
+					<div :style="{ ...layerMid, backgroundColor: 'rgba(76, 175, 80, 0.5)' }">Layer 3 (fast)</div>
+				</origam-parallax-layer>
+			</origam-parallax>
+			<div :style="scrollFiller"></div>
+		</Variant>
+
+		<Variant title="Prop — direction (horizontal)">
+			<div style="display: flex; flex-direction: column; gap: 16px;">
+				<origam-parallax
+						:style="hostStyle"
+						:event="PARALLAX_EVENT.MOVE"
+						:direction="PARALLAX_DIRECTION.HORIZONTAL"
+						data-cy="parallax-horizontal"
+				>
+					<origam-parallax-element :strength="30">
+						<div :style="layerStyle">Horizontal direction</div>
+					</origam-parallax-element>
+				</origam-parallax>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — @enter / @leave">
+			<origam-parallax
+					:style="hostStyleTall"
+					:event="PARALLAX_EVENT.SCROLL"
+					@enter="enterCount++"
+					@leave="leaveCount++"
+			>
+				<origam-parallax-layer :speed="0.4">
+					<div :style="layerMid">enter: {{ enterCount }} / leave: {{ leaveCount }}</div>
+				</origam-parallax-layer>
+			</origam-parallax>
+			<div :style="scrollFiller"></div>
+		</Variant>
+
 		<Variant title="Events - enter">
 			<origam-parallax :style="hostStyleTall" :event="PARALLAX_EVENT.SCROLL" @enter="logEvent('enter', $event)">
 				<origam-parallax-layer :speed="0.4">
@@ -224,7 +285,7 @@
 		TAG_OPTIONS
 	} from '@stories/const'
 
-	import type { CSSProperties } from 'vue'
+	import { ref, type CSSProperties } from 'vue'
 
 	const PARALLAX_EVENT_OPTIONS: Array<IOptions<TParallaxEvent | undefined>> = [
 		{ label: '(default — move)', value: undefined },
@@ -244,6 +305,9 @@
 		{ label: 'Ease-out', value: PARALLAX_EASING.EASE_OUT },
 		{ label: 'Spring (lerp-based)', value: PARALLAX_EASING.SPRING }
 	]
+
+	const enterCount = ref(0)
+	const leaveCount = ref(0)
 
 	const hostStyle: CSSProperties = {
 		width: '100%',

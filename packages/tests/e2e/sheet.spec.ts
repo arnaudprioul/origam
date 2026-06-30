@@ -24,7 +24,7 @@ import { expect, test, type FrameLocator, type Page } from '@playwright/test'
  * (`sheetSwipe.composable.spec.ts`, 17 tests).
  */
 
-const STORY_PATH = '/story/components-stories-sheet-origamsheet-story-vue'
+const STORY_PATH = '/stories/story/components-stories-sheet-origamsheet-story-vue'
 
 async function gotoVariant (page: Page, title: string) {
     await page.goto(STORY_PATH)

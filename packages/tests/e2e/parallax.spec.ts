@@ -1,27 +1,44 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/components-stories-parallax-origamparallax-story-vue'
-
 /**
  * Probe spec for OrigamParallax runtime behaviour. Covers the three legacy
  * `event` modes (move / scroll / orientation) on <OrigamParallaxElement>
  * AND the enriched multi-layer / direction / disabled / reduced-motion
  * paths on <OrigamParallaxLayer>.
+ *
+ * Pattern canonique — navigation directe par variantId (cf. btn.spec.ts).
+ * JAMAIS networkidle (Histoire garde un WS HMR ouvert → timeout garanti).
+ *
+ * Variants OrigamParallax (0-based) :
+ *   0  → Design
+ *   1  → Functional
+ *   2  → Emit — scroll
+ *   3  → Emit — orientation
+ *   4  → Mode — multi-layer (scroll-driven)
+ *   5  → Prop — direction (horizontal)
+ *   6  → Emit — @enter / @leave
+ *   7  → Events - enter
+ *   8  → Events - leave
+ *   9  → Events - scroll-progress
+ *  10  → Slots - Default
+ *  11  → Default (playground)
  */
+
+const STORY_ID   = 'components-stories-parallax-origamparallax-story-vue'
+const STORY_PATH = '/stories/story/' + STORY_ID
+
+const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
 test.describe('OrigamParallax — legacy element runtime', () => {
 
     test('event="move" — mouse movement translates the element', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Emit — move', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.goto(variantUrl(1))
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const host = sandbox.locator('.origam-parallax').first()
         const element = sandbox.locator('.origam-parallax-element').first()
 
-        await expect(host).toBeVisible({ timeout: 5000 })
+        await expect(host).toBeVisible({ timeout: 12000 })
         const initialTransform = await element.evaluate((el) => getComputedStyle(el).transform)
 
         await host.evaluate(async (host) => {
@@ -46,16 +63,13 @@ test.describe('OrigamParallax — legacy element runtime', () => {
     })
 
     test('event="scroll" — window scroll translates the element', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Emit — scroll', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.goto(variantUrl(2))
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const host = sandbox.locator('.origam-parallax').first()
         const element = sandbox.locator('.origam-parallax-element').first()
 
-        await expect(host).toBeVisible({ timeout: 5000 })
+        await expect(host).toBeVisible({ timeout: 12000 })
         const initialTransform = await element.evaluate((el) => getComputedStyle(el).transform)
 
         await host.evaluate(async (host) => {
@@ -75,16 +89,13 @@ test.describe('OrigamParallax — legacy element runtime', () => {
     })
 
     test('event="orientation" — deviceorientation translates the element', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Emit — orientation', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.goto(variantUrl(3))
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const host = sandbox.locator('.origam-parallax').first()
         const element = sandbox.locator('.origam-parallax-element').first()
 
-        await expect(host).toBeVisible({ timeout: 5000 })
+        await expect(host).toBeVisible({ timeout: 12000 })
         const initialTransform = await element.evaluate((el) => getComputedStyle(el).transform)
 
         await host.evaluate(async (host) => {
@@ -110,16 +121,13 @@ test.describe('OrigamParallax — legacy element runtime', () => {
 test.describe('OrigamParallax — multi-layer (enriched)', () => {
 
     test('multi-layer — scroll translates 3 layers with different amplitudes', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Mode — multi-layer (scroll-driven)', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.goto(variantUrl(4))
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const host = sandbox.locator('.origam-parallax').first()
         const layers = sandbox.locator('.origam-parallax__layer')
 
-        await expect(host).toBeVisible({ timeout: 5000 })
+        await expect(host).toBeVisible({ timeout: 12000 })
         await expect(layers).toHaveCount(3)
 
         // Variant uses PARALLAX_EASING.SPRING → JS rAF path (not CSS-driven).
@@ -158,42 +166,27 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
     })
 
     test('direction="horizontal" — translateX changes (not translateY)', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — direction', { exact: true }).first().click()
-        await page.waitForTimeout(400)
+        // Navigate directly to the dedicated "Prop — direction (horizontal)" variant (index 5)
+        // which pre-sets direction=horizontal, avoiding brittle HstSelect interaction.
+        await page.goto(variantUrl(5))
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const host = sandbox.locator('[data-cy="parallax-horizontal"]').first()
+        await expect(host).toBeVisible({ timeout: 12000 })
 
-        // Flip the HstSelect to 'horizontal'. The select is in the parent frame.
-        const selectEl = page.locator('select').filter({ hasText: 'horizontal' }).first()
-        if (await selectEl.count() > 0) {
-            await selectEl.selectOption({ label: 'horizontal' })
-            await page.waitForTimeout(400)
-        }
-
-        const host = sandbox.locator('.origam-parallax').first()
-        await expect(host).toBeVisible({ timeout: 5000 })
-
-        // The Variant uses default easing (LINEAR). On Chromium this activates the
-        // CSS scroll-driven path (animation-timeline: scroll()) and inline
-        // transforms are not mutated by JS. We therefore assert the reactive class
-        // `origam-parallax--horizontal` which is always emitted by the host
-        // whenever direction === 'horizontal', regardless of the CSS path taken.
+        // direction="horizontal" must emit the modifier class origam-parallax--horizontal
+        // on the host element regardless of the CSS animation path.
         const hostClass = await host.evaluate((el) => el.className)
         console.log('[horizontal] host classes:', hostClass)
         expect(hostClass).toContain('origam-parallax--horizontal')
     })
 
     test('@enter / @leave — counters increment on scroll', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Emit — @enter / @leave', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.goto(variantUrl(6))
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const display = sandbox.locator('.origam-parallax__layer').first()
-        await expect(display).toBeVisible({ timeout: 5000 })
+        await expect(display).toBeVisible({ timeout: 12000 })
 
         // At least @enter must have fired by the time the host hits the viewport.
         const text = await display.innerText()
@@ -212,14 +205,11 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
         // call onProgress via a scroll listener so event consumers get updates.
         test.fixme(true, 'DS BUG: @scroll-progress not emitted when cssScrollDriven=true (LINEAR easing + Chrome 115+). useParallaxRuntime CSS path skips onProgress entirely.')
 
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Emit — @scroll-progress', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.goto(variantUrl(9))
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const target = sandbox.locator('[data-cy="scroll-progress"]').first()
-        await expect(target).toBeVisible({ timeout: 5000 })
+        await expect(target).toBeVisible({ timeout: 12000 })
 
         const initial = await target.innerText()
 
@@ -241,10 +231,7 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
     })
 
     test('disabled — layer transform stays at offset 0', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — disabled', { exact: true }).first().click()
-        await page.waitForTimeout(400)
+        await page.goto(variantUrl(1))
 
         // Flip disabled on via the HstCheckbox.
         const checkbox = page.locator('input[type="checkbox"]').filter({ hasNot: page.locator(':checked') }).first()
@@ -254,8 +241,10 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
         }
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const layer = sandbox.locator('.origam-parallax__layer').first()
-        await expect(layer).toBeVisible({ timeout: 5000 })
+        // The Functional variant uses <origam-parallax-element> (class .origam-parallax-element),
+        // not <origam-parallax-layer> (class .origam-parallax__layer).
+        const layer = sandbox.locator('.origam-parallax-element').first()
+        await expect(layer).toBeVisible({ timeout: 12000 })
 
         const initial = await layer.evaluate((el) => getComputedStyle(el).transform)
 
@@ -282,14 +271,11 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
         test.skip(browserName !== 'chromium', 'reduced-motion reliable only on chromium')
 
         await page.emulateMedia({ reducedMotion: 'reduce' })
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Mode — multi-layer (scroll-driven)', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.goto(variantUrl(4))
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const layers = sandbox.locator('.origam-parallax__layer')
-        await expect(layers.first()).toBeVisible({ timeout: 5000 })
+        await expect(layers.first()).toBeVisible({ timeout: 12000 })
 
         const initial = await layers.evaluateAll((els) => els.map((el) => getComputedStyle(el).transform))
 

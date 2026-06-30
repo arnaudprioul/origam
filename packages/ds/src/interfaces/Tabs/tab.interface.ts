@@ -1,7 +1,8 @@
 import type {
     ICommonsComponentProps,
     IGroupItemProps,
-    ITagProps
+    ITagProps,
+    ITypographyProps
 } from '../../interfaces'
 
 import type { TIcon } from '../../types'
@@ -16,8 +17,13 @@ import type { TIcon } from '../../types'
  * ARIA wiring (`role="tab"`, `aria-selected`, `aria-controls`, `id`,
  * `tabindex`) is computed inside the component — consumers only
  * provide `value` (the canonical identifier) and `disabled`.
+ *
+ * Typography props (`fontSize`, `fontWeight`, `letterSpacing`) override
+ * the matching `--origam-tabs__item---*` variables on the tab element.
+ * `lineHeight` is intentionally excluded — the SCSS hard-codes `line-height: 1`
+ * with no CSS-var hook.
  */
-export interface ITabProps extends ICommonsComponentProps, ITagProps, IGroupItemProps {
+export interface ITabProps extends ICommonsComponentProps, ITagProps, IGroupItemProps, ITypographyProps {
     tag?: string
     icon?: TIcon
     appendIcon?: TIcon

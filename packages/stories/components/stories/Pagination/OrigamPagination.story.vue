@@ -9,7 +9,9 @@
 				:init-state="() => useStoryInitState<Partial<IPaginationProps>>({
 					color: 'primary',
 					length: 10,
-					totalVisible: 7
+					totalVisible: 7,
+					withInfo: true,
+					total: 100
 				})"
 		>
 			<template #default="{ state }">
@@ -27,6 +29,10 @@
 						:border-style="state.borderStyle"
 						:length="state.length"
 						:total-visible="state.totalVisible"
+						:with-info="state.withInfo"
+						:total="state.total"
+						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -53,6 +59,10 @@
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.padding" title="Padding"/>
 					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -193,6 +203,48 @@
 			</origam-pagination>
 		</Variant>
 
+		<Variant title="Length and total visible">
+			<div style="display: flex; flex-direction: column; gap: 12px;">
+				<origam-pagination v-model="page" :length="50" :total-visible="7"/>
+				<origam-pagination v-model="page" :length="50" :total-visible="5"/>
+			</div>
+		</Variant>
+
+		<Variant title="First / last page buttons">
+			<origam-pagination v-model="page" :length="10" show-first-last-page/>
+		</Variant>
+
+		<Variant title="Color — default vs primary">
+			<div style="display: flex; flex-direction: column; gap: 16px;">
+				<origam-pagination v-model="page" :length="10" data-cy="pagination-default-look"/>
+				<origam-pagination v-model="page" :length="10" color="primary" data-cy="pagination-primary-look"/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — disabled">
+			<origam-pagination v-model="page" :length="10" disabled/>
+		</Variant>
+
+		<Variant title="Compact">
+			<origam-pagination v-model="page" :length="12" compact data-cy="pagination-compact"/>
+		</Variant>
+
+		<Variant title="Compact + showFirstLastPage">
+			<origam-pagination v-model="page" :length="12" compact show-first-last-page data-cy="pagination-compact-firstlast"/>
+		</Variant>
+
+		<Variant title="With info">
+			<origam-pagination v-model="page" :length="10" with-info :total="100" :per-page="10" data-cy="pagination-with-info"/>
+		</Variant>
+
+		<Variant title="Prop — size (small / default / large)">
+			<div style="display: flex; flex-direction: column; gap: 16px;">
+				<origam-pagination v-model="page" :length="10" size="small"   data-cy="pagination-size-small"/>
+				<origam-pagination v-model="page" :length="10"                data-cy="pagination-size-default"/>
+				<origam-pagination v-model="page" :length="10" size="large"   data-cy="pagination-size-large"/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IPaginationProps>({
@@ -250,6 +302,8 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		SIZE_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'

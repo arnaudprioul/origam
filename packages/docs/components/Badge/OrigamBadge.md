@@ -157,7 +157,7 @@ itself.
 interface IBadgeProps extends ICommonsComponentProps, ITagProps,
     IBorderProps, IColorProps, ILocationProps, IRoundedProps,
     ITransitionComponentProps, IStatusProps, IHoverProps,
-    IElevationProps {
+    IElevationProps, ITypographyProps {
     content?: number | string
     dot?: boolean
     floating?: boolean
@@ -169,6 +169,15 @@ interface IBadgeProps extends ICommonsComponentProps, ITagProps,
     offsetY?: number | string
 }
 ```
+
+### Typography props
+
+Bound on the `__badge` pill (the visible surface). Both props have a real visual effect because the `__badge` SCSS block reads their matching CSS variables.
+
+| Prop | Type | Default | CSS variable |
+|---|---|---|---|
+| `fontSize` | `TFontSize` | — | `--origam-badge__badge---font-size` |
+| `fontWeight` | `TFontWeight` | — | `--origam-badge__badge---font-weight` |
 
 ## Anatomy
 

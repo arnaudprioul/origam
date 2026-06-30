@@ -8,7 +8,8 @@ import type {
     IMarginProps,
     IPaddingProps,
     IRoundedProps,
-    ITagProps
+    ITagProps,
+    ITypographyProps
 } from '../index'
 
 import type { TCodeLang } from '../../types'
@@ -22,7 +23,7 @@ import type { TCodeLang } from '../../types'
  * conservative default so existing call sites keep their behaviour
  * (plain-text, no line numbers, copy button visible).
  */
-export interface ICodeProps extends ICommonsComponentProps, ITagProps, IBorderProps, IRoundedProps, IElevationProps, IPaddingProps, IMarginProps, IDimensionProps, IColorProps, IBgColorProps {
+export interface ICodeProps extends ICommonsComponentProps, ITagProps, IBorderProps, IRoundedProps, IElevationProps, IPaddingProps, IMarginProps, IDimensionProps, IColorProps, IBgColorProps, ITypographyProps {
     /**
      * The code to highlight. When omitted, the default slot is used as the
      * source — useful for multi-line snippets that are nicer to read in

@@ -37,7 +37,7 @@ const STORY_ID   = 'components-stories-checkbox-origamcheckbox-story-vue'
 /**
  * Histoire is configured with vite.base = '/stories/' (histoire.config.js).
  * The dev server serves stories at /stories/story/... — NOT /story/...
- * We use the full path here; other specs that used '/story/...' are broken
+ * We use the full path here; other specs that used '/stories/story/...' are broken
  * and need the same fix.
  */
 const STORY_PATH = '/stories/story/' + STORY_ID

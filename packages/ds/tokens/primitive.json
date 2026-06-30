@@ -110,10 +110,12 @@
       "5xl": { "$type": "dimension", "$value": "2.25rem" }
     },
     "weight": {
-      "regular":  { "$type": "fontWeight", "$value": 400 },
-      "medium":   { "$type": "fontWeight", "$value": 500 },
-      "semibold": { "$type": "fontWeight", "$value": 600 },
-      "bold":     { "$type": "fontWeight", "$value": 700 }
+      "regular":   { "$type": "fontWeight", "$value": 400 },
+      "medium":    { "$type": "fontWeight", "$value": 500 },
+      "semibold":  { "$type": "fontWeight", "$value": 600 },
+      "bold":      { "$type": "fontWeight", "$value": 700 },
+      "extrabold": { "$type": "fontWeight", "$value": 800 },
+      "black":     { "$type": "fontWeight", "$value": 900 }
     },
     "lineHeight": {
       "none":    { "$type": "number", "$value": 1 },

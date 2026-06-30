@@ -358,3 +358,76 @@ describe('OrigamAudio — reactive autoplay', () => {
         }
     })
 })
+
+// ─── Typography — surfaces wired by useTypography (Typo 2b) ──────────────────
+//
+// Four surfaces receive typographyStyles (one useTypography call per surface):
+//
+//   audio__title   → .origam-audio__title  — SCSS reads font-size, font-weight,
+//                    line-height. Rendered when `title` prop is set.
+//   audio__meta    → .origam-audio__meta   — SCSS reads font-size only.
+//                    Rendered when `artist` (or album / duration) is set.
+//   audio__loading → .origam-audio__loading — SCSS reads font-size only.
+//                    STATE-CONDITIONAL: rendered when state.loading.value === true
+//                    AND state.error.value === null. state is internal to
+//                    useAudioPlayer and driven by native HTMLAudioElement events
+//                    (loadstart / canplay). jsdom does not dispatch those events
+//                    (no real media decoder), so this element is never rendered
+//                    in a headless mount. NOT TESTABLE HEADLESSLY — the CSS var
+//                    IS emitted (the :style binding is on the element in the
+//                    template); the rendered effect is proven at the e2e layer.
+//   audio--error   → .origam-audio__error  — SCSS reads font-size only.
+//                    STATE-CONDITIONAL: rendered when state.error.value !== null.
+//                    Same jsdom constraint as __loading. NOT TESTABLE HEADLESSLY.
+
+describe('OrigamAudio — typography: audio__title surface', () => {
+    const titleStyle = (extraProps: Record<string, unknown> = {}): string =>
+        mountAudio({ props: { title: 'Daydream', ...extraProps } })
+            .find('.origam-audio__title')
+            .attributes('style') || ''
+
+    it('renders the __title element when title prop is set', () => {
+        const wrapper = mountAudio({ props: { title: 'Daydream' } })
+        expect(wrapper.find('.origam-audio__title').exists()).toBe(true)
+    })
+
+    it('emits no typography override when no typo prop is set', () => {
+        expect(titleStyle()).not.toContain('--origam-audio__title---')
+    })
+
+    it('fontSize="xl" sets the font-size var on __title', () => {
+        expect(titleStyle({ fontSize: 'xl' }))
+            .toContain('--origam-audio__title---font-size: var(--origam-font__size---xl)')
+    })
+
+    it('fontWeight="bold" sets the font-weight var on __title', () => {
+        expect(titleStyle({ fontWeight: 'bold' }))
+            .toContain('--origam-audio__title---font-weight: var(--origam-font__weight---bold)')
+    })
+
+    it('lineHeight="tight" sets the line-height var on __title', () => {
+        expect(titleStyle({ lineHeight: 'tight' }))
+            .toContain('--origam-audio__title---line-height: var(--origam-font__lineHeight---tight)')
+    })
+})
+
+describe('OrigamAudio — typography: audio__meta surface', () => {
+    const metaStyle = (extraProps: Record<string, unknown> = {}): string =>
+        mountAudio({ props: { artist: 'Origam DS Cast', ...extraProps } })
+            .find('.origam-audio__meta')
+            .attributes('style') || ''
+
+    it('renders the __meta element when artist prop is set', () => {
+        const wrapper = mountAudio({ props: { artist: 'Origam DS Cast' } })
+        expect(wrapper.find('.origam-audio__meta').exists()).toBe(true)
+    })
+
+    it('emits no typography override on __meta when no typo prop is set', () => {
+        expect(metaStyle()).not.toContain('--origam-audio__meta---')
+    })
+
+    it('fontSize="sm" sets the font-size var on __meta', () => {
+        expect(metaStyle({ fontSize: 'sm' }))
+            .toContain('--origam-audio__meta---font-size: var(--origam-font__size---sm)')
+    })
+})

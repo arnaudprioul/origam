@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/components-stories-datepicker-origamdatepicker-story-vue'
+const STORY_PATH = '/stories/story/components-stories-datepicker-origamdatepicker-story-vue'
 
 /**
  * OrigamDatePicker — e2e spec.

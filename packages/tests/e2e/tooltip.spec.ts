@@ -46,7 +46,7 @@ const STORY_ID   = 'components-stories-tooltip-origamtooltip-story-vue'
 // The playwright.config baseURL (http://localhost:6006) must be prefixed with /stories to hit
 // the actual SPA. Using an absolute URL here avoids relying on the baseURL resolution.
 const STORY_BASE = 'http://localhost:6006/stories'
-const STORY_PATH = STORY_BASE + '/story/' + STORY_ID
+const STORY_PATH = STORY_BASE + '/stories/story/' + STORY_ID
 
 const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 

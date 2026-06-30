@@ -16,7 +16,7 @@ import { expect, test, type Page } from '@playwright/test'
  *  - linkOpacity is applied as a fill-opacity style attribute on link paths (filled ribbons, not stroked).
  */
 
-const SANKEY_STORY = '/story/components-stories-chart-origamchartsankey-story-vue'
+const SANKEY_STORY = '/stories/story/components-stories-chart-origamchartsankey-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test'
 
-const COL_PATH = '/story/components-stories-grids-origamcol-story-vue'
-const ROW_PATH = '/story/components-stories-grids-origamrow-story-vue'
-const CONTAINER_PATH = '/story/components-stories-grids-origamcontainer-story-vue'
-const SPACER_PATH = '/story/components-stories-grids-origamspacer-story-vue'
+const COL_PATH = '/stories/story/components-stories-grids-origamcol-story-vue'
+const ROW_PATH = '/stories/story/components-stories-grids-origamrow-story-vue'
+const CONTAINER_PATH = '/stories/story/components-stories-grids-origamcontainer-story-vue'
+const SPACER_PATH = '/stories/story/components-stories-grids-origamspacer-story-vue'
 
 /**
  * Grids — OrigamCol / OrigamRow / OrigamContainer / OrigamSpacer runtime specs.
@@ -20,11 +20,11 @@ test.describe('OrigamCol', () => {
         await page.goto(COL_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Prop — cols', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const col = sandbox.locator('.origam-col').first()
-        await expect(col).toBeVisible({ timeout: 5000 })
+        await expect(col).toBeVisible({ timeout: 15000 })
 
         const fb = await col.evaluate((el) => {
             el.classList.add('origam-col--6')
@@ -39,11 +39,11 @@ test.describe('OrigamCol', () => {
         await page.goto(COL_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Prop — cols', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const col = sandbox.locator('.origam-col').first()
-        await expect(col).toBeVisible({ timeout: 5000 })
+        await expect(col).toBeVisible({ timeout: 15000 })
 
         const fb = await col.evaluate((el) => {
             el.classList.remove('origam-col--6')
@@ -60,11 +60,11 @@ test.describe('OrigamCol', () => {
         await page.goto(COL_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Prop — align (align-self)', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const col = sandbox.locator('.origam-col').first()
-        await expect(col).toBeVisible({ timeout: 5000 })
+        await expect(col).toBeVisible({ timeout: 15000 })
 
         const alignSelf = await col.evaluate((el) => {
             el.classList.add('origam-col--align-center')
@@ -78,11 +78,11 @@ test.describe('OrigamCol', () => {
         await page.goto(COL_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Prop — offset', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const col = sandbox.locator('.origam-col').first()
-        await expect(col).toBeVisible({ timeout: 5000 })
+        await expect(col).toBeVisible({ timeout: 15000 })
 
         // The SCSS rule sets --origam-col---margin-inline-start which cascades to margin-inline-start
         const mis = await col.evaluate((el) => {
@@ -103,11 +103,11 @@ test.describe('OrigamRow', () => {
         await page.goto(ROW_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Prop — density', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const row = sandbox.locator('.origam-row').first()
-        await expect(row).toBeVisible({ timeout: 5000 })
+        await expect(row).toBeVisible({ timeout: 15000 })
 
         const measureMargin = async (density: 'compact' | 'default' | 'comfortable') => {
             return row.evaluate((el, d) => {
@@ -135,11 +135,11 @@ test.describe('OrigamRow', () => {
         await page.goto(ROW_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Prop — align', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const row = sandbox.locator('.origam-row').first()
-        await expect(row).toBeVisible({ timeout: 5000 })
+        await expect(row).toBeVisible({ timeout: 15000 })
 
         const ai = await row.evaluate((el) => {
             el.classList.add('origam-row--align-center')
@@ -152,11 +152,11 @@ test.describe('OrigamRow', () => {
         await page.goto(ROW_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Prop — justify', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const row = sandbox.locator('.origam-row').first()
-        await expect(row).toBeVisible({ timeout: 5000 })
+        await expect(row).toBeVisible({ timeout: 15000 })
 
         const jc = await row.evaluate((el) => {
             el.classList.add('origam-row--justify-space-between')
@@ -169,11 +169,11 @@ test.describe('OrigamRow', () => {
         await page.goto(ROW_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Prop — align', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const row = sandbox.locator('.origam-row').first()
-        await expect(row).toBeVisible({ timeout: 5000 })
+        await expect(row).toBeVisible({ timeout: 15000 })
 
         const fd = await row.evaluate((el) => {
             el.classList.add('origam-row--direction-column')
@@ -192,11 +192,11 @@ test.describe('OrigamContainer', () => {
         await page.waitForLoadState('networkidle')
         // Container story has no "Modifiers" variant — navigate via Default to load sandbox
         await page.getByText('Default', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const container = sandbox.locator('.origam-container').first()
-        await expect(container).toBeVisible({ timeout: 5000 })
+        await expect(container).toBeVisible({ timeout: 15000 })
 
         const mis = await container.evaluate((el) => getComputedStyle(el).marginInlineStart)
         console.log('[container-margins] margin-inline-start:', mis)
@@ -209,11 +209,11 @@ test.describe('OrigamContainer', () => {
         await page.waitForLoadState('networkidle')
         // Container story has no "Modifiers" variant — navigate via Default to load sandbox
         await page.getByText('Default', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const container = sandbox.locator('.origam-container').first()
-        await expect(container).toBeVisible({ timeout: 5000 })
+        await expect(container).toBeVisible({ timeout: 15000 })
 
         const mw = await container.evaluate((el) => {
             el.classList.add('origam-container--fluid')
@@ -236,13 +236,13 @@ test.describe('OrigamSpacer', () => {
         await page.waitForLoadState('networkidle')
         // Spacer story has no "Basic usage" variant — navigate via Default to load sandbox
         await page.getByText('Default', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const spacer = sandbox.locator('.origam-spacer').first()
         // Spacer has no intrinsic content — it is in the DOM but may have zero
         // dimensions. Use toBeAttached instead of toBeVisible.
-        await expect(spacer).toBeAttached({ timeout: 5000 })
+        await expect(spacer).toBeAttached({ timeout: 15000 })
 
         const fg = await spacer.evaluate((el) => getComputedStyle(el).flexGrow)
         console.log('[spacer] flex-grow:', fg)

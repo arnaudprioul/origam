@@ -16,12 +16,13 @@ import type {
     ILoaderProps,
     IRoundedProps,
     ISizeProps,
+    ITypographyProps,
     IVariantProps
 } from '../../interfaces'
 
 import type { TColor } from '../../types'
 
-export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IBgColorProps, IAdjacentInnerProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IVariantProps, IRoundedProps, IElevationProps, ISizeProps {
+export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IBgColorProps, IAdjacentInnerProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IVariantProps, IRoundedProps, IElevationProps, ISizeProps, ITypographyProps {
     centerAffix?: boolean
     dirty?: boolean
     disabled?: boolean

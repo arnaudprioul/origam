@@ -156,6 +156,46 @@
 			</origam-container>
 		</Variant>
 
+		<Variant title="Prop — density">
+			<origam-container>
+				<origam-row density="compact">
+					<origam-col cols="4"><div class="demo-cell">compact A</div></origam-col>
+					<origam-col cols="4"><div class="demo-cell">compact B</div></origam-col>
+					<origam-col cols="4"><div class="demo-cell">compact C</div></origam-col>
+				</origam-row>
+				<origam-row density="default" style="margin-top: 8px;">
+					<origam-col cols="4"><div class="demo-cell">default A</div></origam-col>
+					<origam-col cols="4"><div class="demo-cell">default B</div></origam-col>
+					<origam-col cols="4"><div class="demo-cell">default C</div></origam-col>
+				</origam-row>
+				<origam-row density="comfortable" style="margin-top: 8px;">
+					<origam-col cols="4"><div class="demo-cell">comfortable A</div></origam-col>
+					<origam-col cols="4"><div class="demo-cell">comfortable B</div></origam-col>
+					<origam-col cols="4"><div class="demo-cell">comfortable C</div></origam-col>
+				</origam-row>
+			</origam-container>
+		</Variant>
+
+		<Variant title="Prop — align">
+			<origam-container>
+				<origam-row align="center" style="min-height: 100px; background: var(--origam-color__surface---overlay, #ececec);">
+					<origam-col cols="4"><div class="demo-cell">A</div></origam-col>
+					<origam-col cols="4"><div class="demo-cell" style="padding: 32px 12px;">B (taller)</div></origam-col>
+					<origam-col cols="4"><div class="demo-cell">C</div></origam-col>
+				</origam-row>
+			</origam-container>
+		</Variant>
+
+		<Variant title="Prop — justify">
+			<origam-container>
+				<origam-row justify="space-between">
+					<origam-col cols="3"><div class="demo-cell">A</div></origam-col>
+					<origam-col cols="3"><div class="demo-cell">B</div></origam-col>
+					<origam-col cols="3"><div class="demo-cell">C</div></origam-col>
+				</origam-row>
+			</origam-container>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IRowProps>({ tag: 'div' })"

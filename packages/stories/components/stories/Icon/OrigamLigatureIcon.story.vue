@@ -76,6 +76,63 @@
 			</template>
 		</Variant>
 
+
+		<Variant
+				title="Prop — icon (ligature name)"
+				:init-state="() => useStoryInitState<Partial<IIconComponentProps>>({ icon: 'home', size: undefined })"
+		>
+			<template #default="{ state }">
+				<origam-ligature-icon :icon="state.icon" size="large"/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Icon">
+					<HstSelect v-model="state.icon" title="Icon (ligature)" :options="LIGATURE_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — size"
+				:init-state="() => useStoryInitState<Partial<IIconComponentProps>>({ icon: 'home', size: undefined })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+					<origam-ligature-icon icon="home" :size="state.size"/>
+					<origam-ligature-icon icon="home" size="x-small"/>
+					<origam-ligature-icon icon="home" size="small"/>
+					<origam-ligature-icon icon="home" size="default"/>
+					<origam-ligature-icon icon="home" size="large"/>
+					<origam-ligature-icon icon="home" size="x-large"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.size" title="Size" :options="SIZE_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — size (numeric override)">
+			<div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+				<origam-ligature-icon icon="home" :size="16"/>
+				<origam-ligature-icon icon="home" :size="24"/>
+				<origam-ligature-icon icon="home" :size="36"/>
+				<origam-ligature-icon icon="home" :size="48"/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — icon (common ligature names showcase)">
+			<div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+				<origam-ligature-icon icon="home" size="large"/>
+				<origam-ligature-icon icon="favorite" size="large"/>
+				<origam-ligature-icon icon="settings" size="large"/>
+				<origam-ligature-icon icon="search" size="large"/>
+				<origam-ligature-icon icon="close" size="large"/>
+				<origam-ligature-icon icon="menu" size="large"/>
+				<origam-ligature-icon icon="star" size="large"/>
+				<origam-ligature-icon icon="add" size="large"/>
+			</div>
+		</Variant>
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IIconComponentProps>({ icon: 'home', tag: 'span' })"

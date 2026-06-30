@@ -93,7 +93,7 @@ semantic tinting:
 ```ts
 interface ILabelProps extends ICommonsComponentProps, IMarginProps,
     IPaddingProps, IBorderProps, IRoundedProps, IColorProps,
-    ITagProps {
+    ITagProps, ITypographyProps {
     text?: string
     floating?: boolean
     required?: boolean
@@ -104,6 +104,15 @@ interface ILabelEmits {
     (e: 'click', event: MouseEvent): void
 }
 ```
+
+### Typography props (`ITypographyProps`)
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `fontSize` | `TFontSize` | — | Font size token. Sets `--origam-label---font-size` to `var(--origam-font__size---{fontSize})` (xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl). When unset, the label keeps its theme font-size. |
+| `fontWeight` | `TFontWeight` | — | Font weight token. Sets `--origam-label---font-weight` to `var(--origam-font__weight---{fontWeight})` (regular 400 · medium 500 · semibold 600 · bold 700 · extrabold 800 · black 900). When unset, the label keeps its theme font-weight. |
+| `lineHeight` | `TLineHeight` | — | Line-height token. Sets `--origam-label---line-height` to `var(--origam-font__lineHeight---{lineHeight})` (none 1 · tight 1.25 · snug 1.375 · normal 1.5 · relaxed 1.625 · loose 2). When unset, the label keeps its theme line-height. |
+| `letterSpacing` | `TLetterSpacing` | — | Letter-spacing token. Sets `--origam-label---letter-spacing` to `var(--origam-font__letterSpacing---{letterSpacing})` (tight · normal · wide · wider · widest). When unset, the label keeps its theme letter-spacing. |
 
 ## Anatomy
 

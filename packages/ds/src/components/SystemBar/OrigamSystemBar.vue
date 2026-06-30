@@ -22,8 +22,10 @@
 		useLayoutItem,
 		useProps,
 		useRounded,
-		useSsrBoot
-	, useStyle} from "../../composables"
+		useSsrBoot,
+		useStyle,
+		useTypography
+	} from "../../composables"
 
 	import { vContrast } from "../../directives"
 
@@ -58,6 +60,7 @@
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {roundedStyles, roundedClasses} = useRounded(props)
 	const {elevationClasses} = useElevation(props)
+	const {typographyStyles} = useTypography(props, 'system-bar')
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
@@ -91,6 +94,7 @@
 			roundedStyles.value,
 			dimensionStyles.value,
 			colorStyles.value,
+			typographyStyles.value,
 			ssrBootStyles.value,
 			layoutItemStyles.value,
 			props.style

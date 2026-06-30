@@ -6,7 +6,12 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IMessagesProps>>({ messages: ['Hint message.'], active: true })"
+				:init-state="() => useStoryInitState<Partial<IMessagesProps>>({
+					messages: ['Hint message.'],
+					active: true,
+					fontSize: undefined,
+					lineHeight: undefined
+				})"
 		>
 			<template #default="{ state }">
 				<origam-messages
@@ -21,11 +26,17 @@
 						:border-style="state.borderStyle"
 						:padding="state.padding"
 						:margin="state.margin"
+						:font-size="state.fontSize"
+						:line-height="state.lineHeight"
 				/>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Sizing">
 					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
@@ -117,6 +128,8 @@
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		LINE_HEIGHT_OPTIONS,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'

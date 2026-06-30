@@ -108,6 +108,13 @@ Pass any `TIntent` value via `color` or `bgColor`.
 </template>
 ```
 
+## Props — Typography
+
+| Prop         | Type        | Default | Description                                                                          |
+|--------------|-------------|---------|--------------------------------------------------------------------------------------|
+| `fontSize`   | `TFontSize` | —       | Font-size token (xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl). Sets `--origam-chip---font-size`. When unset the size-variant value stays in control. |
+| `fontWeight` | `TFontWeight` | —     | Font-weight token (regular · medium · semibold · bold · extrabold · black). Sets `--origam-chip---font-weight`. When unset the theme default (400) applies. |
+
 ## Emits
 
 | Event              | Payload          | Description                                    |

@@ -13,7 +13,7 @@ import { expect, test, type Page } from '@playwright/test'
  *  - Empty slot renders when series is empty.
  */
 
-const TREEMAP_STORY = '/story/components-stories-chart-origamcharttreemap-story-vue'
+const TREEMAP_STORY = '/stories/story/components-stories-chart-origamcharttreemap-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

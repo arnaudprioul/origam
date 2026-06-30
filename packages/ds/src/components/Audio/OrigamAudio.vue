@@ -99,11 +99,13 @@
 											v-if="resolvedTitle"
 											class="origam-audio__title"
 											data-cy="origam-audio-title"
+											:style="typographyTitleStyles"
 									>{{ resolvedTitle }}</strong>
 								</slot>
 								<span
 										v-if="hasMetaLine"
 										class="origam-audio__meta"
+										:style="typographyMetaStyles"
 								>
 									<span
 											v-if="resolvedArtist"
@@ -196,6 +198,7 @@
 				role="status"
 				:aria-label="loadingLabel"
 				data-cy="origam-audio-loading"
+				:style="typographyLoadingStyles"
 		>
 			<slot name="loading">
 				<origam-icon
@@ -211,6 +214,7 @@
 				class="origam-audio__error"
 				role="alert"
 				data-cy="origam-audio-error"
+				:style="typographyErrorStyles"
 		>
 			<slot
 					name="error"
@@ -253,7 +257,8 @@
 		useMargin,
 		usePadding,
 		usePosition,
-		useRounded
+		useRounded,
+		useTypography
 	} from '../../composables'
 	import { useAudioPlayer } from '../../composables/Audio/use-audio-player.composable'
 	import { useWaveform } from '../../composables/Audio/use-waveform.composable'
@@ -904,6 +909,19 @@
 	const { elevationClasses, elevationStyles } = useElevation(props)
 	const { positionClasses, positionStyles } = usePosition(props)
 	const { dimensionStyles } = useDimension(props)
+
+	/*********************************************************
+	 * Typography — per-surface tokens. One useTypography call per
+	 * CSS-variable namespace read by the SCSS:
+	 *   audio__title  → font-size, font-weight, line-height (all read)
+	 *   audio__meta   → font-size only
+	 *   audio__loading / audio--error → font-size only (état overlays)
+	 * useColorEffect drives color; typographyStyles only sets font vars.
+	 ********************************************************/
+	const { typographyStyles: typographyTitleStyles } = useTypography(props, 'audio__title')
+	const { typographyStyles: typographyMetaStyles } = useTypography(props, 'audio__meta')
+	const { typographyStyles: typographyLoadingStyles } = useTypography(props, 'audio__loading')
+	const { typographyStyles: typographyErrorStyles } = useTypography(props, 'audio--error')
 
 	/*********************************************************
 	 * Class & Style — Strategy A: classes win for tokenised values,

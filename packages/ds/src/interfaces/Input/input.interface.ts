@@ -16,10 +16,11 @@ import type {
     IPaddingProps,
     IRoundedProps,
     ISizeProps,
+    ITypographyProps,
     IValidationProps
 } from '../../interfaces'
 
-export interface IInputProps extends ICommonsComponentProps, IDensityProps, IPaddingProps, IMarginProps, IRoundedProps, IColorProps, IBgColorProps, IBorderProps, IElevationProps, IDimensionProps, IDirectionProps, IValidationProps, IAdjacentProps, ISizeProps {
+export interface IInputProps extends ICommonsComponentProps, IDensityProps, IPaddingProps, IMarginProps, IRoundedProps, IColorProps, IBgColorProps, IBorderProps, IElevationProps, IDimensionProps, IDirectionProps, IValidationProps, IAdjacentProps, ISizeProps, ITypographyProps {
     centerAffix?: boolean
     hideDetails?: boolean | string
     hideSpinButtons?: boolean

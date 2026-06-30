@@ -41,6 +41,8 @@ render whatever you want from `{ copy, copied, error }`.
 | `successText`      | `string`  | `undefined` | Alias for `feedbackText`. Takes precedence when both are passed.                               |
 | `disabled`         | `boolean` | `false`     | Disables the trigger; `copy()` short-circuits.                                                 |
 | `tag`              | `string`  | `'span'`    | Root element tag.                                                                              |
+| `fontSize`         | `TFontSize` | `undefined` | Font size token for the built-in trigger surface (`xs` · `sm` · `md` · `lg` · `xl` · …). Sets `--origam-clipboard__feedback---font-size`. Has no effect when the `#default` slot is used. |
+| `fontWeight`       | `TFontWeight` | `undefined` | Font weight token for the built-in trigger surface (`regular` · `medium` · `semibold` · `bold` · `extrabold` · `black`). Sets `--origam-clipboard__feedback---font-weight`. |
 
 ## Emits
 

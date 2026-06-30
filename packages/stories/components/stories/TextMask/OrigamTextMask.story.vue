@@ -9,11 +9,8 @@
 				:init-state="() => useStoryInitState<Partial<ITextMaskProps>>({
 					text: 'ORIGAM',
 					background: 'primary',
-					fontSize: '6rem',
-					fontWeight: 900,
-					fontFamily: 'inherit',
-					lineHeight: 1.1,
-					letterSpacing: 'normal',
+					fontWeight: 'black',
+					lineHeight: 'tight',
 					align: 'left'
 				})"
 		>
@@ -22,9 +19,9 @@
 					<origam-text-mask
 							:text="state.text"
 							:background="state.background"
+							:font-family="state.fontFamily"
 							:font-size="state.fontSize"
 							:font-weight="state.fontWeight"
-							:font-family="state.fontFamily"
 							:line-height="state.lineHeight"
 							:letter-spacing="state.letterSpacing"
 							:align="state.align"
@@ -39,11 +36,11 @@
 					<HstText v-model="state.background" title="Background (string | preset | css gradient)"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
-					<HstText   v-model="state.fontSize"      title="Font Size"/>
-					<HstNumber v-model="state.fontWeight"    title="Font Weight" :min="100" :max="900" :step="100"/>
-					<HstText   v-model="state.fontFamily"    title="Font Family"/>
-					<HstText   v-model="state.lineHeight"    title="Line Height"/>
-					<HstText   v-model="state.letterSpacing" title="Letter Spacing"/>
+					<HstSelect v-model="state.fontFamily"    title="Font Family"    :options="FONT_FAMILY_OPTIONS"/>
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Align">
 					<HstSelect v-model="state.align" title="Align" :options="ALIGN_TEXT_OPTIONS"/>
@@ -60,8 +57,7 @@
 					animationType: 'pan',
 					animationDuration: '3s',
 					tag: 'span',
-					fontSize: '5rem',
-					fontWeight: 900
+					fontWeight: 'black'
 				})"
 		>
 			<template #default="{ state }">
@@ -73,7 +69,6 @@
 							:animation-type="state.animationType"
 							:animation-duration="state.animationDuration"
 							:tag="state.tag"
-							:font-size="state.fontSize"
 							:font-weight="state.fontWeight"
 					/>
 				</div>
@@ -111,10 +106,8 @@
 					animated: true,
 					animationType: 'pan',
 					animationDuration: '3s',
-					fontSize: '6rem',
-					fontWeight: 900,
-					fontFamily: 'inherit',
-					lineHeight: 1.1,
+					fontWeight: 'black',
+					lineHeight: 'tight',
 					align: 'left',
 					tag: 'span'
 				})"
@@ -130,12 +123,12 @@
 				</StoryGroup>
 				<StoryGroup title="Design">
 					<HstText   v-model="state.background"    title="Background"/>
-					<HstText   v-model="state.fontSize"      title="Font Size"/>
-					<HstNumber v-model="state.fontWeight"    title="Font Weight" :min="100" :max="900" :step="100"/>
-					<HstText   v-model="state.fontFamily"    title="Font Family"/>
-					<HstText   v-model="state.lineHeight"    title="Line Height"/>
-					<HstText   v-model="state.letterSpacing" title="Letter Spacing"/>
-					<HstSelect v-model="state.align"         title="Align"       :options="ALIGN_TEXT_OPTIONS"/>
+					<HstSelect v-model="state.fontFamily"    title="Font Family"    :options="FONT_FAMILY_OPTIONS"/>
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+					<HstSelect v-model="state.align"         title="Align"          :options="ALIGN_TEXT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.animated"          title="Animated"/>
@@ -158,7 +151,14 @@
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { TAG_OPTIONS } from '@stories/const'
+	import {
+		FONT_FAMILY_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
+		LETTER_SPACING_OPTIONS,
+		LINE_HEIGHT_OPTIONS,
+		TAG_OPTIONS
+	} from '@stories/const'
 
 	const ALIGN_TEXT_OPTIONS: Array<{ label: string; value: TBlockquoteAlign }> = [
 		{ label: 'Left',   value: 'left' },

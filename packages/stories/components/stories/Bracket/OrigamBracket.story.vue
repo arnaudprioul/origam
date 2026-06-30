@@ -7,7 +7,7 @@
 		<Variant
 				title="Design"
 				:init-state="() => useStoryInitState<Partial<IBracketProps>>({
-					variant: BRACKET_VARIANT.SINGLE_ELIMINATION,
+					variant: BRACKET_VARIANT.DOUBLE_ELIMINATION,
 					direction: DIRECTION.HORIZONTAL,
 					color: 'primary',
 					showRoundTitles: true,
@@ -41,6 +41,9 @@
 						:max-width="state.maxWidth"
 						:min-height="state.minHeight"
 						:max-height="state.maxHeight"
+						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
+						:letter-spacing="state.letterSpacing"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -84,6 +87,11 @@
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.padding" title="Padding"/>
 					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"       :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"     :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing"  :options="LETTER_SPACING_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -295,6 +303,9 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
+		LETTER_SPACING_OPTIONS,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'

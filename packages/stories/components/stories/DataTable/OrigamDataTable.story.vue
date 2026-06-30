@@ -329,7 +329,136 @@
 			</origam-data-table>
 		</Variant>
 
+		<Variant title="Prop — headers & items (basic dataset)">
+			<origam-data-table
+					:headers="headers"
+					:items="items"
+			/>
+		</Variant>
+
 		<Variant
+				title="Prop — multiSort & mustSort"
+				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({ multiSort: false, mustSort: false })"
+		>
+			<template #default="{ state }">
+				<origam-data-table
+						:headers="sortableHeaders"
+						:items="items"
+						:multi-sort="state.multiSort"
+						:must-sort="state.mustSort"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Sort">
+					<HstCheckbox v-model="state.multiSort" title="multiSort"/>
+					<HstCheckbox v-model="state.mustSort"  title="mustSort"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — itemsPerPage (pagination)"
+				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({ itemsPerPage: 5 })"
+		>
+			<template #default="{ state }">
+				<origam-data-table
+						:headers="headers"
+						:items="manyItems"
+						:items-per-page="state.itemsPerPage"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Pagination">
+					<HstNumber v-model="state.itemsPerPage" title="Items Per Page" :min="1" :max="20"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — showSelect">
+			<origam-data-table
+					v-model="selected"
+					:headers="headers"
+					:items="items"
+					show-select
+					item-value="id"
+			/>
+		</Variant>
+
+		<Variant
+				title="Prop — search"
+				:init-state="() => useStoryInitState<{ search: string }>({ search: '' })"
+		>
+			<template #default="{ state }">
+				<div>
+					<origam-text-field
+							v-model="state.search"
+							label="Search"
+							clearable
+							style="max-width: 320px; margin-bottom: 12px;"
+					/>
+					<origam-data-table
+							:headers="headers"
+							:items="items"
+							:search="state.search || undefined"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Search">
+					<HstText v-model="state.search" title="Search"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Prop — loading"
+				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({ loading: true })"
+		>
+			<template #default="{ state }">
+				<origam-data-table
+						:headers="headers"
+						:items="items"
+						:loading="state.loading"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Loading">
+					<HstCheckbox v-model="state.loading" title="Loading"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Slot — top">
+			<origam-data-table :headers="headers" :items="items">
+				<template #top>
+					<div style="padding: 12px; font-weight: bold;">User list</div>
+				</template>
+			</origam-data-table>
+		</Variant>
+
+		<Variant
+				title="Prop — loading (all shapes)"
+				:init-state="() => useStoryInitState<ILoadingState>({ enabled: true, kind: 'line', progress: 42, circularSize: 24 })"
+		>
+			<template #default="{ state }">
+				<origam-data-table
+						data-cy="data-table-loading-interactive"
+						:headers="headers"
+						:items="items"
+						:loading="resolveLoading(state)"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Loading">
+					<HstCheckbox v-model="state.enabled"      title="Enabled"/>
+					<HstSelect   v-model="state.kind"         title="Kind"     :options="LOADING_KIND_OPTIONS"/>
+					<HstNumber   v-model="state.progress"     title="Progress" :min="0" :max="100" :step="1"/>
+					<HstNumber   v-model="state.circularSize" title="Size"     :min="12" :max="64" :step="2"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+				<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({
 					itemsPerPage: 5,

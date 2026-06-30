@@ -198,7 +198,7 @@ interface IBtnProps extends ICommonsComponentProps,
     IElevationProps, IRoundedProps, ITagProps, ISizeProps,
     ILinkProps, IRippleProps, ILoaderProps, IPositionProps,
     ILocationProps, IGroupItemProps, IPaddingProps, IMarginProps,
-    IAdjacentProps, IStatusProps, IHoverProps {
+    IAdjacentProps, IStatusProps, IHoverProps, ITypographyProps {
     active?: boolean
     flat?: boolean
     icon?: boolean | TIcon
@@ -208,6 +208,24 @@ interface IBtnProps extends ICommonsComponentProps,
     text?: string
 }
 ```
+
+### Typography
+
+The font props come from the shared `ITypographyProps` surface (wired by the
+`useTypography` composable). Each one re-points the matching `--origam-btn---*`
+variable at a primitive font token, so a single button can override its theme
+typography without custom CSS. Unset props keep the theme / size value.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `fontSize` | `TFontSize` | — | Sets `--origam-btn---font-size` to `var(--origam-font__size---{fontSize})` (xs → 5xl). Overrides the `size`-variant font-size when set. |
+| `fontWeight` | `TFontWeight` | — | Sets `--origam-btn---font-weight` to `var(--origam-font__weight---{fontWeight})` (regular 400 → black 900). |
+| `lineHeight` | `TLineHeight` | — | Sets `--origam-btn---line-height` to `var(--origam-font__lineHeight---{lineHeight})` (none 1 → loose 2). |
+| `letterSpacing` | `TLetterSpacing` | — | Sets `--origam-btn---letter-spacing` to `var(--origam-font__letterSpacing---{letterSpacing})` (tight → widest). |
+
+> `fontFamily` is part of the surface but has no effect on `<OrigamBtn>`: the
+> component's SCSS has no `font-family` rule (buttons inherit the page font by
+> design). Use `fontFamily` on text components (`OrigamTitle`, `OrigamCode`, …).
 
 ## Anatomy
 

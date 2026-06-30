@@ -39,6 +39,8 @@
 								:append-icon="state.appendIcon || undefined"
 								:expand-icon="state.expandIcon || undefined"
 								:collapse-icon="state.collapseIcon || undefined"
+								:font-size="state.fontSize"
+								:line-height="state.lineHeight"
 						/>
 						<origam-expansion-panel-content content="Body content"/>
 					</origam-expansion-panel>
@@ -72,6 +74,10 @@
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.padding" title="Padding"/>
 					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -242,6 +248,10 @@
 					<HstSelect v-model="state.density" title="Density"  :options="DENSITY_OPTIONS"/>
 					<HstSelect v-model="state.rounded" title="Rounded"  :options="ROUNDED_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
+				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.hideActions" title="Hide Actions"/>
 					<HstCheckbox v-model="state.readonly"    title="Readonly"/>
@@ -282,9 +292,11 @@
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
+		FONT_SIZE_OPTIONS,
 		HOVER_OPTIONS,
 		resolveHoverState,
 		ICON_OPTIONS,
+		LINE_HEIGHT_OPTIONS,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS,
 	} from '@stories/const'

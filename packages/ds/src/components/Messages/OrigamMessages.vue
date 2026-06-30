@@ -6,7 +6,7 @@
 		<component
 				:is="tag"
 				:class="messagesClasses"
-				:style="messagesStyles"
+				:style="[messagesStyles, rootTypographyStyles]"
 				aria-live="polite"
 				role="status"
 		>
@@ -16,6 +16,7 @@
 			>
 				<div
 						:id="`${index}-${toKebabCase(message)}`"
+						:style="childTypographyStyles"
 						class="origam-messages__message"
 				>
 					<slot
@@ -47,7 +48,8 @@
 		useRounded,
 		useSsrBoot,
 		useStyle,
-		useTextColor
+		useTextColor,
+		useTypography
 } from '../../composables'
 
 	import { DENSITY } from '../../enums'
@@ -98,6 +100,11 @@
 	 ********************************************************/
 
 	const {textColorClasses, textColorStyles} = useTextColor(toRef(props, 'color'))
+
+	// fontSize is read by the root .origam-messages rule; lineHeight is read by
+	// the .origam-messages__message child rule — each call targets its surface.
+	const {typographyStyles: rootTypographyStyles} = useTypography(props, 'messages')
+	const {typographyStyles: childTypographyStyles} = useTypography(props, 'messages__message')
 
 	/*********************************************************
 	 * Composables

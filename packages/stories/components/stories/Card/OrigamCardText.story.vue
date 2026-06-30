@@ -26,10 +26,18 @@
 							:rounded-bottom-left="state.roundedBottomLeft"
 							:rounded-bottom-right="state.roundedBottomRight"
 							:text="state.text"
+							:font-size="state.fontSize"
+							:font-weight="state.fontWeight"
+							:letter-spacing="state.letterSpacing"
 					/>
 				</origam-card>
 			</template>
 			<template #controls="{ state }">
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+				</StoryGroup>
 				<StoryGroup title="Shape">
 					<HstSelect v-model="state.rounded"            title="Rounded"              :options="ROUNDED_OPTIONS"/>
 					<HstText   v-model="state.roundedTopRight"    title="Rounded Top-Right"/>
@@ -165,6 +173,9 @@
 	import {
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
+		LETTER_SPACING_OPTIONS,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/components-stories-textfield-origamtextfield-story-vue'
+const STORY_PATH = '/stories/story/components-stories-textfield-origamtextfield-story-vue'
 
 test.describe('OrigamTextField — mask', () => {
     // We cannot reliably interact with the Histoire HstSelect picker via

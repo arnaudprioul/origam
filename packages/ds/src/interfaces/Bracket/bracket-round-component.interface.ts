@@ -1,4 +1,4 @@
-import type { ICommonsComponentProps, IDirectionProps, ITagProps } from '../../interfaces'
+import type { ICommonsComponentProps, IDirectionProps, ITagProps, ITypographyProps } from '../../interfaces'
 
 import type { TIntent } from '../../types'
 
@@ -9,7 +9,7 @@ import type { IBracketRound } from './bracket-round.interface'
  * horizontal mode, row in vertical mode). Exported so consumers can
  * render a round standalone (e.g. inside a custom layout).
  */
-export interface IBracketRoundProps extends ICommonsComponentProps, ITagProps, IDirectionProps {
+export interface IBracketRoundProps extends ICommonsComponentProps, ITagProps, IDirectionProps, ITypographyProps {
     /** The round payload to render. */
     round: IBracketRound
     /** Index of the round inside its bracket — drives the vertical offset. */

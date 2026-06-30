@@ -117,6 +117,9 @@ On touch devices, enable horizontal swipe between panels with
 | `disabled`    | `boolean`       | `false` | Disables this tab (skipped by keyboard). |
 | `icon`        | `TIcon`         | —       | Leading icon.                            |
 | `appendIcon`  | `TIcon`         | —       | Trailing icon (badge, close, …).         |
+| `fontSize`    | `TFontSize`     | —       | Font size token override (`xs` · `sm` · `md` · `lg` · `xl` · …). Maps to `--origam-tabs__item---font-size`. |
+| `fontWeight`  | `TFontWeight`   | —       | Font weight token override (`regular` · `medium` · `semibold` · `bold` · …). Maps to `--origam-tabs__item---font-weight`. |
+| `letterSpacing` | `TLetterSpacing` | —   | Letter-spacing token override (`tight` · `normal` · `wide` · `wider` · `widest`). Maps to `--origam-tabs__item---letter-spacing`. |
 
 ### `<OrigamTabPanels>`
 

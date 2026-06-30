@@ -6,7 +6,7 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IKbdProps>>({ variant: 'outlined', color: undefined, bgColor: undefined, size: undefined, rounded: undefined, border: undefined })"
+				:init-state="() => useStoryInitState<Partial<IKbdProps>>({ variant: 'outlined', color: undefined, bgColor: undefined, size: undefined, rounded: undefined, border: undefined, fontFamily: undefined, fontSize: undefined, fontWeight: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-kbd
@@ -16,6 +16,9 @@
 						:size="state.size"
 						:rounded="state.rounded"
 						:border="state.border"
+						:font-family="state.fontFamily"
+						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
 						:combination="['⌘', 'S']"
 				/>
 			</template>
@@ -35,6 +38,11 @@
 				</StoryGroup>
 				<StoryGroup title="Border">
 					<HstSelect v-model="state.border" title="Border" :options="BORDER_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontFamily" title="Font Family" :options="FONT_FAMILY_OPTIONS"/>
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -84,6 +92,11 @@
 					<HstSelect v-model="state.rounded" title="Rounded"  :options="ROUNDED_OPTIONS"/>
 					<HstSelect v-model="state.border"  title="Border"   :options="BORDER_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontFamily" title="Font Family" :options="FONT_FAMILY_OPTIONS"/>
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 	</Story>
@@ -103,6 +116,9 @@
 	import {
 		BORDER_OPTIONS,
 		COLOR_OPTIONS,
+		FONT_FAMILY_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS,
 	} from '@stories/const'

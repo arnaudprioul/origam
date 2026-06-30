@@ -1,6 +1,6 @@
-import type { IColorProps, ICommonsComponentProps } from '../../interfaces'
+import type { IColorProps, ICommonsComponentProps, ITypographyProps } from '../../interfaces'
 
-export interface IFileFieldDragNDropItemProps extends ICommonsComponentProps, IColorProps {
+export interface IFileFieldDragNDropItemProps extends ICommonsComponentProps, IColorProps, ITypographyProps {
     file: File
     index: number
     progress?: number

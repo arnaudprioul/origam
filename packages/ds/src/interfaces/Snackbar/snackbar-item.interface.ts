@@ -1,4 +1,4 @@
-import type { ICommonsComponentProps } from '../../interfaces'
+import type { ICommonsComponentProps, ITypographyProps } from '../../interfaces'
 import type { TIcon, TIntent } from '../../types'
 import type { ISnackbarGroupItemAction } from '../../interfaces'
 
@@ -18,7 +18,7 @@ import type { ISnackbarGroupItemAction } from '../../interfaces'
  * Both `OrigamSnackbar` and `OrigamSnackbarGroup` consume this component
  * so all visual intent / layout logic lives in one place only.
  */
-export interface ISnackbarItemProps extends ICommonsComponentProps {
+export interface ISnackbarItemProps extends ICommonsComponentProps, ITypographyProps {
     /**
      * Semantic intent — drives icon defaults and surface colouring via
      * `--origam-color__feedback--{intent}---*` tokens.

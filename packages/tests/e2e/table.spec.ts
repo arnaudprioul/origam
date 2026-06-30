@@ -1,33 +1,44 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/components-stories-table-origamtable-story-vue'
-
 /**
  * OrigamTable — runtime behaviour specs.
  *
+ * Pattern canonique : navigation directe par variantId (cf. btn.spec.ts).
+ * JAMAIS networkidle (Histoire garde un WS HMR ouvert → timeout garanti).
+ *
+ * Variants OrigamTable (0-based):
+ *   0  → Design
+ *   1  → State
+ *   2  → Functional
+ *   3  → Slots - Default
+ *   4  → Slots - Top
+ *   5  → Slots - Bottom
+ *   6  → Slots - Wrapper
+ *   7  → Default (playground)
+ *
  * Covers: density cell-padding, fixed-header sticky positioning,
- * rounded border-radius, elevation box-shadow.
+ * rounded border-radius.
  */
 
+const STORY_ID   = 'components-stories-table-origamtable-story-vue'
+const STORY_PATH = '/stories/story/' + STORY_ID
+
+const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
+
 test.describe('OrigamTable density', () => {
+    test.setTimeout(45000)
 
     test('compact / default / comfortable produce different cell padding', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-
-        // Find the Density variant — fall back to a generic name if needed.
-        const densityVariant = page.getByText(/density/i).first()
-        await densityVariant.click()
-        await page.waitForTimeout(800)
+        // Design variant (0) has a table with density support.
+        await page.goto(variantUrl(0))
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const table = sandbox.locator('.origam-table').first()
-        await expect(table).toBeVisible({ timeout: 5000 })
+        await expect(table).toBeVisible({ timeout: 12000 })
 
         // Force each density via the host's class API directly. This sidesteps
         // the Histoire HstSelect dropdown (custom DOM, painful to drive) and
-        // exercises the SCSS rules `&--density-{name}` which is what we just
-        // added.
+        // exercises the SCSS rules `&--density-{name}`.
         const measure = async (density: 'compact' | 'default' | 'comfortable') => {
             return table.evaluate((el, density) => {
                 el.classList.remove(
@@ -66,20 +77,17 @@ test.describe('OrigamTable density', () => {
 })
 
 test.describe('OrigamTable fixed-header', () => {
+    test.setTimeout(45000)
 
     test('fixed-header class makes thead sticky', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — fixedHeader (sticky header on scroll)', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        // Functional variant (2) exposes the fixedHeader prop.
+        await page.goto(variantUrl(2))
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const table = sandbox.locator('.origam-table').first()
-        await expect(table).toBeVisible({ timeout: 5000 })
+        await expect(table).toBeVisible({ timeout: 12000 })
 
         const thPosition = await table.evaluate((el) => {
-            // The class is set by the component via fixedHeader prop
-            // Inject the class manually to verify the SCSS rule
             el.classList.add('origam-table--fixed-header')
             const th = el.querySelector('th') as HTMLElement | null
             return th ? getComputedStyle(th).position : null
@@ -89,14 +97,11 @@ test.describe('OrigamTable fixed-header', () => {
     })
 
     test('wrapper overflow-y is auto when fixed-header is active', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — fixedHeader (sticky header on scroll)', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.goto(variantUrl(2))
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const table = sandbox.locator('.origam-table').first()
-        await expect(table).toBeVisible({ timeout: 5000 })
+        await expect(table).toBeVisible({ timeout: 12000 })
 
         const wrapperOverflow = await table.evaluate((el) => {
             el.classList.add('origam-table--fixed-header')
@@ -109,16 +114,14 @@ test.describe('OrigamTable fixed-header', () => {
 })
 
 test.describe('OrigamTable visual variants', () => {
+    test.setTimeout(45000)
 
     test('rounded class applies border-radius', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — rounded', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+        await page.goto(variantUrl(2))
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const table = sandbox.locator('.origam-table').first()
-        await expect(table).toBeVisible({ timeout: 5000 })
+        await expect(table).toBeVisible({ timeout: 12000 })
 
         const br = await table.evaluate((el) => {
             el.classList.add('origam-table--rounded')

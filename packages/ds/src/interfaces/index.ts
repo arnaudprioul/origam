@@ -109,6 +109,7 @@ export * from './Commons/status.interface'
 export * from './Commons/sticky.interface'
 export * from './Commons/style.interface'
 export * from './Commons/touch.interface'
+export * from './Commons/typography.interface'
 export * from './Commons/validation.interface'
 export * from './Commons/virtual.interface'
 

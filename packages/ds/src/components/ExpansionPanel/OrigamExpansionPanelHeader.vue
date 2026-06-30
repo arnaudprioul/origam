@@ -100,7 +100,8 @@
 		useHover,
 		useProps,
 		useStateEffect,
-		useStyle
+		useStyle,
+		useTypography
 } from '../../composables'
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
@@ -218,6 +219,7 @@
 	 ********************************************************/
 
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {typographyStyles} = useTypography(props, 'expansion-panel__header')
 	const expansionPanelHeaderStyles = computed(() => {
 		return [
 			colorStyles.value,
@@ -225,6 +227,7 @@
 			borderStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
+			typographyStyles.value,
 			props.style
 		] as StyleValue
 	})

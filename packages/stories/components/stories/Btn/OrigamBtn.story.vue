@@ -17,6 +17,10 @@
 						:bg-color="state.bgColor"
 						:size="state.size"
 						:density="state.density"
+						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
+						:line-height="state.lineHeight"
+						:letter-spacing="state.letterSpacing"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
 						:flat="state.flat"
@@ -43,6 +47,12 @@
 				<StoryGroup title="Sizing">
 					<HstSelect v-model="state.size"    title="Size"    :options="SIZE_OPTIONS"/>
 					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Shape">
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
@@ -135,6 +145,26 @@
 					<HstText   v-model="state.to"   title="To (router-link)"/>
 				</StoryGroup>
 			</template>
+		</Variant>
+
+		<Variant title="Prop — color & bgColor">
+			<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+				<origam-btn text="Default"/>
+				<origam-btn text="Color primary"   color="primary"/>
+				<origam-btn text="BgColor primary" bg-color="primary" data-cy="btn-color-primary"/>
+				<origam-btn text="BgColor success" bg-color="success"/>
+				<origam-btn text="BgColor danger"  bg-color="danger"/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — loading (interactive)">
+			<div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+				<origam-btn :loading="{ type: 'line' }"     text="Line"             data-cy="btn-loading-line"/>
+				<origam-btn :loading="{ type: 'line' }"     text="Line primary"     color="primary" data-cy="btn-loading-line-primary"/>
+				<origam-btn :loading="{ type: 'circular' }" text="Circular"         bg-color="info" data-cy="btn-loading-circular-override"/>
+				<origam-btn :loading="{ type: 'circular' }" text="Circular success" bg-color="success" data-cy="btn-loading-circular-success"/>
+				<origam-btn :loading="{ type: 'skeleton' }" text="Skeleton"         data-cy="btn-loading-skeleton"/>
+			</div>
 		</Variant>
 
 		<Variant title="Events - click">
@@ -264,7 +294,11 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		HOVER_OPTIONS,
+		LETTER_SPACING_OPTIONS,
+		LINE_HEIGHT_OPTIONS,
 		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,

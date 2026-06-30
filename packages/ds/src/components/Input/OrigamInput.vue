@@ -110,6 +110,7 @@
 		useRtl,
 		useSize,
 		useStyle,
+		useTypography,
 		useValidation
 } from '../../composables'
 
@@ -234,11 +235,13 @@
 	const {colorClasses, colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
 	const {rtlClasses} = useRtl()
 	const {sizeClasses} = useSize(props, 'origam-input')
+	const {typographyStyles} = useTypography(props, 'input')
 
 	const inputStyles = computed(() => {
 		return [
 			dimensionStyles.value,
 			colorStyles.value,
+			typographyStyles.value,
 			props.style
 		] as StyleValue
 	})

@@ -7,7 +7,8 @@ import type {
     IMarginProps,
     IPaddingProps,
     IRoundedProps,
-    ITagProps
+    ITagProps,
+    ITypographyProps
 } from '../../interfaces'
 
 import type {
@@ -42,7 +43,7 @@ import type {
  * consumed via the matching composables. The component never imposes an
  * outer margin unless `margin` is passed.
  */
-export interface IBlockquoteProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IRoundedProps, IElevationProps, IBorderProps, IPaddingProps, IMarginProps {
+export interface IBlockquoteProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IRoundedProps, IElevationProps, IBorderProps, IPaddingProps, IMarginProps, ITypographyProps {
     /**
      * Visual variant. See `TBlockquoteVariant` for the per-variant
      * typographic contract.

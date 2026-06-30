@@ -5,6 +5,33 @@
 	>
 
 		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<ITypographyProps & { errorMessages: string[] }>({
+					errorMessages: ['Form-level validation error']
+				})"
+		>
+			<template #default="{ state }">
+				<origam-form
+						:error-messages="state.errorMessages"
+						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
+						:letter-spacing="state.letterSpacing"
+						:line-height="state.lineHeight"
+						data-cy="form-design"
+						@submit.prevent
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<IFormProps>({
 					disabled: false,
@@ -111,6 +138,63 @@
 			</origam-form>
 		</Variant>
 
+		<Variant title="Prop — basic wiring (TextField + NumberField)">
+			<origam-form data-cy="form-basic" @submit.prevent="basicHandleSubmit">
+				<origam-text-field
+						v-model="basicName"
+						label="Name"
+						:rules="[v => !!v || 'Name is required']"
+						data-cy="form-basic-name"
+				/>
+				<origam-number-field
+						v-model="basicAge"
+						label="Age"
+						:min="0"
+						:max="150"
+						data-cy="form-basic-age"
+				/>
+				<origam-btn type="submit" text="Submit" color="primary" data-cy="form-basic-submit"/>
+				<p data-cy="form-basic-submit-status">submitted = {{ basicSubmitted }}</p>
+			</origam-form>
+		</Variant>
+
+		<Variant title="Prop — validateOn">
+			<origam-form validate-on="input" data-cy="form-validateon" @submit.prevent>
+				<origam-text-field
+						v-model="validateOnName"
+						label="Name"
+						:rules="[v => !!v || 'Name is required']"
+						data-cy="form-validateon-field"
+				/>
+				<origam-btn type="submit" text="Submit" color="primary" data-cy="form-validateon-submit"/>
+			</origam-form>
+		</Variant>
+
+		<Variant title="Prop — disabled">
+			<origam-form disabled data-cy="form-disabled" @submit.prevent>
+				<origam-text-field v-model="disabledName" label="Name" data-cy="form-disabled-name"/>
+				<origam-btn type="submit" text="Submit" color="primary" data-cy="form-disabled-submit"/>
+			</origam-form>
+		</Variant>
+
+		<Variant title="Prop — fastFail">
+			<origam-form :fast-fail="true" data-cy="form-fastfail" @submit.prevent>
+				<origam-text-field
+						v-model="fastFailF1"
+						label="Field 1"
+						:rules="[v => !!v || 'Field 1 is required']"
+						data-cy="form-fastfail-f1"
+				/>
+				<origam-text-field
+						v-model="fastFailF2"
+						label="Field 2"
+						:rules="[v => !!v || 'Field 2 is required']"
+						data-cy="form-fastfail-f2"
+				/>
+				<origam-btn type="submit" text="Submit" color="primary" data-cy="form-fastfail-submit"/>
+			</origam-form>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IFormProps>({
@@ -145,6 +229,12 @@
 					<HstCheckbox v-model="state.fastFail"   title="Fast Fail"/>
 					<HstSelect   v-model="state.validateOn" title="Validate On" :options="VALIDATE_ON_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 	</Story>
@@ -159,10 +249,16 @@
 
 	import { OrigamBtn, OrigamForm, OrigamNumberField, OrigamTextField } from '@origam/components'
 	import { VALIDATE_ON } from '@origam/enums'
-	import type { IFormProps } from '@origam/interfaces'
+	import type { IFormProps, ITypographyProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
+	import {
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
+		LETTER_SPACING_OPTIONS,
+		LINE_HEIGHT_OPTIONS
+	} from '@stories/const'
 
 	const VALIDATE_ON_OPTIONS = Object.values(VALIDATE_ON).map(v => ({ label: v, value: v }))
 
@@ -176,6 +272,19 @@
 
 	const playgroundName = ref('')
 	const playgroundAge  = ref<number | null>(null)
-</script>
+
+	const basicName      = ref('')
+	const basicAge       = ref<number | null>(null)
+	const basicSubmitted = ref(false)
+	const basicHandleSubmit = () => { basicSubmitted.value = true }
+
+	const validateOnName = ref('')
+
+	const disabledName = ref('')
+
+	const fastFailF1 = ref('')
+	const fastFailF2 = ref('')
+
+	</script>
 
 <docs lang="md" src="@docs/components/Form/OrigamForm.md"/>

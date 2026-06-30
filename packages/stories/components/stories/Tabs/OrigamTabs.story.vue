@@ -6,7 +6,7 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<ITabsProps>>({ variant: TAB_VARIANT.DEFAULT, color: undefined, bgColor: undefined, rounded: undefined, density: undefined, direction: DIRECTION.HORIZONTAL })"
+				:init-state="() => useStoryInitState<Partial<ITabsProps & ITabProps>>({ variant: TAB_VARIANT.DEFAULT, color: undefined, bgColor: undefined, rounded: undefined, density: undefined, direction: DIRECTION.HORIZONTAL, fontSize: undefined, fontWeight: undefined, letterSpacing: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-tabs
@@ -18,9 +18,9 @@
 						:direction="state.direction"
 						v-model="designValue"
 				>
-					<origam-tab :value="0">Profile</origam-tab>
-					<origam-tab :value="1">Settings</origam-tab>
-					<origam-tab :value="2">Billing</origam-tab>
+					<origam-tab :value="0" :font-size="state.fontSize" :font-weight="state.fontWeight" :letter-spacing="state.letterSpacing">Profile</origam-tab>
+					<origam-tab :value="1" :font-size="state.fontSize" :font-weight="state.fontWeight" :letter-spacing="state.letterSpacing">Settings</origam-tab>
+					<origam-tab :value="2" :font-size="state.fontSize" :font-weight="state.fontWeight" :letter-spacing="state.letterSpacing">Billing</origam-tab>
 				</origam-tabs>
 			</template>
 			<template #controls="{ state }">
@@ -39,6 +39,11 @@
 				</StoryGroup>
 				<StoryGroup title="Layout">
 					<HstSelect v-model="state.direction" title="Direction" :options="DIRECTION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography (per tab)">
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -148,7 +153,7 @@
 
 	import { OrigamTab, OrigamTabPanel, OrigamTabPanels, OrigamTabs } from '@origam/components'
 	import { DENSITY, DIRECTION, TAB_VARIANT } from '@origam/enums'
-	import type { ITabsProps } from '@origam/interfaces'
+	import type { ITabProps, ITabsProps } from '@origam/interfaces'
 	import type { IOptions } from '@origam/interfaces'
 	import type { TTabVariant } from '@origam/types'
 
@@ -157,6 +162,9 @@
 	import {
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
+		LETTER_SPACING_OPTIONS,
 		ROUNDED_OPTIONS
 	} from '@stories/const'
 

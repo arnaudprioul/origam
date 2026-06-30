@@ -1,27 +1,42 @@
 import { test, expect } from '@playwright/test'
 
-const STORY_PATH = '/story/components-stories-btn-origambtn-story-vue'
+/**
+ * Pattern canonique — navigation directe par variantId (cf. btn.spec.ts).
+ * JAMAIS networkidle (Histoire garde un WS HMR ouvert → timeout garanti).
+ *
+ * Variants OrigamBtn (0-based) — état au 2026-06-30 :
+ *   0  → Design
+ *   1  → State
+ *   2  → Functional
+ *   3  → Prop — color & bgColor
+ *   4  → Prop — loading (interactive)
+ *   5  → Events - click
+ *   …
+ *  14  → Default (playground)
+ */
+
+const STORY_ID   = 'components-stories-btn-origambtn-story-vue'
+const STORY_PATH = '/stories/story/' + STORY_ID
+
+const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
 test.setTimeout(180_000)
 
 test('DEBUG btn — hover and active produce DIFFERENT bg colors for primary intent', async ({ page }) => {
-    await page.goto(STORY_PATH)
-    await page.waitForLoadState('networkidle')
-
-    // Navigate to the Variant that renders btns with bgColor="primary".
-    // "Prop — color & bgColor" has data-cy="btn-color-primary" with
+    // Navigate directly to the Variant that renders btns with bgColor="primary".
+    // "Prop — color & bgColor" (index 3) has data-cy="btn-color-primary" with
     // bg-color="primary" — this is the only Variant where colorStyles
     // emits an inline background-color that changes per state
     // (rest / hover / active via tokenStylesForIntent + bgRole).
-    const variantLink = page.getByText('Prop — color & bgColor', { exact: true }).last()
-    await variantLink.click({ timeout: 10_000 })
-    await page.waitForTimeout(2000)
+    await page.goto(variantUrl(3))
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 
     // Target the primary btn that has bg-color="primary" applied.
     // This btn has a data-cy attribute set directly in the story.
     const btn = sandbox.locator('[data-cy="btn-color-primary"]')
+    await expect(btn).toBeVisible({ timeout: 12000 })
+
     const btnCount = await btn.count().catch(() => 0)
     if (!btnCount) {
         console.log('btn-color-primary not found — story may have changed')

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/components-stories-lazy-origamlazy-story-vue'
+const STORY_PATH = '/stories/story/components-stories-lazy-origamlazy-story-vue'
 
 test.describe('OrigamLazy', () => {
     test('Basic — scroll to reveal variant renders wrapper', async ({ page }) => {

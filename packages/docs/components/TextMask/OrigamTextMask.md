@@ -17,8 +17,8 @@ flourishes on display typography.
         :background="{ from: 'primary', to: 'success', direction: 90 }"
         animated
         animation-duration="3s"
-        font-size="6rem"
-        font-weight="900"
+        font-size="5xl"
+        font-weight="black"
     />
 </template>
 ```
@@ -100,20 +100,29 @@ painted text without flashes or transforms.
 ## Props (interface)
 
 ```ts
-interface ITextMaskProps extends ICommonsComponentProps, ITagProps {
+interface ITextMaskProps extends ICommonsComponentProps, ITagProps, ITypographyProps {
     text?: string
     background: string | IGradient
     animated?: boolean
     animationDuration?: string
     animationType?: 'pan' | 'rotate' | 'pulse' | 'zoom'
-    fontSize?: string | number
-    fontWeight?: string | number
-    fontFamily?: string
-    lineHeight?: string | number
-    letterSpacing?: string
     align?: 'left' | 'center' | 'right'
 }
 ```
+
+Typography props (from `ITypographyProps` — all optional, accept design token keys):
+
+| Prop | Type | Token group | Default (SCSS fallback) |
+|---|---|---|---|
+| `fontFamily` | `'sans' \| 'mono' \| 'serif'` | `--origam-font__family---*` | `inherit` |
+| `fontSize` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl' \| '3xl' \| '4xl' \| '5xl'` | `--origam-font__size---*` | `--origam-text-mask---font-size-default` (`5xl`) |
+| `fontWeight` | `'regular' \| 'medium' \| 'semibold' \| 'bold' \| 'extrabold' \| 'black'` | `--origam-font__weight---*` | `--origam-text-mask---font-weight-default` (`bold`) |
+| `lineHeight` | `'none' \| 'tight' \| 'snug' \| 'normal' \| 'relaxed' \| 'loose'` | `--origam-font__lineHeight---*` | `--origam-text-mask---line-height-default` (`tight`) |
+| `letterSpacing` | `'tight' \| 'normal' \| 'wide' \| 'wider' \| 'widest'` | `--origam-font__letterSpacing---*` | `normal` |
+
+When a typography prop is unset, the corresponding inline custom property is not emitted and the
+SCSS fallback token keeps control — the component is still fully themed without passing any typography
+prop explicitly.
 
 ## Anatomy
 

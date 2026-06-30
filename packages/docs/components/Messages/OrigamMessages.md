@@ -63,6 +63,16 @@ the messages appear without animation on first render.
 |-----------|--------------------|------------------------------------------|
 | `default` | `{ message: string }` | Custom render for each message string |
 
+## Props — Typography
+
+These props override the matching CSS variable via an inline custom property.
+Each prop targets the surface that reads the corresponding token.
+
+| Prop | Type | Values | CSS variable overridden | Surface |
+|---|---|---|---|---|
+| `fontSize` | `TFontSize` | `xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl` | `--origam-messages---font-size` | container root |
+| `lineHeight` | `TLineHeight` | `none · tight · snug · normal · relaxed · loose` | `--origam-messages__message---line-height` | each `__message` child |
+
 ## Tokens
 
 | Variable                                        | Default       | Used for                    |

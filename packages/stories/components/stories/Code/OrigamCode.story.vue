@@ -17,7 +17,10 @@
 					borderStyle: undefined,
 					width: undefined,
 					height: undefined,
-					maxHeight: undefined
+					maxHeight: undefined,
+					fontFamily: undefined,
+					fontSize: undefined,
+					lineHeight: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -35,6 +38,9 @@
 						:width="state.width"
 						:height="state.height"
 						:max-height="state.maxHeight"
+						:font-family="state.fontFamily"
+						:font-size="state.fontSize"
+						:line-height="state.lineHeight"
 						:code="shortSnippet"
 						line-numbers
 						filename="design.ts"
@@ -56,6 +62,11 @@
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
 					<HstText   v-model="state.borderColor" title="Border Color"/>
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontFamily" title="Font Family" :options="FONT_FAMILY_OPTIONS"/>
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Dimension">
 					<HstText v-model="state.width"     title="Width"/>
@@ -205,7 +216,10 @@
 					format: false,
 					compact: false,
 					prompt: undefined,
-					filename: 'App.ts'
+					filename: 'App.ts',
+					fontFamily: undefined,
+					fontSize: undefined,
+					lineHeight: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -224,6 +238,11 @@
 					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
 					<HstSelect v-model="state.border"    title="Border"    :options="BORDER_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontFamily" title="Font Family" :options="FONT_FAMILY_OPTIONS"/>
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.lineNumbers" title="Line Numbers"/>
@@ -258,6 +277,9 @@
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_FAMILY_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		LINE_HEIGHT_OPTIONS,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'

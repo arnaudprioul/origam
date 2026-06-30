@@ -1,16 +1,28 @@
 import { test } from '@playwright/test'
 
-const STORY_PATH = '/story/components-stories-timeline-origamtimeline-story-vue'
+/**
+ * Pattern canonique — navigation directe par variantId (cf. btn.spec.ts).
+ * JAMAIS networkidle (Histoire garde un WS HMR ouvert → timeout garanti).
+ *
+ * Variants OrigamTimeline (0-based) :
+ *   0  → Design
+ *   1  → Functional
+ *   2  → Size / Density
+ *   3  → Prop — orientation (horizontal, scroll-snap slider)
+ *   4  → Slots - Default
+ *   5  → Default (playground)
+ */
+
+const STORY_ID   = 'components-stories-timeline-origamtimeline-story-vue'
+const STORY_PATH = '/stories/story/' + STORY_ID
+
+const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
 test.setTimeout(180_000)
 
 test('DEBUG timeline — size cascade + horizontal orientation', async ({ page }) => {
-    await page.goto(STORY_PATH)
-    await page.waitForLoadState('networkidle')
-
     // ── Size / Density variant ────────────────────────────────────────
-    await page.getByText('Size / Density', { exact: true }).last().click({ timeout: 5000 })
-    await page.waitForTimeout(800)
+    await page.goto(variantUrl(2))
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 
@@ -41,15 +53,14 @@ test('DEBUG timeline — size cascade + horizontal orientation', async ({ page }
                 titleComputed: title ? getComputedStyle(title).fontSize : null,
             }
         })
-         
+
         console.log(`\n=== size="${size}" ===`)
-         
+
         console.log(JSON.stringify(report, null, 2))
     }
 
     // ── Horizontal variant ──────────────────────────────────────────
-    await page.getByText('Prop — orientation (horizontal, scroll-snap slider)', { exact: true }).last().click({ timeout: 5000 })
-    await page.waitForTimeout(1000)
+    await page.goto(variantUrl(3))
 
     const h = await sandbox.locator('[data-cy="timeline-horizontal"]').first().evaluate((el) => {
         const wrapper = el.querySelector('.origam-timeline__track-wrapper') as HTMLElement | null
@@ -73,8 +84,8 @@ test('DEBUG timeline — size cascade + horizontal orientation', async ({ page }
             lastConnectorDisplay: lastConnector ? getComputedStyle(lastConnector).display : null,
         }
     })
-     
+
     console.log(`\n=== orientation="horizontal" ===`)
-     
+
     console.log(JSON.stringify(h, null, 2))
 })

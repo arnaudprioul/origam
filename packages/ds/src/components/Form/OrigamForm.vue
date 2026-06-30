@@ -17,6 +17,7 @@
 		<div
 				v-if="hasMessages"
 				class="origam-form__details"
+				:style="typographyStyles"
 		>
 			<slot
 					name="messages"
@@ -65,6 +66,7 @@
 	useMessage,
 	useProps,
 	useStyle,
+	useTypography,
 	useValidation
 } from '../../composables'
 
@@ -132,6 +134,7 @@
 	const messagesId = `origam-form-messages-${ getUid() }`
 
 	const { hasMessages, messages } = useMessage(props, errorMessages)
+	const { typographyStyles } = useTypography(props, 'form__details')
 
 	/*********************************************************
 	 * Event

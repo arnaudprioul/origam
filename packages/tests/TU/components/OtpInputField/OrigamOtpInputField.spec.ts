@@ -234,3 +234,40 @@ describe('OrigamOtpInputField — expose: reset()', () => {
         expect(wrapper.find('input[type="hidden"]').element.value).toBe('')
     })
 })
+
+// ---------------------------------------------------------------------------
+// Typography surface — useTypography(props, 'otp-input-field__cell')
+// ---------------------------------------------------------------------------
+// The component wires useTypography with varPrefix 'otp-input-field__cell'
+// and binds typographyStyles on <input class="origam-otp-input-field__field">.
+// Note: the DOM class (__field) and the CSS-var prefix (__cell) differ —
+// this is a pre-existing naming inconsistency in the SCSS, not a bug here.
+//
+// Only fontSize has a real visual effect: the SCSS __field block reads
+// --origam-otp-input-field__cell---font-size. The other typography vars
+// (fontWeight, lineHeight, letterSpacing, fontFamily) are emitted but inert
+// (no matching SCSS rule for those vars) — they are not exercised here.
+
+function cellStyle (props: Record<string, unknown> = {}): string {
+    const wrapper = mountOtpField(props)
+    return wrapper.find('input[class="origam-otp-input-field__field"]').attributes('style') || ''
+}
+
+describe('OrigamOtpInputField — typography (cell input)', () => {
+    it('renders at least one cell input', () => {
+        const wrapper = mountOtpField()
+        expect(wrapper.find('input[class="origam-otp-input-field__field"]').exists()).toBe(true)
+    })
+
+    it('emits no typography override when no typo prop is set', () => {
+        expect(cellStyle()).not.toContain('--origam-otp-input-field__cell---')
+    })
+
+    it('fontSize="xl" sets --origam-otp-input-field__cell---font-size on the cell input', () => {
+        expect(cellStyle({ fontSize: 'xl' })).toContain('--origam-otp-input-field__cell---font-size: var(--origam-font__size---xl)')
+    })
+
+    it('fontSize="sm" sets --origam-otp-input-field__cell---font-size on the cell input', () => {
+        expect(cellStyle({ fontSize: 'sm' })).toContain('--origam-otp-input-field__cell---font-size: var(--origam-font__size---sm)')
+    })
+})

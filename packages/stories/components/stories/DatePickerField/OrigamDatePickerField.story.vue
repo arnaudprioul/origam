@@ -363,6 +363,56 @@
 			</origam-date-picker-field>
 		</Variant>
 
+		<Variant title="Prop — range">
+			<origam-date-picker-field v-model="rangeDate" label="Date range" range style="max-width: 320px"/>
+		</Variant>
+
+		<Variant title="Prop — multiple">
+			<origam-date-picker-field v-model="multipleDates" label="Multiple dates" multiple style="max-width: 320px"/>
+		</Variant>
+
+		<Variant title="Prop — closeOnSelect">
+			<origam-date-picker-field v-model="closeOnSelectDate" label="Close on select" :close-on-select="true" style="max-width: 320px"/>
+		</Variant>
+
+		<Variant title="Prop — disabled & readonly">
+			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;">
+				<origam-date-picker-field v-model="stateDate" label="Disabled" disabled style="max-width: 320px"/>
+				<origam-date-picker-field v-model="stateDate" label="Readonly" readonly style="max-width: 320px"/>
+			</div>
+		</Variant>
+
+		<Variant title="Emit — update:modelValue">
+			<origam-date-picker-field
+					v-model="emitDate"
+					label="Date"
+					style="max-width: 320px"
+					@update:model-value="logEvent('update:modelValue', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Prop — rules">
+			<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
+				<origam-date-picker-field
+						v-model="rulesDate"
+						label="Required date"
+						:rules="requiredRule"
+						validate-on="blur"
+						style="max-width: 320px"
+						data-cy="datepickerfield-rules-single"
+				/>
+				<origam-date-picker-field
+						v-model="rulesRangeDate"
+						label="Required range"
+						range
+						:rules="requiredRangeRule"
+						validate-on="blur"
+						style="max-width: 320px"
+						data-cy="datepickerfield-rules-range"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IDatePickerFieldProps>>({
@@ -454,10 +504,19 @@
 	const slotDate = ref(null)
 	const slotDates = ref([])
 	const playgroundDate = ref(null)
-	const rulesDate = ref(null)
+	const rangeDate         = ref(null)
+	const multipleDates     = ref([])
+	const closeOnSelectDate = ref(null)
+	const rulesDate         = ref(null)
+	const rulesRangeDate    = ref(null)
 
 	const requiredRule = [(v: unknown) => {
 		if (Array.isArray(v)) return v.length > 0 || 'Date required'
+		return !!v || 'Date required'
+	}]
+
+	const requiredRangeRule = [(v: unknown) => {
+		if (Array.isArray(v)) return v.length >= 2 || 'Select start and end date'
 		return !!v || 'Date required'
 	}]
 </script>

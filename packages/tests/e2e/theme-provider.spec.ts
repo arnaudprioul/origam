@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/story/components-stories-themeprovider-origamthemeprovider-story-vue'
+const STORY_PATH = '/stories/story/components-stories-themeprovider-origamthemeprovider-story-vue'
 
 test.describe('OrigamThemeProvider', () => {
     test('Light theme variant — wrapper has data-theme="light"', async ({ page }) => {

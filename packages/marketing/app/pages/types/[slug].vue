@@ -3,7 +3,7 @@ import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useT } from '~/composables/useT'
 import { useCopy } from '~/composables/useCopy'
-import { TYPES_CATALOG } from '~/consts/types-catalog.const'
+import { useReferenceDoc } from '~/composables/useApiReference'
 import type { ITypeDoc } from '~/interfaces/types-catalog.interface'
 
 const { t } = useT()
@@ -12,22 +12,9 @@ const { copy: copyValue } = useCopy()
 
 const slug = computed(() => route.params.slug as string)
 
-const catalogEntry = computed(() =>
-    TYPES_CATALOG.find(e => e.slug === slug.value)
-)
+const { data: displayDoc } = await useReferenceDoc<ITypeDoc>('type', slug)
 
-const allDocs = import.meta.glob('~/consts/types/*.const.ts', { eager: true }) as Record<string, Record<string, unknown> | undefined>
-
-const typeDoc = computed<ITypeDoc | null>(() => {
-    const key = Object.keys(allDocs).find(k => k.includes(`/${slug.value}.const`))
-    if (!key) return null
-    const mod = allDocs[key]
-    if (!mod) return null
-    const exportKey = Object.keys(mod).find(k => k.endsWith('_TYPE_DOC') || k.endsWith('_DOC'))
-    return exportKey ? (mod[exportKey] as ITypeDoc) : null
-})
-
-const displayDoc = computed(() => typeDoc.value)
+const catalogEntry = computed(() => displayDoc.value)
 
 const hasValues   = computed(() => (displayDoc.value?.values?.length ?? 0) > 0)
 const hasExamples = computed(() => (displayDoc.value?.examples?.length ?? 0) > 0)

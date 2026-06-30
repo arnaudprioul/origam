@@ -5,7 +5,7 @@
 			:class="infiniteScrollClasses"
 			:style="infiniteScrollStyles"
 	>
-		<div class="origam-infinite-scroll__side" role="status" aria-live="polite">
+		<div class="origam-infinite-scroll__side" role="status" aria-live="polite" :style="typographyStyles">
 			<template v-if="hasStartIntersect">
 				<slot
 						name="error"
@@ -69,7 +69,7 @@
 			/>
 		</template>
 
-		<div class="origam-infinite-scroll__side" role="status" aria-live="polite">
+		<div class="origam-infinite-scroll__side" role="status" aria-live="polite" :style="typographyStyles">
 			<template v-if="hasStartIntersect">
 				<slot
 						name="error"
@@ -125,7 +125,8 @@
 	useDimension,
 	useLocale,
 	useProps,
-	useStyle
+	useStyle,
+	useTypography
 } from '../../composables'
 
 	import {
@@ -169,6 +170,12 @@
 
 	const {dimensionStyles} = useDimension(props)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+
+	// BEM-child surface: .origam-infinite-scroll__side reads
+	// --origam-infinite-scroll__loader---font-size. Bound directly on both
+	// __side divs; only fontSize has a real visual effect (no font-weight /
+	// font-family / line-height / letter-spacing rule in the SCSS).
+	const {typographyStyles} = useTypography(props, 'infinite-scroll__loader')
 
 	/*********************************************************
 	 * Color

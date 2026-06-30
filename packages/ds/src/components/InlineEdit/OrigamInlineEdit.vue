@@ -203,7 +203,7 @@
 
 	import { OrigamBtn, OrigamTextField, OrigamTextareaField } from '../../components'
 
-	import { useInlineEdit } from '../../composables'
+	import { useInlineEdit, useTypography } from '../../composables'
 
 	import { INLINE_EDIT_ACTION, MDI_ICONS } from '../../enums'
 
@@ -402,7 +402,14 @@
 		props.class
 	])
 
-	const rootStyles = computed<StyleValue>(() => [props.style] as StyleValue)
+	// __error reads --origam-inline-edit__error---font-{size,weight}.
+	// __action-btn reads --origam-inline-edit__action-btn---font-size.
+	// Both var sets are declared on the root so they cascade to their
+	// respective descendants via normal CSS custom-property inheritance.
+	const {typographyStyles: errorTypoStyles} = useTypography(props, 'inline-edit__error')
+	const {typographyStyles: actionBtnTypoStyles} = useTypography(props, 'inline-edit__action-btn')
+
+	const rootStyles = computed<StyleValue>(() => [props.style, errorTypoStyles.value, actionBtnTypoStyles.value] as StyleValue)
 
 	/*********************************************************
 	 * Expose

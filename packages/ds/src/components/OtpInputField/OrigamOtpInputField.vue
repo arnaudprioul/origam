@@ -66,6 +66,7 @@
 								:value="model[i]"
 								autocomplete="one-time-code"
 								class="origam-otp-input-field__field"
+								:style="typographyStyles"
 								@blur="handleBlur"
 								@focus="handleFocus($event, i)"
 								@input="handleInput"
@@ -148,7 +149,7 @@
 	import { OrigamField, OrigamOverlay, OrigamProgress } from "../../components"
 	import { OrigamMessages } from "../../components/Messages"
 
-	import { useDimension, useFocus, useLocale, useProps, useValidation, useVModel, useStyle } from "../../composables"
+	import { useDimension, useFocus, useLocale, useProps, useTypography, useValidation, useVModel, useStyle } from "../../composables"
 
 	import { OTP_INPUT_FIELD_TYPE, PROGRESS_TYPE } from "../../enums"
 
@@ -432,6 +433,8 @@
 	 * @description
 	 * otpInputFieldStyles and otpInputFieldClasses compose the BEM root.
 	 ********************************************************/
+	const { typographyStyles } = useTypography(props, 'otp-input-field__cell')
+
 	const otpInputFieldStyles = computed(() => {
 		return [
 			props.style

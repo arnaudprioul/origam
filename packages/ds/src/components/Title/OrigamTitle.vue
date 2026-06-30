@@ -27,7 +27,8 @@
 	useMargin,
 	usePadding,
 	useProps,
-	useStyle
+	useStyle,
+	useTypography
 } from '../../composables'
 
 	import { vContrast } from '../../directives'
@@ -61,6 +62,7 @@
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
+	const {typographyStyles} = useTypography(props, 'title')
 
 	const hasContent = computed(() => {
 		return slots.default || props.text
@@ -78,6 +80,7 @@
 			borderStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
+			typographyStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -123,6 +126,7 @@
 	.origam-title {
 		color:          var(--origam-title---color);
 		font-family:    var(--origam-title---font-family);
+		font-size:      var(--origam-title---font-size);
 		font-weight:    var(--origam-title---font-weight);
 		letter-spacing: var(--origam-title---letter-spacing);
 		line-height:    var(--origam-title---line-height);
@@ -130,15 +134,15 @@
 		margin-block-end:   var(--origam-title---margin-block-end);
 
 		&--density-compact {
-			font-size: var(--origam-title---font-size-xs);
+			font-size: var(--origam-title---font-size, var(--origam-title---font-size-xs));
 		}
 
 		&--density-default {
-			font-size: var(--origam-title---font-size-md);
+			font-size: var(--origam-title---font-size, var(--origam-title---font-size-md));
 		}
 
 		&--density-comfortable {
-			font-size: var(--origam-title---font-size-xl);
+			font-size: var(--origam-title---font-size, var(--origam-title---font-size-xl));
 		}
 	}
 </style>

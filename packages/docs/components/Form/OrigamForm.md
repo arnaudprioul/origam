@@ -91,7 +91,20 @@ Stop validation at the first failed field.
 | `reset` | `Event` | Form reset |
 | `update:modelValue` | `boolean \| null` | Overall validity changed |
 
+## Typography props (`__details` surface)
+
+Applied to the `__details` area (form-level messages row). All four props have a real visual effect because the `__details` SCSS block reads each matching CSS variable.
+
+| Prop | Type | CSS variable |
+|---|---|---|
+| `fontSize` | `TFontSize` | `--origam-form__details---font-size` |
+| `fontWeight` | `TFontWeight` | `--origam-form__details---font-weight` |
+| `letterSpacing` | `TLetterSpacing` | `--origam-form__details---letter-spacing` |
+| `lineHeight` | `TLineHeight` | `--origam-form__details---line-height` |
+
+The `__details` div is only rendered when `hasMessages` is true (form has `errorMessages`, `messages`, or a `#message` slot).
+
 ## Design tokens
 
-`<OrigamForm>` is a structural container and has no component-level tokens.
+`<OrigamForm>` is a structural container. The `__details` typography tokens above are the only component-level tokens.
 Individual field tokens apply to child components.

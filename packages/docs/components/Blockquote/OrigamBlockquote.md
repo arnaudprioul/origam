@@ -53,6 +53,10 @@ contrast with each other:
 | `color`   | `TColor` (`TIntent` \| custom)                                         | `text-primary` | Colour of the citation **text** — body **and source**. An intent resolves to its readable-on-light shade (`fgSubtle`); a custom value is applied verbatim. The source keeps its subdued default when `color` is empty. |
 | `bgColor` | `TColor` (`TIntent` \| custom)                                         | `primary`      | **Accent** colour — drives the accent bar / pull rules ("borders"), the background quote glyph and the author label. Does **not** paint a surface fill (the blockquote stays transparent). See [Colour model](#colour-model). |
 | `rounded` / `elevation` / `border` (+ `borderColor`, `borderStyle`) / `padding` / `margin` | Commons surfaces | `undefined` | Standard cross-cutting props, consumed via the matching composables (`useRounded`, `useElevation`, `useBorder`, `usePadding`, `useMargin`). |
+| `fontFamily`  | `'sans' \| 'mono' \| 'serif'`                                       | `undefined`    | Overrides `--origam-blockquote---font-family` with the matching primitive token. Leave unset to let the theme or variant drive the font family. |
+| `fontSize`    | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl' \| '3xl' \| '4xl' \| '5xl'` | `undefined` | Overrides `--origam-blockquote---font-size` with the matching primitive token.    |
+| `fontWeight`  | `'regular' \| 'medium' \| 'semibold' \| 'bold' \| 'extrabold' \| 'black'` | `undefined` | Overrides `--origam-blockquote---font-weight` with the matching primitive token. |
+| `lineHeight`  | `'none' \| 'tight' \| 'snug' \| 'normal' \| 'relaxed' \| 'loose'` | `undefined`    | Overrides `--origam-blockquote---line-height` with the matching primitive token.      |
 | `tag`     | `string`                                                               | `'blockquote'` | Tag rendered for the root. Use `'div'` if you need to nest a blockquote inside one.    |
 
 ## Slots

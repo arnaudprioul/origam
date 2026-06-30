@@ -143,6 +143,7 @@
 		useSize,
 		useStateEffect,
 		useStyle,
+		useTypography,
 		useVModel
 } from '../../composables'
 
@@ -210,6 +211,7 @@
 		marginClasses, marginStyles,
 	} = useStateEffect(props, isHover, undefined, hoverState, undefined)
 	const {sizeClasses, sizeStyles} = useSize(props)
+	const {typographyStyles} = useTypography(props, 'chip')
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
 	/*********************************************************
@@ -321,6 +323,7 @@
 			paddingStyles.value,
 			marginStyles.value,
 			colorStyles.value,
+			typographyStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -453,35 +456,35 @@
 		}
 
 		&--size-x-small {
-			font-size: var(--origam-chip---font-size-xs, 0.625rem);
+			font-size: var(--origam-chip---font-size, var(--origam-chip---font-size-xs, 0.625rem));
 			line-height: 1;
 			height: var(--origam-chip---height-xs, 20px);
 			padding: 0 var(--origam-chip---padding-xs, 8px);
 		}
 
 		&--size-small {
-			font-size: var(--origam-chip---font-size-sm, 0.75rem);
+			font-size: var(--origam-chip---font-size, var(--origam-chip---font-size-sm, 0.75rem));
 			line-height: 1;
 			height: var(--origam-chip---height-sm, 24px);
 			padding: 0 var(--origam-chip---padding-sm, 10px);
 		}
 
 		&--size-default {
-			font-size: var(--origam-chip---font-size-md, 0.875rem);
+			font-size: var(--origam-chip---font-size, var(--origam-chip---font-size-md, 0.875rem));
 			line-height: 1;
 			height: var(--origam-chip---height-md, 32px);
 			padding: 0 var(--origam-chip---padding-md, 12px);
 		}
 
 		&--size-large {
-			font-size: var(--origam-chip---font-size-lg, 1rem);
+			font-size: var(--origam-chip---font-size, var(--origam-chip---font-size-lg, 1rem));
 			line-height: 1;
 			height: var(--origam-chip---height-lg, 38px);
 			padding: 0 var(--origam-chip---padding-lg, 14px);
 		}
 
 		&--size-x-large {
-			font-size: var(--origam-chip---font-size-xl, 1.125rem);
+			font-size: var(--origam-chip---font-size, var(--origam-chip---font-size-xl, 1.125rem));
 			line-height: 1;
 			height: var(--origam-chip---height-xl, 44px);
 			padding: 0 var(--origam-chip---padding-xl, 17px);

@@ -7,6 +7,11 @@ node_modules
 dist
 *.log
 
+# Local env (secrets) — only env.example is committed
+.env
+.env.*
+!env.example
+
 # Built embeds (Histoire stories + VitePress docs) served at /stories and /docs
 public/stories
 public/docs

@@ -24,7 +24,7 @@ import { expect, test, type FrameLocator, type Page } from '@playwright/test'
  * → total assertion count documented at bottom of each describe block.
  */
 
-const STORY_BASE = '/story/components-stories-utilities-origamutilities-story-vue'
+const STORY_BASE = '/stories/story/components-stories-utilities-origamutilities-story-vue'
 
 // Variant titles exactly as declared in OrigamUtilities.story.vue
 const VARIANTS = {

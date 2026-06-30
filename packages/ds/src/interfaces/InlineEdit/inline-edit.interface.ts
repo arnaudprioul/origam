@@ -1,6 +1,7 @@
 import type {
     ICommonsComponentProps,
-    ITagProps
+    ITagProps,
+    ITypographyProps
 } from '../../interfaces'
 
 import type { TInlineEditInputType } from '../../types'
@@ -40,7 +41,7 @@ export type TInlineEditRule = (value: string) => true | string | Promise<true | 
  * is true) — wrapping a heavier component (TextField, …) is not
  * needed and would defeat the keyboard-driven UX.
  */
-export interface IInlineEditProps extends ICommonsComponentProps, ITagProps {
+export interface IInlineEditProps extends ICommonsComponentProps, ITagProps, ITypographyProps {
     /**
      * Current value (v-model target). Accepts both `string` and
      * `number` for ergonomics — the internal draft is normalised to a

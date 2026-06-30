@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-polar-bar"
 			:class="rootClasses"
-			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
+			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-polar-bar"
@@ -167,6 +167,7 @@
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
 	import {
+		useChartHeaderTypography,
 		useBackgroundColor,
 		useDimension,
 		useElevation,
@@ -241,6 +242,7 @@
 	const { marginClasses, marginStyles } = useMargin(props)
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
+	const { headerTypographyStyles } = useChartHeaderTypography(props)
 
 	/*********************************************************
 	 * Static SVG box — square coordinate space; CSS scales it.

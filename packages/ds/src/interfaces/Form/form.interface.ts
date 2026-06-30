@@ -1,5 +1,5 @@
 import type { ComponentInternalInstance, ComputedRef, Raw, Ref } from 'vue'
-import type { ICommonsComponentProps, ICommonsComponentSlots } from '../../interfaces'
+import type { ICommonsComponentProps, ICommonsComponentSlots, ITypographyProps } from '../../interfaces'
 import type { TValidateOn } from '../../types'
 
 export interface IFormProvide {
@@ -20,7 +20,7 @@ export interface IFormProvide {
     validateOn: Ref<TValidateOn | undefined>
 }
 
-export interface IFormProps extends ICommonsComponentProps {
+export interface IFormProps extends ICommonsComponentProps, ITypographyProps {
     disabled?: boolean
     fastFail?: boolean
     readonly?: boolean

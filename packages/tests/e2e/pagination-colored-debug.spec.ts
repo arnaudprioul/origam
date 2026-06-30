@@ -1,35 +1,35 @@
 import { test, expect } from '@playwright/test'
 
-const STORY_PATH = '/story/components-stories-pagination-origampagination-story-vue'
+/**
+ * Pattern canonique — navigation directe par variantId (cf. btn.spec.ts).
+ * JAMAIS networkidle (Histoire garde un WS HMR ouvert → timeout garanti).
+ *
+ * Variant utilisé : Color — default vs primary (index 15) — expose les
+ * deux paginations (default + colored) sur la même page, idéal pour
+ * auditer le contraste fg/bg en mode coloré.
+ */
+
+const STORY_ID   = 'components-stories-pagination-origampagination-story-vue'
+const STORY_PATH = '/stories/story/' + STORY_ID
+
+const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
 test.setTimeout(180_000)
 
 test('DEBUG pagination — colored mode: white text on primary bg, NOT violet on violet', async ({ page }) => {
-    await page.goto(STORY_PATH)
-    await page.waitForLoadState('networkidle')
-    await page.waitForTimeout(1500)
-
-    // Click first variant we find — we'll scan all paginations in the iframe.
-    for (const title of ['Color', 'Default', 'Default', 'With color', 'Colored']) {
-        const loc = page.getByText(title, { exact: true }).last()
-        if (await loc.count().catch(() => 0)) {
-            await loc.click({ timeout: 5_000 }).catch(() => {})
-            break
-        }
-    }
-    await page.waitForTimeout(1500)
+    await page.goto(variantUrl(15))
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
     const allRoots = await sandbox.locator('.origam-pagination').all()
     const coloredRoots = await sandbox.locator('.origam-pagination--colored').all()
-     
+
     console.log(`found ${allRoots.length} pagination roots total, ${coloredRoots.length} colored`)
     // Look at the FIRST pagination root (whether colored or not) — that's
     // the Playground which init-state seeds with color: 'primary'.
     const playground = allRoots[0]
     if (playground) {
         const isColored = await playground.evaluate((el) => el.classList.contains('origam-pagination--colored'))
-         
+
         console.log(`playground (root #0) has --colored class: ${isColored}`)
         await playground.screenshot({ path: '/tmp/pagination-playground.png' })
     }
@@ -38,7 +38,6 @@ test('DEBUG pagination — colored mode: white text on primary bg, NOT violet on
     }
 
     if (coloredRoots.length === 0) {
-         
         console.log('No colored variant exposed — skipping')
         return
     }
@@ -64,7 +63,6 @@ test('DEBUG pagination — colored mode: white text on primary bg, NOT violet on
         samples.push(sample)
     }
 
-     
     console.log(JSON.stringify(samples, null, 2))
 
     await coloredRoots[0].screenshot({ path: '/tmp/pagination-colored.png' })
@@ -80,7 +78,7 @@ test('DEBUG pagination — colored mode: white text on primary bg, NOT violet on
         if (m) {
             const [r, g, b] = m[1].split(',').map((s) => parseInt(s.trim(), 10))
             const avg = (r + g + b) / 3
-             
+
             console.log(`inactive fg avg = ${avg}`)
             expect(avg).toBeGreaterThan(200)
         }

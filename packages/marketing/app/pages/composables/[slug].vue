@@ -3,8 +3,8 @@ import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useT } from '~/composables/useT'
 import { useCopy } from '~/composables/useCopy'
-import { COMPOSABLES_CATALOG } from '~/consts/composables-catalog.const'
-import type { IComposableDoc } from '~/interfaces/composables-catalog.interface'
+import { useReferenceDoc, useReferenceCatalog } from '~/composables/useApiReference'
+import type { IComposableDoc, IComposableEntry } from '~/interfaces/composables-catalog.interface'
 
 const { t } = useT()
 const route = useRoute()
@@ -13,22 +13,12 @@ const { copy: copyParamText } = useCopy()
 
 const slug = computed(() => route.params.slug as string)
 
-const catalogEntry = computed(() =>
-    COMPOSABLES_CATALOG.find(e => e.slug === slug.value)
-)
+const { data: displayDoc } = await useReferenceDoc<IComposableDoc>('composable', slug)
 
-const allDocs = import.meta.glob('~/consts/composables/*.const.ts', { eager: true }) as Record<string, Record<string, unknown> | undefined>
+const catalogEntry = computed(() => displayDoc.value)
 
-const composableDoc = computed<IComposableDoc | null>(() => {
-    const key = Object.keys(allDocs).find(k => k.includes(`/${slug.value}.const`))
-    if (!key) return null
-    const mod = allDocs[key]
-    if (!mod) return null
-    const exportKey = Object.keys(mod).find(k => k.endsWith('_DOC'))
-    return exportKey ? (mod[exportKey] as IComposableDoc) : null
-})
-
-const displayDoc = computed(() => composableDoc.value)
+const { data: composablesCatalogData } = await useReferenceCatalog<IComposableEntry>('composable')
+const COMPOSABLES_CATALOG = computed<IComposableEntry[]>(() => composablesCatalogData.value ?? [])
 
 const hasParams   = computed(() => (displayDoc.value?.params?.length ?? 0) > 0)
 const hasReturns  = computed(() => (displayDoc.value?.returns?.length ?? 0) > 0)

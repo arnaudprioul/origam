@@ -97,6 +97,7 @@
 							<div
 									ref="richHostRef"
 									class="origam-textarea-field__rich"
+									:style="typographyStyles"
 									role="textbox"
 									aria-multiline="true"
 									:aria-disabled="isDisabled || undefined"
@@ -277,6 +278,7 @@
 	useProps,
 	useStyle,
 	useTextareaRich,
+	useTypography,
 	useVModel
 } from '../../composables'
 
@@ -763,6 +765,12 @@
 			'--origam-textarea-field__control---height': convertToUnit(controlHeight.value)
 		}
 	})
+
+	// BEM-child surface: var is read by .origam-textarea-field__rich
+	// (line-height only — rich mode). Bound directly on that element, not the root.
+	// font-size / font-weight / font-family / letter-spacing have no SCSS rule
+	// on this component → they are NOT exposed as effective props.
+	const { typographyStyles } = useTypography(props, 'textarea-field__rich-content')
 
 	/*********************************************************
 	 * Expose

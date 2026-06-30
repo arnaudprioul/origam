@@ -122,6 +122,24 @@ can target specific rows without relying on text content order.
 | `value`            | `{ key, value, item, index }`         | Custom value (`<dd>`) renderer for every row |
 | `item-{n}.value`   | `{ key, value, item, index }`         | Override the value cell for row `n`      |
 
+## Typography props
+
+Control the font appearance of both the title (`__title`) and text (`__text`)
+sub-elements. Custom properties cascade from the root `<dl>` to the child
+elements where the matching SCSS rules consume them.
+
+| Prop            | Type          | `__title` effect | `__text` effect | CSS variable emitted                             |
+|-----------------|---------------|-----------------|-----------------|--------------------------------------------------|
+| `fontSize`      | `TFontSize`   | font-size       | font-size       | `--origam-font__size---{value}`                  |
+| `fontWeight`    | `TFontWeight` | font-weight     | —               | `--origam-font__weight---{value}`                |
+| `lineHeight`    | `TLineHeight` | line-height     | line-height     | `--origam-font__lineHeight---{value}`            |
+| `letterSpacing` | `TLetterSpacing` | letter-spacing | letter-spacing | `--origam-font__letterSpacing---{value}`         |
+
+> `fontWeight` has a real visual effect only on `__title` (the SCSS reads
+> `--origam-data-list__title---font-weight`). It still emits the `__text`
+> var but the `__text` SCSS block has no `font-weight` rule, so it is
+> effectively a no-op on the text rows.
+
 ## Emits
 
 `OrigamDataList` is display-only — it does not emit events.

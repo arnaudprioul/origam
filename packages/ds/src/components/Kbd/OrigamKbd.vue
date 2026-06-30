@@ -36,7 +36,8 @@
 		useProps,
 		useRounded,
 		useSize,
-		useStyle
+		useStyle,
+		useTypography
 } from '../../composables'
 
 	import type { IKbdProps } from '../../interfaces'
@@ -66,6 +67,7 @@
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { borderClasses, borderStyles } = useBorder(props)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const { typographyStyles } = useTypography(props, 'kbd')
 
 	/*********************************************************
 	 * Color
@@ -100,6 +102,7 @@
 			roundedStyles.value,
 			borderStyles.value,
 			colorStyles.value,
+			typographyStyles.value,
 			props.style,
 		] as StyleValue
 	})
@@ -213,11 +216,11 @@
 			box-shadow: none;
 		}
 
-		&--size-x-small { font-size: var(--origam-kbd---font-size-xs, 0.625rem); }
-		&--size-small   { font-size: var(--origam-kbd---font-size-sm, 0.75rem); }
-		&--size-default { font-size: var(--origam-kbd---font-size-md, 0.875rem); }
-		&--size-large   { font-size: var(--origam-kbd---font-size-lg, 1rem); }
-		&--size-x-large { font-size: var(--origam-kbd---font-size-xl, 1.125rem); }
+		&--size-x-small { font-size: var(--origam-kbd---font-size, var(--origam-kbd---font-size-xs, 0.625rem)); }
+		&--size-small   { font-size: var(--origam-kbd---font-size, var(--origam-kbd---font-size-sm, 0.75rem)); }
+		&--size-default { font-size: var(--origam-kbd---font-size, var(--origam-kbd---font-size-md, 0.875rem)); }
+		&--size-large   { font-size: var(--origam-kbd---font-size, var(--origam-kbd---font-size-lg, 1rem)); }
+		&--size-x-large { font-size: var(--origam-kbd---font-size, var(--origam-kbd---font-size-xl, 1.125rem)); }
 
 		&--rounded         { --origam-kbd---border-radius: var(--origam-radius---sm, 4px); }
 		&--rounded-x-small { --origam-kbd---border-radius: var(--origam-radius---xs, 2px); }

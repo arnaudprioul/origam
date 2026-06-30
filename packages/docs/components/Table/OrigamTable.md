@@ -188,6 +188,30 @@ The full list lives in
   on `tr:nth-child(even)` via your own SCSS until a dedicated zebra
   modifier ships.
 
+## Typography props
+
+`<OrigamTable>` surfaces `ITypographyProps` across three internal BEM surfaces.
+A single set of props drives all three — the same `fontSize` value applies to
+both the table body and the visible caption; `fontWeight` targets header cells.
+
+| Prop | CSS variable(s) set | Surface | Effect |
+|---|---|---|---|
+| `fontSize` | `--origam-table---font-size` | Root (body rows) | Overrides the default `0.875rem` table body font size |
+| `fontSize` | `--origam-table__caption---font-size` | `<caption>` element | Overrides the default `0.875rem` caption font size (only visible when `captionVisible` is `true`) |
+| `fontWeight` | `--origam-table__header-cell---font-weight` | `<th>` cells (via cascade from root) | Overrides the default `600` header cell font weight |
+
+`fontFamily`, `lineHeight`, and `letterSpacing` are not exposed — the
+component SCSS does not read those variables on any surface.
+
+```vue
+<template>
+    <OrigamTable font-size="sm" font-weight="bold">
+        <thead><tr><th>Name</th></tr></thead>
+        <tbody><tr><td>Ada</td></tr></tbody>
+    </OrigamTable>
+</template>
+```
+
 ## Related
 
 - `OrigamDataTable` — schema-driven

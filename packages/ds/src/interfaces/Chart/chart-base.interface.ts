@@ -7,7 +7,8 @@ import type {
     IElevationProps,
     IMarginProps,
     IPaddingProps,
-    IRoundedProps
+    IRoundedProps,
+    ITypographyProps
 } from '../../interfaces'
 
 import type {
@@ -33,7 +34,8 @@ export interface IChartBaseProps
         IPaddingProps,
         IRoundedProps,
         IElevationProps,
-        IBgColorProps {
+        IBgColorProps,
+        Pick<ITypographyProps, 'fontSize' | 'fontWeight'> {
     /** Data series — one or more. Empty array renders the `#empty` slot. */
     series: Array<IChartSeries>
     /**

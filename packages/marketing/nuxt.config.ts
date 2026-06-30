@@ -81,6 +81,13 @@ export default defineNuxtConfig({
     ],
 
     runtimeConfig: {
+        // Admin backoffice auth (server-only — never exposed to the client).
+        // Generate adminPasswordHash: node -e "const {scryptSync,randomBytes}=require('crypto');
+        //   const s=randomBytes(16).toString('hex');
+        //   console.log(s+':'+scryptSync('YOUR_PASSWORD',s,64).toString('hex'))"
+        adminPasswordHash: '',  // NUXT_ADMIN_PASSWORD_HASH
+        sessionPassword: '',    // NUXT_SESSION_PASSWORD (min 32 chars)
+
         public: {
             githubRepo: process.env.NUXT_PUBLIC_GITHUB_REPO ?? MARKETING_DEFAULTS.githubRepo,
             npmPkg: process.env.NUXT_PUBLIC_NPM_PKG ?? MARKETING_DEFAULTS.npmPkg,
@@ -116,6 +123,18 @@ export default defineNuxtConfig({
 
     build: {
         transpile: ['origam']
+    },
+
+    nitro: {
+        esbuild: {
+            options: {
+                tsconfigRaw: {
+                    compilerOptions: {
+                        experimentalDecorators: true
+                    }
+                }
+            }
+        }
     },
 
     i18n: {

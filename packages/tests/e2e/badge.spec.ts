@@ -35,7 +35,7 @@ import { expect, test } from '@playwright/test'
  */
 
 const STORY_ID   = 'components-stories-badge-origambadge-story-vue'
-// baseURL = 'http://localhost:6006/stories' (config) — goto('/story/...') resolves
+// baseURL = 'http://localhost:6006/stories' (config) — goto('/stories/story/...') resolves
 // to 'http://localhost:6006/story/...' (absolute path replaces base path) → 404.
 // Prefix with '/stories' to land on 'http://localhost:6006/stories/story/...'.
 const STORY_PATH = '/stories/story/' + STORY_ID

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useT } from '~/composables/useT'
-import type { IUtilDoc, IUtilEntry } from '~/interfaces/utils-catalog.interface'
+import { useReferenceCatalog, useReferenceCategories } from '~/composables/useApiReference'
+import type { IUtilEntry } from '~/interfaces/utils-catalog.interface'
 
 const { t } = useT()
 
@@ -12,32 +13,12 @@ useSeoMeta({
     ogDescription: () => t('utils.meta.description', 'Utility helpers used across the origam design system.')
 })
 
-const allDocs = import.meta.glob('~/consts/utils/*.const.ts', { eager: true }) as Record<string, Record<string, unknown>>
+const { data: catalogData } = await useReferenceCatalog<IUtilEntry>('util')
 
-const UTILS_CATALOG = computed<IUtilEntry[]>(() =>
-    Object.values(allDocs)
-        .map((mod) => {
-            const key = Object.keys(mod).find(k => k.endsWith('_UTIL_DOC'))
-            return key ? (mod[key] as IUtilDoc) : null
-        })
-        .filter((d): d is IUtilDoc => !!d)
-        .map(d => ({
-            slug: d.slug,
-            name: d.name,
-            category: d.category,
-            icon: d.icon ?? 'mdi-function-variant',
-            descriptionKey: d.descriptionKey ?? '',
-            descriptionFallback: d.descriptionFallback ?? '',
-            related: Array.isArray(d.related)
-                ? d.related.map((r: unknown) => (typeof r === 'string' ? r : (r as { slug: string }).slug))
-                : []
-        }))
-        .sort((a, b) => a.name.localeCompare(b.name))
-)
+const UTILS_CATALOG = computed<IUtilEntry[]>(() => catalogData.value ?? [])
 
-const UTILS_CATEGORIES = computed(() =>
-    [...new Set(UTILS_CATALOG.value.map(e => e.category))].sort()
-)
+const { data: catsData } = await useReferenceCategories('util')
+const UTILS_CATEGORIES = computed<string[]>(() => catsData.value ?? [])
 
 const searchQuery = ref('')
 

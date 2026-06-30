@@ -6,7 +6,17 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IAlertProps>>({ text: 'Alert message.', status: undefined, color: undefined, bgColor: undefined })"
+				:init-state="() => useStoryInitState<Partial<IAlertProps>>({
+					text: 'Alert message.',
+					title: 'Alert title',
+					status: undefined,
+					color: undefined,
+					bgColor: undefined,
+					fontSize: undefined,
+					fontWeight: undefined,
+					letterSpacing: undefined,
+					lineHeight: undefined
+				})"
 		>
 			<template #default="{ state }">
 				<origam-alert
@@ -26,7 +36,12 @@
 						:append-icon="state.appendIcon || undefined"
 						:width="state.width"
 						:height="state.height"
+						:title="state.title"
 						:text="state.text"
+						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
+						:letter-spacing="state.letterSpacing"
+						:line-height="state.lineHeight"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -37,6 +52,12 @@
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Sizing">
 					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
@@ -215,6 +236,12 @@
 					<HstSelect   v-model="state.rounded"  title="Rounded"  :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
+				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.closable"   title="Closable"/>
 					<HstCheckbox v-model="state.modelValue" title="Visible (modelValue)"/>
@@ -246,9 +273,13 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		HOVER_OPTIONS,
 		resolveHoverState,
 		ICON_OPTIONS,
+		LETTER_SPACING_OPTIONS,
+		LINE_HEIGHT_OPTIONS,
 		ROUNDED_OPTIONS,
 		STATUS_OPTIONS,
 		STATUS_POSITION_OPTIONS,

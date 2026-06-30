@@ -18,7 +18,7 @@ const open = async (page: Page, slug: string, variant: string) => {
  */
 
 test('OrigamTextField — field renders at 36px default (P1·B size scale)', async ({ page }) => {
-    await open(page, 'components-stories-textfield-origamtextfield-story-vue', 'Variant')
+    await open(page, 'components-stories-textfield-origamtextfield-story-vue', 'Design')
     const sandbox = sandboxOf(page)
     const field = sandbox.locator('.origam-field').first()
     await expect(field).toBeVisible({ timeout: 8000 })

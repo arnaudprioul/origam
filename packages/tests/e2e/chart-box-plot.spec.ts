@@ -16,7 +16,7 @@ import { expect, test, type Page } from '@playwright/test'
  *  - Clicking a box fires into the emit log.
  */
 
-const BOX_PLOT_STORY = '/story/components-stories-chart-origamchartboxplot-story-vue'
+const BOX_PLOT_STORY = '/stories/story/components-stories-chart-origamchartboxplot-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

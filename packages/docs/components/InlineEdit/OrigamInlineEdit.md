@@ -42,6 +42,17 @@ buttons are placed inside the field via its `appendInner` slot.
 />
 ```
 
+## Props — Typography
+
+These props set CSS custom properties on the **root element** so they cascade
+to the BEM surfaces that read them. Only props with a real visual effect are
+exposed (`fontFamily`, `letterSpacing`, `lineHeight` have no rule in the SCSS).
+
+| Prop | Type | Values | Effect |
+|---|---|---|---|
+| `fontSize` | `TFontSize` | `xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl` | `--origam-inline-edit__error---font-size` (error message) **and** `--origam-inline-edit__action-btn---font-size` (action buttons) |
+| `fontWeight` | `TFontWeight` | `regular · medium · semibold · bold · extrabold · black` | `--origam-inline-edit__error---font-weight` (error message only — action-btn weight is hardcoded 600) |
+
 ## Props
 
 | Prop               | Type                                        | Default           | Notes                                                          |

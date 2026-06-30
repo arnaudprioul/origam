@@ -1,9 +1,9 @@
 import type { IBgColorProps,
-    IColorProps, ICommonsComponentProps, IDimensionProps, IDirectionProps, ITagProps } from '../../interfaces'
+    IColorProps, ICommonsComponentProps, IDimensionProps, IDirectionProps, ITagProps, ITypographyProps } from '../../interfaces'
 
 import type { TInfiniteScrollMode, TInfiniteScrollSide } from '../../types'
 
-export interface IInfiniteScrollProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IDimensionProps, ITagProps, IDirectionProps {
+export interface IInfiniteScrollProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IDimensionProps, ITagProps, IDirectionProps, ITypographyProps {
     side?: TInfiniteScrollSide
     mode?: TInfiniteScrollMode
     loadMoreText?: string

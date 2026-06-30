@@ -92,6 +92,20 @@ Renders inline (`display: inline-flex`) rather than stretching full width.
 | `content` | Grows to fill all remaining space between prepend/append. |
 | `append` | Trailing area (action buttons, avatars, …). |
 
+## Props — Typography (title)
+
+These props override the matching `--origam-toolbar__title---*` CSS variable via an inline
+custom property on `div.origam-toolbar__title`. The `.origam-title` inside that div reads
+the vars so all four props have a real visual effect.
+`fontFamily` is not exposed (no `font-family` rule in `__title .origam-title`).
+
+| Prop | Type | Values | CSS variable overridden |
+|---|---|---|---|
+| `fontSize` | `TFontSize` | `xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl` | `--origam-toolbar__title---font-size` |
+| `fontWeight` | `TFontWeight` | `regular · medium · semibold · bold · extrabold · black` | `--origam-toolbar__title---font-weight` |
+| `letterSpacing` | `TLetterSpacing` | `tight · normal · wide · wider · widest` | `--origam-toolbar__title---letter-spacing` |
+| `lineHeight` | `TLineHeight` | `none · tight · snug · normal · relaxed · loose` | `--origam-toolbar__title---line-height` |
+
 ## Design tokens
 
 | CSS variable | Description |

@@ -10,10 +10,11 @@ import type {
     IOverlayProps,
     IScrimProps,
     IScrollStrategyProps,
-    ITransitionComponentProps
+    ITransitionComponentProps,
+    ITypographyProps
 } from '../../interfaces'
 
-export interface ITooltipProps extends ICommonsComponentProps, IOverlayProps, IColorProps, IBgColorProps, IDimensionProps, IActivatorProps, ILocationStrategyProps, IScrollStrategyProps, ILazyProps, ITransitionComponentProps, IScrimProps {
+export interface ITooltipProps extends ICommonsComponentProps, IOverlayProps, IColorProps, IBgColorProps, IDimensionProps, IActivatorProps, ILocationStrategyProps, IScrollStrategyProps, ILazyProps, ITransitionComponentProps, IScrimProps, ITypographyProps {
     id?: string
     text?: string
 }

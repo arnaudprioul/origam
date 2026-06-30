@@ -33,8 +33,8 @@ import { expect, test, type FrameLocator, type Page } from '@playwright/test'
  *   OrigamOverlayScrim → /story/components-stories-overlay-origamoverlayscrim-story-vue
  */
 
-const PICKER_BASE       = '/story/components-stories-picker-'
-const OVERLAY_BASE      = '/story/components-stories-overlay-'
+const PICKER_BASE       = '/stories/story/components-stories-picker-'
+const OVERLAY_BASE      = '/stories/story/components-stories-overlay-'
 
 const STORIES = {
     picker:        `${PICKER_BASE}origampicker-story-vue`,

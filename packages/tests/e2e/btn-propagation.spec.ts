@@ -29,9 +29,9 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
     await page.waitForTimeout(900)
 }
 
-const BTN_GROUP = '/story/components-stories-btn-origambtngroup-story-vue'
-const BTN_TOGGLE = '/story/components-stories-btn-origambtntoggle-story-vue'
-const CHIP_GROUP = '/story/components-stories-chip-origamchipgroup-story-vue'
+const BTN_GROUP = '/stories/story/components-stories-btn-origambtngroup-story-vue'
+const BTN_TOGGLE = '/stories/story/components-stories-btn-origambtntoggle-story-vue'
+const CHIP_GROUP = '/stories/story/components-stories-chip-origamchipgroup-story-vue'
 
 // ─── BtnGroup → OrigamBtn ──────────────────────────────────────────────────
 

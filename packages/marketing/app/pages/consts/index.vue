@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useT } from '~/composables/useT'
-import type { IConstDoc, IConstEntry } from '~/interfaces/consts-catalog.interface'
+import { useReferenceCatalog, useReferenceCategories } from '~/composables/useApiReference'
+import type { IConstEntry } from '~/interfaces/consts-catalog.interface'
 
 const { t } = useT()
 
@@ -12,29 +13,12 @@ useSeoMeta({
     ogDescription: () => t('consts.meta.description', 'Constants exported across the origam design system.')
 })
 
-const allDocs = import.meta.glob('~/consts/consts/*.const.ts', { eager: true }) as Record<string, Record<string, unknown>>
+const { data: catalogData } = await useReferenceCatalog<IConstEntry>('const')
 
-const CONSTS_CATALOG = computed<IConstEntry[]>(() =>
-    Object.values(allDocs)
-        .map((mod) => {
-            const key = Object.keys(mod).find(k => k.endsWith('_CONST_DOC'))
-            return key ? (mod[key] as IConstDoc) : null
-        })
-        .filter((d): d is IConstDoc => !!d)
-        .map(d => ({
-            slug: d.slug,
-            name: d.name,
-            category: d.category,
-            icon: 'mdi-code-array',
-            descriptionKey: d.descriptionKey,
-            descriptionFallback: d.descriptionFallback
-        }))
-        .sort((a, b) => a.name.localeCompare(b.name))
-)
+const CONSTS_CATALOG = computed<IConstEntry[]>(() => catalogData.value ?? [])
 
-const CONSTS_CATEGORIES = computed(() =>
-    [...new Set(CONSTS_CATALOG.value.map(e => e.category))].sort()
-)
+const { data: catsData } = await useReferenceCategories('const')
+const CONSTS_CATEGORIES = computed<string[]>(() => catsData.value ?? [])
 
 const searchQuery = ref('')
 

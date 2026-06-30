@@ -19,6 +19,10 @@
 						:margin="state.margin"
 						:padding="state.padding"
 						:text="state.text"
+						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
+						:line-height="state.lineHeight"
+						:letter-spacing="state.letterSpacing"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -33,6 +37,12 @@
 				</StoryGroup>
 				<StoryGroup title="Shape">
 					<HstSelect v-model="state.rounded" title="Rounded" :options="ROUNDED_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.margin"  title="Margin"/>
@@ -125,6 +135,10 @@
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
+		LETTER_SPACING_OPTIONS,
+		LINE_HEIGHT_OPTIONS,
 		ROUNDED_OPTIONS
 	} from '@stories/const'
 

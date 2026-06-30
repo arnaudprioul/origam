@@ -67,11 +67,29 @@ component CSS variable on a `:style` binding instead:
 
 ```ts
 interface ITitleProps extends ITagProps, ICommonsComponentProps,
-    IColorProps, IDensityProps, IPaddingProps, IMarginProps,
-    IBorderProps {
+    IColorProps, IBgColorProps, IDensityProps, IPaddingProps,
+    IMarginProps, IBorderProps, ITypographyProps {
     text?: string
+    // typography surface (from ITypographyProps):
+    fontFamily?: TFontFamily // 'sans'|'mono'|'serif'
+    fontSize?: TFontSize     // 'xs'|'sm'|'md'|'lg'|'xl'|'2xl'|'3xl'|'4xl'|'5xl'
+    fontWeight?: TFontWeight // 'regular'|'medium'|'semibold'|'bold'|'extrabold'|'black'
+    lineHeight?: TLineHeight     // 'none'|'tight'|'snug'|'normal'|'relaxed'|'loose'
+    letterSpacing?: TLetterSpacing // 'tight'|'normal'|'wide'|'wider'|'widest'
 }
 ```
+
+The typography props come from the shared `ITypographyProps` surface and are
+wired by the `useTypography` composable — the same mechanism every origam
+component uses for theme-aware fonts.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `fontFamily` | `TFontFamily` | — | Font family token. Sets `--origam-title---font-family` to `var(--origam-font__family---{fontFamily})` (sans · mono · serif). When unset, the title keeps its theme font-family. |
+| `fontSize` | `TFontSize` | — | Font size token. Sets `--origam-title---font-size` to `var(--origam-font__size---{fontSize})` (xs 0.625rem → 5xl 2.25rem). **Overrides the density-driven font-size** when set; when unset, the density prop continues to control the size via the compact / default / comfortable ramps. |
+| `fontWeight` | `TFontWeight` | — | Font weight token. Sets `--origam-title---font-weight` to `var(--origam-font__weight---{fontWeight})` (regular 400 · medium 500 · semibold 600 · bold 700 · extrabold 800 · black 900). When unset, the title keeps its theme weight. |
+| `lineHeight` | `TLineHeight` | — | Line-height token. Sets `--origam-title---line-height` to `var(--origam-font__lineHeight---{lineHeight})` (none 1 · tight 1.25 · snug 1.375 · normal 1.5 · relaxed 1.625 · loose 2). When unset, the title keeps its theme line-height. |
+| `letterSpacing` | `TLetterSpacing` | — | Letter-spacing token. Sets `--origam-title---letter-spacing` to `var(--origam-font__letterSpacing---{letterSpacing})` (tight -0.025em · normal 0em · wide · wider · widest 0.0893em). When unset, the title keeps its theme letter-spacing. |
 
 ## Anatomy
 

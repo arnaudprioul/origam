@@ -1,7 +1,8 @@
 import type {
     ICommonsComponentProps,
     IGradient,
-    ITagProps
+    ITagProps,
+    ITypographyProps
 } from '../../interfaces'
 
 import type {
@@ -25,8 +26,13 @@ import type {
  *
  * The text content is preserved in the DOM (visible to screen readers
  * and search engines) — the visual transform is purely CSS.
+ *
+ * Typography is handled via the shared {@link ITypographyProps} surface:
+ * pass token keys (`fontSize="5xl"`, `fontWeight="black"`, …) to override
+ * the component's default values; when a prop is unset the SCSS fallback
+ * token (`--origam-text-mask---font-size-default`, …) stays in control.
  */
-export interface ITextMaskProps extends ICommonsComponentProps, ITagProps {
+export interface ITextMaskProps extends ICommonsComponentProps, ITagProps, ITypographyProps {
     /**
      * Text to mask. Ignored when the `default` slot is provided.
      *
@@ -73,37 +79,6 @@ export interface ITextMaskProps extends ICommonsComponentProps, ITagProps {
      * @default 'pan'
      */
     animationType?: TTextMaskAnimation
-    /**
-     * `font-size` of the masked text. Numbers are interpreted as `px`.
-     *
-     * @default 'inherit'
-     */
-    fontSize?: string | number
-    /**
-     * `font-weight` of the masked text. Accepts numeric weights (100–900)
-     * or keywords (`'bold'`, `'normal'`, …).
-     *
-     * @default 'inherit'
-     */
-    fontWeight?: string | number
-    /**
-     * `font-family` stack applied to the masked text.
-     *
-     * @default 'inherit'
-     */
-    fontFamily?: string
-    /**
-     * `line-height` applied to the masked text. Tight by default so the
-     * glyph baseline aligns nicely on large display text.
-     *
-     * @default 1.1
-     */
-    lineHeight?: string | number
-    /**
-     * `letter-spacing` applied to the masked text. Optional — defaults to
-     * the CSS initial value (i.e. inherits from the document).
-     */
-    letterSpacing?: string
     /**
      * `text-align` of the masked content.
      *

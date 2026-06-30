@@ -33,7 +33,7 @@ import { expect, test, type Page } from '@playwright/test'
  *   directly in tests.
  */
 
-const STORY = '/story/components-stories-audio-origamaudio-story-vue'
+const STORY = '/stories/story/components-stories-audio-origamaudio-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

@@ -54,6 +54,7 @@
 						v-if="hasTitle"
 						key="title"
 						class="origam-list-item__title"
+						:style="titleTypographyStyles"
 				>
 					<slot
 							name="title"
@@ -66,6 +67,7 @@
 						v-if="hasSubtitle"
 						key="subtitle"
 						class="origam-list-item__subtitle"
+						:style="subtitleTypographyStyles"
 				>
 					<slot
 							name="subtitle"
@@ -127,7 +129,8 @@
 		useNestedItem,
 		useProps,
 		useStateEffect,
-		useStyle
+		useStyle,
+		useTypography
 } from '../../composables'
 
 	import { vRipple } from '../../directives'
@@ -187,6 +190,19 @@
 		marginClasses, marginStyles,
 	} = useStateEffect(props, isHover, undefined, hoverState, undefined)
 	const {dimensionStyles} = useDimension(props)
+
+	/*********************************************************
+	 * Typography — dual-surface (title + subtitle children)
+	 *
+	 * One ITypographyProps set drives both BEM children.
+	 * SCSS reads the 4 vars on each surface at root level
+	 * (no per-size suffix) → fontSize / fontWeight /
+	 * letterSpacing / lineHeight all have a real visual effect.
+	 * fontFamily is not read by either surface → not exposed.
+	 ********************************************************/
+	const { typographyStyles: titleTypographyStyles } = useTypography(props, 'list-item__title')
+	const { typographyStyles: subtitleTypographyStyles } = useTypography(props, 'list-item__subtitle')
+
 	/*********************************************************
 	 * Icon
 	 ********************************************************/

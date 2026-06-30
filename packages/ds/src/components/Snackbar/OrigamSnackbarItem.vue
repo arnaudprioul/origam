@@ -6,6 +6,7 @@
     :class="itemClasses"
     :data-cy="dataCy"
     :role="resolvedRole"
+    :style="typographyStyles"
   >
     <div class="origam-snackbar-item__content">
       <div
@@ -78,7 +79,7 @@
 
   import { OrigamBtn, OrigamIcon } from '../../components'
 
-  import { useLocale, useProps } from '../../composables'
+  import { useLocale, useProps, useTypography } from '../../composables'
 
   import { vContrast } from '../../directives'
 
@@ -111,6 +112,19 @@
   const dismissLabel = computed<string>(() => props.dismissLabel ?? t('origam.snackbar.dismiss', 'Dismiss notification'))
 
   const { filterProps } = useProps<ISnackbarItemProps>(props)
+
+  /*********************************************************
+   * Typography
+   *
+   * @description
+   * Only `fontSize` has a real visual effect: the root element
+   * reads `--origam-snackbar-item---font-size`. `fontWeight` is
+   * scoped to BEM children (`__title`, `__message`) with their
+   * own namespaced vars — a single `useTypography('snackbar-item')`
+   * cannot address both surfaces; expose via story only when
+   * per-surface control is added.
+   ********************************************************/
+  const { typographyStyles } = useTypography(props, 'snackbar-item')
 
   const slots = useSlots()
 

@@ -15,6 +15,19 @@ export interface IDirectiveModifier {
     descriptionKey: string
 }
 
+/**
+ * Lightweight catalog entry returned by GET /api/reference/directive.
+ * Used on the /directives index page for card rendering and search.
+ */
+export interface IDirectiveEntry {
+    slug: string
+    name: string
+    icon: string
+    category: string
+    descriptionKey: string
+    descriptionFallback: string
+}
+
 export interface IDirectiveCatalogItem {
     id: string
     name: string

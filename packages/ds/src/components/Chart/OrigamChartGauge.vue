@@ -2,7 +2,7 @@
 	<div
 			class="origam-chart-gauge"
 			:class="rootClasses"
-			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
+			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
 			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-gauge"
@@ -141,6 +141,7 @@
 	import { useChartGauge } from '../../composables/Chart/chart-gauge.composable'
 	import {
 		useBackgroundColor,
+		useChartHeaderTypography,
 		useDimension,
 		useElevation,
 		useMargin,
@@ -201,6 +202,7 @@
 	const { marginClasses, marginStyles } = useMargin(props)
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
+	const { headerTypographyStyles } = useChartHeaderTypography(props)
 
 	/*********************************************************
 	 * Static SVG box

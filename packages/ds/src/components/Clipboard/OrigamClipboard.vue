@@ -15,6 +15,7 @@
 					type="button"
 					class="origam-clipboard__default-trigger"
 					:class="{ 'origam-clipboard__default-trigger--copied': copied }"
+					:style="typographyStyles"
 					:disabled="disabled"
 					:aria-label="defaultAriaLabel"
 					data-cy="origam-clipboard-default-trigger"
@@ -47,7 +48,7 @@
 
 	import { OrigamIcon } from '../Icon'
 
-	import { useBorder, useBothColor, useClipboard, useLocale, useMargin, usePadding, useRounded } from '../../composables'
+	import { useBorder, useBothColor, useClipboard, useLocale, useMargin, usePadding, useRounded, useTypography } from '../../composables'
 
 	import { MDI_ICONS } from '../../enums'
 
@@ -94,6 +95,9 @@
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { marginClasses, marginStyles } = useMargin(props)
 	const { paddingClasses, paddingStyles } = usePadding(props)
+	// BEM-child surface: vars are read by .origam-clipboard__default-trigger
+	// (font-size / font-weight). Bound directly on that element, not the root.
+	const { typographyStyles } = useTypography(props, 'clipboard__feedback')
 
 	/*********************************************************
 	 * Composable — owns the copy pipeline + auto-resetting flag.

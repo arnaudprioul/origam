@@ -33,6 +33,12 @@
 					<HstText   v-model="state.borderColor" title="Border Color"/>
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+				</StoryGroup>
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.padding" title="Padding"/>
 					<HstText v-model="state.margin"  title="Margin"/>
@@ -127,6 +133,89 @@
 		</Variant>
 
 		<Variant
+				title="Prop — content (text · image · icon)"
+				:init-state="() => useStoryInitState<{ text: string, image: string }>({ text: 'AP', image: 'https://i.pravatar.cc/120?img=12' })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; gap: 16px; align-items: center;">
+					<origam-avatar :text="state.text" bg-color="primary"/>
+					<origam-avatar :image="state.image"/>
+					<origam-avatar :icon="accountIcon" bg-color="primary"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.text"  title="Text"/>
+					<HstText v-model="state.image" title="Image (URL)"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — size">
+			<div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+				<origam-avatar text="XS" size="x-small" bg-color="primary"/>
+				<origam-avatar text="S"  size="small"   bg-color="primary"/>
+				<origam-avatar text="D"  size="default" bg-color="primary"/>
+				<origam-avatar text="L"  size="large"   bg-color="primary" data-cy="avatar-size-large"/>
+				<origam-avatar text="XL" size="x-large" bg-color="primary"/>
+			</div>
+		</Variant>
+
+		<Variant
+				title="Prop — density"
+				:init-state="() => useStoryInitState<Partial<IAvatarProps>>({ density: undefined })"
+		>
+			<template #default="{ state }">
+				<div style="display: flex; gap: 16px; align-items: center;">
+					<origam-avatar :density="state.density" text="AP" bg-color="primary"/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Sizing">
+					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Prop — rounded">
+			<div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+				<origam-avatar text="0"  rounded="0"      bg-color="primary"/>
+				<origam-avatar text="SM" rounded="sm"     bg-color="primary"/>
+				<origam-avatar text="LG" rounded="lg"     bg-color="primary"/>
+				<origam-avatar text="F"  rounded="circle" bg-color="primary"/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — elevation">
+			<div style="display: flex; gap: 24px; align-items: center; padding: 16px; flex-wrap: wrap;">
+				<origam-avatar text="SM" elevation="sm" bg-color="primary"/>
+				<origam-avatar text="MD" elevation="md" bg-color="primary"/>
+				<origam-avatar text="LG" elevation="lg" bg-color="primary"/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — border">
+			<div style="display: flex; gap: 16px; align-items: center;">
+				<origam-avatar text="B" border="sm" bg-color="primary"/>
+				<origam-avatar text="B" border="md" bg-color="primary"/>
+			</div>
+		</Variant>
+
+		<Variant
+				title="Prop — tag"
+				:init-state="() => useStoryInitState<Partial<IAvatarProps>>({ tag: 'div' })"
+		>
+			<template #default="{ state }">
+				<origam-avatar :tag="state.tag" text="AP" bg-color="primary"/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Tag">
+					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+				<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IAvatarProps>({ text: 'AP', bgColor: 'primary' })"
 		>
@@ -151,6 +240,12 @@
 					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
 					<HstSelect v-model="state.border"    title="Border"    :options="BORDER_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
@@ -185,9 +280,13 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		HOVER_OPTIONS,
 		resolveHoverState,
 		ICON_OPTIONS,
+		LETTER_SPACING_OPTIONS,
+		LINE_HEIGHT_OPTIONS,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS,
 		TAG_OPTIONS
@@ -212,7 +311,11 @@
 		borderColor: s.borderColor,
 		borderStyle: s.borderStyle,
 		padding: s.padding,
-		margin: s.margin
+		margin: s.margin,
+		fontSize: s.fontSize,
+		fontWeight: s.fontWeight,
+		lineHeight: s.lineHeight,
+		letterSpacing: s.letterSpacing
 	})
 </script>
 

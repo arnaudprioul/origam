@@ -23,7 +23,7 @@ import { expect, test, type Page } from '@playwright/test'
  *   new: "Prop — icon (person / beer / heart / star / dollar)"
  */
 
-const PICTORIAL_STORY = '/story/components-stories-chart-origamchartpictorial-story-vue'
+const PICTORIAL_STORY = '/stories/story/components-stories-chart-origamchartpictorial-story-vue'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')

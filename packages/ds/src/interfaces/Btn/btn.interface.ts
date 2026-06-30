@@ -22,6 +22,7 @@ import type {
     IRoundedProps,
     ISizeProps,
     ITagProps,
+    ITypographyProps,
     IVariantProps
 } from '../../interfaces'
 
@@ -32,7 +33,7 @@ import type { TStatus, TStatusPosition } from '../../types'
  *  `icon` prop accepts `boolean | TIcon` (boolean = icon-only mode) which is
  *  wider than `IIconProps.icon?: TIcon`.  Pulling the two status props in
  *  directly avoids the TS2430 incompatible-extends error. */
-export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IBorderProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ITagProps, ISizeProps, ILinkProps, IRippleProps, ILoaderProps, IPositionProps, ILocationProps, IGroupItemProps, IPaddingProps, IMarginProps, IAdjacentProps, IHoverProps, IVariantProps {
+export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IBorderProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ITagProps, ISizeProps, ILinkProps, IRippleProps, ILoaderProps, IPositionProps, ILocationProps, IGroupItemProps, IPaddingProps, IMarginProps, IAdjacentProps, IHoverProps, IVariantProps, ITypographyProps {
     active?: boolean | IActiveState
     /** @deprecated Use `variant="flat"` instead. Kept for backward compat. */
     flat?: boolean,

@@ -6,7 +6,7 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<ITableProps>>({})"
+				:init-state="() => useStoryInitState<Partial<ITableProps>>({ fontSize: undefined, fontWeight: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-table
@@ -22,6 +22,8 @@
 						:height="state.height"
 						:max-width="state.maxWidth"
 						:max-height="state.maxHeight"
+						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
 				>
 					<thead>
 						<tr>
@@ -58,6 +60,10 @@
 					<HstText v-model="state.height"    title="Height"/>
 					<HstText v-model="state.maxWidth"  title="Max Width"/>
 					<HstText v-model="state.maxHeight" title="Max Height"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -196,7 +202,7 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<ITableProps>({ tag: 'div' })"
+				:init-state="() => useStoryInitState<ITableProps>({ tag: 'div', fontSize: undefined, fontWeight: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-table v-bind="state">
@@ -233,6 +239,10 @@
 					<HstText v-model="state.maxWidth"  title="Max Width"/>
 					<HstText v-model="state.maxHeight" title="Max Height"/>
 				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 	</Story>
@@ -255,6 +265,8 @@
 		BORDER_STYLE_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		HOVER_OPTIONS,
 		resolveHoverState,
 		ROUNDED_OPTIONS,

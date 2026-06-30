@@ -36,7 +36,7 @@ import { expect, test, type Page, type FrameLocator } from '@playwright/test'
 
 // ─── Story URL helpers ───────────────────────────────────────────────────────
 
-const BASE = '/story/components-stories-transition-'
+const BASE = '/stories/story/components-stories-transition-'
 const STORIES = {
     transition:               `${BASE}origamtransition-story-vue`,
     fade:                     `${BASE}origamfade-story-vue`,

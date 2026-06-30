@@ -11,7 +11,10 @@
 					location: 'right',
 					color: undefined,
 					bgColor: undefined,
-					offset: 10
+					offset: 10,
+					fontSize: undefined,
+					fontWeight: undefined,
+					lineHeight: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -30,6 +33,9 @@
 							:min-height="state.minHeight"
 							:max-height="state.maxHeight"
 							:text="state.text"
+							:font-size="state.fontSize"
+							:font-weight="state.fontWeight"
+							:line-height="state.lineHeight"
 							open-on-hover
 					>
 						<template #activator="{ props: a }">
@@ -42,6 +48,11 @@
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Position">
 					<HstSelect v-model="state.location" title="Location" :options="LOCATION_OPTIONS"/>
@@ -221,7 +232,7 @@
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import { COLOR_OPTIONS } from '@stories/const'
+	import { COLOR_OPTIONS, FONT_SIZE_OPTIONS, FONT_WEIGHT_OPTIONS, LINE_HEIGHT_OPTIONS } from '@stories/const'
 
 	const LOCATION_OPTIONS = [
 		{ label: 'top',    value: 'top' },

@@ -4,8 +4,8 @@
 			:id="id"
 			v-contrast
 			:class="alertClasses"
-			:role="props.status === 'warning' || props.status === 'error' ? 'alert' : 'status'"
-			:aria-live="props.status === 'warning' || props.status === 'error' ? 'assertive' : 'polite'"
+			:role="status === 'warning' || status === 'error' ? 'alert' : 'status'"
+			:aria-live="status === 'warning' || status === 'error' ? 'assertive' : 'polite'"
 			@mouseenter="handleMouseenter"
 			@mouseleave="handleMouseleave"
 	>
@@ -53,7 +53,7 @@
 						/>
 					</template>
 					<template v-if="hasTitle">
-						<span class="origam-alert__title">
+						<span class="origam-alert__title" :style="typographyStyles">
 							<slot name="title">{{ title }}</slot>
 						</span>
 					</template>
@@ -133,7 +133,8 @@
 		useProps,
 		useStateEffect,
 		useStatus,
-		useStyle
+		useStyle,
+		useTypography
 	} from '../../composables'
 
 	import { DENSITY, MDI_ICONS } from '../../enums'
@@ -161,6 +162,18 @@
 
 	const {filterProps} = useProps<IAlertProps>(props)
 	const {t} = useLocale()
+
+	/*********************************************************
+	 * Typography
+	 *
+	 * @description
+	 * BEM-child surface: typographyStyles are bound on the
+	 * __title element (not the root). varPrefix='alert__title'
+	 * targets the four CSS vars the SCSS reads on that span:
+	 *   font-size / font-weight / letter-spacing / line-height.
+	 * fontFamily is not in the __title SCSS — no effect.
+	 ********************************************************/
+	const {typographyStyles} = useTypography(props, 'alert__title')
 
 	const slots = useSlots()
 

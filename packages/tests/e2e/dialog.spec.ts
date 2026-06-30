@@ -70,7 +70,7 @@ import { expect, FrameLocator, test } from '@playwright/test'
 
 const STORY_ID   = 'components-stories-dialog-origamdialog-story-vue'
 const STORY_BASE = 'http://localhost:6006/stories'
-const STORY_PATH = STORY_BASE + '/story/' + STORY_ID
+const STORY_PATH = STORY_BASE + '/stories/story/' + STORY_ID
 
 const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
