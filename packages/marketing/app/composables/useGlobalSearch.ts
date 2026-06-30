@@ -1,24 +1,17 @@
 /**
  * useGlobalSearch — index global pour la command palette du header.
  *
- * Construit un tableau ICommand depuis les catalogues référentiels :
- *   - composants     → /components/{slug}
- *   - composables    → /composables/{slug}
- *   - directives     → /directives/{slug}
- *   - types/enums    → /types/{slug}
- *   - interfaces     → /interfaces/{slug}
+ * Construit un tableau ICommand depuis les catalogues référentiels via l'API Nitro :
+ *   - composants     → /api/reference/component  → /components/{slug}
+ *   - composables    → /api/reference/composable  → /composables/{slug}
+ *   - directives     → /api/reference/directive   → /directives/{slug}
+ *   - types/enums    → /api/reference/type        → /types/{slug}
  *   - pages statiques (installation, changelog, roadmap, wireframe, theming, figma-plugin)
  *
- * Le tableau est statique (computed une seule fois au montage) : pas de
- * requête réseau, tout vit déjà dans les const files.
+ * Le tableau est réactif : réinitialisation automatique quand les données API changent.
  */
 import { computed } from 'vue'
 import type { ICommand } from 'origam/interfaces'
-
-import { COMPONENTS_CATALOG } from '~/consts/components-catalog.const'
-import { COMPOSABLES_CATALOG } from '~/consts/composables-catalog.const'
-import { DIRECTIVES_CATALOG } from '~/consts/directives-catalog.const'
-import { TYPES_CATALOG } from '~/consts/types-catalog.const'
 
 const STATIC_PAGES: ICommand[] = [
     {
@@ -97,10 +90,55 @@ const STATIC_PAGE_HREFS: Record<string, string> = {
 }
 
 export function useGlobalSearch () {
+    const { data: components } = useFetch<Array<{
+        slug: string
+        name: string
+        icon: string
+        category: string
+        parentSlug?: string
+        descriptionFallback: string
+    }>>('/api/reference/component', {
+        key: 'global-search:component',
+        default: () => [],
+    })
+
+    const { data: composables } = useFetch<Array<{
+        slug: string
+        name: string
+        icon: string
+        domain: string
+        descriptionFallback: string
+    }>>('/api/reference/composable', {
+        key: 'global-search:composable',
+        default: () => [],
+    })
+
+    const { data: directives } = useFetch<Array<{
+        slug: string
+        name: string
+        icon: string
+        descriptionFallback: string
+    }>>('/api/reference/directive', {
+        key: 'global-search:directive',
+        default: () => [],
+    })
+
+    const { data: types } = useFetch<Array<{
+        slug: string
+        name: string
+        icon: string
+        category: string
+        kind: 'type' | 'enum'
+        descriptionFallback: string
+    }>>('/api/reference/type', {
+        key: 'global-search:type',
+        default: () => [],
+    })
+
     const commands = computed<ICommand[]>(() => {
         const list: ICommand[] = []
 
-        for (const entry of COMPONENTS_CATALOG) {
+        for (const entry of components.value ?? []) {
             if (entry.parentSlug) continue
 
             list.push({
@@ -114,7 +152,7 @@ export function useGlobalSearch () {
             })
         }
 
-        for (const entry of COMPOSABLES_CATALOG) {
+        for (const entry of composables.value ?? []) {
             list.push({
                 id: `composable-${entry.slug}`,
                 label: entry.name,
@@ -126,7 +164,7 @@ export function useGlobalSearch () {
             })
         }
 
-        for (const entry of DIRECTIVES_CATALOG) {
+        for (const entry of directives.value ?? []) {
             list.push({
                 id: `directive-${entry.slug}`,
                 label: entry.name,
@@ -138,7 +176,7 @@ export function useGlobalSearch () {
             })
         }
 
-        for (const entry of TYPES_CATALOG) {
+        for (const entry of types.value ?? []) {
             list.push({
                 id: `type-${entry.slug}`,
                 label: entry.name,

@@ -94,7 +94,7 @@ export function useThemeBuilder () {
 
     /** Default prop value for a control (used to compute the diff). */
     const defaultProp = (slug: string, prop: string): unknown => {
-        const entry = entries.find(e => e.slug === slug)
+        const entry = entries.value.find(e => e.slug === slug)
         const ctrl = entry?.controls.find(c => c.prop === prop)
         return ctrl?.defaultValue ?? ''
     }
@@ -105,7 +105,7 @@ export function useThemeBuilder () {
      * identical by default in light and dark seeds).
      */
     const defaultToken = (cssVar: string): string => {
-        for (const entry of entries) {
+        for (const entry of entries.value) {
             const tok = entry.tokens.find(t => t.cssVar === cssVar)
             if (tok) return tok.defaultValue
         }
@@ -163,7 +163,7 @@ export function useThemeBuilder () {
 
     /** Props passed to the live `<component :is>` for a given slug. */
     const previewProps = (slug: string): Record<string, unknown> => {
-        const entry = entries.find(e => e.slug === slug)
+        const entry = entries.value.find(e => e.slug === slug)
         if (!entry) return {}
         const out: Record<string, unknown> = { ...(entry.previewAdapter.previewProps ?? {}) }
         for (const ctrl of entry.controls) {
@@ -195,7 +195,7 @@ export function useThemeBuilder () {
     }
 
     const slotText = (slug: string): string => {
-        const entry = entries.find(e => e.slug === slug)
+        const entry = entries.value.find(e => e.slug === slug)
         return entry?.previewAdapter.slotText ?? ''
     }
 
@@ -506,7 +506,7 @@ export function useThemeBuilder () {
     /** Reset every prop + token override for a single component. */
     const resetComponent = (slug: string): void => {
         delete state.defaults[`origam-${slug}`]
-        const entry = entries.find(e => e.slug === slug)
+        const entry = entries.value.find(e => e.slug === slug)
         if (!entry) return
         for (const tok of entry.tokens) {
             delete state.cssVars.light[tok.cssVar]

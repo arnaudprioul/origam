@@ -1,3 +1,5 @@
+import { computed } from 'vue'
+
 import {
     THEME_BUILDER_PREVIEW_ADAPTERS,
     THEME_BUILDER_PREVIEWABLE_SLUGS
@@ -11,9 +13,7 @@ import {
     classifyPropGroup
 } from '~/consts/theme-builder-groups.const'
 import { THEME_BUILDER_TOKENS } from '~/consts/theme-builder-tokens.const'
-import { COMPONENTS_CATALOG } from '~/consts/components-catalog.const'
 import type {
-    IComponentDoc,
     IComponentPlaygroundControl,
     IComponentPropRow
 } from '~/interfaces/components-catalog.interface'
@@ -30,39 +30,35 @@ import type {
 
 /**
  * useThemeBuilderCatalog — derives the FULL, data-driven catalog that powers the
- * /theming builder, from data that already exists in the repo:
+ * /theming builder, from data served by the API:
  *
- *  - COMPONENTS_CATALOG          → the nav (every DS component, by category).
- *  - each `_DOC.props` array     → the themable prop controls (grouped by type).
- *  - each `_DOC.playground`      → richer select options when a prop was curated.
+ *  - GET /api/reference/component?includePropSurface=1
+ *      → the nav (every DS component, by category)
+ *      → each component's `props[]` (all prop rows, needed for theme controls)
+ *      → each component's `playground` block (hand-curated select options)
  *  - THEME_BUILDER_TOKENS        → the editable CSS custom properties (grouped).
  *
- * No generator script is needed: all 194 component `_DOC` files already ship a
- * complete `props` array, so the prop surface is exhaustive at runtime. The only
- * filtering is dropping NON-themable props (data, callbacks, complex object
- * payloads) so the panel stays scalar-only — matching the validated UI.
- *
- * COMPLETENESS NOTE: prop controls are complete for EVERY component (derived
- * from the universal `_DOC.props`). Editable CSS tokens are complete for the
- * slugs present in THEME_BUILDER_TOKENS (the 14 seed components); other
- * components show their full prop surface and an empty CSS-tokens tab until
- * their token block is added to THEME_BUILDER_TOKENS (one entry per component,
- * see that file's header for the regeneration recipe).
+ * The static COMPONENTS_CATALOG const files and the import.meta.glob pattern
+ * have been removed; all component data now comes from the DB via the API.
  */
 
-const allDocs = import.meta.glob('~/consts/components/*.const.ts', { eager: true }) as Record<
-    string,
-    Record<string, unknown> | undefined
->
-
-/** Resolve the `*_DOC` export of a component const file by slug. */
-function findDoc (slug: string): IComponentDoc | undefined {
-    const key = Object.keys(allDocs).find(k => k.endsWith(`/${slug}.const.ts`))
-    if (!key) return undefined
-    const mod = allDocs[key]
-    if (!mod) return undefined
-    const exportKey = Object.keys(mod).find(k => k.endsWith('_DOC'))
-    return exportKey ? (mod[exportKey] as IComponentDoc) : undefined
+/** Minimal prop surface shape returned by ?includePropSurface=1. */
+interface IComponentThemeSurface {
+    slug: string
+    name: string
+    icon: string
+    category: string
+    parentSlug?: string | null
+    playground?: {
+        controls: IComponentPlaygroundControl[]
+        defaultSlotContent?: string
+    } | null
+    props: Array<{
+        name: string
+        type: { label: string | null; slug: string | null; kind: string | null }
+        required?: boolean | null
+        defaultValue?: string | null
+    }>
 }
 
 /** A prop type label that references data / callbacks / objects is non-themable. */
@@ -117,7 +113,7 @@ function humanise (name: string): string {
 }
 
 /**
- * Build one themable control from a `_DOC` prop row. The playground control (if
+ * Build one themable control from a prop row. The playground control (if
  * one exists for this prop) is the AUTHORITATIVE source for select options +
  * default, since it was hand-curated. Otherwise we derive from the prop type.
  * Returns null when the prop is non-themable.
@@ -254,82 +250,85 @@ function groupTokens (tokens: IThemeBuilderToken[]): IThemeBuilderTokenGroup[] {
     return out
 }
 
-/** Build the full builder entry for one catalog component. */
-function buildEntry (slug: string, name: string, icon: string, category: string): IThemeBuilderComponentEntry {
-    const doc = findDoc(slug)
-    const playgroundControls = doc?.playground?.controls ?? []
+/** Build the full builder entry for one component from its API surface. */
+function buildEntry (component: IComponentThemeSurface): IThemeBuilderComponentEntry {
+    const playgroundControls = component.playground?.controls ?? []
     const playgroundByProp = new Map(playgroundControls.map(c => [c.prop, c]))
 
     const controls: IThemeBuilderPropControl[] = []
-    for (const row of doc?.props ?? []) {
-        const ctrl = buildControl(row, playgroundByProp.get(row.name))
+    for (const raw of component.props ?? []) {
+        const row: IComponentPropRow = {
+            name: raw.name,
+            type: {
+                label: raw.type.label ?? '',
+                slug: raw.type.slug ?? '',
+                kind: (raw.type.kind ?? 'primitive') as 'primitive' | 'type' | 'enum',
+            },
+            defaultValue: raw.defaultValue ?? '',
+            descriptionKey: '',
+            descriptionFallback: '',
+            required: raw.required ?? false,
+        }
+        const ctrl = buildControl(row, playgroundByProp.get(raw.name))
         if (ctrl) controls.push(ctrl)
     }
 
-    const tokens = THEME_BUILDER_TOKENS[slug] ?? []
+    const tokens = THEME_BUILDER_TOKENS[component.slug] ?? []
 
     return {
-        slug,
-        componentKey: `origam-${slug}`,
-        componentTag: `origam-${slug}`,
-        name: doc?.name ?? name,
-        icon: doc?.icon ?? icon,
-        category,
+        slug: component.slug,
+        componentKey: `origam-${component.slug}`,
+        componentTag: `origam-${component.slug}`,
+        name: component.name,
+        icon: component.icon,
+        category: component.category,
         propGroups: groupControls(controls),
         tokenGroups: groupTokens(tokens),
         controls,
         tokens,
-        previewAdapter: THEME_BUILDER_PREVIEW_ADAPTERS[slug] ?? {},
-        previewable: (THEME_BUILDER_PREVIEWABLE_SLUGS as readonly string[]).includes(slug)
+        previewAdapter: THEME_BUILDER_PREVIEW_ADAPTERS[component.slug] ?? {},
+        previewable: (THEME_BUILDER_PREVIEWABLE_SLUGS as readonly string[]).includes(component.slug)
     }
-}
-
-let cachedEntries: IThemeBuilderComponentEntry[] | null = null
-let cachedNav: IThemeBuilderNavCategory[] | null = null
-
-/**
- * Build (and memoise) the catalog. Sub-components (entries with a `parentSlug`)
- * are excluded from the nav to keep it readable — they are themed via their
- * parent's CSS tokens. Components without any themable prop AND without tokens
- * are still listed (a theme can register defaults for them later), but the
- * panel will simply show empty tabs.
- */
-function buildCatalog (): { entries: IThemeBuilderComponentEntry[]; nav: IThemeBuilderNavCategory[] } {
-    if (cachedEntries && cachedNav) return { entries: cachedEntries, nav: cachedNav }
-
-    const topLevel = COMPONENTS_CATALOG.filter(c => !c.parentSlug)
-    const entries = topLevel.map(c => buildEntry(c.slug, c.name, c.icon, c.category))
-
-    const byCategory = new Map<string, IThemeBuilderComponentEntry[]>()
-    for (const entry of entries) {
-        const bucket = byCategory.get(entry.category) ?? []
-        bucket.push(entry)
-        byCategory.set(entry.category, bucket)
-    }
-
-    const nav: IThemeBuilderNavCategory[] = []
-    const seen = new Set<string>()
-    for (const meta of THEME_BUILDER_CATEGORY_META) {
-        const bucket = byCategory.get(meta.id)
-        if (bucket && bucket.length) {
-            nav.push({ meta, components: [...bucket].sort((a, b) => a.name.localeCompare(b.name)) })
-            seen.add(meta.id)
-        }
-    }
-    for (const [category, bucket] of byCategory) {
-        if (seen.has(category)) continue
-        nav.push({
-            meta: { id: category, labelKey: '', labelFallback: category, icon: 'mdi-shape-outline' },
-            components: [...bucket].sort((a, b) => a.name.localeCompare(b.name))
-        })
-    }
-
-    cachedEntries = entries
-    cachedNav = nav
-    return { entries, nav }
 }
 
 export function useThemeBuilderCatalog () {
-    const { entries, nav } = buildCatalog()
+    const { data } = useFetch<IComponentThemeSurface[]>('/api/reference/component', {
+        key: 'catalog:component:theme-surface',
+        query: { includePropSurface: '1' },
+        default: () => [] as IComponentThemeSurface[],
+    })
+
+    const entries = computed<IThemeBuilderComponentEntry[]>(() => {
+        const topLevel = (data.value ?? []).filter(c => !c.parentSlug)
+        return topLevel.map(c => buildEntry(c))
+    })
+
+    const nav = computed<IThemeBuilderNavCategory[]>(() => {
+        const byCategory = new Map<string, IThemeBuilderComponentEntry[]>()
+        for (const entry of entries.value) {
+            const bucket = byCategory.get(entry.category) ?? []
+            bucket.push(entry)
+            byCategory.set(entry.category, bucket)
+        }
+
+        const result: IThemeBuilderNavCategory[] = []
+        const seen = new Set<string>()
+        for (const meta of THEME_BUILDER_CATEGORY_META) {
+            const bucket = byCategory.get(meta.id)
+            if (bucket && bucket.length) {
+                result.push({ meta, components: [...bucket].sort((a, b) => a.name.localeCompare(b.name)) })
+                seen.add(meta.id)
+            }
+        }
+        for (const [category, bucket] of byCategory) {
+            if (seen.has(category)) continue
+            result.push({
+                meta: { id: category, labelKey: '', labelFallback: category, icon: 'mdi-shape-outline' },
+                components: [...bucket].sort((a, b) => a.name.localeCompare(b.name))
+            })
+        }
+        return result
+    })
+
     return { entries, nav }
 }

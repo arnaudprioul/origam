@@ -8,12 +8,14 @@
  * Validation: :kind must be one of the 8 DOC_KINDS (400 otherwise).
  *
  * Query params:
- *   ?category=<string>   filter by category/domain (all if omitted)
- *   ?limit=<number>      cap the number of entries returned (all if omitted)
- *   ?orphaned=1          include orphaned entries (excluded by default)
+ *   ?category=<string>        filter by category/domain (all if omitted)
+ *   ?limit=<number>           cap the number of entries returned (all if omitted)
+ *   ?orphaned=1               include orphaned entries (excluded by default)
+ *   ?includePropSurface=1     (component only) include props[] + playground in each entry
  *
  * Response shape per kind:
  *   component  - IComponentEntry[]   (includes family members via batch relation query)
+ *                with ?includePropSurface=1: IComponentThemeSurface[] (props + playground)
  *   composable - IComposableEntry[]  (includes related slugs)
  *   const      - IConstEntry[]
  *   directive  - catalog entry (slug, name, icon, category, descriptionKey, descriptionFallback)
@@ -26,7 +28,7 @@
  * Invalidate on re-sync / backoffice edit (ticket E clears the storage keys).
  */
 
-import { DocEntry, DocRelation } from '../../db/entities'
+import { DocEntry, DocProp, DocRelation } from '../../db/entities'
 
 /** Inline type to avoid cross-directory import type issues with Nitro esbuild. */
 type DescMap = Map<string, { description_key: string | null; description_fallback: string | null }>
@@ -45,6 +47,7 @@ export default defineCachedEventHandler(
         const limitRaw = typeof query.limit === 'string' ? parseInt(query.limit, 10) : undefined
         const limit = limitRaw && Number.isFinite(limitRaw) && limitRaw > 0 ? limitRaw : undefined
         const includeOrphaned = query.orphaned === '1'
+        const includePropSurface = query.includePropSurface === '1' && kind === 'component'
 
         const db = await useDb()
         const entryRepo = db.getRepository(DocEntry)
@@ -71,6 +74,9 @@ export default defineCachedEventHandler(
         // ─── Kinds with relation data in the catalog ───────────────────────
 
         if (kind === 'component') {
+            if (includePropSurface) {
+                return buildComponentThemeCatalog(db, entries)
+            }
             return buildComponentCatalog(db, entries)
         }
         if (kind === 'composable') {
@@ -99,7 +105,8 @@ export default defineCachedEventHandler(
         getKey: (event) => {
             const kind = getRouterParam(event, 'kind') ?? ''
             const q = getQuery(event)
-            return `catalog:${kind}:${q.category ?? ''}:${q.limit ?? ''}:${q.orphaned ?? ''}`
+            const ps = q.includePropSurface === '1' ? ':props' : ''
+            return `catalog:${kind}${ps}:${q.category ?? ''}:${q.limit ?? ''}:${q.orphaned ?? ''}`
         },
     },
 )
@@ -157,6 +164,56 @@ async function buildComponentCatalog (db: any, entries: any[]) {
     return entries.map((e: any) =>
         mapComponentEntry(e, familyByEntryId.get(e.id) ?? []),
     )
+}
+
+/**
+ * Component catalog with full prop surface — used by the /theming builder.
+ *
+ * Returns a flat array of IComponentThemeSurface objects (no family relation
+ * data, but includes `props[]` and `playground` for every component).
+ * Consumed by useThemeBuilderCatalog via ?includePropSurface=1.
+ */
+async function buildComponentThemeCatalog (db: any, entries: any[]) {
+    const ids = entries.map((e: any) => e.id as string)
+
+    const propRows: any[] = ids.length > 0
+        ? await db
+            .getRepository(DocProp)
+            .createQueryBuilder('p')
+            .where('p.entry_id IN (:...ids)', { ids })
+            .andWhere('p.orphaned_at IS NULL')
+            .orderBy('p.entry_id', 'ASC')
+            .addOrderBy('p.position', 'ASC')
+            .getMany()
+        : []
+
+    const propsByEntryId = new Map<string, any[]>()
+    for (const p of propRows) {
+        const bucket = propsByEntryId.get(p.entry_id) ?? []
+        bucket.push(p)
+        propsByEntryId.set(p.entry_id, bucket)
+    }
+
+    return entries.map((e: any) => ({
+        slug: e.slug,
+        name: e.name,
+        icon: e.icon ?? '',
+        category: e.category ?? '',
+        parentSlug: e.parent_slug ?? null,
+        descriptionFallback: e.description_fallback ?? '',
+        descriptionKey: e.description_key ?? '',
+        playground: (e.kind_extra as any)?.playground ?? null,
+        props: (propsByEntryId.get(e.id) ?? []).map((p: any) => ({
+            name: p.name,
+            type: {
+                label: p.type_label ?? '',
+                slug: p.type_slug ?? null,
+                kind: p.type_kind ?? null,
+            },
+            required: p.required ?? false,
+            defaultValue: p.default_value ?? '',
+        })),
+    }))
 }
 
 /**

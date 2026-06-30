@@ -56,15 +56,15 @@
   })
 
   const defaultSlug = computed(() => {
-    const preferred = entries.find(e => e.slug === 'btn')
+    const preferred = entries.value.find(e => e.slug === 'btn')
     if (preferred) return preferred.slug
-    const firstPreviewable = entries.find(e => e.previewable)
-    return firstPreviewable?.slug ?? entries[0]?.slug ?? ''
+    const firstPreviewable = entries.value.find(e => e.previewable)
+    return firstPreviewable?.slug ?? entries.value[0]?.slug ?? ''
   })
 
   const activeSlug = ref<string>(defaultSlug.value)
 
-  const activeEntry = computed(() => entries.find(e => e.slug === activeSlug.value) ?? entries[0])
+  const activeEntry = computed(() => entries.value.find(e => e.slug === activeSlug.value) ?? entries.value[0])
 
   const split = ref<boolean>(false)
 

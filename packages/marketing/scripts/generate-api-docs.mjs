@@ -57,12 +57,21 @@ const DOMAIN_ARG = (ARGS.find(a => a.startsWith('--domain=')) || '').split('=')[
 const LIMIT = Number((ARGS.find(a => a.startsWith('--limit=')) || '').split('=')[1]) || 0
 
 const MKT_CONSTS = path.join(REPO_ROOT, 'packages', 'marketing', 'app', 'consts')
+const MKT_SEED   = path.join(REPO_ROOT, 'packages', 'marketing', 'server', 'db', 'seed')
 const ROLLBACK = '__ROLLBACK_CHECK__'
 
 const blank = () => ({ created: 0, updated: 0, unchanged: 0, orphaned: 0 })
 const add = (a, b) => { a.created += b.created; a.updated += b.updated; a.unchanged += b.unchanged; a.orphaned += b.orphaned }
 
 // ─── DB seed: ingest the existing curated files (all 8 families) ────────────
+//
+// Strategy:
+//   1. If the legacy app/consts/<dir>/ directory exists, read the .const.ts
+//      files as before (backward-compatible path, used before ticket F).
+//   2. If the directory is gone (ticket F removed it), fall back to the JSON
+//      fixture at server/db/seed/<kind>.json produced by dump-db-fixture.mjs.
+//      Restores the full content, including the editorial lock flag.
+//
 async function runSeed (manager) {
     const total = blank()
     const kinds = DOMAIN_ARG ? [DOMAIN_ARG] : Object.keys(DOC_KIND_DIRS)
@@ -71,21 +80,45 @@ async function runSeed (manager) {
         const dir = DOC_KIND_DIRS[kind]
         if (!dir) { console.error(`Unknown kind: ${kind}`); continue }
         const dirPath = path.join(MKT_CONSTS, dir)
-        let files = fs.existsSync(dirPath)
-            ? fs.readdirSync(dirPath).filter(f => f.endsWith('.const.ts')).sort()
-            : []
-        if (LIMIT) files = files.slice(0, LIMIT)
-
         const c = blank()
-        for (const file of files) {
-            const existing = await readExistingDoc(path.join(dirPath, file))
-            if (!existing?.doc) { console.error(`  ! no _DOC in ${dir}/${file}`); continue }
-            const record = mapDoc(kind, existing.doc)
-            const r = await ingestFull(manager, record)
-            add(c, r); add(total, r)
-            if (VERBOSE) console.log(`  ${kind}/${record.entry.slug}: +${r.created} ~${r.updated} =${r.unchanged} ⌀${r.orphaned}`)
+
+        if (fs.existsSync(dirPath)) {
+            // ── Legacy path: read from .const.ts files (pre-ticket-F) ────────
+            let files = fs.readdirSync(dirPath).filter(f => f.endsWith('.const.ts')).sort()
+            if (LIMIT) files = files.slice(0, LIMIT)
+
+            for (const file of files) {
+                const existing = await readExistingDoc(path.join(dirPath, file))
+                if (!existing?.doc) { console.error(`  ! no _DOC in ${dir}/${file}`); continue }
+                const record = mapDoc(kind, existing.doc)
+                const r = await ingestFull(manager, record)
+                add(c, r); add(total, r)
+                if (VERBOSE) console.log(`  ${kind}/${record.entry.slug}: +${r.created} ~${r.updated} =${r.unchanged} ⌀${r.orphaned}`)
+            }
+            console.log(`[${kind}] files=${files.length} created=${c.created} updated=${c.updated} unchanged=${c.unchanged} orphaned=${c.orphaned}`)
+        } else {
+            // ── Fixture path: read from server/db/seed/<kind>.json ─────────
+            const fixturePath = path.join(MKT_SEED, `${kind}.json`)
+            if (!fs.existsSync(fixturePath)) {
+                console.error(`  ! [${kind}] no const dir and no fixture at ${fixturePath} — skipping`)
+                continue
+            }
+            const fixture = JSON.parse(fs.readFileSync(fixturePath, 'utf-8'))
+            let records = fixture.entries ?? []
+            if (LIMIT) records = records.slice(0, LIMIT)
+
+            for (const record of records) {
+                const r = await ingestFull(manager, record)
+                add(c, r); add(total, r)
+                if (VERBOSE) console.log(`  ${kind}/${record.entry.slug}: +${r.created} ~${r.updated} =${r.unchanged} ⌀${r.orphaned}`)
+                // Restore the editorial lock — ingestFull uses the 'all' mask but
+                // never sets edited_by_user itself (it defaults to false on INSERT).
+                if (record.entry.edited_by_user) {
+                    await manager.update(DocEntry, { kind: record.entry.kind, slug: record.entry.slug }, { edited_by_user: true })
+                }
+            }
+            console.log(`[${kind}] fixture=${records.length} created=${c.created} updated=${c.updated} unchanged=${c.unchanged} orphaned=${c.orphaned}`)
         }
-        console.log(`[${kind}] files=${files.length} created=${c.created} updated=${c.updated} unchanged=${c.unchanged} orphaned=${c.orphaned}`)
     }
     return total
 }
