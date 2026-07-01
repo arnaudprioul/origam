@@ -7,6 +7,7 @@ import {
     SHOWCASE_GRID_COLUMNS,
     SHOWCASE_SPARKLINE_DATA,
     SHOWCASE_TABLE_ROWS,
+    SHOWCASE_TABLE_VARS,
     SHOWCASE_WIDGET_RADIUS,
     SHOWCASE_WIDGET_VARS
 } from '~/consts/showcase.const'
@@ -106,6 +107,7 @@ const STATUS_DOT_COLOR: Record<string, string> = {
 
                     <origam-table
                         class="home-showcase__table"
+                        :style="SHOWCASE_TABLE_VARS"
                         data-cy="showcase-data-table"
                     >
                         <thead class="home-showcase__table-head">
@@ -426,9 +428,13 @@ const STATUS_DOT_COLOR: Record<string, string> = {
 
     &__table {
         width: 100%;
-        border-collapse: collapse;
         font-size: var(--origam-font-size---sm, 0.875rem);
         color: var(--origam-color__text---primary, #0a0a0a);
+
+        // Remove bottom border on the last row (OrigamTable adds border-bottom on every td)
+        :deep(tr:last-child td) {
+            border-bottom: none;
+        }
     }
 
     &__th {
@@ -447,14 +453,6 @@ const STATUS_DOT_COLOR: Record<string, string> = {
         margin-inline-start: var(--origam-space---1, 0.25rem);
         font-size: var(--origam-font-size---xs, 0.75rem);
         opacity: 0.7;
-    }
-
-    &__tr {
-        border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-
-        &:last-child {
-            border-block-end: none;
-        }
     }
 
     &__td {

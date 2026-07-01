@@ -35,6 +35,32 @@ export const SHOWCASE_WIDGET_VARS: CSSProperties = {
     '--origam-card---padding-inline-end': 'var(--origam-space---6, 1.5rem)'
 } as CSSProperties
 
+/**
+ * OrigamTable token overrides for the showcase data-table widget.
+ *
+ * Applied via inline :style (specificity 1,0,0,0) to win over
+ * OrigamTable's density-variant CSS vars (specificity 0,2,0).
+ *
+ *   header padding  8px / 12px   (compact design, matches maquette)
+ *   header bg       transparent  (no surface--overlay grey on th)
+ *   header color    secondary    (same as old <table> design)
+ *   header border   1px default  (not 2px border-bottom from DS default)
+ *   cell padding    8px / 12px
+ *   cell border     default      (rgba(0,0,0,0.08)) — not subtle
+ */
+export const SHOWCASE_TABLE_VARS: CSSProperties = {
+    '--origam-table---background-color':                         'transparent',
+    '--origam-table__header-cell---background-color':            'transparent',
+    '--origam-table__header-cell---color':                       'var(--origam-color__text---secondary, #525252)',
+    '--origam-table__header-cell---padding-block':               'var(--origam-space---2, 0.5rem)',
+    '--origam-table__header-cell---padding-inline':              'var(--origam-space---3, 0.75rem)',
+    '--origam-table__header-cell---border-bottom-width':         '1px',
+    '--origam-table__header-cell---border-bottom-color':         'var(--origam-color__border---default, rgba(0, 0, 0, 0.08))',
+    '--origam-table__cell---padding-block':                      'var(--origam-space---2, 0.5rem)',
+    '--origam-table__cell---padding-inline':                     'var(--origam-space---3, 0.75rem)',
+    '--origam-table__cell---border-color':                       'var(--origam-color__border---default, rgba(0, 0, 0, 0.08))',
+} as CSSProperties
+
 export const SHOWCASE_TABLE_ROWS: IShowcaseTableRow[] = [
     {
         nameKey: 'home.showcase.data_table.row1_name',
