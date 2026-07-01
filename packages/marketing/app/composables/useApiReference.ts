@@ -28,15 +28,6 @@ export type TReferenceKind =
     | 'type'
     | 'util'
 
-/** Forme brute retournée par GET /api/reference/categories/:kind. */
-interface IDocCategoryRaw {
-    key: string
-    labelKey: string | null
-    labelFallback: string | null
-    icon: string | null
-    position: number
-}
-
 /**
  * Fetches the lightweight catalog for one entity family.
  *
@@ -114,12 +105,7 @@ export async function useReferenceDoc<T>(
 export function useReferenceCategories(kind: TReferenceKind) {
     return useAsyncData<string[]>(
         `categories:${kind}`,
-        async () => {
-            const cats = await $fetch<IDocCategoryRaw[]>(
-                `/api/reference/categories/${kind}`,
-            )
-            return cats.map(c => c.key)
-        },
+        () => $fetch<string[]>(`/api/reference/categories/${kind}`),
         { default: () => [] },
     )
 }
