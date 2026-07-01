@@ -14,27 +14,25 @@ Postgres** et configurer les variables d'env ci-dessous.
 ## 1. Variables d'environnement à configurer dans Coolify (service marketing)
 
 ### Base de données (obligatoire pour l'API-Reference)
-Soit l'URL canonique :
+Convention Nuxt `runtimeConfig` — variables préfixées `NUXT_` (même principe que
+les autres projets) :
 
 ```
-DATABASE_URL=postgres://<user>:<password>@<host>:5432/<db>
-```
-
-Soit les variables discrètes (fallback équivalent) :
-
-```
-DB_HOST=<host>
-DB_PORT=5432
-DB_USER=<user>
-DB_PASSWORD=<password>
-DB_NAME=<db>
+NUXT_DB_HOST=<host>
+NUXT_DB_PORT=5432
+NUXT_DB_NAME=<db>
+NUXT_DB_USER=<user>
+NUXT_DB_PASSWORD=<password>
 ```
 
 Ajouter si la base managée présente un certificat auto-signé :
 
 ```
-DB_SSL=true
+NUXT_DB_SSL=true
 ```
+
+> Override optionnel : `DATABASE_URL=postgres://user:pass@host:5432/db` est aussi
+> accepté (pratique en local / docker) et prend le pas sur le set `NUXT_DB_*`.
 
 ### Backoffice /admin (obligatoire seulement si tu utilises l'admin)
 ```

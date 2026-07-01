@@ -33,15 +33,17 @@ No credential is ever hardcoded — every value is read from the environment.
 
 ### Database connection
 
+Convention Nuxt `runtimeConfig` : les variables sont préfixées `NUXT_`.
+
 | Variable | Required | Default | Notes |
 |---|---|---|---|
-| `DATABASE_URL` | one of the two | — | Canonical form, e.g. `postgres://user:pass@host:5432/db`. Preferred (Coolify injects this). |
-| `DB_HOST` | fallback | — | Discrete mode, used only when `DATABASE_URL` is unset. |
-| `DB_PORT` | no | `5432` | |
-| `DB_USER` | fallback | — | |
-| `DB_PASSWORD` | fallback | — | |
-| `DB_NAME` | fallback | — | |
-| `DB_SSL` | no | off | `true` → TLS accepting the provider's self-signed chain (managed PG). |
+| `NUXT_DB_HOST` | yes | — | Forme primaire (set discret `NUXT_DB_*`). |
+| `NUXT_DB_PORT` | no | `5432` | |
+| `NUXT_DB_NAME` | yes | — | |
+| `NUXT_DB_USER` | yes | — | |
+| `NUXT_DB_PASSWORD` | yes | — | |
+| `NUXT_DB_SSL` | no | off | `true` → TLS accepting the provider's self-signed chain (managed PG). |
+| `DATABASE_URL` | optional | — | Override canonique `postgres://user:pass@host:5432/db` ; prend le pas sur le set `NUXT_DB_*` (pratique local/CLI). |
 
 ### Admin backoffice auth (ticket E1)
 

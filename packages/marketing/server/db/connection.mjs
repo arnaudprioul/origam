@@ -18,7 +18,8 @@ function parseSsl (raw) {
 
 /**
  * Build the TypeORM postgres connection options from the environment.
- * Prefers DATABASE_URL; falls back to the discrete DB_* variables.
+ * Primary form = the discrete NUXT_DB_* variables (Nuxt runtimeConfig
+ * convention); DATABASE_URL is an optional override that takes precedence.
  * Throws a clear, secret-free error when nothing is configured.
  *
  * @param {NodeJS.ProcessEnv} [env]
