@@ -1,29 +1,24 @@
-// Liveness/readiness probe for container orchestrators (Coolify healthcheck is
-// configured to GET /api/health). The Nitro server being able to answer is the
-// liveness signal. The API-Reference database is an additional readiness check:
-// while the site still reads the static .const.ts files the DB is OPTIONAL, so
-// an unconfigured DB does not degrade health. Once configured, an unreachable
-// DB flips the response to 503 so orchestrators can gate on readiness.
+// Liveness probe for container orchestrators (Coolify healthcheck GETs
+// /api/health). The Nitro server being able to answer IS the liveness signal —
+// it always returns 200 so a merely-unreachable API-Reference database never
+// fails the container healthcheck and rolls back a deploy. DB reachability is
+// surfaced as an informational `db` block for observability/readiness dashboards
+// (gate on `db.ok` there, not on the HTTP status of this liveness probe).
 
 interface IHealthResponse {
-    status: 'ok' | 'degraded'
+    status: 'ok'
     db: {
         configured: boolean
         ok: boolean
     }
 }
 
-export default defineEventHandler(async (event): Promise<IHealthResponse> => {
+export default defineEventHandler(async (): Promise<IHealthResponse> => {
     const configured = isDbConfigured()
     const ok = configured ? await pingDb() : false
 
-    const degraded = configured && !ok
-    if (degraded) {
-        setResponseStatus(event, 503)
-    }
-
     return {
-        status: degraded ? 'degraded' : 'ok',
+        status: 'ok',
         db: { configured, ok }
     }
 })

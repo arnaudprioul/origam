@@ -77,17 +77,19 @@ export const MIGRATIONS_TABLE = 'doc_typeorm_migrations'
 /**
  * Environment variable names that configure the database connection.
  * NEVER hardcode a credential — every value comes from the environment.
- * `DATABASE_URL` is the canonical, Coolify-friendly form; the discrete
- * `DB_*` set is the documented fallback.
+ * Convention Nuxt `runtimeConfig` : les variables sont préfixées `NUXT_`
+ * (NUXT_DB_HOST → runtimeConfig.db.host, …), identique aux autres projets.
+ * Le set discret `NUXT_DB_*` est la forme primaire ; `DATABASE_URL` reste
+ * accepté comme override canonique optionnel (pratique en local / docker).
  */
 export const DB_ENV = Object.freeze({
     URL: 'DATABASE_URL',
-    HOST: 'DB_HOST',
-    PORT: 'DB_PORT',
-    USER: 'DB_USER',
-    PASSWORD: 'DB_PASSWORD',
-    NAME: 'DB_NAME',
-    SSL: 'DB_SSL',
+    HOST: 'NUXT_DB_HOST',
+    PORT: 'NUXT_DB_PORT',
+    USER: 'NUXT_DB_USER',
+    PASSWORD: 'NUXT_DB_PASSWORD',
+    NAME: 'NUXT_DB_NAME',
+    SSL: 'NUXT_DB_SSL',
 })
 
 /** Default discrete-mode values (host/port only — never a credential). */
