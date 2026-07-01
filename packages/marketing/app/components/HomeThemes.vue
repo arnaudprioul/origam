@@ -190,7 +190,7 @@ const { theme, setTheme } = useTheme()
     &__chips {
         display: flex;
         flex-wrap: wrap;
-        gap: var(--origam-space---2, 0.5rem);
+        gap: var(--origam-space---4, 1rem);
         list-style: none;
         margin: 0;
         padding: 0;
