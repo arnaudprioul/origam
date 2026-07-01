@@ -527,6 +527,45 @@ test.describe('OrigamSelect', () => {
     // ------------------------------------------------------------------ //
 
     test.describe('non-regression', () => {
+        // DS bug #fix — first click on the chevron icon double-toggled the menu
+        // (icon handler opened, bubbling event closed again) because stopPropagation
+        // was only called when isFocused=true. Fixed: icon handler only toggles when
+        // already focused; unfocused clicks let the event bubble to handleMousedownControl.
+        test('menu-icon first click stays open (no double-toggle regression)', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const select = sandbox.locator('.origam-select').first()
+            await expect(select).toBeVisible({ timeout: 12000 })
+
+            // Click the chevron icon directly — first interaction, field is NOT focused yet.
+            const menuIcon = select.locator('.origam-select__menu-icon').first()
+            await expect(menuIcon).toBeVisible({ timeout: 5000 })
+            await menuIcon.click()
+
+            // After the FIRST click on the icon the dropdown MUST remain open.
+            await expect(sandbox.locator('.origam-list').first()).toBeVisible({ timeout: 5000 })
+            await expect(select).toHaveClass(/origam-select--active-menu/, { timeout: 3000 })
+        })
+
+        test('menu-icon second click (already focused) closes the menu', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const select = sandbox.locator('.origam-select').first()
+            await expect(select).toBeVisible({ timeout: 12000 })
+
+            const menuIcon = select.locator('.origam-select__menu-icon').first()
+            await expect(menuIcon).toBeVisible({ timeout: 5000 })
+
+            // First click — opens menu (field now focused)
+            await menuIcon.click()
+            await expect(sandbox.locator('.origam-list').first()).toBeVisible({ timeout: 5000 })
+
+            // Second click — must close the menu
+            await menuIcon.click()
+            await expect(sandbox.locator('.origam-list').first()).not.toBeVisible({ timeout: 5000 })
+            await expect(select).not.toHaveClass(/origam-select--active-menu/, { timeout: 3000 })
+        })
+
         test('selection is not duplicated after re-focus (no double title in input)', async ({ page }) => {
             await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

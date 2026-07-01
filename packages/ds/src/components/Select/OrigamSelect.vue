@@ -674,10 +674,19 @@
 		if (menuDisabled.value) return
 
 		if (isFocused.value) {
+			// Field is already focused: stop propagation so the bubbling
+			// mousedown does NOT also reach handleMousedownControl (which
+			// would toggle the menu a second time and cancel the opening).
 			e.preventDefault()
 			e.stopPropagation()
+			menu.value = !menu.value
 		}
-		menu.value = !menu.value
+		// When the field is NOT yet focused, let the event bubble up to
+		// handleControlMousedown in OrigamTextField.  That handler emits
+		// mousedown:control → handleMousedownControl toggles the menu AND
+		// manages focus in a single step.  Without this guard the first
+		// click double-toggles (icon → open, control → close again) because
+		// stopPropagation is only called after the first focus is set.
 	}
 	const handleKeydown = (e: KeyboardEvent) => {
 		if (!e.key || props.readonly || form?.isReadonly.value) return
