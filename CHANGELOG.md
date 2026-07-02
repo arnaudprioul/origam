@@ -13,6 +13,10 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+---
+
+## [2.6.1] — 2026-07-02
+
 ### Added
 
 - `OrigamCode` — `compact` and `prompt` display modes (commit `5ebc6702`).
@@ -48,6 +52,20 @@ This project follows [Semantic Versioning](https://semver.org).
   token var scope, active-theme guard in `useTheme`, Menu/Tooltip token
   resolution under sub-tree providers, Nuxt hydration mismatch on theme
   toggle (commit `b9fe3219`).
+- `OrigamSelect` — the chevron icon opened then instantly re-closed the menu
+  on the very first click (field not yet focused): the opening `mousedown`
+  bubbled to the control handler and double-toggled. The toggle now only
+  runs when the field is already focused; otherwise the event bubbles to the
+  single control handler that opens + focuses in one pass (PR #70).
+- Sass `mixed-decls` deprecation warnings eliminated in `OrigamBtn` and
+  `OrigamSwitchTrack` — declarations that followed a nested rule (`@media` /
+  `&:focus-visible`) are moved above it. Pure reorder, identical compiled CSS
+  (PR #73).
+- Layout offset counted twice in SSR / production builds (invisible in dev):
+  Vue's hydration-mismatch recovery could abandon a layout item mid-`setup()`
+  after it registered, leaving an orphan in `registered` so a 240 px drawer
+  reserved 480 px. `useLayoutItem`'s `register()` now evicts stale entries
+  occupying the same `(order, position)` slot (PR #76).
 
 ---
 
