@@ -36,6 +36,7 @@ async function handleLogout () {
 <template>
     <origam-app class="admin-app">
         <origam-app-bar
+            :order="0"
             :title="t('admin.appbar.title', 'Admin')"
             class="admin-appbar"
             :aria-label="t('admin.appbar.label', 'Admin toolbar')"
@@ -74,6 +75,7 @@ async function handleLogout () {
         </origam-app-bar>
 
         <origam-drawer
+            :order="1"
             v-model="drawerOpen"
             permanent
             class="admin-drawer"
@@ -146,6 +148,12 @@ async function handleLogout () {
 
 .admin-nav {
     padding: var(--origam-space---2, 0.5rem);
+
+    :deep(.origam-list-item--active),
+    :deep(.origam-list-item--link:hover),
+    :deep(.origam-list-item--link:focus-visible) {
+        --origam-list-item__overlay---background-color: var(--origam-color__action--primary---bg);
+    }
 
     &__divider {
         margin-block: var(--origam-space---2, 0.5rem);

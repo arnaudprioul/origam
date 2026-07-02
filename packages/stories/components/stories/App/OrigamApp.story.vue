@@ -83,6 +83,28 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop — app-bar + drawer (layout order)">
+			<div style="height: 360px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
+				<origam-app :full-height="true">
+					<origam-app-bar
+						:order="0"
+						title="Admin"
+						data-cy="layout-appbar-order"
+					>
+						<template #prepend>
+							<origam-btn :icon="menuIcon" aria-label="Navigation menu"/>
+						</template>
+					</origam-app-bar>
+					<origam-drawer :order="1" permanent width="240" data-cy="layout-drawer-order">
+						<div style="padding: 12px;">Navigation</div>
+					</origam-drawer>
+					<origam-main data-cy="layout-main-order">
+						<div style="padding: 12px;">AppBar must be full-width (top), Drawer below it (left).</div>
+					</origam-main>
+				</origam-app>
+			</div>
+		</Variant>
+
 		<Variant title="Slots - Default">
 			<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc);">
 				<origam-app :full-height="true" data-cy="app-slot-default">
@@ -125,7 +147,7 @@
 		lang="ts"
 		setup
 >
-	import { OrigamApp, OrigamBtn, OrigamDrawer, OrigamMain, OrigamToolbar } from '@origam/components'
+	import { OrigamApp, OrigamAppBar, OrigamBtn, OrigamDrawer, OrigamMain, OrigamToolbar } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 	import type { IAppProps } from '@origam/interfaces'
 
