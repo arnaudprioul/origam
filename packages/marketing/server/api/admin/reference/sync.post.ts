@@ -1,96 +1,92 @@
 /**
  * POST /api/admin/reference/sync
  *
- * Triggers the docs:sync pipeline (scripts/generate-api-docs.mjs). The
- * pipeline re-extracts structural [SRC] facts from packages/ds/src for the 4
- * auto-derivable families (enums, interfaces, consts, utils) and UPSERTs them
- * while respecting the editorial lock (edited_by_user rows are never touched).
+ * Re-applies the bundled fixtures (server/db/seed/*.json, embedded as server
+ * assets) to the database — the same idempotent upsert used by the boot-time
+ * bootstrap (server/plugins/00.db-bootstrap.ts). Works in the deployed
+ * container (.output) where DS source files and scripts/ are absent.
  *
- * Implementation: the pipeline is spawned as a child process (it manages its
- * own DB connection and writes a DocSyncRun row when done). This endpoint
- * returns 202 Accepted immediately with the run id of a pre-created
- * 'running' row. The client polls GET /api/admin/reference/sync/runs to
- * observe completion.
+ * Behaviour:
+ *   - Loads the 8 fixture JSON files via useStorage('assets:db-seed').
+ *   - Calls syncFixtures inside a transaction: creates new entries, refreshes
+ *     [SRC] columns, preserves [ÉDIT] / editorial locks, orphans removed rows.
+ *   - Updates doc_meta.seed_fixture_hash so the bootstrap skips the next boot.
+ *   - Inserts a DocSyncRun audit row (status success / failed + counts).
+ *   - Returns 200 with the aggregated counts and status (IAdminSyncResult shape).
  *
- * The running row counts (created/updated/…) are filled from the parsed stdout
- * when the child exits. The pipeline also inserts its own DocSyncRun — that is
- * the detail row with accurate counts; the 'running' row is updated to reflect
- * the final status and exit code.
+ * Authentication: handled by server/middleware/admin.ts — every /api/admin/**
+ * request is already guarded before this handler runs.
  *
- * Returns 503 when the pipeline script or `tsx` are not present (production
- * builds without source files).
+ * Idempotent: a second sync with unchanged fixtures produces created=0
+ * updated=0 (syncFixtures only writes rows that actually changed).
  */
 
-import { spawn } from 'node:child_process'
-import { resolve } from 'node:path'
-import { existsSync } from 'node:fs'
-
 import { DocSyncRun } from '../../../db/entities'
+import { DOC_KINDS, DOC_META_KEYS } from '../../../db/db.const.mjs'
+import { fixtureHash, syncFixtures, writeMeta } from '../../../utils/doc-fixture-sync'
 
-function parseSummary (output: string) {
-    const m = output.match(/summary\s*[—-]\s*created:\s*(\d+),\s*updated:\s*(\d+),\s*unchanged:\s*(\d+),\s*orphaned:\s*(\d+)/i)
-    if (!m) return null
-    return {
-        created_count: parseInt(m[1], 10),
-        updated_count: parseInt(m[2], 10),
-        unchanged_count: parseInt(m[3], 10),
-        orphaned_count: parseInt(m[4], 10),
-    }
+/** Normalise a raw server-asset value (string | Buffer | Uint8Array) to string. */
+function toText (raw: unknown): string | null {
+    if (raw == null) return null
+    if (typeof raw === 'string') return raw
+    if (raw instanceof Uint8Array) return Buffer.from(raw).toString('utf-8')
+    return String(raw)
 }
 
-export default defineEventHandler(async (event) => {
-    const cwd = process.cwd()
-    const script = resolve(cwd, 'scripts', 'generate-api-docs.mjs')
-    const tsxBin = resolve(cwd, 'node_modules', '.bin', 'tsx')
-    const tsconfigPath = resolve(cwd, 'tsconfig.typeorm.json')
+export default defineEventHandler(async () => {
+    const db = await useDb()
+    const storage = useStorage('assets:db-seed')
 
-    if (!existsSync(script) || !existsSync(tsxBin)) {
-        throw createError({
-            statusCode: 503,
-            statusMessage: 'Sync pipeline not available in this environment (source files or tsx missing)',
-        })
+    // Load every bundled fixture text, keyed by kind — same as the bootstrap.
+    const texts: Record<string, string | null> = {}
+    for (const kind of DOC_KINDS) {
+        texts[kind] = toText(await storage.getItemRaw(`${kind}.json`))
     }
 
-    const db = await useDb()
-    const runRepo = db.getRepository(DocSyncRun)
+    // Parse all entries across kinds into a flat records list.
+    const records = []
+    for (const kind of DOC_KINDS) {
+        const text = texts[kind]
+        if (!text) continue
+        const fixture = JSON.parse(text)
+        for (const rec of (fixture.entries ?? [])) records.push(rec)
+    }
 
-    const run = runRepo.create({
+    let counts = { created: 0, updated: 0, unchanged: 0, orphaned: 0 }
+    let runStatus: 'success' | 'failed' = 'success'
+    let runError: string | null = null
+
+    try {
+        counts = await db.transaction(manager => syncFixtures(manager, records))
+        // Keep the hash in sync so the next boot takes the fast path.
+        await writeMeta(db.manager, DOC_META_KEYS.SEED_FIXTURE_HASH, fixtureHash(texts))
+    } catch (err) {
+        runStatus = 'failed'
+        runError = err instanceof Error ? err.message : String(err)
+    }
+
+    await db.getRepository(DocSyncRun).insert({
+        finished_at: new Date(),
         domain: null,
-        status: 'running',
-        created_count: 0,
-        updated_count: 0,
-        unchanged_count: 0,
-        orphaned_count: 0,
-        source_commit: null,
-    })
-    await runRepo.save(run)
-
-    const child = spawn(
-        tsxBin,
-        ['--tsconfig', tsconfigPath, script],
-        { env: { ...process.env }, cwd, stdio: 'pipe' },
-    )
-
-    let output = ''
-    child.stdout?.on('data', (chunk: Buffer) => { output += chunk.toString() })
-    child.stderr?.on('data', (chunk: Buffer) => { output += chunk.toString() })
-
-    child.on('close', async (code) => {
-        try {
-            const db2 = await useDb()
-            const counts = parseSummary(output)
-            await db2.getRepository(DocSyncRun).update({ id: run.id }, {
-                status: code === 0 ? 'success' : 'failed',
-                finished_at: new Date(),
-                created_count: counts?.created_count ?? 0,
-                updated_count: counts?.updated_count ?? 0,
-                unchanged_count: counts?.unchanged_count ?? 0,
-                orphaned_count: counts?.orphaned_count ?? 0,
-                error: code !== 0 ? output.slice(-1024) : null,
-            })
-        } catch { /* non-fatal — the pipeline wrote its own DocSyncRun row */ }
+        created_count: counts.created,
+        updated_count: counts.updated,
+        unchanged_count: counts.unchanged,
+        orphaned_count: counts.orphaned,
+        source_commit: process.env.NUXT_DOCS_SOURCE_COMMIT ?? null,
+        status: runStatus,
+        error: runError,
     })
 
-    setResponseStatus(event, 202)
-    return { id: run.id, status: 'running' }
+    if (runStatus === 'failed') {
+        throw createError({ statusCode: 500, statusMessage: `Sync failed: ${runError}` })
+    }
+
+    return {
+        created: counts.created,
+        updated: counts.updated,
+        unchanged: counts.unchanged,
+        orphaned: counts.orphaned,
+        status: runStatus,
+        error: null,
+    }
 })
