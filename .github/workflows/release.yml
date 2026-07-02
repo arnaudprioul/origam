@@ -70,7 +70,15 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         working-directory: packages/ds
-        run: pnpm publish --access public --provenance --no-git-checks
+        run: |
+          # setup-node writes an .npmrc containing the literal string
+          # `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}`. npm expands that
+          # env placeholder at publish time; pnpm does NOT always — so the PUT went
+          # out unauthenticated and npm answered E404 (releases 2.5.0/2.5.1/2.6.0 all
+          # failed here). Write the RESOLVED token value into the config pnpm reads.
+          npmrc="${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
+          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" >> "$npmrc"
+          pnpm publish --access public --provenance --no-git-checks
 
       - name: Extract release notes from CHANGELOG.md
         id: notes
