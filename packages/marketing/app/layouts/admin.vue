@@ -36,6 +36,7 @@ async function handleLogout () {
 <template>
     <origam-app class="admin-app">
         <origam-app-bar
+            :title="t('admin.appbar.title', 'Admin')"
             class="admin-appbar"
             :aria-label="t('admin.appbar.label', 'Admin toolbar')"
         >
@@ -47,15 +48,6 @@ async function handleLogout () {
                     data-cy="admin-nav-toggle"
                     @click="drawerOpen = !drawerOpen"
                 />
-            </template>
-
-            <template #default>
-                <origam-title
-                    tag="span"
-                    class="admin-appbar__title"
-                >
-                    {{ t('admin.appbar.title', 'Admin') }}
-                </origam-title>
             </template>
 
             <template #append>
@@ -138,12 +130,9 @@ async function handleLogout () {
 
 .admin-appbar {
     --origam-toolbar---background: var(--origam-color__surface---default, #ffffff);
+    --origam-title---font-size: var(--origam-font-size---base, 1rem);
+    --origam-title---font-weight: 700;
     border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-
-    &__title {
-        --origam-title---font-size: var(--origam-font-size---base, 1rem);
-        --origam-title---font-weight: 700;
-    }
 
     &__btn {
         --origam-btn---font-size: var(--origam-font-size---sm, 0.875rem);
@@ -166,6 +155,8 @@ async function handleLogout () {
 }
 
 .admin-main {
-    padding: var(--origam-space---6, 1.5rem);
+    :deep(.origam-main__wrapper) {
+        padding: var(--origam-space---6, 1.5rem);
+    }
 }
 </style>
