@@ -134,6 +134,7 @@ async function handleLogout () {
     --origam-toolbar---background: var(--origam-color__surface---default, #ffffff);
     --origam-title---font-size: var(--origam-font-size---base, 1rem);
     --origam-title---font-weight: 700;
+    --origam-layout---position-left: 0px;
     border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
 
     &__btn {
