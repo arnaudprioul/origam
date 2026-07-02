@@ -27,7 +27,7 @@ import { promisify } from 'node:util'
 const scryptAsync = promisify(scrypt)
 
 /** Session config object — pulled from runtimeConfig each call so hot-reload works. */
-function sessionConfig () {
+function sessionConfig (event: Parameters<typeof useSession>[0]) {
     const cfg = useRuntimeConfig()
     const password = cfg.sessionPassword as string
     if (!password || password.length < 32) {
@@ -36,7 +36,22 @@ function sessionConfig () {
             statusMessage: 'Server misconfiguration: NUXT_SESSION_PASSWORD must be at least 32 characters',
         })
     }
-    return { password, maxAge: 60 * 60 * 8 /* 8 h */ }
+    // The `Secure` cookie attribute is derived from the ACTUAL request protocol
+    // (x-forwarded-proto aware). A `Secure` cookie is silently dropped by the
+    // browser over plain HTTP — so an http-only dev/stage env would set the
+    // session cookie at login but never receive it back, breaking every
+    // /api/admin/** request with a 401. Over HTTPS the cookie stays Secure.
+    const secure = getRequestProtocol(event) === 'https'
+    return {
+        password,
+        maxAge: 60 * 60 * 8, /* 8 h */
+        cookie: {
+            httpOnly: true,
+            sameSite: 'lax' as const,
+            path: '/',
+            secure,
+        },
+    }
 }
 
 /**
@@ -64,7 +79,7 @@ export async function verifyAdminPassword (candidate: string): Promise<boolean> 
 
 /** Read (and seal-validate) the current admin session. */
 export async function getAdminSession (event: Parameters<typeof useSession>[0]) {
-    return useSession<{ admin?: boolean }>(event, sessionConfig())
+    return useSession<{ admin?: boolean }>(event, sessionConfig(event))
 }
 
 /**
