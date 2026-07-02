@@ -17,7 +17,7 @@ jobs:
     name: Coverage + SonarQube analysis
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # Full history so SonarQube can attribute blame / new-code period.
           fetch-depth: 0

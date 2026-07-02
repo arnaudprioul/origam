@@ -32,7 +32,7 @@ jobs:
             dockerfile: docker/Dockerfile.stories
             ghcr: ghcr.io/arnaudprioul/origam-stories
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up QEMU (multi-arch)
         uses: docker/setup-qemu-action@v3
