@@ -238,6 +238,38 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
                 disabledTransitions.set(id, disableTransitions)
             }
 
+            // Evict any stale registrations occupying the same (order, position) slot.
+            //
+            // Root cause: in SSR + prod builds, Vue's hydration-mismatch recovery
+            // can abandon a component instance mid-setup (after register() runs but
+            // before onBeforeUnmount ever fires) and remount a fresh one. The
+            // orphaned instance keeps its id in `registered`, so both the orphan and
+            // the fresh instance accumulate — producing 2× the intended offset
+            // (e.g. 480 px instead of 240 px for a 240 px drawer).
+            //
+            // The eviction targets all ids at the exact same (order, position) pair
+            // that differ from the incoming id. In normal operation (no hydration
+            // anomaly) this set is always empty. For truly independent items that
+            // share the same order, their positions will differ, so they are not
+            // affected.
+            const staleIds = registered.value.filter(
+                existingId =>
+                    existingId !== id
+                    && priorities.get(existingId)?.value === order.value
+                    && positions.get(existingId)?.value === position.value
+            )
+            if (staleIds.length > 0) {
+                const staleSet = new Set(staleIds)
+                for (const staleId of staleIds) {
+                    priorities.delete(staleId)
+                    positions.delete(staleId)
+                    layoutSizes.delete(staleId)
+                    activeItems.delete(staleId)
+                    disabledTransitions.delete(staleId)
+                }
+                registered.value = registered.value.filter(v => !staleSet.has(v))
+            }
+
             const instances = findChildrenWithProvide(ORIGAM_LAYOUT_KEY, rootVm?.vnode)
             const instanceIndex = instances.indexOf(vm)
 
