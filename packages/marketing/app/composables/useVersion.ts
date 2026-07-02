@@ -1,16 +1,28 @@
 import { computed } from 'vue'
 
+interface INpmVersionData {
+  version: string
+}
+
 /**
  * Single source of truth for the displayed origam version.
  *
- * The value is injected at build time from `packages/ds/package.json` via
- * `runtimeConfig.public.npmVersion` (see nuxt.config). Components and i18n
- * interpolation pull it from here, so a release only requires bumping the DS
- * package version — never a manual edit of a badge string or a translation.
+ * Fetches the live npm registry via /api/npm-version (Nitro route, TTL 1h,
+ * cached server-side) and falls back to the build-time value from
+ * runtimeConfig when the registry is unreachable (offline, CI headless,
+ * rate-limit).  Components pull it from here so a release only requires
+ * bumping the DS package version — never a manual edit of a badge string or
+ * a translation.
  */
 export function useVersion () {
-    const version = useRuntimeConfig().public.npmVersion as string
-    const versionTag = computed(() => `v${version}`)
+  const buildVersion = useRuntimeConfig().public.npmVersion as string
 
-    return { version, versionTag }
+  const { data } = useFetch<INpmVersionData>('/api/npm-version', {
+    default: () => ({ version: buildVersion })
+  })
+
+  const version = computed(() => data.value?.version ?? buildVersion)
+  const versionTag = computed(() => `v${version.value}`)
+
+  return { version, versionTag }
 }

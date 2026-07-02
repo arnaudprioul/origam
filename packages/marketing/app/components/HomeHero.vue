@@ -10,7 +10,7 @@
 
   const installCommand = computed(() => t('home.hero.install', 'npm install origam'))
   const badge = computed(() =>
-    t('home.hero.badge', `v${version} — 29 charts shipped, WCAG 2.1 AA pass`, { version })
+    t('home.hero.badge', `v${version.value} — 29 charts shipped, WCAG 2.1 AA pass`, { version: version.value })
   )
   const githubRepo = MARKETING_DEFAULTS.githubRepo
 </script>
