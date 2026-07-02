@@ -1,7 +1,7 @@
 name: Release
 
 # Triggered when a release tag is pushed. The tag must match the version
-# in package.json — the workflow asserts it before publishing.
+# in packages/ds/package.json — the workflow asserts it before publishing.
 # Accepts both `v2.3.0` (standard) and bare `2.3.0` (origam's historical
 # convention coming from `git flow release finish`).
 on:
@@ -35,39 +35,42 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: pnpm
           registry-url: "https://registry.npmjs.org"
           always-auth: true
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps --no-audit --no-fund
+        run: pnpm install --frozen-lockfile
 
-      - name: Assert tag matches package.json version
+      - name: Assert tag matches packages/ds/package.json version
         run: |
           tag="${GITHUB_REF_NAME#v}"
-          pkg=$(node -p "require('./package.json').version")
+          pkg=$(node -p "require('./packages/ds/package.json').version")
           if [ "$tag" != "$pkg" ]; then
-            echo "::error::Tag ($tag) does not match package.json version ($pkg)"
+            echo "::error::Tag ($tag) does not match packages/ds/package.json version ($pkg)"
             exit 1
           fi
           echo "version=$pkg" >> "$GITHUB_ENV"
 
       - name: Build tokens
-        run: npm run tokens:build
+        run: pnpm -F origam tokens:build
 
       - name: Build library
-        run: npm run server:build
+        run: pnpm -F origam build
 
       - name: Unit tests
-        run: npm run test:unit -- --run
+        run: pnpm -F @origam/tests test:unit:run
 
       - name: Publish to npm (with provenance)
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public --provenance
+        working-directory: packages/ds
+        run: pnpm publish --access public --provenance --no-git-checks
 
       - name: Extract release notes from CHANGELOG.md
         id: notes
@@ -76,7 +79,7 @@ jobs:
           notes_file="$(mktemp)"
           # Capture lines between the first `## ` heading that contains the
           # version and the next `## ` heading. Handles both `## [2.2.1]`
-          # and `## v2.2.1` styles.
+          # and `## v2.2.1` styles. CHANGELOG.md lives at the repo root.
           awk -v ver="$version" '
             BEGIN { capture = 0 }
             /^## /{

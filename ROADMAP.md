@@ -1,6 +1,6 @@
 # ROADMAP — origam Design System
 
-> Référentiel : `origam@2.2.1` (npm, premier release public).
+> Référentiel : `origam@2.6.0` (dernière version publiée, Wave 4 incluse).
 > Stack : Vue 3.5 + TypeScript, distribution ESM via `unbuild`,
 > tokens DTCG (Tokens Studio + Style Dictionary v4),
 > 78 familles de composants, 13+ composables transversaux.
@@ -13,11 +13,15 @@
 
 ---
 
-## Où on en est (post-2.2.1)
+## Où on en est (post-2.6.0)
 
 - ✅ Sortie publique sur npm, tarball 869 kB, 0 vuln critique.
 - ✅ Pre-delivery automatisé via `prepublishOnly` (tokens + build + 220 TU).
 - ✅ README correct, CHANGELOG à jour.
+- ✅ **Monorepo migration completed (mai 2026)** — 6 packages pnpm workspace
+  (`ds`, `marketing`, `stories`, `docs`, `tests`, `figma-plugin`). La lib publie
+  toujours sous `origam` depuis `packages/ds/`. Voir
+  [`MONOREPO_PROPOSAL.md`](./MONOREPO_PROPOSAL.md) pour le rationnel.
 - ❌ Pas de doc en ligne. Pas de stories déployées. Pas de communauté.
 - ❌ CI = Qodana scan + tokens-sync seulement. Pas de pipeline lint/test/build/publi.
 - ❌ Coverage Playwright partielle (~100 specs pour 161 stories).
@@ -177,6 +181,51 @@ ou pro) où origam est utilisée — un seul suffit à casser le "zéro référe
 
 ## 2.1 — Court terme (Q3 2026)
 
+### 🔴 SonarQube — quality gate « A » partout, zéro dette **(PRIORITÉ, M)**
+Le scan SonarQube est déjà branché (`build.yml` → `SonarSource/sonarqube-scan-action@v4`,
+`sonar-project.properties` avec `projectKey`/`sources`/`tests`) mais incomplet.
+À finir pour atteindre une note **A** sur les 4 axes (Reliability, Security,
+Security Review, Maintainability) et **0 dette technique** :
+
+- **Câbler la couverture des TU** : les tests Vitest émettent déjà du `lcov`
+  (`packages/tests/vitest.config.ts` → `reporter: ['text','lcov']`), mais
+  Sonar ne le lit pas. Générer le rapport en CI (`test:unit:run --coverage`)
+  et le déclarer via `sonar.javascript.lcov.reportPaths=…/coverage/lcov.info`
+  pour que la **couverture soit prise en compte** dans la quality gate.
+- **Activer la quality gate bloquante** : décommenter / ajouter
+  `SonarSource/sonarqube-quality-gate-action@v1` dans le workflow pour que le
+  build échoue si la gate n'est pas verte (sinon le scan est purement
+  informatif).
+- **Résorber toute la dette** : traiter les bugs, vulnérabilités, security
+  hotspots et code smells remontés jusqu'à **A** sur chaque axe et **0**
+  issue ouverte ; régler les éventuels doublons (`Duplications`) et la
+  couverture sous le seuil. Exclure proprement le code généré (tokens,
+  `.nuxt`, dist) de l'analyse pour ne pas polluer le ratio.
+- **Lier au CI principal** : faire tourner le scan sur PR (pas seulement sur
+  push `develop`) avec le bon `sonar.pullrequest.*`, et l'ajouter aux
+  pre-delivery checks.
+
+### 🔴 CI E2E — job annulé en boucle (timeout 30 min) **(PRIORITÉ, M)**
+Le job `E2E tests (Playwright / Chromium)` de `ci.yml` est **cancelled à
+chaque run** (les 5 autres jobs passent). Il dépasse systématiquement son
+`timeout-minutes: 30`, même réduit au sous-ensemble vert (`E2E_GREEN_ONLY`).
+- **Cause** : le `webServer` Playwright lance `pnpm -F @origam/stories dev`
+  (Histoire en mode Vite **dev**). Vite **compile chaque story à la demande**
+  au premier accès → cold-start mesuré à **19-30 s par story** en local, encore
+  pire sur un runner GitHub froid. Cumulé sur les specs, le job explose les
+  30 min. Ce n'est pas un bug GitHub mais une incompatibilité dev-server/CI.
+- **Décision à trancher** :
+  - **Corriger (recommandé)** : faire pointer le `webServer` e2e sur le
+    **build statique** de Histoire (déjà produit par `build:embeds` →
+    `packages/marketing/public/stories`, servi via un `http-server`/`serve`).
+    Plus de cold-start Vite → e2e rapide et déterministe en CI. Réutilise
+    l'artefact `marketing-embeds` du job `build-embeds`.
+  - **OU retirer/dé-bloquer** : sortir e2e de la CI bloquante (job
+    `continue-on-error` ou workflow manuel/nightly séparé) tant que le point
+    précédent n'est pas fait, pour ne pas laisser la CI rouge en permanence.
+- Lié à la réparation en cours de la suite e2e (migration vers le format de
+  story unifié, sous-ensemble vert qui grandit vague par vague).
+
 ### CI/CD GitHub Actions complète **(L)**
 - Workflow `ci.yml` (lint + `tokens:lint` + `test:unit` + `test:e2e` +
   `server:build`) sur PR/push, matrice Node 22 / 24.
@@ -231,6 +280,36 @@ ou pro) où origam est utilisée — un seul suffit à casser le "zéro référe
   Codemod fourni.
 - Gain : ~2× moins de calcul reactif, hydratation plus légère.
 
+### Modularisation du DS — entry-points par domaine **(XL, v3+)**
+
+> Demande mainteneur (juin 2026). **Objectif : un bundle de base plus léger** —
+> l'app n'importe (et ne paie) que les modules qu'elle utilise.
+
+Découper la lib publiée en **modules / sub-exports tree-shakables** par domaine, au
+lieu d'un point d'entrée unique massif :
+- **`origam/core`** — fondations : Btn, Card, Icon, Layout/Grid, Divider, tokens,
+  thème, directives + composables transversaux (color/size/elevation/rounded/border…).
+  Dépendance commune à tous les autres modules.
+- **`origam/form`** — champs & formulaires : TextField, Textarea, Select, Checkbox,
+  Switch, Radio, Slider, NumberField, PasswordField, OtpInput, RatingField, FileField,
+  ColorPicker, DatePicker, Form, validation, **AddMore** (cf. spec ci-dessous).
+- **`origam/chart`** — toute la famille `OrigamChart*` (la plus lourde : SVG + maths),
+  isolée pour ne JAMAIS peser sur une app sans graphes.
+
+Autres modules candidats (à valider) :
+- **`origam/data`** — DataTable, DataList, List, Treeview, Table, Pagination, VirtualScroll.
+- **`origam/overlay`** — Dialog, Drawer, Menu, ContextualMenu, Tooltip, Sheet, Picker.
+- **`origam/feedback`** — Alert, Snackbar, Badge, Progress, Skeleton, EmptyState.
+- **`origam/media`** — Audio, Video, Img, Carousel, Parallax.
+- **`origam/nav`** — Breadcrumb, Tabs, Stepper, BottomNav, Toolbar, SystemBar.
+- Le module **`origam/nuxt`** reste un sub-export à part (cf. Module Nuxt officiel).
+
+Mise en œuvre : entrées multiples `unbuild` (`build.config.ts`) + `exports` map dans
+`package.json` (`origam`, `origam/core`, `origam/form`, `origam/chart`, …), `sideEffects`
+propre, CSS scindé par module. Le barrel global `origam` reste exporté (rétro-compatible).
+Doc de migration + mesure du gain bundle par module (lien : Bundle-size monitoring).
+**Structurant / breaking de packaging → aligné v3.**
+
 ### Module Nuxt officiel **(L)**
 - `@origam/nuxt` : auto-import composants + composables, plugin theme
   SSR-safe (cookie + `prefers-color-scheme` côté Node), injection auto des
@@ -251,6 +330,50 @@ ou pro) où origam est utilisée — un seul suffit à casser le "zéro référe
 - `tokens/semantic/motion.json` (durations, easings, named transitions).
 - `useTransition` retravaillé : tokens + `document.startViewTransition` si
   `css.value.viewTransitions === true`.
+
+### Directive `v-background` — fonds composables **(L)**
+- Directive pour poser facilement un (ou plusieurs) **fond** sur n'importe quel
+  élément : image (`url(...)`) **ou** dégradé de couleur (réutilise le gradient
+  support de Wave 4 : intents tokenisés + valeurs custom).
+- Contrôles par couche : **position** (`center`, `top left`, `x% y%`…),
+  **taille** (`cover`, `contain`, `auto`, dimensions explicites), **répétition**,
+  **attachment**, et un **masque** simple (`mask-image` / `-webkit-mask` :
+  fondu, forme, gradient de masque) pour révéler/atténuer le fond sans CSS manuel.
+- **Multi-fonds** : accepter un tableau de couches. Chaque couche se matérialise
+  soit en **pseudo-élément** (`::before` / `::after`, défaut — zéro nœud DOM en
+  plus), soit en **`<div>` injectée** (quand `::before`/`::after` sont déjà pris,
+  ou qu'on veut un fond animable/interactif indépendant). Le mode est un réglage
+  de la config de la directive (ex. `v-background="{ layers: [...], as: 'pseudo' | 'element' }"`).
+- CSS-first (empilement de `background-image` + `mask`), JS uniquement pour
+  l'injection de div et l'ordre des couches. SSR-safe. Pense a11y :
+  fonds purement décoratifs → `aria-hidden` sur les nœuds injectés.
+
+### TextMask — contour (stroke) et fill colorés **(M)**
+- Étendre `OrigamTextMask` (aujourd'hui : texte transparent révélant un fond,
+  cf. Wave 4 « Text-mask transparent reveal ») avec un mode **texte ajouré** :
+  `color: transparent` + **contour de chaque lettre** coloré via
+  `-webkit-text-stroke` (width + color), et/ou un **fill** distinct.
+- Permet les effets de titraille « outline only », « fill + stroke contrastés »,
+  « stroke dégradé » (combiné au gradient support). Props envisagées :
+  `stroke` (largeur), `strokeColor` (intent tokenisé ou custom), `fill`
+  (intent / `transparent`). Fallback : si `-webkit-text-stroke` non supporté
+  (`useCssSupport`), rendu plein classique.
+- A11y : le texte reste du **vrai texte** (sélectionnable, lisible lecteur
+  d'écran) — pas de SVG `<text>`, contrairement à la spec « SVG text masque »
+  (cf. intent `ghost`, livrable A). Contraste à surveiller via `v-contrast`.
+
+### Compléter le Theme Builder `/theming` (marketing) **(L)**
+- La page `/theming` du site marketing (éditeur visuel → export `[name].ts`
+  avec `{ defaults, theme: { cssVars } }`) est livrée **en V1 partielle** :
+  ~14 composants du set core seulement, tokens plafonnés à 24/composant,
+  certains composants non prévisualisables (modals, `tabs` slot-driven).
+- **À finir** : couvrir **tous** les composants éditables (pas juste le core),
+  gérer les composants slot-driven / overlay (preview avec contenu de démo),
+  lever le cap de tokens, et **refondre l'UI** (l'ergonomie actuelle « n'est
+  clairement pas bonne » — navigation entre composants, regroupement des
+  contrôles, lisibilité de la preview vs panneau, aperçu du fichier généré).
+- Reste data-driven (dérivé des métadonnées de composants) pour scaler ;
+  DS-first ; i18n complet.
 
 ### Waves livrées ✅
 
@@ -279,8 +402,15 @@ ou pro) où origam est utilisée — un seul suffit à casser le "zéro référe
 |---|---|
 | Module Nuxt officiel (sub-export `origam/nuxt`) | ✅ livré |
 | SSR safety audit + `useCssSupportClient` + `OrigamClientOnly` | ✅ livré |
+| **pnpm monorepo (6 packages)** | ✅ livré (mai 2026) |
 
-### Wave 4 — Nouveaux composants (à venir, à priorier)
+### Wave 3.5 — Build tooling (à venir)
+
+| Item | Effort | Note |
+|---|---|---|
+| **Turborepo** | M | Cache local + remote (Vercel ou self-hosted) sur `build`, `test`, `lint`. Critique dès que le pipeline CI dépasse 8 min. À ajouter après 1-2 semaines de stabilisation post-monorepo (cf. MONOREPO_PROPOSAL §5.3). |
+
+### ✅ Wave 4 — Nouveaux composants (livrée en v2.6.0)
 
 Idées maintainer (15 items). Ordre indicatif, à ajuster selon priorité business.
 
@@ -300,12 +430,187 @@ Idées maintainer (15 items). Ordre indicatif, à ajuster selon priorité busine
 | 12 | **OrigamCalendar** | XL | Calendar complet : vues mois/semaine/jour/agenda, navigation, events (start/end/color/category), range select, drag-to-create, recurring events (RRULE). 100% maison (pas de FullCalendar). Composable `useCalendar` pour la logique. Tokens dédiés pour grille + cellules + events. |
 | 13 | **OrigamChart** | XL | Charts custom inspirés Highcharts mais plus simples. SVG natif. Types : line / area / bar / column / pie / donut / scatter / radar. Animation entrée. Tooltip natif (réutilise `OrigamTooltip`). Légende (réutilise `OrigamChip`). Responsive via `viewBox`. Pas de dep externe (pas de d3, pas de chart.js). |
 
-### Enrichissements transversaux color/bgColor (Wave 4)
+### ✅ Enrichissements transversaux color/bgColor (Wave 4 — livrés en v2.6.0)
 
 | # | Item | Effort | Note |
 |---|---|---|---|
 | A | **Gradient support** | M | Étendre `useColor` / `useBackgroundColor` pour accepter `color="gradient(...)"` ou `color={ from: 'primary', to: 'success', direction: 135 }`. Generate `background: linear-gradient(135deg, var(--from), var(--to))`. Compatible avec les tokens (intents) ET les valeurs custom (hex). |
 | B | **Text-mask (transparent reveal)** | M | Mode `mask="text"` qui pose `background-clip: text` + `color: transparent` sur le texte, avec un background animé derrière (gradient + animation, ou image, ou video selon prop). Useful pour les headlines marketing. |
+| C | **Renommer `bgColor` → `accentColor`** | M | Issu du redesign Blockquote (juin 2026) : quand l'intent colore un **accent** (barre, icône de fond, auteur…) et non un vrai remplissage, `bgColor` est trompeur. Renommer `bgColor` / `hoverBgColor` / `activeBgColor` → `accentColor` / `hoverAccentColor` / `activeAccentColor` (proposé par le mainteneur — « plus logique »). **Portée à trancher** : (a) global — mais `bgColor` peint un *vrai fond* dans Card / Btn / Chip… où « accent » serait faux ; (b) nouveau prop `accentColor` réservé aux composants à accent (Blockquote en premier), `bgColor` conservé pour les fonds pleins. Breaking v3 → alias rétro-compatible (`bgColor` déprécié, warn once) + codemod. Le Blockquote est implémenté avec `bgColor` en attendant (cf. Option A juin 2026), à migrer lors de ce chantier. |
+
+### Intent `ghost` — premier-plan transparent transversal **(XL, spec)**
+
+> Spec née d'un besoin produit (juin 2026). Objectif : faire de `ghost` un
+> véritable effet **transparent**, côté surface ET côté premier-plan, cohérent
+> sur tout le DS — pas un bricolage par composant. **Statut : standby** tant que
+> le périmètre n'est pas cadré (cf. livrable n°1).
+
+**Contexte / constat**
+
+- `ghost` est un `TIntent` (`types/Commons/intent.type.ts`) mais **volontairement
+  exclu** des utility intents (`COLOR_UTILITY_INTENTS`, `consts/Commons/color.const.ts`) :
+  aucune classe `.origam--bg-ghost` / `.origam--color-ghost` n'est shippée →
+  résolution par inline-style uniquement.
+- Côté **surface** : `bgColor="ghost"` rend déjà **transparent** (`intentBgExpr`
+  → `var(--origam-color__action--ghost---bg)` = `rgba(0,0,0,0)`). Comportement
+  voulu (« ghost = transparent »).
+- Côté **premier-plan** : `color` n'est PAS « le texte d'un bouton ». C'est un
+  intent transversal consommé par de **nombreuses** surfaces :
+  - texte (Btn, Card, Input, Label…) ;
+  - icônes via `currentColor` (`OrigamIcon` : `color: var(--origam-icon---color, currentColor)`, `OrigamSvgIcon` : `fill: currentColor`) ;
+  - remplissages de contrôles (barre/jauge du Slider/Progress, Audio…) ;
+  - bordures / accents qui suivent `currentColor`.
+  → Un `color="ghost"` « transparent / masque » doit s'appliquer de façon
+  **cohérente partout** → géré au niveau du **système de couleur**
+  (`useColor` / `useColorEffect` / `useTextColor`, `color.composable.ts`) et
+  honoré par chaque consommateur.
+
+**Vision produit (formulée par le mainteneur)**
+
+- `bgColor="ghost"` → surface transparente (déjà OK).
+- `color="ghost"` → premier-plan « masque » : les glyphes / traits laissent voir
+  **ce qu'il y a derrière l'élément** (pas le fond de l'élément). Sens plein sur
+  un élément à fond opaque (ex. `bgColor="primary" color="ghost"`).
+
+**Contrainte technique établie (POC juin 2026)**
+
+- `mix-blend-mode` **ne peut pas** produire ce knockout : il mélange des
+  *couleurs*, il ne **soustrait pas l'alpha** d'un fond opaque. `destination-out`
+  **n'existe pas** en CSS (c'est du Canvas `globalCompositeOperation`).
+- Un vrai « reveal de la page à travers le texte » sur fond arbitraire exige soit
+  **CSS `mask`** (image-masque en forme de texte), soit **SVG `<text>`** en
+  masque. Difficulté : aligner le masque sur le texte HTML rendu (police,
+  kerning, centrage).
+
+**Approches candidates (à arbitrer)**
+
+| Clé | Approche | Portée | Coût | Tradeoff |
+|---|---|---|---|---|
+| A | **SVG `<text>` masque** sur le fill | Reveal réel au-dessus de tout (image, motif) | XL | Label devient graphique → a11y (`aria-label` requis), métriques police à gérer, par composant |
+| B | **Texte = couleur de surface** (`var(--origam-color__surface---default)`) | Approximation « knockout » sur fonds **unis** (≈ 99 % des cas) | S | Vrai texte (a11y OK), simple ; ne révèle pas une image/motif derrière |
+| C | **Token `currentColor` transparent** pour les consommateurs `currentColor` (icônes, traits) | Cohérence icônes / fills | M | À combiner avec A ou B pour le texte |
+
+**Livrables**
+
+1. **Cartographie de propagation de `color`** (préalable bloquant) — matrice
+   « composant × surface impactée × mécanisme (classe / inline / `currentColor`) »,
+   en partant de : `useColor`, `useColorEffect`, `useTextColor`, `useBothColor` ;
+   consommateurs `currentColor` (icônes, SVG, traits) ; composants à fill piloté
+   par `color` (Slider, Progress, Audio…) ; texte de conteneurs (Card, Input, Label).
+2. Décision A / B / C (ou combinaison) sur la base de la cartographie.
+3. Implémentation sur composants pivots (Btn, Card, Input, Icon, Slider/Audio),
+   story + doc + e2e + VRT.
+4. Généralisation.
+
+**Critères d'acceptation**
+
+- `color="ghost"` produit un rendu **cohérent et documenté** sur les composants
+  pivots, démontré sur fond contrasté.
+- a11y : approche A → `aria-label` / texte alternatif systématique ; approche B →
+  contraste WCAG conservé (la directive `v-contrast` ne doit pas le casser).
+- TU + e2e + **VRT** verts ; **zéro régression** sur les autres intents.
+
+**Risques**
+
+- Blast radius : `color` touche le rendu de quasiment tous les composants →
+  **VRT obligatoire** avant généralisation (cf. ci-dessous).
+- a11y de l'approche SVG (texte non sélectionnable / lecteurs d'écran).
+- Divergence inter-thèmes : la « surface » derrière varie selon `data-theme`.
+
+**Dépendances** : Visual regression testing (ci-dessous) ; idéalement après
+l'**API audit pré-v3** pour figer la sémantique `color` vs `bgColor`. Même
+famille technique que l'item B « Text-mask (transparent reveal) » ci-dessus,
+besoin distinct.
+
+### Composants : `variant` = preconfig de props **(L, spec)**
+
+> Spec née du redesign Blockquote (juin 2026). **Statut : planifié, non
+> implémenté** (demande explicite : prévoir, pas coder maintenant).
+
+**Constat**
+- Les `variant` (Blockquote : default / elegant / quoted / minimal / pull) sont
+  aujourd'hui des traitements visuels **hardcodés en SCSS** (typo, padding, et
+  surtout la barre d'accent gauche / les règles `pull`).
+- Le mainteneur veut que **chaque `variant` soit un preset des vrais props**
+  (transparent, overridable), et que les décorations (barre, règles) passent par
+  les **props configurables appliqués SUR LE BLOC** — **PAS** par des
+  pseudo-éléments `::before`/`::after` (approche essayée puis **rejetée/revertée**
+  en juin 2026 : les bordures doivent être de vraies bordures sur le bloc).
+
+**Principe cible**
+- Un const `{COMPONENT}_VARIANT_PRESETS` : `variant → Partial<IProps>` (`border`,
+  `padding`, `rounded`, `color`, `bgColor`, `elevation`, tokens typo…).
+- Résolution : `prop explicite` > `preset du variant` > défaut de base. Le
+  `variant` n'est qu'un **bundle de défauts** que l'utilisateur peut écraser.
+- La barre / les règles d'un variant = le prop **`border`** (directionnel) preset,
+  rendu sur le bloc et coloré par `bgColor`. Aucun pseudo.
+
+**Décision ouverte (à trancher au lancement)**
+- **A** — la barre d'accent EST le `border` (un seul border par bloc ; l'override
+  reshape/supprime la barre). Le plus simple, colle à « configurable ».
+- **B** — barre d'accent et `border` (box) **indépendants** → prop dédié
+  (`accent` / `bar`) configurable, séparé de `border`.
+
+**Portée** : Blockquote en pilote ; si concluant, généraliser le pattern
+« variant = preset » aux autres composants à variants (Btn, Tabs, Card…).
+
+**Pré-requis / liens** : s'appuie sur le fix border numérique (juin 2026) et le
+modèle couleur deux-axes (`color` = texte + source, `bgColor` = accent). La story
+devra exposer le preset résolu ET permettre l'override (tester les deux). **VRT
+obligatoire** (touche le rendu de toutes les variantes).
+
+**État intermédiaire (en attendant)** : la barre d'accent reste en
+`border-inline-start` (SCSS, sur le bloc) ; conflit connu avec le prop `border`
+(box) assumé temporairement, résolu par cette évolution.
+
+### `OrigamList` — variants de liste sémantiques **(M, spec)**
+
+> Demande mainteneur (juin 2026). **Statut : planifié, non implémenté.**
+
+**Constat** : `OrigamList` et `OrigamListItem` rendent par défaut `tag: 'div'`
+avec `role="listbox"` hardcodé, et exposent une prop booléenne `nav`. Résultat :
+ce ne sont PAS de vraies listes sémantiques (`<ul>/<ol>/<li>`) — c'est la raison
+pour laquelle le marketing utilise `OrigamGrid tag="ul"` / `OrigamGridItem
+tag="li"` en attendant, au lieu d'`OrigamList`. Régression d'accessibilité / SEO
+(W3C : préférer l'élément natif).
+
+**Principe cible** : remplacer la prop booléenne `nav` par une prop `variant`
+qui pilote À LA FOIS le tag rendu ET le rôle ARIA :
+- `unordered` → `<ul>` + `<li>` (pas de `role` redondant) ;
+- `ordered` → `<ol>` + `<li>` ;
+- `nav` → `<nav><ul>…` (navigation) ;
+- `listbox` → conserve `<div role="listbox">` actuel (widget interactif sélectionnable).
+Le défaut bascule vers une vraie liste sémantique ; `listbox` reste pour les cas
+widget (select-like). `OrigamListItem` aligne son `tag` par défaut sur le variant
+du parent (via defaults-provider).
+
+**Portée / liens** : breaking (changement de défaut + suppression de `nav`) →
+v3, alias rétro-compatible (`nav` déprécié → `variant="nav"`, warn once) +
+codemod. Story + doc + e2e + audit a11y (axe) dans la même PR. Une fois livré,
+migrer le marketing d'`OrigamGrid tag="ul"` vers `OrigamList variant="unordered"`.
+
+### `OrigamAddMore` — répéteur de champs / groupes **(M, spec)**
+
+> Demande mainteneur (juin 2026). **Statut : planifié, non implémenté.** Module `form`.
+
+Nouveau composant de formulaire « **add more** » : un **slot** contenant un ou
+plusieurs champs (ou un groupe de champs), répété N fois, avec un **bouton « Add more »**
+pour ajouter une nouvelle occurrence, et la possibilité de **supprimer un groupe**.
+
+**API cible (esquisse — à affiner)** :
+- `v-model` = tableau d'items (chaque item = les valeurs d'un groupe). Ajout / suppression
+  mute le tableau et émet `update:modelValue`.
+- slot `#default="{ index, item, remove }"` — rend le(s) champ(s) du groupe ; `remove()`
+  supprime CE groupe ; `index` / `item` pour binder les valeurs du groupe.
+- slot `#actions` optionnel pour personnaliser les boutons ; sinon défaut `OrigamBtn`
+  « Add more » + bouton de suppression par groupe.
+- props : `min` / `max` (bornes du nombre de groupes), `addLabel` / `removeLabel` (i18n
+  via `t()`), `disabled`, `itemFactory` (valeur initiale d'un nouveau groupe).
+- a11y : chaque groupe dans un conteneur sémantique (`<fieldset>` ou `role="group"` +
+  `aria-label`) ; bouton remove avec `aria-label` explicite ; focus géré à l'ajout /
+  suppression (focus sur le nouveau groupe / sur le voisin après suppression).
+- Livrable : composant + interface (`IAddMoreProps`) + types + story (format unifié) +
+  doc + e2e (ajout, suppression, bornes min/max) — **test-as-you-build**.
 
 ### Visual regression testing **(M)**
 - Playwright `expect(page).toHaveScreenshot()` par Variant. OU Chromatic /
@@ -329,6 +634,36 @@ Idées maintainer (15 items). Ordre indicatif, à ajuster selon priorité busine
 - App standalone (`apps/theme-builder/`) consommant origam elle-même : édition
   tokens primitive → preview composants en temps réel, export
   `tokens/semantic/brand-{name}.json`.
+
+### Marketing — base de données + sync DS automatique **(XL)**
+- Aujourd'hui le site marketing dérive tout son contenu de fichiers statiques
+  (`consts/{components,composables,types,enums,interfaces,utils,consts}/*.ts`
+  via `import.meta.glob`). Cible : **persister ce référentiel en base de
+  données** (Nitro + Knex sur PostgreSQL, conformément au stack projet) pour le
+  rendre gérable, versionnable et requêtable.
+- **Alimentation automatique par l'évolution du DS** : un job de sync lit le
+  code source d'origam (composants, props, composables, types, enums,
+  interfaces, utils, consts) et **upsert** la BDD à chaque release / CI. La
+  doc référentielle ne se met plus à jour à la main — elle suit le DS.
+- Le contenu **éditorial** (pages, sections, textes marketing) vit dans les
+  mêmes tables et reste éditable (cf. backend ci-dessous), avec un flag
+  « source : DS auto » vs « édité » pour ne pas écraser les corrections
+  manuelles au prochain sync.
+
+### Marketing — backend d'administration (CMS) **(XL)**
+- Un **back-office** pour gérer tout le contenu du site quand l'auto-génération
+  est imparfaite : corriger une description, réordonner, masquer/publier,
+  éditer **toutes les pages** (référentiel ET pages éditoriales) sans toucher
+  au code.
+- **Entièrement traduisible** : chaque champ texte porte ses traductions
+  (i18n piloté depuis la BDD, plus seulement les fichiers `en.json`/`fr.json`),
+  édition par langue avec état de complétude par locale.
+- **Construit avec origam lui-même** — le back-office est une démo grandeur
+  nature du DS (tables, formulaires, éditeurs, OrigamDataTable, OrigamForm…),
+  cohérent avec le principe « le marketing est une vitrine du DS ».
+- Auth + rôles (admin / éditeur), audit des modifications, et garde-fou
+  pré-publication. Stack : Nitro (API) + Knex/PostgreSQL + Redis (sessions),
+  aligné sur le reste du projet.
 
 ### Server Components Vue **(M, dépend du compiler Vue)**
 - Aligner sur React Server Components quand l'écosystème Vue rattrapera.

@@ -1,0 +1,219 @@
+import type { IOrigamTheme } from 'origam/interfaces'
+
+export const ecomLightTheme: IOrigamTheme = {
+    name: 'ecom',
+    label: 'Ecom',
+    vars: {
+        rounded: {
+            card: '10px',
+            btn: '6px',
+            pill: '999px',
+            sm: '4px',
+            md: '10px',
+            lg: '10px'
+        },
+        color: {
+            surface: {
+                default: '#fff7f0',
+                raised: '#ffffff',
+                sunken: '#ffedd5',
+                overlay: '#ffedd5',
+                disabled: '#fed7aa'
+            },
+            text: {
+                primary: '#1a1a1a',
+                secondary: '#404040',
+                tertiary: '#404040',
+                disabled: '#a3a3a3',
+                inverse: '#ffffff',
+                onColor: '#ffffff',
+                ink: '#1a1a1a'
+            },
+            action: {
+                primary: {
+                    bg: '#e11d48',
+                    bgHover: '#be123c',
+                    bgSubtle: '#ffe4e6',
+                    bgDisabled: '#fed7aa',
+                    fg: '#ffffff',
+                    fgSubtle: '#be123c',
+                    fgDisabled: '#a3a3a3'
+                },
+                secondary: {
+                    bg: '#ffffff',
+                    bgHover: '#ffedd5',
+                    bgDisabled: '#fed7aa',
+                    fg: '#1a1a1a',
+                    fgDisabled: '#a3a3a3'
+                },
+                ghost: {
+                    bg: 'transparent',
+                    bgHover: 'rgba(225, 29, 72, 0.06)',
+                    bgDisabled: 'transparent',
+                    fg: '#e11d48',
+                    fgDisabled: '#a3a3a3'
+                }
+            },
+            border: {
+                default: '#fed7aa',
+                subtle: '#ffedd5',
+                strong: '#fb923c',
+                focus: '#e11d48',
+                'subtle-alpha': 'rgba(254, 215, 170, 0.60)',
+                ghost: 'rgba(254, 215, 170, 0.50)'
+            },
+            feedback: {
+                success: {
+                    bg: '#16a34a',
+                    bgSubtle: 'rgba(22, 163, 74, 0.10)',
+                    fg: '#ffffff',
+                    fgSubtle: '#166534',
+                    border: '#166534'
+                },
+                warning: {
+                    bg: '#d97706',
+                    bgSubtle: 'rgba(217, 119, 6, 0.10)',
+                    fg: '#ffffff',
+                    fgSubtle: '#92400e',
+                    border: '#92400e'
+                },
+                danger: {
+                    bg: '#e11d48',
+                    bgSubtle: 'rgba(225, 29, 72, 0.10)',
+                    fg: '#ffffff',
+                    fgSubtle: '#9f1239',
+                    border: '#9f1239'
+                },
+                info: {
+                    bg: '#0ea5e9',
+                    bgSubtle: 'rgba(14, 165, 233, 0.10)',
+                    fg: '#ffffff',
+                    fgSubtle: '#0369a1',
+                    border: '#0ea5e9'
+                }
+            },
+            'btn-primary-bg': '#e11d48',
+            'btn-primary-text': '#ffffff',
+            'btn-secondary-bg': 'transparent',
+            'btn-secondary-border': '#fed7aa',
+            'btn-secondary-text': '#1a1a1a'
+        },
+        shadow: {
+            'card-elevated': '0 1px 3px rgba(225, 29, 72, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06)',
+            'glow-primary': '0 2px 0 rgba(225, 29, 72, 0.20), 0 4px 12px -2px rgba(225, 29, 72, 0.35)',
+            'btn-primary': '0 2px 0 rgba(225, 29, 72, 0.20), 0 4px 12px -2px rgba(225, 29, 72, 0.35)',
+            'btn-secondary': 'none'
+        }
+    },
+    cssVars: {}
+}
+
+export const ecomDarkTheme: IOrigamTheme = {
+    name: 'ecom',
+    mode: 'dark',
+    vars: {
+        rounded: {
+            card: '10px',
+            btn: '6px',
+            pill: '999px',
+            sm: '4px',
+            md: '10px',
+            lg: '10px'
+        },
+        color: {
+            surface: {
+                default: '#1a0f0a',
+                raised: '#2e1b14',
+                sunken: '#231510',
+                overlay: '#2e1b14',
+                disabled: '#3d2518'
+            },
+            text: {
+                primary: '#fff7f0',
+                secondary: '#fed7aa',
+                tertiary: '#fed7aa',
+                disabled: '#a3786a',
+                inverse: '#1a0f0a',
+                onColor: '#ffffff',
+                ink: '#fff7f0'
+            },
+            action: {
+                primary: {
+                    bg: '#f43f5e',
+                    bgHover: '#fb7185',
+                    bgSubtle: 'rgba(244, 63, 94, 0.14)',
+                    bgDisabled: '#3d2518',
+                    fg: '#ffffff',
+                    fgSubtle: '#fb7185',
+                    fgDisabled: '#a3786a'
+                },
+                secondary: {
+                    bg: '#2e1b14',
+                    bgHover: '#3d2518',
+                    bgDisabled: '#3d2518',
+                    fg: '#fff7f0',
+                    fgDisabled: '#a3786a'
+                },
+                ghost: {
+                    bg: 'transparent',
+                    bgHover: 'rgba(244, 63, 94, 0.08)',
+                    bgDisabled: 'transparent',
+                    fg: '#fb7185',
+                    fgDisabled: '#a3786a'
+                }
+            },
+            border: {
+                default: 'rgba(251, 146, 60, 0.20)',
+                subtle: 'rgba(251, 146, 60, 0.10)',
+                strong: '#fb923c',
+                focus: '#f43f5e',
+                'subtle-alpha': 'rgba(251, 146, 60, 0.16)',
+                ghost: 'rgba(251, 146, 60, 0.20)'
+            },
+            feedback: {
+                success: {
+                    bg: '#86efac',
+                    bgSubtle: 'rgba(134, 239, 172, 0.12)',
+                    fg: '#1a0f0a',
+                    fgSubtle: '#86efac',
+                    border: '#86efac'
+                },
+                warning: {
+                    bg: '#fcd34d',
+                    bgSubtle: 'rgba(252, 211, 77, 0.12)',
+                    fg: '#1a0f0a',
+                    fgSubtle: '#fcd34d',
+                    border: '#fcd34d'
+                },
+                danger: {
+                    bg: '#fca5a5',
+                    bgSubtle: 'rgba(252, 165, 165, 0.12)',
+                    fg: '#1a0f0a',
+                    fgSubtle: '#fca5a5',
+                    border: '#fca5a5'
+                },
+                info: {
+                    bg: '#38bdf8',
+                    bgSubtle: 'rgba(56, 189, 248, 0.12)',
+                    fg: '#1a0f0a',
+                    fgSubtle: '#38bdf8',
+                    border: '#38bdf8'
+                }
+            },
+            'btn-primary-bg': '#f43f5e',
+            'btn-primary-text': '#ffffff',
+            'btn-secondary-bg': 'transparent',
+            'btn-secondary-border': 'rgba(251, 146, 60, 0.30)',
+            'btn-secondary-text': '#fff7f0'
+        },
+        shadow: {
+            'card-elevated': '0 1px 3px rgba(225, 29, 72, 0.12), 0 1px 2px rgba(0, 0, 0, 0.30)',
+            'glow-primary': '0 2px 0 rgba(244, 63, 94, 0.25), 0 4px 12px -2px rgba(244, 63, 94, 0.40)',
+            'btn-primary': '0 2px 0 rgba(244, 63, 94, 0.25), 0 4px 12px -2px rgba(244, 63, 94, 0.40)',
+            'btn-secondary': 'none'
+        }
+    },
+    cssVars: {}
+}
+
+export const ecomThemes: IOrigamTheme[] = [ecomLightTheme, ecomDarkTheme]

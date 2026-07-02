@@ -1,0 +1,83 @@
+<template>
+	<origam-layout
+			:id="id"
+			ref="origamAppRef"
+			:class="appClasses"
+			:style="appStyles"
+			:color="color"
+			:bg-color="bgColor"
+			:full-height="fullHeight"
+			:overlaps="overlaps"
+	>
+		<template #default>
+			<slot name="default"/>
+		</template>
+	</origam-layout>
+</template>
+
+<script
+		lang="ts"
+		setup
+>
+	import { OrigamLayout } from '../../components'
+
+	import { useProps, useRtl , useStyle} from "../../composables"
+
+	import type { IAppProps } from '../../interfaces'
+
+	import type { TOrigamApp } from "../../types"
+
+	import { computed, ref, StyleValue } from 'vue'
+
+	/*********************************************************
+	 * Global
+	 *
+	 * @description
+	 * Props and utility hooks for the App root component.
+	 ********************************************************/
+	const props = withDefaults(defineProps<IAppProps>(), {fullHeight: true})
+
+	const {filterProps} = useProps<IAppProps>(props)
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {rtlClasses} = useRtl()
+
+	const origamAppRef = ref<TOrigamApp>()
+
+	/*********************************************************
+	 * Class & Style
+	 *
+	 * @description
+	 * Composes RTL and consumer classes onto the root layout.
+	 ********************************************************/
+	const appStyles = computed(() => {
+		return [props.style] as StyleValue
+	})
+	const appClasses = computed(() => {
+		return [
+			'origam-app',
+			rtlClasses.value,
+			props.class
+		]
+	})
+	const {id, css, load, isLoaded, unload} = useStyle(appStyles)
+
+
+	/*********************************************************
+	 * Expose
+	 *
+	 * @description
+	 * Public API surface: filterProps.
+	 ********************************************************/
+	defineExpose({
+		filterProps,
+		css,
+		id,
+		load,
+		unload,
+		isLoaded
+	})
+</script>

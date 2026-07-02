@@ -1,7 +1,15 @@
-# Node / build artefacts
+# Node / build artefacts (top-level AND nested per-package, so a non-clean
+# working tree never leaks host node_modules / build output into the image).
 node_modules
+**/node_modules
 dist
+**/dist
 dist-ssr
+**/.nuxt
+**/.output
+**/.vitepress/dist
+**/.vitepress/cache
+**/.histoire
 docs/.vitepress/dist
 docs/.vitepress/cache
 coverage
@@ -46,7 +54,11 @@ Dockerfile*
 ROADMAP.md
 CLAUDE.md
 CLAUDE_CODE_BRIEF.md
-CHANGELOG.md
+# NOTE: CHANGELOG.md is consumed at build-time by
+# packages/marketing/scripts/parse-changelog.mjs (generates
+# .generated/changelog.json which Nitro imports during prerender).
+# Do NOT add it back here unless you also stop parsing it in the
+# marketing build.
 
 # Misc build artefacts tracked by .gitignore as well
 *.tsbuildinfo

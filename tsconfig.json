@@ -1,58 +1,37 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "allowUnreachableCode": false,
-    "noImplicitReturns": true,
-    "noImplicitAny": true,
-    "allowJs": true,
-    "target": "ES2022",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "skipLibCheck": true,
-
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
     "baseUrl": ".",
 
     /* Paths */
     "paths": {
-      "@origam": ["./src"],
-      "@origam/*": ["./src/*"],
-      "@stories": ["./stories"],
-      "@stories/*": ["./stories/*"],
-      "@docs": ["./docs"],
-      "@docs/*": ["./docs/*"]
-    },
-
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "types": ["node"]
+      "@origam": ["./packages/ds/src"],
+      "@origam/*": ["./packages/ds/src/*"],
+      "@stories": ["./packages/stories"],
+      "@stories/*": ["./packages/stories/*"],
+      "@docs": ["./packages/docs"],
+      "@docs/*": ["./packages/docs/*"]
+    }
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue"
+    "packages/ds/src/**/*.ts",
+    "packages/ds/src/**/*.tsx",
+    "packages/ds/src/**/*.vue"
   ],
   "exclude": [
     ".history",
     "dist/**/*",
-    "src/**/*.spec.ts",
-    "src/**/*.story.vue",
+    "packages/ds/dist/**/*",
+    "packages/ds/src/**/*.spec.ts",
+    "packages/ds/src/**/*.story.vue",
     "node_modules"
   ],
   "references": [
     { "path": "./tsconfig.node.json" },
-//    { "path": "./tsconfig.build.json" },
-    { "path": "./stories/tsconfig.json" },
-    { "path": "./docs/tsconfig.json" },
-    { "path": "./tests/TU/tsconfig.json" },
-    { "path": "./tests/e2e/tsconfig.json" }
+    { "path": "./packages/ds/tsconfig.json" },
+    { "path": "./packages/stories/tsconfig.json" },
+    { "path": "./packages/docs/tsconfig.json" },
+    { "path": "./packages/tests/TU/tsconfig.json" },
+    { "path": "./packages/tests/e2e/tsconfig.json" }
   ]
 }

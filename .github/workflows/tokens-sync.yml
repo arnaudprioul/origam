@@ -25,32 +25,37 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - uses: pnpm/action-setup@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Validate tokens JSON
         run: |
-          for f in tokens/*.json tokens/semantic/*.json tokens/component/*.json; do
+          for f in packages/ds/tokens/*.json packages/ds/tokens/semantic/*.json packages/ds/tokens/component/*.json; do
             jq empty "$f" || { echo "Invalid JSON in $f"; exit 1; }
           done
 
       - name: Build tokens
-        run: npm run tokens:build
+        run: pnpm -F origam tokens:build
 
       - name: Audit dependencies
-        run: npm audit --omit=dev --audit-level=high
+        run: pnpm audit --prod --audit-level=high
         continue-on-error: false
 
       - name: Detect changes
         id: diff
         run: |
-          if git diff --quiet src/assets/css/tokens src/assets/scss/tokens src/types/tokens.type.ts; then
+          if git diff --quiet \
+            packages/ds/src/assets/css/tokens \
+            packages/ds/src/assets/scss/tokens \
+            packages/ds/src/types/tokens.type.ts; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -61,7 +66,10 @@ jobs:
         run: |
           git config user.name "origam-tokens-bot"
           git config user.email "tokens-bot@users.noreply.github.com"
-          git add src/assets/css/tokens src/assets/scss/tokens src/types/tokens.type.ts
+          git add \
+            packages/ds/src/assets/css/tokens \
+            packages/ds/src/assets/scss/tokens \
+            packages/ds/src/types/tokens.type.ts
           git commit -m "chore(tokens): rebuild generated artifacts from Figma sync"
           git push origin tokens-sync
 
@@ -81,9 +89,9 @@ jobs:
 
           Source: Tokens Studio for Figma → branch \`tokens-sync\`
           Generated artifacts:
-            - src/assets/css/tokens/*.css
-            - src/assets/scss/tokens/*.scss
-            - src/types/tokens.type.ts
+            - packages/ds/src/assets/css/tokens/*.css
+            - packages/ds/src/assets/scss/tokens/*.scss
+            - packages/ds/src/types/tokens.type.ts
 
           Please review the diff carefully — visual regression tests should be triggered by the PR check suite."
           else

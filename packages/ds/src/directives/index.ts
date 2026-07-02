@@ -1,0 +1,6 @@
+export { default as vRipple } from './Ripple/ripple.directive'
+export { default as vClickOutside } from './ClickOutside/clickOutside.directive'
+export { default as vIntersect } from './Intersect/intersect.directive'
+export { default as vTouch } from './Touch/touch.directive'
+export { default as vHover } from './Hover/hover.directive'
+export { default as vContrast } from './Contrast/contrast.directive'

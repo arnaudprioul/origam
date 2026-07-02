@@ -1,0 +1,12 @@
+/*
+ * marketing-tokens.css — DEPRECATED / EMPTY.
+ *
+ * All content has been migrated to:
+ *   ~/assets/css/themes/_shared.css   — geometry tokens (theme-agnostic)
+ *   ~/assets/css/themes/sobre.css     — sobre light + dark
+ *   ~/assets/css/themes/geek.css      — geek light + dark
+ *   ~/assets/css/themes/*.css         — other brands
+ *
+ * This file is kept as a placeholder to avoid breaking any external reference
+ * during the migration window. It will be removed in Phase 2 cleanup.
+ */

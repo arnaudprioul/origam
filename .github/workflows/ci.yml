@@ -27,16 +27,44 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps --no-audit --no-fund
+        run: pnpm install --frozen-lockfile
 
       - name: Run ESLint (no auto-fix)
-        run: npx eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --max-warnings 0
+        run: pnpm exec eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --max-warnings 0
+
+  type-check:
+    name: Type-check (vue-tsc)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Generated token types (src/types/tokens.type.ts) are imported across the
+      # DS source; rebuild them so vue-tsc resolves every reference.
+      - name: Build tokens (prereq for type resolution)
+        run: pnpm -F origam tokens:build
+
+      # Hard gate: the DS must stay at ZERO vue-tsc errors. This locks in the
+      # #65 type-debt cleanup (262 -> 0) and fails the build on any regression.
+      - name: vue-tsc --noEmit
+        run: pnpm -F origam run type-check
 
   tokens:
     name: Tokens build & lint
@@ -44,36 +72,38 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps --no-audit --no-fund
+        run: pnpm install --frozen-lockfile
 
       - name: Validate tokens JSON
         run: |
-          for f in tokens/*.json tokens/semantic/*.json tokens/component/*.json; do
+          for f in packages/ds/tokens/*.json packages/ds/tokens/semantic/*.json packages/ds/tokens/component/*.json; do
             [ -f "$f" ] || continue
             node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" \
               || { echo "::error file=$f::Invalid JSON"; exit 1; }
           done
 
       - name: Tokens lint (strict)
-        run: npm run tokens:lint
+        run: pnpm -F origam tokens:lint
 
       - name: Tokens build
-        run: npm run tokens:build
+        run: pnpm -F origam tokens:build
 
       - name: Upload generated token artefacts
         uses: actions/upload-artifact@v4
         with:
           name: tokens-dist
           path: |
-            src/assets/css/tokens
-            src/assets/scss/tokens
-            src/types/tokens.type.ts
+            packages/ds/src/assets/css/tokens
+            packages/ds/src/assets/scss/tokens
+            packages/ds/src/types/tokens.type.ts
           retention-days: 7
           if-no-files-found: error
 
@@ -84,19 +114,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps --no-audit --no-fund
+        run: pnpm install --frozen-lockfile
 
       - name: Build tokens (prereq for component tests)
-        run: npm run tokens:build
+        run: pnpm -F origam tokens:build
 
       - name: Vitest
-        run: npm run test:unit -- --run --reporter=default
+        run: pnpm -F @origam/tests test:unit:run
 
   build:
     name: Library build (unbuild)
@@ -105,28 +137,74 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps --no-audit --no-fund
+        run: pnpm install --frozen-lockfile
 
       - name: Build library
-        run: npm run server:build
+        run: pnpm -F origam build
 
       - name: Assert dist output exists
         run: |
-          test -d dist/src || { echo "::error::dist/src missing after build"; exit 1; }
-          test -f dist/src/origam.js \
-            || { echo "::error::dist/src/origam.js missing — entry not emitted"; exit 1; }
+          test -d packages/ds/dist/src || { echo "::error::packages/ds/dist/src missing after build"; exit 1; }
+          test -f packages/ds/dist/src/origam.js \
+            || { echo "::error::packages/ds/dist/src/origam.js missing — entry not emitted"; exit 1; }
 
       - name: Upload library dist
         uses: actions/upload-artifact@v4
         with:
           name: library-dist
-          path: dist/
+          path: packages/ds/dist/
+          retention-days: 7
+          if-no-files-found: error
+
+  build-embeds:
+    name: Build embeds (stories + docs)
+    runs-on: ubuntu-latest
+    needs: tokens
+    # The Histoire stories build (209 stories, large vendor chunk) needs more
+    # heap than the workflow-level 4096 MB default.
+    env:
+      NODE_OPTIONS: --max-old-space-size=6144
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build tokens (the docs theme imports the generated token CSS)
+        run: pnpm -F origam tokens:build
+
+      - name: Build embeds (Histoire stories + VitePress docs)
+        run: pnpm run build:embeds
+
+      - name: Assert embeds output exists
+        run: |
+          test -f packages/marketing/public/stories/index.html \
+            || { echo "::error::stories embed missing — public/stories/index.html not built"; exit 1; }
+          test -f packages/marketing/public/docs/index.html \
+            || { echo "::error::docs embed missing — public/docs/index.html not built"; exit 1; }
+
+      - name: Upload marketing embeds
+        uses: actions/upload-artifact@v4
+        with:
+          name: marketing-embeds
+          path: |
+            packages/marketing/public/stories
+            packages/marketing/public/docs
           retention-days: 7
           if-no-files-found: error
 
@@ -134,22 +212,34 @@ jobs:
     name: E2E tests (Playwright / Chromium)
     runs-on: ubuntu-latest
     needs: tokens
-    timeout-minutes: 30
+    timeout-minutes: 45
+    # E2E_GREEN_ONLY: run only the specs migrated to the unified-story format
+    #   (GREEN_SPECS in playwright.config.ts); grows wave by wave.
+    # E2E_STATIC: serve the PREBUILT static Histoire (built below) via
+    #   `histoire preview` instead of `histoire dev`. No per-story Vite
+    #   cold-compile → deterministic + parallel-safe, so the job stops timing
+    #   out. NODE_OPTIONS bumps heap for the Histoire build.
+    env:
+      E2E_GREEN_ONLY: '1'
+      E2E_STATIC: '1'
+      NODE_OPTIONS: --max-old-space-size=6144
     steps:
       - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
 
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps --no-audit --no-fund
+        run: pnpm install --frozen-lockfile
 
       - name: Resolve Playwright version
         id: pw
         run: |
-          version=$(node -p "require('./package-lock.json').packages['node_modules/@playwright/test'].version")
+          version=$(node -p "require('./packages/tests/package.json').devDependencies['@playwright/test'].replace(/[^\d.]/g,'')")
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Cache Playwright browsers
@@ -161,17 +251,20 @@ jobs:
 
       - name: Install Playwright Chromium
         if: steps.pw-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
+        run: pnpm -F @origam/tests exec playwright install --with-deps chromium
 
       - name: Install Playwright OS deps only
         if: steps.pw-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
+        run: pnpm -F @origam/tests exec playwright install-deps chromium
 
       - name: Build tokens
-        run: npm run tokens:build
+        run: pnpm -F origam tokens:build
+
+      - name: Build static Histoire (served by the e2e webServer)
+        run: pnpm -F @origam/stories build
 
       - name: Run Playwright (chromium)
-        run: npx playwright test --project=chromium
+        run: pnpm -F @origam/tests exec playwright test --project=chromium
 
       - name: Upload Playwright report
         if: always()
@@ -179,7 +272,7 @@ jobs:
         with:
           name: playwright-report
           path: |
-            tests/e2e/.report
-            tests/e2e/.results
+            packages/tests/e2e/.report
+            packages/tests/e2e/.results
           retention-days: 7
           if-no-files-found: ignore
