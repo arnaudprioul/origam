@@ -26,6 +26,7 @@ import { resolveConnection } from './connection.mjs'
 import { MIGRATIONS_TABLE } from './db.const.mjs'
 import { ENTITIES } from './entities'
 import { InitDocReference1719600000001 } from './migrations/1719600000001-InitDocReference'
+import { AddDocMeta1782000000001 } from './migrations/1782000000001-AddDocMeta'
 
 /** Build the DataSource options from the environment (throws if unconfigured). */
 export function buildDataSourceOptions (env: NodeJS.ProcessEnv = process.env): DataSourceOptions {
@@ -33,7 +34,7 @@ export function buildDataSourceOptions (env: NodeJS.ProcessEnv = process.env): D
         type: 'postgres',
         ...resolveConnection(env),
         entities: ENTITIES,
-        migrations: [InitDocReference1719600000001],
+        migrations: [InitDocReference1719600000001, AddDocMeta1782000000001],
         migrationsTableName: MIGRATIONS_TABLE,
         namingStrategy: new SnakeNamingStrategy(),
         synchronize: false,

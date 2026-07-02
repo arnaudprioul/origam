@@ -46,6 +46,7 @@ import { ingestFull, ingestSrc } from './lib/db-upsert.ts'
 import { getDb, closeDb, sourceCommit } from './lib/db.ts'
 import { DOC_KIND_DIRS } from '../server/db/db.const.mjs'
 import { DocEntry, DocSyncRun } from '../server/db/entities/index.ts'
+import { syncFixtures } from '../server/utils/doc-fixture-sync.ts'
 
 const ARGS = process.argv.slice(2)
 const CHECK = ARGS.includes('--check')
@@ -107,16 +108,10 @@ async function runSeed (manager) {
             let records = fixture.entries ?? []
             if (LIMIT) records = records.slice(0, LIMIT)
 
-            for (const record of records) {
-                const r = await ingestFull(manager, record)
-                add(c, r); add(total, r)
-                if (VERBOSE) console.log(`  ${kind}/${record.entry.slug}: +${r.created} ~${r.updated} =${r.unchanged} ⌀${r.orphaned}`)
-                // Restore the editorial lock — ingestFull uses the 'all' mask but
-                // never sets edited_by_user itself (it defaults to false on INSERT).
-                if (record.entry.edited_by_user) {
-                    await manager.update(DocEntry, { kind: record.entry.kind, slug: record.entry.slug }, { edited_by_user: true })
-                }
-            }
+            // Reuse the shared boot-time sync loop (ingestFull + lock restore) so
+            // the runtime bootstrap and this script never drift apart.
+            const r = await syncFixtures(manager, records)
+            add(c, r); add(total, r)
             console.log(`[${kind}] fixture=${records.length} created=${c.created} updated=${c.updated} unchanged=${c.unchanged} orphaned=${c.orphaned}`)
         }
     }

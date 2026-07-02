@@ -134,7 +134,13 @@ export default defineNuxtConfig({
                     }
                 }
             }
-        }
+        },
+        serverAssets: [
+            {
+                baseName: 'db-seed',
+                dir: fileURLToPath(new URL('./server/db/seed', import.meta.url))
+            }
+        ]
     },
 
     i18n: {
