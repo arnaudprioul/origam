@@ -188,11 +188,11 @@
 		min-width: var(--origam-switch__track---width, 36px);
 		cursor: pointer;
 		transition: 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
+		overflow: hidden;
 
 		@media (prefers-reduced-motion: reduce) {
 			transition: none;
 		}
-		overflow: hidden;
 
 		@media (forced-colors: active) {
 			border: 1px solid;

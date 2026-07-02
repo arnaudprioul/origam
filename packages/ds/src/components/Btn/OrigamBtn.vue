@@ -484,10 +484,6 @@
 		transition-duration: var(--origam-btn---transition-duration, 0.28s);
 		transition-timing-function: var(--origam-btn---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
 
-		@media (prefers-reduced-motion: reduce) {
-			transition: none;
-		}
-
 		padding: 0 calc(16px + var(--origam-btn---density-padding-x, 0px));
 
 		width: var(--origam-btn---width, auto);
@@ -503,10 +499,6 @@
 		outline: none;
 		cursor: pointer;
 
-		&:focus-visible {
-			outline: var(--origam-border__width---2, 2px) solid var(--origam-color__border---focus, currentColor);
-			outline-offset: var(--origam-space---1, 2px);
-		}
 		user-select: none;
 		opacity: var(--origam-btn---opacity, 1);
 
@@ -517,6 +509,15 @@
 			--origam-btn---border-radius,
 			var(--origam-btn-group---border-radius, 4px)
 		);
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+
+		&:focus-visible {
+			outline: var(--origam-border__width---2, 2px) solid var(--origam-color__border---focus, currentColor);
+			outline-offset: var(--origam-space---1, 2px);
+		}
 
 		#{$this}__loader {
 			align-items: center;
