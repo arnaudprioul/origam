@@ -22,6 +22,18 @@ import { DB_TABLES, DOC_KINDS, REL_TYPES, SYNC_STATUSES } from '../db.const.mjs'
 const FN = 'doc_set_updated_at'
 const list = (arr: readonly string[]): string => arr.map(v => `'${v}'`).join(', ')
 
+// The exact set of tables THIS migration creates — the `updated_at` trigger is
+// attached to each. Frozen here on purpose: it must NOT be derived from the live
+// `Object.values(DB_TABLES)`, which drifts as later migrations add tables (e.g.
+// AddDocMeta → doc_meta). Deriving it would make this already-applied migration
+// try to trigger a not-yet-existing table on a FRESH database and fail (42P01).
+const CREATED_TABLES = [
+    DB_TABLES.DOC_ENTRY, DB_TABLES.DOC_PROP, DB_TABLES.DOC_VALUE, DB_TABLES.DOC_PARAM,
+    DB_TABLES.DOC_RETURN, DB_TABLES.DOC_EMIT, DB_TABLES.DOC_SLOT, DB_TABLES.DOC_EXAMPLE,
+    DB_TABLES.DOC_DIRECTIVE_ARG, DB_TABLES.DOC_DIRECTIVE_MODIFIER, DB_TABLES.DOC_RELATION,
+    DB_TABLES.DOC_CATEGORY, DB_TABLES.DOC_SYNC_RUN, DB_TABLES.THEME,
+]
+
 const BASE = `
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     created_at timestamptz NOT NULL DEFAULT now(),
@@ -155,7 +167,7 @@ export class InitDocReference1719600000001 implements MigrationInterface {
             slug text NOT NULL, name text NOT NULL, data jsonb,
             CONSTRAINT theme_slug_uq UNIQUE (slug));`)
 
-        for (const table of Object.values(DB_TABLES)) {
+        for (const table of CREATED_TABLES) {
             await q.query(`CREATE TRIGGER ${table}_set_updated_at
                 BEFORE UPDATE ON ${table}
                 FOR EACH ROW EXECUTE FUNCTION ${FN}();`)

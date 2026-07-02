@@ -187,6 +187,55 @@ Properties:
 `--domain=<kind>` restricts a seed (e.g. `--domain=component`);
 `--domain=<dir>` restricts a re-sync (e.g. `--domain=enums`).
 
+## Deploy-time auto-sync (bootstrap plugin)
+
+`server/plugins/00.db-bootstrap.ts` keeps the live database in sync with the
+committed fixtures **at every server boot** — so a new / changed DS component
+flows to the API-Reference automatically on the next deploy, with **no manual
+step** (no truncate, no re-seed). Editorial `/admin` edits (`edited_by_user`
+lock) are always preserved.
+
+Sequence under a Postgres advisory lock (serialises across instances,
+NON-FATAL if the DB is down):
+
+1. `runMigrations()` — applies any pending migration (creates `doc_meta` on
+   first boot after this feature ships).
+2. Compute a **content hash** of the bundled `server/db/seed/*.json`
+   (`fixtureHash`, order-stable over `DOC_KINDS`).
+3. **Fast path** — if the hash equals `doc_meta.seed_fixture_hash` (last
+   applied), skip entirely. This is the normal boot: ~0 work.
+4. Otherwise:
+   - **empty DB** → bulk-load `server/assets/db-seed.sql` (fast first deploy);
+   - **populated DB** → idempotent `syncFixtures` in one transaction: create new
+     entries + children, refresh `[SRC]` columns, **leave locked `[ÉDIT]` rows
+     untouched**, flag removed items `orphaned_at` (never delete). Records a
+     `doc_sync_run` row.
+   - store the new hash.
+
+The sync loop (`syncFixtures`) lives in `server/utils/doc-fixture-sync.ts` and is
+the **same** code path the standalone `docs:seed` script uses (the script's
+fixture branch calls it too) — no duplication between tooling and runtime. The
+ingestion reconciliation (`ingestFull`, editorial-lock aware) is imported from
+`scripts/lib/db-upsert.ts`; esbuild bundles it (and the fixtures, via the
+`assets:db-seed` nitro `serverAssets` mount) into `.output`.
+
+Idempotent: a second boot with unchanged fixtures takes the fast path (0
+writes). Self-healing: a DB already in prod without a stored hash triggers one
+idempotent sync on the next boot (safe — `[ÉDIT]` locks are respected).
+
+### Fixture regeneration (CI)
+
+`.github/workflows/docs-fixtures.yml` regenerates the committed fixtures when
+`packages/ds/**` changes on `develop`: spins up Postgres, runs
+`db:migrate → docs:sync → docs:dump → docs:playgrounds`, then opens (or
+refreshes) a **PR to `develop`** via `peter-evans/create-pull-request` with
+`server/db/seed/*.json` + `server/assets/db-seed.sql`. `develop` is a protected
+branch, so the flow is PR-only (default `GITHUB_TOKEN`, no bypass secret) and the
+PR is merged by hand. `docs:playgrounds` runs last so `db-seed.sql` is
+regenerated (pg_dump, filtered clean — no `\restrict` /
+`set_config('search_path'` / `CREATE EXTENSION`) from the final DB state.
+Merging the PR → deploy → the boot-time sync above applies the fixtures.
+
 ## Healthcheck
 
 `GET /api/health` reports `{ status, db: { configured, ok } }`. When the DB is

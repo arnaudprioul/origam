@@ -68,7 +68,18 @@ export const DB_TABLES = Object.freeze({
     DOC_RELATION: 'doc_relation',
     DOC_CATEGORY: 'doc_category',
     DOC_SYNC_RUN: 'doc_sync_run',
+    DOC_META: 'doc_meta',
     THEME: 'theme',
+})
+
+/**
+ * Keys stored in the doc_meta key/value table.
+ * `SEED_FIXTURE_HASH` gates the boot-time fixture sync: when the hash of the
+ * bundled server/db/seed/*.json matches the last-applied value, the bootstrap
+ * plugin takes the fast path and skips the idempotent upsert entirely.
+ */
+export const DOC_META_KEYS = Object.freeze({
+    SEED_FIXTURE_HASH: 'seed_fixture_hash',
 })
 
 /** TypeORM migrations bookkeeping table. */

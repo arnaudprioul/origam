@@ -1,0 +1,141 @@
+name: docs-fixtures
+
+# Regenerate the marketing API-Reference fixtures whenever the design-system
+# source changes, and open a PR to `develop`. The fixtures
+# (server/db/seed/*.json + server/assets/db-seed.sql) are the seed applied AT
+# DEPLOY TIME by the Nitro bootstrap plugin (server/plugins/00.db-bootstrap.ts):
+# once the PR is merged and develop deploys, the boot-time sync applies the new /
+# changed components to the live API-Reference automatically, WITHOUT touching
+# editorial /admin edits (those are lock-preserved by the idempotent sync).
+#
+# Trigger: a push to `develop` that touches packages/ds/** (or a manual run).
+#
+# PUSH PATH: auto-PR only. `develop` is a PROTECTED branch and we keep the
+# protection intact — no direct push, no bypass secret. The fixtures land via a
+# peter-evans/create-pull-request PR (default GITHUB_TOKEN) that the user merges
+# by hand (1 click). No `[skip ci]` needed: a PR does not auto-merge, and PRs
+# opened with GITHUB_TOKEN do not re-trigger workflows, so there is no loop.
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - 'packages/ds/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: docs-fixtures-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  HUSKY: 0
+  CI: true
+  NODE_OPTIONS: --max-old-space-size=4096
+
+jobs:
+  regenerate:
+    name: Regenerate API-Reference fixtures
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: origam
+          POSTGRES_PASSWORD: origam
+          POSTGRES_DB: origam_docs
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U origam -d origam_docs"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      NUXT_DB_HOST: localhost
+      NUXT_DB_PORT: '5432'
+      NUXT_DB_NAME: origam_docs
+      NUXT_DB_USER: origam
+      NUXT_DB_PASSWORD: origam
+      DATABASE_URL: postgres://origam:origam@localhost:5432/origam_docs
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Generated token types (src/types/tokens.type.ts) are imported across the
+      # DS source; rebuild them so the doc extractor resolves every reference.
+      - name: Build tokens
+        run: pnpm -F origam tokens:build
+
+      - name: Apply migrations
+        run: pnpm -F @origam/marketing db:migrate
+
+      # Re-extract structural [SRC] facts from packages/ds/src → UPSERT [SRC] only.
+      # Capture the drift summary for the PR body.
+      - name: Re-sync [SRC] from DS source
+        id: sync
+        run: |
+          set -o pipefail
+          pnpm -F @origam/marketing docs:sync 2>&1 | tee /tmp/docs-sync.log
+          summary=$(grep -E 'summary —' /tmp/docs-sync.log | tail -1 || echo 'see workflow logs')
+          echo "summary=$summary" >> "$GITHUB_OUTPUT"
+
+      # Snapshot the full store to server/db/seed/*.json (all 8 kinds).
+      - name: Dump JSON fixtures
+        run: pnpm -F @origam/marketing docs:dump
+
+      # Generate any missing component playgrounds, then re-dump component.json
+      # AND regenerate server/assets/db-seed.sql (pg_dump, filtered clean — no
+      # \restrict / set_config('search_path' / CREATE EXTENSION) from the FINAL
+      # DB state. Runs last so db-seed.sql reflects everything above.
+      - name: Generate playgrounds + regenerate db-seed.sql
+        run: pnpm -F @origam/marketing docs:playgrounds
+
+      # Open / refresh a PR to develop. create-pull-request no-ops when there is
+      # no diff, so it is the single change gate.
+      - name: Open PR with regenerated fixtures
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: chore/regenerate-fixtures
+          base: develop
+          commit-message: 'chore(docs): regenerate API-reference fixtures'
+          title: 'chore(docs): regenerate API-reference fixtures'
+          body: |
+            Automated regeneration of the API-Reference fixtures after a
+            `packages/ds/**` change on `develop`.
+
+            **Re-sync drift:** ${{ steps.sync.outputs.summary }}
+
+            Files:
+            - `packages/marketing/server/db/seed/*.json`
+            - `packages/marketing/server/assets/db-seed.sql`
+
+            On merge → deploy → the Nitro bootstrap sync
+            (`server/plugins/00.db-bootstrap.ts`) applies these to the live
+            API-Reference. Editorial `/admin` edits are lock-preserved.
+
+            Merge by hand when the diff looks right.
+          add-paths: |
+            packages/marketing/server/db/seed
+            packages/marketing/server/assets/db-seed.sql
+          delete-branch: true
