@@ -122,10 +122,10 @@
   "devDependencies": {
     "@nuxt/kit": "^4.4.5",
     "@types/node": "^26.1.0",
-    "@tokens-studio/sd-transforms": "^1.2.9",
+    "@tokens-studio/sd-transforms": "^2.0.3",
     "@vitejs/plugin-vue": "^6.0.0",
     "sass": "^1.89.2",
-    "style-dictionary": "^4.4.0",
+    "style-dictionary": "^5.5.0",
     "ts-transformer-keys": "^0.4.4",
     "typescript": "^6.0.3",
     "unbuild": "^3.5.0",
