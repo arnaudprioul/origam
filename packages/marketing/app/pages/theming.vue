@@ -383,17 +383,18 @@
 
     &__dev-banner {
       flex: none;
-      margin: var(--origam-space---3, 0.75rem);
+      margin: var(--origam-space---4, 1rem);
       margin-block-end: 0;
     }
 
     &__topbar {
       display: flex;
       align-items: center;
-      gap: var(--origam-spacing-3, 0.75rem);
+      gap: var(--origam-spacing-4, 1rem);
       flex: 0 0 auto;
-      padding: var(--origam-spacing-2, 0.5rem) var(--origam-spacing-5, 1.25rem);
-      min-height: 3.25rem;
+      margin-block-start: var(--origam-spacing-4, 1rem);
+      padding: var(--origam-spacing-4, 1rem) var(--origam-spacing-5, 1.25rem);
+      min-height: 4rem;
       background-color: var(--origam-color-surface-default);
       border-block-end: 1px solid var(--origam-color-border-default);
       overflow-x: auto;
