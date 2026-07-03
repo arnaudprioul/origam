@@ -15,6 +15,22 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [2.6.3] — 2026-07-03
+
+### Changed
+
+- Internal code-quality cleanup to green the SonarQube quality gate
+  (`new_violations`): removed redundant type assertions, merged duplicate
+  imports, extracted nested template literals, `||` → `??`, dropped a redundant
+  `| undefined`, converted a call-signature interface to a function type, and
+  removed a leftover CSS comment. **No API or runtime behaviour change** — pure
+  refactor (PR #87).
+- Marketing site (private, not part of the published `origam` package):
+  `@nuxtjs/i18n` 9 → 10 and `@nuxtjs/seo` 2 → 5 (locales moved to `i18n/locales/`;
+  v10 config breaking changes handled) — PR #88.
+
+---
+
 ## [2.6.2] — 2026-07-03
 
 ### Changed
