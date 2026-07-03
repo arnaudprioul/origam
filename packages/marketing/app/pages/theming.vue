@@ -131,6 +131,15 @@
     class="theming"
     data-cy="page-theming"
   >
+    <origam-alert
+      status="warning"
+      class="theming__dev-banner"
+      data-cy="theming-dev-banner"
+      :title="t('theming.dev_banner.title', 'Feature under development')"
+    >
+      {{ t('theming.dev_banner.text', 'The Theme Builder is under active development — some features may be incomplete or change.') }}
+    </origam-alert>
+
     <header
       class="theming__topbar"
       :aria-label="t('theming.topbar.label', 'Theme builder toolbar')"
@@ -372,6 +381,12 @@
     flex-direction: column;
     min-height: 0;
     height: calc(100vh - var(--origam-app-bar---height, 4rem));
+
+    &__dev-banner {
+      flex-shrink: 0;
+      margin: var(--origam-space---3, 0.75rem);
+      margin-block-end: 0;
+    }
 
     &__topbar {
       display: flex;

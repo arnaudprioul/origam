@@ -744,6 +744,10 @@
       "overlay": "Overlay & Surface",
       "media": "Media",
       "utilities": "Utilities & Providers"
+    },
+    "dev_banner": {
+      "title": "Feature under development",
+      "text": "The Theme Builder is under active development — some features may be incomplete or change."
     }
   },
   "changelog": {
