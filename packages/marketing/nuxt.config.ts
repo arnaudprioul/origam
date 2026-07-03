@@ -147,10 +147,9 @@ export default defineNuxtConfig({
         locales: I18N_LOCALES,
         defaultLocale: 'en',
         strategy: 'prefix_except_default',
-        restructureDir: false,
-        langDir: 'assets/locales',
-        lazy: true,
-        bundle: { optimizeTranslationDirective: false },
+        // langDir is resolved relative to restructureDir ('i18n/' by default in v10).
+        // Locale files live at i18n/locales/ in the project root.
+        langDir: 'locales',
         compilation: { strictMessage: false },
         detectBrowserLanguage: {
             useCookie: true,
