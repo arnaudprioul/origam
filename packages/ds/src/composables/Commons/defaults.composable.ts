@@ -92,10 +92,10 @@ export function useDefaults<T extends Record<string, any>> (
             if (wasPropPassed(key)) return ownValue
 
             // Otherwise, resolve from the closest DefaultsProvider.
-            const componentDefs = defaults.value?.[name] as Record<string, unknown> | undefined
+            const componentDefs = defaults.value?.[name]
             if (componentDefs?.[key] !== undefined) return componentDefs[key]
 
-            const globalDefs = defaults.value?.global as Record<string, unknown> | undefined
+            const globalDefs = defaults.value?.global
             if (globalDefs?.[key] !== undefined) return globalDefs[key]
 
             // Fall through to the value baked in by `withDefaults()`.

@@ -35,7 +35,7 @@ export function getCurrentInstance (name: string, message?: string) {
 export function getCurrentInstanceName (name = 'composable') {
     const vm = getCurrentInstance(name).type
 
-    return toKebabCase((vm as unknown as { aliasName?: string })?.aliasName || vm?.name || vm?.__name)
+    return toKebabCase((vm as unknown as { aliasName?: string })?.aliasName ?? vm?.name ?? vm?.__name)
 }
 
 let _uid = 0

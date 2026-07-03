@@ -26,8 +26,7 @@ import type {
     IVariantProps
 } from '../../interfaces'
 
-import type { TIcon } from '../../types'
-import type { TStatus, TStatusPosition } from '../../types'
+import type { TIcon, TStatus, TStatusPosition } from '../../types'
 
 /** Btn needs `status` / `statusIconPosition` from IStatusProps but its own
  *  `icon` prop accepts `boolean | TIcon` (boolean = icon-only mode) which is

@@ -27,10 +27,9 @@
 
 	import { GRID_GAP_SIZE_VAR } from '../../consts'
 
-	import type { IGridProps } from '../../interfaces'
+	import type { IGridProps, TGridTracks } from '../../interfaces'
 
 	import type { TGridGapSize } from '../../types'
-	import type { TGridTracks } from '../../interfaces'
 
 	/*********************************************************
 	 * Global

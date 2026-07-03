@@ -27,7 +27,7 @@ export function useRoute (): Ref<RouteLocationNormalizedLoaded | undefined> {
  * useRouter
  ********************************************************/
 export function useRouter (): Router | undefined {
-    return getCurrentInstance('useRouter')?.proxy?.$router as Router | undefined
+    return getCurrentInstance('useRouter')?.proxy?.$router
 }
 
 /*********************************************************
