@@ -75,8 +75,8 @@ async function handleLogout () {
         </origam-app-bar>
 
         <origam-drawer
-            :order="1"
             v-model="drawerOpen"
+            :order="1"
             permanent
             class="admin-drawer"
             width="240"
