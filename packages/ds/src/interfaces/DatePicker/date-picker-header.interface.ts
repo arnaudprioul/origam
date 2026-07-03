@@ -10,6 +10,4 @@ export interface IDatePickerHeaderProps extends ICommonsComponentProps, IColorPr
 /** Emits fired by `<OrigamDatePickerHeader>` — click on the header text.
  *  `event` is optional: the handler calls `emits('click')` without forwarding
  *  the originating MouseEvent. */
-export interface IDatePickerHeaderEmits {
-    (e: 'click', event?: MouseEvent): void
-}
+export type IDatePickerHeaderEmits = (e: 'click', event?: MouseEvent) => void
