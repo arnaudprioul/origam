@@ -121,7 +121,8 @@ export function themeSelector (theme: IOrigamTheme): string {
     //   - `[data-theme=…]` (0,1,0) → applies inside a SUB-TREE
     //     (`<OrigamThemeProvider theme>`), where the `:root:root` form can't match
     //     because the wrapper element isn't the document root.
-    const attrs = `[data-theme="${theme.name}"]${hasMode ? `[data-mode="${theme.mode}"]` : ''}`
+    const modeAttr = hasMode ? `[data-mode="${theme.mode}"]` : ''
+    const attrs = `[data-theme="${theme.name}"]${modeAttr}`
     return `:root:root${attrs}, ${attrs}`
 }
 

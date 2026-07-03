@@ -27,7 +27,7 @@ export interface ICheckboxEmits extends ICommonsComponentEmits, IFocusEmits, ISe
 
 export interface ICheckboxSlots {
     /** Slot data is provided when called from OrigamInput; absent when re-forwarded from OrigamCheckboxBtn. */
-    default?: (data?: { id?: string, messagesId?: string, isDisabled?: boolean, isReadonly?: boolean, isValid?: boolean | undefined }) => any
+    default?: (data?: { id?: string, messagesId?: string, isDisabled?: boolean, isReadonly?: boolean, isValid?: boolean }) => any
     label?: () => any
     input?: (data: { props: any, icon?: TIcon, textColorStyles?: TColor, backgroundColorStyles?: TColor, model: any }) => any
 }
