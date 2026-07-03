@@ -64,6 +64,12 @@ export default typescriptEslint.config(
 			},
 		},
 		rules: {
+			// `no-useless-assignment` was promoted into @eslint/js@10's
+			// `recommended` set. The codebase (written against the previous
+			// recommended set) has ~19 intentional-or-benign init-then-reassign
+			// patterns; this rule was never part of the project's lint standard.
+			// Keep it off — enabling it is a separate cleanup, not a CI gate.
+			"no-useless-assignment": "off",
 			"@typescript-eslint/no-namespace": "off",
 			"@typescript-eslint/ban-ts-comment": "warn",
 			"@typescript-eslint/no-explicit-any": "off",
