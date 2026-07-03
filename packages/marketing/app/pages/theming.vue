@@ -136,9 +136,8 @@
       class="theming__dev-banner"
       data-cy="theming-dev-banner"
       :title="t('theming.dev_banner.title', 'Feature under development')"
-    >
-      {{ t('theming.dev_banner.text', 'The Theme Builder is under active development — some features may be incomplete or change.') }}
-    </origam-alert>
+      :text="t('theming.dev_banner.text', 'The Theme Builder is under active development — some features may be incomplete or change.')"
+    />
 
     <header
       class="theming__topbar"
@@ -383,7 +382,7 @@
     height: calc(100vh - var(--origam-app-bar---height, 4rem));
 
     &__dev-banner {
-      flex-shrink: 0;
+      flex: none;
       margin: var(--origam-space---3, 0.75rem);
       margin-block-end: 0;
     }
