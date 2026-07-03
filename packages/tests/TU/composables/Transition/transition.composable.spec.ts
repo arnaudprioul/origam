@@ -217,10 +217,10 @@ describe('useCssTransition — handleBeforeEnter', () => {
         })
         mount(Host)
         const el = document.createElement('div')
-        el.style.transformOrigin = 'original'
+        el.style.transformOrigin = 'top left'
         const tp = capturedApi.transitionProps.value
         tp.onBeforeEnter?.(el)
-        expect(el.style.transformOrigin).toBe('original')
+        expect(el.style.transformOrigin).toBe('top left')
     })
 })
 
