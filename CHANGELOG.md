@@ -15,6 +15,32 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [2.6.2] — 2026-07-03
+
+### Changed
+
+- Dependency maintenance (Dependabot): TypeScript 5.8 → 6.0, ESLint 9 → 10
+  (+ `typescript-eslint`, `eslint-plugin-vue`), Style Dictionary 4 → 5
+  (+ `@tokens-studio/sd-transforms` 1 → 2), Shiki 3 → 4 (VitePress docs), and a
+  dev-tooling batch (`jsdom` 25 → 29, `happy-dom`, `sass`, `@types/node`,
+  `unplugin-vue-components`, `lint-staged`, `globals`…). **Vite and Vue stay
+  pinned** (`vite ~7.3.6`, `vue 3.5.35`) — their bumps were declined (Vite ≥ 7.3.5
+  broke the build; the Vue override neutralises the bump). `react-dom` bump
+  closed (not a dependency of a Vue design system).
+
+### Fixed
+
+- CI publish (`release.yml`): the npm publish step failed with **E404** because
+  `pnpm publish` did not expand the `${NODE_AUTH_TOKEN}` placeholder from
+  setup-node's `.npmrc` → the PUT went out unauthenticated. The resolved token is
+  now written to the `.npmrc` pnpm reads before publish (PR #82). 2.5.0/2.5.1/2.6.0
+  had failed here; 2.6.1 was published manually as a stop-gap.
+- Test robustness: `transition.composable.spec.ts` used an invalid CSS sentinel
+  (`transformOrigin: 'original'`) that jsdom 29 now rejects; switched to a valid
+  value `top left` (PR #84).
+
+---
+
 ## [2.6.1] — 2026-07-02
 
 ### Added
