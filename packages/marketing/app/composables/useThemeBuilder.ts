@@ -399,8 +399,17 @@ export function useThemeBuilder () {
         Object.keys(state.cssVars.dark).forEach(k => delete state.cssVars.dark[k])
         state.mode = 'light'
         state.activeMode = 'light'
-        for (const [k, v] of Object.entries(preset.light)) setToken('light', k, v)
-        for (const [k, v] of Object.entries(preset.dark)) setToken('dark', k, v)
+        // Write all preset values directly — bypass setToken's "equals default" filter
+        // so the full preset config appears in the generated code.
+        // setToken would silently drop any token whose value happens to match
+        // the registered THEME_BUILDER_TOKENS default, producing an incomplete
+        // or empty generated theme (e.g. the origam preset would produce nothing).
+        for (const [k, v] of Object.entries(preset.light)) {
+            state.cssVars.light[k] = v
+        }
+        for (const [k, v] of Object.entries(preset.dark)) {
+            state.cssVars.dark[k] = v
+        }
     }
 
     const presets: IThemeBuilderPreset[] = THEME_BUILDER_PRESETS
