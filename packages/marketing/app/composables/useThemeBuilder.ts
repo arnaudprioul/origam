@@ -171,6 +171,17 @@ export function useThemeBuilder () {
             if (value === '' || value === false || value === undefined) continue
             out[ctrl.prop] = value
         }
+        // Preview-only default: any component exposing a `variant` prop renders
+        // with `outlined` so preset/token changes (borders, colours) are visible
+        // out of the box — unless the user explicitly picked another variant.
+        // Never serialised (previewProps only).
+        const variantCtrl = entry.controls.find(
+            c => c.prop === 'variant' && c.kind === 'select' && (c.options?.length ?? 0) > 0
+        )
+        if (variantCtrl && !isPropEdited(slug, 'variant')) {
+            const outlined = variantCtrl.options?.find(o => o.value === 'outlined')
+            if (outlined) out.variant = outlined.value
+        }
         return out
     }
 
