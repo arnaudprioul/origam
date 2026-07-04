@@ -79,6 +79,12 @@ export interface IThemeBuilderPreset {
     labelFallback: string
     light: Record<string, string>
     dark: Record<string, string>
+    /**
+     * Per-component DEFAULT PROPS (props-first DS logic). Keyed by `global` or
+     * `origam-{slug}` → prop → value. Seeded into `state.defaults` by
+     * `seedPreset`, re-emitted as `IOrigamTheme.component` on export.
+     */
+    components?: Record<string, Record<string, unknown>>
 }
 
 /**
