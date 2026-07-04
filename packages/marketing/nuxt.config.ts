@@ -24,6 +24,16 @@ export default defineNuxtConfig({
     devtools: { enabled: true },
     ssr: true,
 
+    // Production build only needs runnable output, not source maps. Nuxt emits
+    // SERVER source maps by default in prod (~570 .mjs.map / ~67 MB here); rollup
+    // holds them in memory during the Nitro bundle step, which is exactly where
+    // the RAM-constrained deploy container OOM-kills the build. Disabling both
+    // channels removes that memory spike with zero runtime impact.
+    sourcemap: {
+        server: false,
+        client: false
+    },
+
     typescript: {
         strict: true,
         typeCheck: false,
