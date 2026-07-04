@@ -238,11 +238,15 @@ export const cartoonDarkTheme: IOrigamTheme = {
             'btn-secondary-border': '#fffefb',
             'btn-secondary-text': '#fffefb'
         },
+        // ELEVATION (dark) : même échelle hard-shadow, offset clair #fffefb pour
+        // rester visible sur fond sombre. Consommée via la prop `elevation`.
         shadow: {
-            'card-elevated': '6px 6px 0 #171717',
-            'glow-primary': '4px 4px 0 #fffefb',
-            'btn-primary': '4px 4px 0 #fffefb',
-            'btn-secondary': '4px 4px 0 #fffefb'
+            none: 'none',
+            xs: '2px 2px 0 #fffefb',
+            sm: '3px 3px 0 #fffefb',
+            md: '4px 4px 0 #fffefb',
+            lg: '6px 6px 0 #fffefb',
+            xl: '8px 8px 0 #fffefb'
         }
     },
     cssVars: {}
