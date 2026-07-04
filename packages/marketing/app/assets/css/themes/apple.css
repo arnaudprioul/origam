@@ -65,6 +65,27 @@
      * its refined language (DS default is 8 px).
      */
     --origam-code---border-radius: 12px;
+
+    --origam-color__feedback--success---bg: #28cd41;
+    --origam-color__feedback--success---bgSubtle: #e8f8ec;
+    --origam-color__feedback--success---fg: #000000;
+    --origam-color__feedback--success---fgSubtle: #166534;
+    --origam-color__feedback--success---border: #28cd41;
+    --origam-color__feedback--warning---bg: #ff9f0a;
+    --origam-color__feedback--warning---bgSubtle: #fff4e5;
+    --origam-color__feedback--warning---fg: #000000;
+    --origam-color__feedback--warning---fgSubtle: #78350f;
+    --origam-color__feedback--warning---border: #ff9f0a;
+    --origam-color__feedback--danger---bg: #ff3b30;
+    --origam-color__feedback--danger---bgSubtle: #ffe9e7;
+    --origam-color__feedback--danger---fg: #000000;
+    --origam-color__feedback--danger---fgSubtle: #c2271c;
+    --origam-color__feedback--danger---border: #ff3b30;
+    --origam-color__feedback--info---bg: #0071e3;
+    --origam-color__feedback--info---bgSubtle: #f0f7ff;
+    --origam-color__feedback--info---fg: #ffffff;
+    --origam-color__feedback--info---fgSubtle: #0058b0;
+    --origam-color__feedback--info---border: #0071e3;
 }/* ── APPLE — heading font override on marketing section titles ────────────── */
 
 :root:root[data-theme="apple"] .home-hero__title,
@@ -112,4 +133,25 @@
     --origam-btn---box-shadow-ghost:      none;/* OrigamCard component-level default (dark) */
     --origam-card---box-shadow: var(--origam-shadow---card-elevated);/* OrigamCode component-level default (dark) */
     --origam-code---border-radius: 12px;
+
+    --origam-color__feedback--success---bg: #30d158;
+    --origam-color__feedback--success---bgSubtle: rgba(48, 209, 88, 0.16);
+    --origam-color__feedback--success---fg: #000000;
+    --origam-color__feedback--success---fgSubtle: #64e47c;
+    --origam-color__feedback--success---border: #30d158;
+    --origam-color__feedback--warning---bg: #ff9f0a;
+    --origam-color__feedback--warning---bgSubtle: rgba(255, 159, 10, 0.16);
+    --origam-color__feedback--warning---fg: #000000;
+    --origam-color__feedback--warning---fgSubtle: #ffb445;
+    --origam-color__feedback--warning---border: #ff9f0a;
+    --origam-color__feedback--danger---bg: #ff453a;
+    --origam-color__feedback--danger---bgSubtle: rgba(255, 69, 58, 0.16);
+    --origam-color__feedback--danger---fg: #ffffff;
+    --origam-color__feedback--danger---fgSubtle: #ff6961;
+    --origam-color__feedback--danger---border: #ff453a;
+    --origam-color__feedback--info---bg: #0a84ff;
+    --origam-color__feedback--info---bgSubtle: rgba(10, 132, 255, 0.16);
+    --origam-color__feedback--info---fg: #ffffff;
+    --origam-color__feedback--info---fgSubtle: #64b5ff;
+    --origam-color__feedback--info---border: #0a84ff;
 }
