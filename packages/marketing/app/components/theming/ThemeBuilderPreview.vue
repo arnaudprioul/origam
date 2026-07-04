@@ -51,6 +51,20 @@ const panes = computed<Array<{ mode: TEditMode; style: Record<string, string> }>
 
 const modeLabel = (mode: TEditMode): string =>
     mode === 'dark' ? t('theming.mode.dark', 'Dark') : t('theming.mode.light', 'Light')
+
+const variantInstances = computed<Array<{ key: string; label: string; props: Record<string, unknown> }>>(() => {
+    const control = props.entry.controls.find(
+        c => c.prop === 'variant' && c.kind === 'select' && (c.options?.length ?? 0) > 0
+    )
+    if (!control?.options?.length) {
+        return [{ key: 'default', label: '', props: props.previewProps }]
+    }
+    return control.options.map(opt => ({
+        key: String(opt.value),
+        label: opt.label,
+        props: { ...props.previewProps, variant: opt.value }
+    }))
+})
 </script>
 
 <template>
@@ -136,14 +150,28 @@ const modeLabel = (mode: TEditMode): string =>
                             :data-cy="`theming-canvas-${pane.mode}`"
                         >
                             <nuxt-error-boundary>
-                                <component
-                                    :is="entry.componentTag"
+                                <div
                                     v-if="entry.previewable"
-                                    v-bind="previewProps"
-                                    :data-cy="`theming-live-${entry.slug}-${pane.mode}`"
+                                    class="tb-preview__variants"
                                 >
-                                    {{ slotText }}
-                                </component>
+                                    <div
+                                        v-for="instance in variantInstances"
+                                        :key="instance.key"
+                                        class="tb-preview__variant"
+                                    >
+                                        <span
+                                            v-if="instance.label"
+                                            class="tb-preview__variant-label"
+                                        >{{ instance.label }}</span>
+                                        <component
+                                            :is="entry.componentTag"
+                                            v-bind="instance.props"
+                                            :data-cy="`theming-live-${entry.slug}-${pane.mode}-${instance.key}`"
+                                        >
+                                            {{ slotText }}
+                                        </component>
+                                    </div>
+                                </div>
                                 <p
                                     v-else
                                     class="tb-preview__unavailable"
@@ -288,6 +316,29 @@ const modeLabel = (mode: TEditMode): string =>
         min-block-size: 9rem;
         padding: var(--origam-spacing-8, 2rem) var(--origam-spacing-10, 3rem);
         background-color: transparent;
+    }
+
+    &__variants {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: center;
+        gap: var(--origam-spacing-5, 1.25rem);
+    }
+
+    &__variant {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--origam-spacing-2, 0.5rem);
+    }
+
+    &__variant-label {
+        font-size: 0.6875rem;
+        font-weight: 600;
+        text-transform: capitalize;
+        letter-spacing: 0.03em;
+        color: var(--origam-color-text-subtle, var(--origam-color__text---subtle));
     }
 
     &__unavailable {
