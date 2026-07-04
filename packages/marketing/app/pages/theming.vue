@@ -81,10 +81,9 @@
 
   const selectedPreset = ref<string>('')
 
-  const presetItems = computed(() => [
-    { title: t('theming.preset.none', '— none —'), value: '' },
-    ...presets.map(p => ({ title: t(p.labelKey, p.labelFallback), value: p.key }))
-  ])
+  const presetChips = computed(() =>
+    presets.map(p => ({ key: p.key, title: t(p.labelKey, p.labelFallback) }))
+  )
 
   const onSelectComponent = (slug: string): void => {
     activeSlug.value = slug
@@ -94,8 +93,9 @@
   const onSetToken = (mode: TEditMode, cssVar: string, value: string): void => setToken(mode, cssVar, value)
   const onResetComponent = (slug: string): void => resetComponent(slug)
 
-  const onSeedPreset = (key: unknown): void => {
-    if (typeof key !== 'string' || !key) return
+  const onSeedPreset = (key: string): void => {
+    if (!key) return
+    selectedPreset.value = key
     seedPreset(key)
   }
 
@@ -186,17 +186,26 @@
         aria-hidden="true"
       />
 
-      <origam-select
-        v-model="selectedPreset"
-        :label="t('theming.preset.label', 'Preset')"
-        :items="presetItems"
-        variant="outlined"
-        density="compact"
-        hide-details
-        class="theming__field theming__field--preset"
-        data-cy="theming-preset"
-        @update:model-value="onSeedPreset"
-      />
+      <div
+        class="theming__presets"
+        role="group"
+        :aria-label="t('theming.preset.label', 'Preset')"
+        data-cy="theming-presets"
+      >
+        <span class="theming__presets-label">{{ t('theming.preset.label', 'Preset') }}</span>
+        <origam-btn
+          v-for="preset in presetChips"
+          :key="preset.key"
+          size="sm"
+          :variant="selectedPreset === preset.key ? 'flat' : 'tonal'"
+          :active="selectedPreset === preset.key"
+          class="theming__preset-chip"
+          :data-cy="`theming-preset-${preset.key}`"
+          @click="onSeedPreset(preset.key)"
+        >
+          {{ preset.title }}
+        </origam-btn>
+      </div>
 
       <div class="theming__spacer"/>
 
@@ -472,6 +481,29 @@
       &--preset {
         inline-size: 10rem;
       }
+    }
+
+    &__presets {
+      display: flex;
+      align-items: center;
+      gap: var(--origam-spacing-2, 0.5rem);
+      flex: 0 1 auto;
+      min-width: 0;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    &__presets-label {
+      flex: none;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--origam-color-text-subtle, var(--origam-color__text---subtle));
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    &__preset-chip {
+      flex: none;
     }
 
     &__spacer {
