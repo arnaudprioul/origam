@@ -98,12 +98,44 @@ export const cartoonLightTheme: IOrigamTheme = {
             'btn-secondary-border': '#171717',
             'btn-secondary-text': '#2b2b2b'
         },
+        // ⛔ ELEVATION = le tier `shadow` sémantique. On surcharge TOUTE l'échelle
+        // (dégradé dérivé du défaut) en hard-shadows cartoon. Les composants
+        // consomment via la prop `elevation` (ci-dessous), jamais de shadow inline.
         shadow: {
-            'card-elevated': '6px 6px 0 #171717',
-            'glow-primary': '4px 4px 0 #171717',
-            'btn-primary': '4px 4px 0 #171717',
-            'btn-secondary': '4px 4px 0 #171717'
+            none: 'none',
+            xs: '2px 2px 0 #171717',
+            sm: '3px 3px 0 #171717',
+            md: '4px 4px 0 #171717',
+            lg: '6px 6px 0 #171717',
+            xl: '8px 8px 0 #171717'
         }
+    },
+    // ⛔ PROPS D'ABORD (logique DS). Overrides cartoon superposés sur la baseline
+    // `origam` (deep-merge). Identité cartoon = bordures visibles + coins arrondis
+    // + hard-shadows via la prop `elevation`. Seuls l'épaisseur 3px + la couleur
+    // de bordure #171717 (non exprimables en props) restent dans `vars`.
+    components: {
+        'origam-btn': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
+        'origam-btn-group': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-btn-toggle': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-card': { rounded: 'lg', border: true, flat: false, elevation: 4 },
+        'origam-chip': { variant: 'outlined', rounded: 'lg', border: true, pill: false },
+        'origam-alert': { rounded: 'lg', border: true, elevation: 2 },
+        'origam-field': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-text-field': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-textarea-field': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-number-field': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-password-field': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-select': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-date-picker-field': { rounded: 'lg', border: true },
+        'origam-file-field': { rounded: 'lg', border: true },
+        'origam-color-picker-field': { rounded: 'lg', border: true },
+        'origam-code': { rounded: 'lg', border: true, elevation: 2 },
+        'origam-menu': { rounded: 'lg', border: true, elevation: 4 },
+        'origam-table': { rounded: 'lg', border: true },
+        'origam-avatar': { rounded: 'lg', border: true },
+        'origam-checkbox': { rounded: 'md' },
+        'origam-snackbar': { rounded: 'lg', border: true, elevation: 4 }
     },
     cssVars: {}
 }

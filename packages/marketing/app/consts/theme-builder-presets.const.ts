@@ -7,8 +7,32 @@
  * Brand presets: GÉNÉRÉS depuis packages/marketing/app/assets/css/themes/*.css
  * via scripts/generate-brand-presets.mjs — ne PAS éditer à la main.
  */
+import type { IOrigamTheme } from 'origam/interfaces'
+import { resolveThemeVars } from 'origam/utils'
+
 import type { IThemeBuilderPreset } from '~/interfaces/theme-builder.interface'
 import { THEME_BUILDER_BRAND_PRESETS } from '~/consts/theme-builder-brand-presets.const'
+import { cartoonThemes } from '~/themes/cartoon.theme'
+
+/**
+ * PROPS-FIRST (logique DS) : un preset est sourcé depuis l'objet `IOrigamTheme`
+ * canonique (`app/themes/*.theme.ts`). On résout `vars → --origam-*` via le DS
+ * (`resolveThemeVars`) et on prend `theme.components` (props par composant). Ça
+ * remplace la génération CSS fragile, thème par thème.
+ */
+function presetFromThemes (key: string, labelFallback: string, themes: IOrigamTheme[]): IThemeBuilderPreset {
+    const light = themes.find(t => t.mode !== 'dark') ?? themes[0]
+    const dark = themes.find(t => t.mode === 'dark') ?? light
+    const lightVars = resolveThemeVars(light) as Record<string, string>
+    return {
+        key,
+        labelKey: `theming.preset.${key}`,
+        labelFallback,
+        light: lightVars,
+        dark: { ...lightVars, ...(resolveThemeVars(dark) as Record<string, string>) },
+        components: { ...(light.components ?? {}), ...(dark.components ?? {}) }
+    }
+}
 
 export const THEME_BUILDER_PRESET_LIGHT_VARS: Record<string, string> = {
         "--origam-alert---accent-width": "24px",
@@ -516,5 +540,8 @@ export const THEME_BUILDER_PRESETS: IThemeBuilderPreset[] = [
         light: THEME_BUILDER_PRESET_LIGHT_VARS,
         dark: THEME_BUILDER_PRESET_DARK_VARS
     },
-    ...THEME_BUILDER_BRAND_PRESETS
+    // cartoon : sourcé depuis l'objet thème (props-first). Les autres brands
+    // restent générés depuis le CSS le temps de les migrer un par un.
+    presetFromThemes('cartoon', 'Cartoon', cartoonThemes),
+    ...THEME_BUILDER_BRAND_PRESETS.filter(p => p.key !== 'cartoon')
 ]

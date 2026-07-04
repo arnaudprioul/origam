@@ -421,6 +421,12 @@ export function useThemeBuilder () {
         for (const [k, v] of Object.entries(preset.dark)) {
             state.cssVars.dark[k] = v
         }
+        // PROPS D'ABORD : applique les props de composant du thème dans
+        // state.defaults (ré-émises en `component` à l'export). Clé = `origam-{slug}`
+        // ou `global`, comme IOrigamTheme.components.
+        for (const [compKey, props] of Object.entries(preset.components ?? {})) {
+            state.defaults[compKey] = { ...props }
+        }
     }
 
     const presets: IThemeBuilderPreset[] = THEME_BUILDER_PRESETS
