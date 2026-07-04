@@ -98,12 +98,43 @@ export const editorialLightTheme: IOrigamTheme = {
             'btn-secondary-border': 'rgba(26, 23, 20, 0.40)',
             'btn-secondary-text': '#1a1714'
         },
+        // ⛔ ELEVATION = le tier `shadow` sémantique. Editorial = flat (pas d'ombre).
+        // Rampe TRÈS discrète sur xs/sm (séparateurs à peine perceptibles) ;
+        // md/lg/xl = none pour conserver l'identité magazine plat + carré.
         shadow: {
-            'card-elevated': 'none',
-            'glow-primary': 'none',
-            'btn-primary': 'none',
-            'btn-secondary': 'none'
+            none: 'none',
+            xs: '0 1px 2px rgba(0, 0, 0, 0.04)',
+            sm: '0 1px 4px rgba(0, 0, 0, 0.06)',
+            md: 'none',
+            lg: 'none',
+            xl: 'none'
         }
+    },
+    // ⛔ PROPS D'ABORD (logique DS). Identité éditoriale = coins carrés (rounded
+    // 'none'), surfaces plates (flat + elevation 0), variant outlined pour les champs
+    // interactifs. Sobre comme un magazine : structure visible, sans ornementation.
+    components: {
+        'origam-btn': { variant: 'outlined', rounded: 'none', border: true, elevation: 0 },
+        'origam-btn-group': { variant: 'outlined', rounded: 'none', border: true },
+        'origam-btn-toggle': { variant: 'outlined', rounded: 'none', border: true },
+        'origam-card': { rounded: 'none', border: true, flat: true },
+        'origam-chip': { variant: 'outlined', rounded: 'none', border: true, pill: false },
+        'origam-alert': { rounded: 'none', border: true, elevation: 0 },
+        'origam-field': { variant: 'outlined', rounded: 'none', border: true },
+        'origam-text-field': { variant: 'outlined', rounded: 'none', border: true },
+        'origam-textarea-field': { variant: 'outlined', rounded: 'none', border: true },
+        'origam-number-field': { variant: 'outlined', rounded: 'none', border: true },
+        'origam-password-field': { variant: 'outlined', rounded: 'none', border: true },
+        'origam-select': { variant: 'outlined', rounded: 'none', border: true },
+        'origam-date-picker-field': { rounded: 'none', border: true },
+        'origam-file-field': { rounded: 'none', border: true },
+        'origam-color-picker-field': { rounded: 'none', border: true },
+        'origam-code': { rounded: 'none', border: true, elevation: 0 },
+        'origam-menu': { rounded: 'none', border: true, elevation: 0 },
+        'origam-table': { rounded: 'none', border: true },
+        'origam-avatar': { rounded: 'none', border: true },
+        'origam-checkbox': { rounded: 'none' },
+        'origam-snackbar': { rounded: 'none', border: true, elevation: 0 }
     },
     cssVars: {}
 }
@@ -206,11 +237,15 @@ export const editorialDarkTheme: IOrigamTheme = {
             'btn-secondary-border': 'rgba(255, 255, 255, 0.30)',
             'btn-secondary-text': '#ffffff'
         },
+        // ELEVATION (dark) : editorial = plat, pas d'ombre. Toute l'échelle à none
+        // — sur fond sombre une ombre serait de toute façon imperceptible.
         shadow: {
-            'card-elevated': 'none',
-            'glow-primary': 'none',
-            'btn-primary': 'none',
-            'btn-secondary': 'none'
+            none: 'none',
+            xs: 'none',
+            sm: 'none',
+            md: 'none',
+            lg: 'none',
+            xl: 'none'
         }
     },
     cssVars: {}

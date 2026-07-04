@@ -13,6 +13,12 @@ import { resolveThemeVars } from 'origam/utils'
 import type { IThemeBuilderPreset } from '~/interfaces/theme-builder.interface'
 import { THEME_BUILDER_BRAND_PRESETS } from '~/consts/theme-builder-brand-presets.const'
 import { cartoonThemes } from '~/themes/cartoon.theme'
+import { appleThemes } from '~/themes/apple.theme'
+import { geekThemes } from '~/themes/geek.theme'
+import { glassThemes } from '~/themes/glass.theme'
+import { editorialThemes } from '~/themes/editorial.theme'
+import { materialThemes } from '~/themes/material.theme'
+import { ecomThemes } from '~/themes/ecom.theme'
 
 /**
  * PROPS-FIRST (logique DS) : un preset est sourcé depuis l'objet `IOrigamTheme`
@@ -540,8 +546,16 @@ export const THEME_BUILDER_PRESETS: IThemeBuilderPreset[] = [
         light: THEME_BUILDER_PRESET_LIGHT_VARS,
         dark: THEME_BUILDER_PRESET_DARK_VARS
     },
-    // cartoon : sourcé depuis l'objet thème (props-first). Les autres brands
-    // restent générés depuis le CSS le temps de les migrer un par un.
+    // Brands sourcés depuis leur objet IOrigamTheme (props-first). `sobre` n'a
+    // pas de fichier thème (baseline DS) → reste depuis le CSS généré.
     presetFromThemes('cartoon', 'Cartoon', cartoonThemes),
-    ...THEME_BUILDER_BRAND_PRESETS.filter(p => p.key !== 'cartoon')
+    presetFromThemes('apple', 'Apple', appleThemes),
+    presetFromThemes('geek', 'Geek', geekThemes),
+    presetFromThemes('glass', 'Glass', glassThemes),
+    presetFromThemes('editorial', 'Editorial', editorialThemes),
+    presetFromThemes('material', 'Material', materialThemes),
+    presetFromThemes('ecom', 'E-commerce', ecomThemes),
+    ...THEME_BUILDER_BRAND_PRESETS.filter(
+        p => !['cartoon', 'apple', 'geek', 'glass', 'editorial', 'material', 'ecom'].includes(p.key)
+    )
 ]

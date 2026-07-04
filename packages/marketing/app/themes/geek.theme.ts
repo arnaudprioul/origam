@@ -97,12 +97,45 @@ export const geekLightTheme: IOrigamTheme = {
             'btn-secondary-border': 'rgba(217, 70, 239, 0.55)',
             'btn-secondary-text': '#a21caf'
         },
+        // ⛔ ELEVATION = le tier `shadow` sémantique. Rampe de glows néon croissants
+        // (violet #7c3aed / cyan #0891b2). Les composants consomment via la prop
+        // `elevation` (ci-dessous), jamais de shadow inline.
         shadow: {
-            'card-elevated': '0 1px 3px rgba(124, 58, 237, 0.06), 0 8px 24px -16px rgba(124, 58, 237, 0.20)',
-            'glow-primary': 'inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 8px 24px -8px rgba(124, 58, 237, 0.55), 0 0 32px -8px rgba(8, 145, 178, 0.30)',
-            'btn-primary': 'rgba(217, 70, 239, 0.50) 0px 0px 18px -4px, rgba(8, 145, 178, 0.40) 0px 0px 30px -8px, rgba(255, 255, 255, 0.40) 0px 1px 0px 0px inset',
-            'btn-secondary': 'rgba(217, 70, 239, 0.35) 0px 0px 10px -4px'
+            none: 'none',
+            xs: '0 1px 3px rgba(124, 58, 237, 0.06), 0 8px 24px -16px rgba(124, 58, 237, 0.20)',
+            sm: 'rgba(217, 70, 239, 0.35) 0px 0px 10px -4px',
+            md: '0 4px 12px -4px rgba(124, 58, 237, 0.30), 0 0 16px -4px rgba(8, 145, 178, 0.20)',
+            lg: 'inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 8px 24px -8px rgba(124, 58, 237, 0.55), 0 0 32px -8px rgba(8, 145, 178, 0.30)',
+            xl: 'rgba(217, 70, 239, 0.50) 0px 0px 18px -4px, rgba(8, 145, 178, 0.40) 0px 0px 30px -8px, rgba(255, 255, 255, 0.40) 0px 1px 0px 0px inset'
         }
+    },
+    // ⛔ PROPS D'ABORD (logique DS). Overrides geek superposés sur la baseline
+    // `origam` (deep-merge). Identité terminal/dev/néon : coins peu arrondis
+    // (rounded sm), monospace, glow néon via la prop `elevation`. Seules la
+    // couleur de bordure violette et la teinte de glow (non exprimables en props)
+    // restent dans `vars`.
+    components: {
+        'origam-btn': { variant: 'outlined', rounded: 'sm', border: true, elevation: 2 },
+        'origam-btn-group': { variant: 'outlined', rounded: 'sm', border: true },
+        'origam-btn-toggle': { variant: 'outlined', rounded: 'sm', border: true },
+        'origam-card': { rounded: 'sm', border: true, flat: false, elevation: 2 },
+        'origam-chip': { variant: 'outlined', rounded: 'sm', border: true, pill: false },
+        'origam-alert': { rounded: 'sm', border: true, elevation: 1 },
+        'origam-field': { variant: 'outlined', rounded: 'sm', border: true },
+        'origam-text-field': { variant: 'outlined', rounded: 'sm', border: true },
+        'origam-textarea-field': { variant: 'outlined', rounded: 'sm', border: true },
+        'origam-number-field': { variant: 'outlined', rounded: 'sm', border: true },
+        'origam-password-field': { variant: 'outlined', rounded: 'sm', border: true },
+        'origam-select': { variant: 'outlined', rounded: 'sm', border: true },
+        'origam-date-picker-field': { rounded: 'sm', border: true },
+        'origam-file-field': { rounded: 'sm', border: true },
+        'origam-color-picker-field': { rounded: 'sm', border: true },
+        'origam-code': { rounded: 'sm', border: true, elevation: 2 },
+        'origam-menu': { rounded: 'sm', border: true, elevation: 3 },
+        'origam-table': { rounded: 'sm', border: true },
+        'origam-avatar': { rounded: 'sm', border: true },
+        'origam-checkbox': { rounded: 'xs' },
+        'origam-snackbar': { rounded: 'sm', border: true, elevation: 3 }
     },
     cssVars: {}
 }
@@ -204,11 +237,16 @@ export const geekDarkTheme: IOrigamTheme = {
             'btn-secondary-border': 'rgba(0, 240, 255, 0.40)',
             'btn-secondary-text': '#00f0ff'
         },
+        // ELEVATION (dark) : même rampe de glows néon, intensité amplifiée sur fond
+        // sombre pour l'effet terminal. Violet #c77dff / cyan #00f0ff. Consommée
+        // via la prop `elevation`.
         shadow: {
-            'card-elevated': 'inset 0 1px 0 rgba(199, 125, 255, 0.08), 0 8px 28px -12px rgba(0, 0, 0, 0.80), 0 0 0 1px rgba(0, 240, 255, 0.04)',
-            'glow-primary': 'inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 8px 24px -8px rgba(0, 240, 255, 0.50), 0 0 32px -8px rgba(199, 125, 255, 0.35)',
-            'btn-primary': 'rgba(0, 240, 255, 0.50) 0px 0px 18px -2px, rgba(199, 125, 255, 0.45) 0px 0px 32px -6px, rgba(255, 255, 255, 0.40) 0px 1px 0px 0px inset',
-            'btn-secondary': 'rgba(0, 240, 255, 0.25) 0px 0px 12px -4px'
+            none: 'none',
+            xs: 'inset 0 1px 0 rgba(199, 125, 255, 0.08), 0 8px 28px -12px rgba(0, 0, 0, 0.80), 0 0 0 1px rgba(0, 240, 255, 0.04)',
+            sm: 'rgba(0, 240, 255, 0.25) 0px 0px 12px -4px',
+            md: '0 4px 12px -4px rgba(124, 77, 255, 0.40), 0 0 20px -6px rgba(0, 240, 255, 0.25)',
+            lg: 'inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 8px 24px -8px rgba(0, 240, 255, 0.50), 0 0 32px -8px rgba(199, 125, 255, 0.35)',
+            xl: 'rgba(0, 240, 255, 0.50) 0px 0px 18px -2px, rgba(199, 125, 255, 0.45) 0px 0px 32px -6px, rgba(255, 255, 255, 0.40) 0px 1px 0px 0px inset'
         }
     },
     cssVars: {}
