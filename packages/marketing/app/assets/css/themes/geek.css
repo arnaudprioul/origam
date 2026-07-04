@@ -54,6 +54,27 @@
      */
     --origam-code---border-color: rgba(168, 85, 247, 0.28);
     --origam-code---border-width: 1px;
+
+    --origam-color__feedback--success---bg: #16a34a;
+    --origam-color__feedback--success---bgSubtle: rgba(22, 163, 74, 0.1);
+    --origam-color__feedback--success---fg: #000000;
+    --origam-color__feedback--success---fgSubtle: #15803d;
+    --origam-color__feedback--success---border: #16a34a;
+    --origam-color__feedback--warning---bg: #d97706;
+    --origam-color__feedback--warning---bgSubtle: rgba(217, 119, 6, 0.1);
+    --origam-color__feedback--warning---fg: #000000;
+    --origam-color__feedback--warning---fgSubtle: #b45309;
+    --origam-color__feedback--warning---border: #d97706;
+    --origam-color__feedback--danger---bg: #dc2626;
+    --origam-color__feedback--danger---bgSubtle: rgba(220, 38, 38, 0.1);
+    --origam-color__feedback--danger---fg: #ffffff;
+    --origam-color__feedback--danger---fgSubtle: #b91c1c;
+    --origam-color__feedback--danger---border: #dc2626;
+    --origam-color__feedback--info---bg: #2563eb;
+    --origam-color__feedback--info---bgSubtle: rgba(37, 99, 235, 0.1);
+    --origam-color__feedback--info---fg: #ffffff;
+    --origam-color__feedback--info---fgSubtle: #1d4ed8;
+    --origam-color__feedback--info---border: #2563eb;
 }/* ── GEEK DARK ───────────────────────────────────────────────────────────── */
 
 :root:root[data-theme="geek"][data-mode="dark"] {/* Heading font override — monospace terminal aesthetic */
@@ -96,6 +117,27 @@
      */
     --origam-code---border-color: rgba(124, 77, 255, 0.28);
     --origam-code---border-width: 1px;
+
+    --origam-color__feedback--success---bg: #4ade80;
+    --origam-color__feedback--success---bgSubtle: rgba(74, 222, 128, 0.1);
+    --origam-color__feedback--success---fg: #050a05;
+    --origam-color__feedback--success---fgSubtle: #6ee7b7;
+    --origam-color__feedback--success---border: #4ade80;
+    --origam-color__feedback--warning---bg: #fbbf24;
+    --origam-color__feedback--warning---bgSubtle: rgba(251, 191, 36, 0.1);
+    --origam-color__feedback--warning---fg: #050a05;
+    --origam-color__feedback--warning---fgSubtle: #fbbf24;
+    --origam-color__feedback--warning---border: #fbbf24;
+    --origam-color__feedback--danger---bg: #fca5a5;
+    --origam-color__feedback--danger---bgSubtle: rgba(252, 165, 165, 0.1);
+    --origam-color__feedback--danger---fg: #050a05;
+    --origam-color__feedback--danger---fgSubtle: #fca5a5;
+    --origam-color__feedback--danger---border: #fca5a5;
+    --origam-color__feedback--info---bg: #93c5fd;
+    --origam-color__feedback--info---bgSubtle: rgba(147, 197, 253, 0.1);
+    --origam-color__feedback--info---fg: #050a05;
+    --origam-color__feedback--info---fgSubtle: #93c5fd;
+    --origam-color__feedback--info---border: #93c5fd;
 }/* ── GEEK — Marketing heading font override ──────────────────────────────── *//*
  * The .home-*__title elements are <h1>/<h2> with scoped CSS — they inherit
  * font-family from the body (Inter). OrigamTitle reads --origam-title---font-family

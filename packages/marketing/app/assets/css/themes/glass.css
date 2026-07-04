@@ -95,6 +95,27 @@
      * to match the pill-heavy aesthetic; DS default is 8px.
      */
     --origam-code---border-radius: 16px;
+
+    --origam-color__feedback--success---bg: #16a34a;
+    --origam-color__feedback--success---bgSubtle: rgba(22, 163, 74, 0.1);
+    --origam-color__feedback--success---fg: #000000;
+    --origam-color__feedback--success---fgSubtle: #15803d;
+    --origam-color__feedback--success---border: #16a34a;
+    --origam-color__feedback--warning---bg: #d97706;
+    --origam-color__feedback--warning---bgSubtle: rgba(217, 119, 6, 0.1);
+    --origam-color__feedback--warning---fg: #000000;
+    --origam-color__feedback--warning---fgSubtle: #b45309;
+    --origam-color__feedback--warning---border: #d97706;
+    --origam-color__feedback--danger---bg: #dc2626;
+    --origam-color__feedback--danger---bgSubtle: rgba(220, 38, 38, 0.1);
+    --origam-color__feedback--danger---fg: #ffffff;
+    --origam-color__feedback--danger---fgSubtle: #b91c1c;
+    --origam-color__feedback--danger---border: #dc2626;
+    --origam-color__feedback--info---bg: #2563eb;
+    --origam-color__feedback--info---bgSubtle: rgba(37, 99, 235, 0.1);
+    --origam-color__feedback--info---fg: #ffffff;
+    --origam-color__feedback--info---fgSubtle: #1d4ed8;
+    --origam-color__feedback--info---border: #2563eb;
 }/* ════════════════════════════════════════════════════════════════════════════
    GLASS DARK
    ════════════════════════════════════════════════════════════════════════════ */
@@ -153,6 +174,27 @@
     --origam-btn---backdrop-filter-ghost: blur(12px) saturate(1.6) brightness(1.02);/* OrigamCard component-level default (dark) */
     --origam-card---box-shadow: var(--origam-shadow---card-elevated);/* OrigamCode component-level default (dark) */
     --origam-code---border-radius: 16px;
+
+    --origam-color__feedback--success---bg: #6ee7b7;
+    --origam-color__feedback--success---bgSubtle: rgba(110, 231, 183, 0.14);
+    --origam-color__feedback--success---fg: #0f0e1a;
+    --origam-color__feedback--success---fgSubtle: #6ee7b7;
+    --origam-color__feedback--success---border: #6ee7b7;
+    --origam-color__feedback--warning---bg: #fcd34d;
+    --origam-color__feedback--warning---bgSubtle: rgba(252, 211, 77, 0.14);
+    --origam-color__feedback--warning---fg: #0f0e1a;
+    --origam-color__feedback--warning---fgSubtle: #fcd34d;
+    --origam-color__feedback--warning---border: #fcd34d;
+    --origam-color__feedback--danger---bg: #fca5a5;
+    --origam-color__feedback--danger---bgSubtle: rgba(252, 165, 165, 0.14);
+    --origam-color__feedback--danger---fg: #0f0e1a;
+    --origam-color__feedback--danger---fgSubtle: #fca5a5;
+    --origam-color__feedback--danger---border: #fca5a5;
+    --origam-color__feedback--info---bg: #93c5fd;
+    --origam-color__feedback--info---bgSubtle: rgba(147, 197, 253, 0.14);
+    --origam-color__feedback--info---fg: #0f0e1a;
+    --origam-color__feedback--info---fgSubtle: #93c5fd;
+    --origam-color__feedback--info---border: #93c5fd;
 }/* ════════════════════════════════════════════════════════════════════════════
    GLASS — PAGE BACKGROUND (multi-colour radial gradient)
    background-color + background-image + background-attachment are now all
