@@ -43,29 +43,28 @@ const { theme, setTheme } = useTheme()
                     {{ t('home.themes.subtitle', 'DTCG-compliant design tokens, multi-theme out of the box. Switch between light, dark or your custom brand at runtime — zero remount, zero flicker.') }}
                 </p>
 
-                <origam-chip-group
+                <div
                     class="home-themes__chips"
+                    role="group"
                     :aria-label="t('a11y.themes_chips_list', 'Available themes')"
                 >
-                    <template #default>
-                      <div
+                    <div
                         v-for="chip in THEME_CHIPS"
                         :key="chip.key"
                         class="home-themes__chip-item"
+                    >
+                        <origam-chip
+                            type="button"
+                            class="home-themes__chip"
+                            :aria-pressed="chip.key === theme"
+                            :data-active="chip.key === theme"
+                            :data-cy="`themes-chip-${chip.key}`"
+                            @click="setTheme(chip.key)"
                         >
-                          <origam-chip
-                              type="button"
-                              class="home-themes__chip"
-                              :aria-pressed="chip.key === theme"
-                              :data-active="chip.key === theme"
-                              :data-cy="`themes-chip-${chip.key}`"
-                              @click="setTheme(chip.key)"
-                          >
-                              {{ t(chip.labelKey, chip.labelFallback) }}
-                          </origam-chip>
-                      </div>
-                    </template>
-                </origam-chip-group>
+                            {{ t(chip.labelKey, chip.labelFallback) }}
+                        </origam-chip>
+                    </div>
+                </div>
 
                 <p
                     class="home-themes__tooling"
@@ -194,6 +193,8 @@ const { theme, setTheme } = useTheme()
         list-style: none;
         margin: 0;
         padding: 0;
+        padding-inline-end: var(--origam-space---2, 0.5rem);
+        padding-block-end: var(--origam-space---2, 0.5rem);
     }
 
     &__chip-item {
