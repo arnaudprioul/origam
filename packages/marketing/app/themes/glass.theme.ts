@@ -97,12 +97,44 @@ export const glassLightTheme: IOrigamTheme = {
             'btn-secondary-border': 'transparent',
             'btn-secondary-text': '#1a1538'
         },
+        // ⛔ ELEVATION = le tier `shadow` sémantique. Échelle croissante glassmorphism :
+        // inset white highlights (reflets internes) + blur diffus violet. Les composants
+        // consomment via la prop `elevation` (ci-dessous), jamais de shadow custom nommée.
         shadow: {
-            'card-elevated': 'inset 0 1px 1px rgba(255, 255, 255, 0.90), inset 1px 0 1px rgba(255, 255, 255, 0.50), inset 0 -1px 1px rgba(124, 58, 237, 0.12), 0 10px 30px -12px rgba(60, 30, 120, 0.40)',
-            'glow-primary': 'inset 0 1px 0 rgba(255, 255, 255, 0.60), 0 8px 24px -8px rgba(124, 58, 237, 0.45)',
-            'btn-primary': 'inset 0 1px 1px rgba(255, 255, 255, 0.90), inset 1px 0 1px rgba(255, 255, 255, 0.50), inset 0 -1px 1px rgba(124, 58, 237, 0.12), 0 10px 30px -12px rgba(60, 30, 120, 0.40)',
-            'btn-secondary': 'inset 0 1px 1px rgba(255, 255, 255, 0.90), inset 1px 0 1px rgba(255, 255, 255, 0.50), inset 0 -1px 1px rgba(124, 58, 237, 0.12), 0 10px 30px -12px rgba(60, 30, 120, 0.40)'
+            none: 'none',
+            xs: 'inset 0 1px 0 rgba(255, 255, 255, 0.70), 0 1px 4px -1px rgba(60, 30, 120, 0.08)',
+            sm: 'inset 0 1px 1px rgba(255, 255, 255, 0.80), inset 1px 0 1px rgba(255, 255, 255, 0.40), 0 4px 12px -4px rgba(60, 30, 120, 0.15)',
+            md: 'inset 0 1px 1px rgba(255, 255, 255, 0.90), inset 1px 0 1px rgba(255, 255, 255, 0.50), inset 0 -1px 1px rgba(124, 58, 237, 0.10), 0 6px 20px -6px rgba(60, 30, 120, 0.25)',
+            lg: 'inset 0 1px 1px rgba(255, 255, 255, 0.90), inset 1px 0 1px rgba(255, 255, 255, 0.50), inset 0 -1px 1px rgba(124, 58, 237, 0.12), 0 10px 30px -12px rgba(60, 30, 120, 0.40)',
+            xl: 'inset 0 1px 1px rgba(255, 255, 255, 0.90), inset 1px 0 1px rgba(255, 255, 255, 0.60), inset 0 -1px 1px rgba(124, 58, 237, 0.18), 0 16px 48px -16px rgba(60, 30, 120, 0.55), 0 4px 12px -4px rgba(60, 30, 120, 0.20)'
         }
+    },
+    // ⛔ PROPS D'ABORD (logique DS). Overrides glass superposés sur la baseline
+    // `origam` (deep-merge). Identité glassmorphism = très arrondi + translucide
+    // + bordures subtiles + elevation diffuse. Seuls les reflets et couleurs
+    // translucides (non exprimables en props) restent dans `vars`.
+    components: {
+        'origam-btn': { variant: 'tonal', rounded: 'lg', pill: true, elevation: 2 },
+        'origam-btn-group': { variant: 'tonal', rounded: 'lg' },
+        'origam-btn-toggle': { variant: 'tonal', rounded: 'lg' },
+        'origam-card': { rounded: 'lg', border: true, flat: false, elevation: 3 },
+        'origam-chip': { variant: 'tonal', rounded: 'lg', border: true, pill: true },
+        'origam-alert': { rounded: 'lg', border: true, elevation: 2 },
+        'origam-field': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-text-field': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-textarea-field': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-number-field': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-password-field': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-select': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-date-picker-field': { rounded: 'lg', border: true },
+        'origam-file-field': { rounded: 'lg', border: true },
+        'origam-color-picker-field': { rounded: 'lg', border: true },
+        'origam-code': { rounded: 'lg', border: true, elevation: 2 },
+        'origam-menu': { rounded: 'lg', border: true, elevation: 3 },
+        'origam-table': { rounded: 'lg', border: true },
+        'origam-avatar': { rounded: 'lg', border: true },
+        'origam-checkbox': { rounded: 'lg' },
+        'origam-snackbar': { rounded: 'lg', border: true, elevation: 3 }
     },
     cssVars: {}
 }
@@ -204,11 +236,15 @@ export const glassDarkTheme: IOrigamTheme = {
             'btn-secondary-border': 'transparent',
             'btn-secondary-text': '#ffffff'
         },
+        // ELEVATION (dark) : même rampe glassmorphism, reflets blancs atténués sur fond
+        // sombre + ombres portées profondes. Consommée via la prop `elevation`.
         shadow: {
-            'card-elevated': 'inset 0 1px 1px rgba(255, 255, 255, 0.60), inset 1.5px 0 1px rgba(255, 255, 255, 0.28), inset -1.5px 0 1px rgba(255, 255, 255, 0.14), inset 0 -10px 22px rgba(255, 255, 255, 0.05), inset 0 -1px 1px rgba(0, 0, 0, 0.20), 0 12px 34px -10px rgba(0, 0, 0, 0.50), 0 2px 6px -2px rgba(0, 0, 0, 0.30)',
-            'glow-primary': 'inset 0 1px 0 rgba(255, 255, 255, 0.20), 0 8px 24px -6px rgba(167, 139, 250, 0.60)',
-            'btn-primary': 'inset 0 1px 1px rgba(255, 255, 255, 0.70), inset 0 -2px 6px rgba(0, 0, 0, 0.15), 0 8px 24px -6px rgba(167, 139, 250, 0.60)',
-            'btn-secondary': 'inset 0 1px 1px rgba(255, 255, 255, 0.30), inset 0 -1px 1px rgba(0, 0, 0, 0.10), 0 8px 24px -6px rgba(167, 139, 250, 0.30)'
+            none: 'none',
+            xs: 'inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 4px -1px rgba(0, 0, 0, 0.25)',
+            sm: 'inset 0 1px 1px rgba(255, 255, 255, 0.18), inset 1px 0 1px rgba(255, 255, 255, 0.10), 0 4px 12px -4px rgba(0, 0, 0, 0.35)',
+            md: 'inset 0 1px 1px rgba(255, 255, 255, 0.25), inset 1.5px 0 1px rgba(255, 255, 255, 0.14), inset 0 -1px 1px rgba(0, 0, 0, 0.10), 0 8px 24px -8px rgba(0, 0, 0, 0.45)',
+            lg: 'inset 0 1px 1px rgba(255, 255, 255, 0.60), inset 1.5px 0 1px rgba(255, 255, 255, 0.28), inset -1.5px 0 1px rgba(255, 255, 255, 0.14), inset 0 -10px 22px rgba(255, 255, 255, 0.05), inset 0 -1px 1px rgba(0, 0, 0, 0.20), 0 12px 34px -10px rgba(0, 0, 0, 0.50), 0 2px 6px -2px rgba(0, 0, 0, 0.30)',
+            xl: 'inset 0 1px 1px rgba(255, 255, 255, 0.70), inset 1.5px 0 1px rgba(255, 255, 255, 0.35), inset -1.5px 0 1px rgba(255, 255, 255, 0.20), inset 0 -10px 22px rgba(255, 255, 255, 0.06), inset 0 -1px 1px rgba(0, 0, 0, 0.25), 0 16px 48px -12px rgba(0, 0, 0, 0.65), 0 4px 10px -4px rgba(0, 0, 0, 0.40)'
         }
     },
     cssVars: {}

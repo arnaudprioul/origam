@@ -91,18 +91,46 @@ export const appleLightTheme: IOrigamTheme = {
                     fgSubtle: '#0058b0',
                     border: '#0071e3'
                 }
-            },
-            'btn-primary-text': '#1d1d1f',
-            'btn-secondary-bg': 'transparent',
-            'btn-secondary-border': '#d2d2d7',
-            'btn-secondary-text': '#1d1d1f'
+            }
         },
+        // ⛔ ELEVATION = le tier `shadow` sémantique. Rampe croissante iOS :
+        // ombres douces, multicouches, opacités très faibles (style HIG Apple).
+        // Les composants consomment via la prop `elevation`, jamais de shadow inline.
         shadow: {
-            'card-elevated': '0 4px 16px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
-            'glow-primary': '0 2px 8px rgba(0, 113, 227, 0.25)',
-            'btn-primary': '0 2px 8px rgba(0, 113, 227, 0.25)',
-            'btn-secondary': 'none'
+            none: 'none',
+            xs: '0 1px 2px rgba(0, 0, 0, 0.04)',
+            sm: '0 2px 6px rgba(0, 0, 0, 0.06)',
+            md: '0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04)',
+            lg: '0 8px 20px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04)',
+            xl: '0 12px 32px rgba(0, 0, 0, 0.10), 0 4px 8px rgba(0, 0, 0, 0.04)'
         }
+    },
+    // ⛔ PROPS D'ABORD (logique DS). Overrides apple superposés sur la baseline
+    // `origam` (deep-merge). Identité Apple/iOS HIG = boutons pleins, coins
+    // arrondis modérés, bordures minimales, elevation subtile via ombres douces.
+    // Mode-agnostic : s'applique aux deux modes (light + dark).
+    components: {
+        'origam-btn': { variant: 'flat', rounded: 'md', elevation: 1 },
+        'origam-btn-group': { variant: 'flat', rounded: 'md' },
+        'origam-btn-toggle': { variant: 'flat', rounded: 'md' },
+        'origam-card': { rounded: 'md', flat: false, elevation: 2, border: false },
+        'origam-chip': { variant: 'tonal', rounded: 'md', pill: false, border: false },
+        'origam-alert': { rounded: 'md', elevation: 1 },
+        'origam-field': { variant: 'outlined', rounded: 'md', border: true },
+        'origam-text-field': { variant: 'outlined', rounded: 'md', density: 'compact' },
+        'origam-textarea-field': { variant: 'outlined', rounded: 'md' },
+        'origam-number-field': { variant: 'outlined', rounded: 'md', border: true },
+        'origam-password-field': { variant: 'outlined', rounded: 'md' },
+        'origam-select': { variant: 'outlined', rounded: 'md', border: true, density: 'compact' },
+        'origam-date-picker-field': { rounded: 'md', border: true },
+        'origam-file-field': { rounded: 'md', border: true },
+        'origam-color-picker-field': { rounded: 'md', border: true },
+        'origam-code': { rounded: 'md', elevation: 1 },
+        'origam-menu': { rounded: 'md', elevation: 3 },
+        'origam-table': { rounded: 'md', border: true },
+        'origam-avatar': { rounded: 'full' },
+        'origam-checkbox': { rounded: 'sm' },
+        'origam-snackbar': { rounded: 'lg', elevation: 4 }
     },
     cssVars: {}
 }
@@ -198,17 +226,17 @@ export const appleDarkTheme: IOrigamTheme = {
                     fgSubtle: '#64b5ff',
                     border: '#0a84ff'
                 }
-            },
-            'btn-primary-text': '#f5f5f7',
-            'btn-secondary-bg': 'transparent',
-            'btn-secondary-border': '#38383a',
-            'btn-secondary-text': '#f5f5f7'
+            }
         },
+        // ELEVATION (dark) : même style iOS, opacités plus profondes pour
+        // rester visible sur fond noir. Consommée via la prop `elevation`.
         shadow: {
-            'card-elevated': '0 4px 16px rgba(0, 0, 0, 0.30), 0 1px 2px rgba(0, 0, 0, 0.30)',
-            'glow-primary': '0 2px 8px rgba(0, 113, 227, 0.25)',
-            'btn-primary': '0 2px 8px rgba(0, 113, 227, 0.25)',
-            'btn-secondary': 'none'
+            none: 'none',
+            xs: '0 1px 2px rgba(0, 0, 0, 0.20)',
+            sm: '0 2px 6px rgba(0, 0, 0, 0.30)',
+            md: '0 4px 12px rgba(0, 0, 0, 0.40), 0 1px 3px rgba(0, 0, 0, 0.20)',
+            lg: '0 8px 20px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.25)',
+            xl: '0 12px 32px rgba(0, 0, 0, 0.50), 0 4px 8px rgba(0, 0, 0, 0.30)'
         }
     },
     cssVars: {}

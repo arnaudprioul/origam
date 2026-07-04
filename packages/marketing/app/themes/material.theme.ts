@@ -98,12 +98,44 @@ export const materialLightTheme: IOrigamTheme = {
             'btn-secondary-border': 'transparent',
             'btn-secondary-text': '#21005d'
         },
+        // ⛔ ELEVATION = tier `shadow` sémantique. Rampe M3 (dp1..dp5) :
+        // key layer (opacity 0.3) + ambient layer (opacity 0.15). Les composants
+        // consomment via la prop `elevation` (bloc `components` ci-dessous).
         shadow: {
-            'card-elevated': '0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)',
-            'glow-primary': '0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(208, 188, 255, 0.15)',
-            'btn-primary': '0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)',
-            'btn-secondary': 'none'
+            none: 'none',
+            xs: '0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15)',
+            sm: '0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15)',
+            md: '0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3)',
+            lg: '0 6px 10px 4px rgba(0,0,0,0.15), 0 2px 3px rgba(0,0,0,0.3)',
+            xl: '0 8px 12px 6px rgba(0,0,0,0.15), 0 4px 4px rgba(0,0,0,0.3)'
         }
+    },
+    // ⛔ PROPS D'ABORD (logique DS). Overrides Material superposés sur la baseline
+    // `origam` (deep-merge). Identité M3 = très arrondi (rounded lg), elevation marquée,
+    // variantes elevated/tonal, champs filled. Seule la rampe shadow (non exprimable
+    // en props) reste dans `vars`.
+    components: {
+        'origam-btn': { variant: 'elevated', rounded: 'lg', elevation: 1 },
+        'origam-btn-group': { variant: 'elevated', rounded: 'lg' },
+        'origam-btn-toggle': { variant: 'tonal', rounded: 'lg' },
+        'origam-card': { rounded: 'lg', flat: false, border: false, elevation: 1 },
+        'origam-chip': { variant: 'tonal', rounded: 'lg', pill: true, border: false },
+        'origam-alert': { rounded: 'lg', elevation: 1 },
+        'origam-field': { variant: 'filled', rounded: 'lg' },
+        'origam-text-field': { variant: 'filled', rounded: 'lg' },
+        'origam-textarea-field': { variant: 'filled', rounded: 'lg' },
+        'origam-number-field': { variant: 'filled', rounded: 'lg' },
+        'origam-password-field': { variant: 'filled', rounded: 'lg' },
+        'origam-select': { variant: 'outlined', rounded: 'lg' },
+        'origam-date-picker-field': { rounded: 'lg' },
+        'origam-file-field': { rounded: 'lg' },
+        'origam-color-picker-field': { rounded: 'lg' },
+        'origam-code': { rounded: 'lg', elevation: 1 },
+        'origam-menu': { rounded: 'lg', elevation: 2 },
+        'origam-table': { rounded: 'lg', border: false, elevation: 1 },
+        'origam-avatar': { rounded: 'lg' },
+        'origam-checkbox': { rounded: 'md' },
+        'origam-snackbar': { rounded: 'lg', elevation: 3 }
     },
     cssVars: {}
 }
@@ -206,11 +238,15 @@ export const materialDarkTheme: IOrigamTheme = {
             'btn-secondary-border': 'transparent',
             'btn-secondary-text': '#eaddff'
         },
+        // ELEVATION (dark) : M3 dark mode → même rampe key+ambient, alphas renforcés
+        // car les surfaces sombres offrent moins de contraste pour l'elevation tonale.
         shadow: {
-            'card-elevated': '0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)',
-            'glow-primary': '0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(208, 188, 255, 0.15)',
-            'btn-primary': '0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)',
-            'btn-secondary': 'none'
+            none: 'none',
+            xs: '0 1px 2px rgba(0,0,0,0.5), 0 1px 3px 1px rgba(0,0,0,0.3)',
+            sm: '0 1px 2px rgba(0,0,0,0.5), 0 2px 6px 2px rgba(0,0,0,0.3)',
+            md: '0 4px 8px 3px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.5)',
+            lg: '0 6px 10px 4px rgba(0,0,0,0.3), 0 2px 3px rgba(0,0,0,0.5)',
+            xl: '0 8px 12px 6px rgba(0,0,0,0.3), 0 4px 4px rgba(0,0,0,0.5)'
         }
     },
     cssVars: {}

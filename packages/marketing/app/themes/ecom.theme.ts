@@ -98,12 +98,43 @@ export const ecomLightTheme: IOrigamTheme = {
             'btn-secondary-border': '#fed7aa',
             'btn-secondary-text': '#1a1a1a'
         },
+        // ⛔ ELEVATION = le tier `shadow` sémantique. Échelle croissante avec teinte
+        // rose/rouge de marque (rgba(225,29,72,…)), subtile et propre façon AliExpress /
+        // Ant Design. Consommée via la prop `elevation`, jamais de shadow inline.
         shadow: {
-            'card-elevated': '0 1px 3px rgba(225, 29, 72, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06)',
-            'glow-primary': '0 2px 0 rgba(225, 29, 72, 0.20), 0 4px 12px -2px rgba(225, 29, 72, 0.35)',
-            'btn-primary': '0 2px 0 rgba(225, 29, 72, 0.20), 0 4px 12px -2px rgba(225, 29, 72, 0.35)',
-            'btn-secondary': 'none'
+            none: 'none',
+            xs: '0px 1px 2px 0px rgba(225, 29, 72, 0.06)',
+            sm: '0px 2px 4px 0px rgba(225, 29, 72, 0.08), 0px 1px 2px -1px rgba(0, 0, 0, 0.04)',
+            md: '0px 4px 12px 0px rgba(225, 29, 72, 0.10), 0px 1px 3px 0px rgba(0, 0, 0, 0.06)',
+            lg: '0px 8px 20px 0px rgba(225, 29, 72, 0.12), 0px 2px 6px -1px rgba(0, 0, 0, 0.08)',
+            xl: '0px 12px 32px 0px rgba(225, 29, 72, 0.15), 0px 4px 10px -2px rgba(0, 0, 0, 0.10)'
         }
+    },
+    // ⛔ PROPS D'ABORD (logique DS). Overrides ecom superposés sur la baseline
+    // `origam` (deep-merge). Identité e-commerce (AliExpress / Ant Design) :
+    // arrondi modéré (sm/md), boutons flat d'action, cartes propres avec ombre légère.
+    components: {
+        'origam-btn': { variant: 'flat', rounded: 'sm', elevation: 1 },
+        'origam-btn-group': { variant: 'flat', rounded: 'sm' },
+        'origam-btn-toggle': { variant: 'flat', rounded: 'sm' },
+        'origam-card': { rounded: 'md', border: true, flat: false, elevation: 1 },
+        'origam-chip': { variant: 'outlined', rounded: 'sm', border: true, pill: false },
+        'origam-alert': { rounded: 'sm', border: true },
+        'origam-field': { variant: 'outlined', rounded: 'sm', border: true },
+        'origam-text-field': { variant: 'outlined', rounded: 'sm', border: true },
+        'origam-textarea-field': { variant: 'outlined', rounded: 'sm', border: true },
+        'origam-number-field': { rounded: 'sm', border: true },
+        'origam-password-field': { rounded: 'sm' },
+        'origam-select': { variant: 'outlined', rounded: 'sm', border: true },
+        'origam-date-picker-field': { rounded: 'sm', border: true },
+        'origam-file-field': { rounded: 'sm', border: true },
+        'origam-color-picker-field': { rounded: 'sm', border: true },
+        'origam-code': { rounded: 'md', border: true, elevation: 1 },
+        'origam-menu': { rounded: 'sm', border: true, elevation: 2 },
+        'origam-table': { rounded: 'md', border: true },
+        'origam-avatar': { rounded: 'sm' },
+        'origam-checkbox': { rounded: 'sm' },
+        'origam-snackbar': { rounded: 'sm', border: true, elevation: 2 }
     },
     cssVars: {}
 }
@@ -206,11 +237,15 @@ export const ecomDarkTheme: IOrigamTheme = {
             'btn-secondary-border': 'rgba(251, 146, 60, 0.30)',
             'btn-secondary-text': '#fff7f0'
         },
+        // ELEVATION (dark) : même rampe, opacité renforcée pour rester lisible
+        // sur fond sombre. Teinte rose de marque `rgba(225,29,72,…)` conservée.
         shadow: {
-            'card-elevated': '0 1px 3px rgba(225, 29, 72, 0.12), 0 1px 2px rgba(0, 0, 0, 0.30)',
-            'glow-primary': '0 2px 0 rgba(244, 63, 94, 0.25), 0 4px 12px -2px rgba(244, 63, 94, 0.40)',
-            'btn-primary': '0 2px 0 rgba(244, 63, 94, 0.25), 0 4px 12px -2px rgba(244, 63, 94, 0.40)',
-            'btn-secondary': 'none'
+            none: 'none',
+            xs: '0px 1px 2px 0px rgba(225, 29, 72, 0.10)',
+            sm: '0px 2px 4px 0px rgba(225, 29, 72, 0.14), 0px 1px 2px -1px rgba(0, 0, 0, 0.20)',
+            md: '0px 4px 12px 0px rgba(225, 29, 72, 0.16), 0px 1px 3px 0px rgba(0, 0, 0, 0.30)',
+            lg: '0px 8px 20px 0px rgba(225, 29, 72, 0.18), 0px 2px 6px -1px rgba(0, 0, 0, 0.40)',
+            xl: '0px 12px 32px 0px rgba(225, 29, 72, 0.22), 0px 4px 10px -2px rgba(0, 0, 0, 0.50)'
         }
     },
     cssVars: {}
