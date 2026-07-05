@@ -69,7 +69,8 @@
     --origam-field---border-width-outlined:   3px;
     --origam-field---border-opacity:          1;
     --origam-field---border-opacity-outlined: 1;
-    --origam-field---border-color:            var(--origam-color__border---default);/* ── Button tokens ──────────────────────────────────────────────────────── *//*
+    --origam-field---border-color:            var(--origam-color__border---default);
+    --origam-field---border-radius:           var(--origam-radius---lg, 20px);/* ── Button tokens ──────────────────────────────────────────────────────── *//*
      * PRIMARY — solid rose pill, near-black text, 3 px border, hard shadow.
      * Measured: bg #ff8fa3, color #3a2a2e, border 3px #171717,
      *           box-shadow rgb(23,23,23) 4px 4px 0.
