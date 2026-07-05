@@ -61,7 +61,15 @@
     --origam-chip---border-color:         #171717;
     --origam-chip---border-style:         solid;
     --origam-chip---border-width:         3px;
-    --origam-chip---border-width-outlined: 3px;/* ── Button tokens ──────────────────────────────────────────────────────── *//*
+    --origam-chip---border-width-outlined: 3px;/* ── Field tokens — cartoon bold 3px border (text-field, number-field, select,
+       … all render OrigamField). Colour follows the semantic border token
+       (black light / white dark); the hard-shadow comes from the elevation prop
+       set on each field in the theme object. Border width is mode-independent. */
+    --origam-field---border-width:            3px;
+    --origam-field---border-width-outlined:   3px;
+    --origam-field---border-opacity:          1;
+    --origam-field---border-opacity-outlined: 1;
+    --origam-field---border-color:            var(--origam-color__border---default);/* ── Button tokens ──────────────────────────────────────────────────────── *//*
      * PRIMARY — solid rose pill, near-black text, 3 px border, hard shadow.
      * Measured: bg #ff8fa3, color #3a2a2e, border 3px #171717,
      *           box-shadow rgb(23,23,23) 4px 4px 0.
