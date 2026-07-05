@@ -5,7 +5,6 @@ import {
     FEATURES,
     FEATURES_GRID_COLUMNS,
     FEATURE_CARD_VARS,
-    FEATURE_ICON_TILE_RADIUS,
     FEATURE_ICON_TILE_VARS
 } from '~/consts/features.const'
 
@@ -59,7 +58,6 @@ const features = computed(() => FEATURES)
                     <origam-avatar
                         :icon="feature.icon"
                         color="primary"
-                        :rounded="FEATURE_ICON_TILE_RADIUS"
                         :style="FEATURE_ICON_TILE_VARS"
                         border
                         border-color="var(--origam-color__action--primary---bg)"
@@ -160,6 +158,7 @@ const features = computed(() => FEATURES)
         flex: 0 0 auto;
         inline-size: 2.75rem;
         block-size: 2.75rem;
+        border-radius: var(--origam-radius---card, 10px) !important;
         margin-block-end: var(--origam-space---3, 0.75rem);
     }
 
