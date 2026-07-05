@@ -195,9 +195,9 @@ export const cartoonDarkTheme: IOrigamTheme = {
                 }
             },
             border: {
-                default: '#171717',
-                subtle: '#171717',
-                strong: '#000000',
+                default: '#fffefb',
+                subtle: '#fffefb',
+                strong: '#ffffff',
                 focus: '#ff8fa3',
                 'subtle-alpha': 'rgba(255, 254, 251, 0.60)',
                 ghost: 'rgba(255, 254, 251, 0.40)'
