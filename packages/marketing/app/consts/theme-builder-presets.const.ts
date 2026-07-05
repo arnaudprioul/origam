@@ -546,8 +546,7 @@ export const THEME_BUILDER_PRESETS: IThemeBuilderPreset[] = [
         light: THEME_BUILDER_PRESET_LIGHT_VARS,
         dark: THEME_BUILDER_PRESET_DARK_VARS
     },
-    // Brands sourcés depuis leur objet IOrigamTheme (props-first). `sobre` n'a
-    // pas de fichier thème (baseline DS) → reste depuis le CSS généré.
+    // Brands sourcés depuis leur objet IOrigamTheme (props-first).
     presetFromThemes('cartoon', 'Cartoon', cartoonThemes),
     presetFromThemes('apple', 'Apple', appleThemes),
     presetFromThemes('geek', 'Geek', geekThemes),
@@ -555,7 +554,9 @@ export const THEME_BUILDER_PRESETS: IThemeBuilderPreset[] = [
     presetFromThemes('editorial', 'Editorial', editorialThemes),
     presetFromThemes('material', 'Material', materialThemes),
     presetFromThemes('ecom', 'E-commerce', ecomThemes),
+    // `sobre` est exclu : c'est la baseline DS = le thème `origam` ci-dessus
+    // (même identité), donc le lister en plus ferait un doublon.
     ...THEME_BUILDER_BRAND_PRESETS.filter(
-        p => !['cartoon', 'apple', 'geek', 'glass', 'editorial', 'material', 'ecom'].includes(p.key)
+        p => !['cartoon', 'apple', 'geek', 'glass', 'editorial', 'material', 'ecom', 'sobre'].includes(p.key)
     )
 ]
