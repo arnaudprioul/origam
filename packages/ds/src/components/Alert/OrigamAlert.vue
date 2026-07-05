@@ -354,6 +354,11 @@
 		background-color: var(--origam-alert---background-color);
 		color: var(--origam-alert---color);
 
+		@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
+			backdrop-filter: var(--origam-alert---backdrop-filter, none);
+			-webkit-backdrop-filter: var(--origam-alert---backdrop-filter, none);
+		}
+
 		&--elevated {
 			box-shadow: var(--origam-alert---box-shadow-elevated, var(--origam-shadow---md));
 		}

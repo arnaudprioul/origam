@@ -2,6 +2,7 @@
 
 export type TTokenName =
   | '--origam-alert---accent-width'
+  | '--origam-alert---backdrop-filter'
   | '--origam-alert---background-color'
   | '--origam-alert---border-bottom-width'
   | '--origam-alert---border-color'
