@@ -184,12 +184,11 @@
     --origam-btn---box-shadow-elevated:   4px 4px 0 #fffefb;
     --origam-btn---box-shadow-ghost:      4px 4px 0 #fffefb;/*
      * OrigamCard component-level box-shadow (dark).
-     * Cartoon dark: hard 6 px offset, black base (#171717) — not near-white,
-     * because the card border is already near-white and the shadow sits on a
-     * dark surface where the near-black offset reads as a "depth punch".
-     * Measured on the maquette card at rgb(38,38,38) surface + black shadow.
+     * Cartoon dark: hard 6 px offset, near-WHITE (#fffefb) to match the white
+     * border and read as a strong "depth punch" against the dark card surface
+     * (user rule: in dark mode shadows are white for strong contrast).
      */
-    --origam-card---box-shadow: 6px 6px 0 #171717;/* OrigamCode component-level border (dark). Near-white border, same weight. */
+    --origam-card---box-shadow: 6px 6px 0 #fffefb;/* OrigamCode component-level border (dark). Near-white border, same weight. */
     --origam-code---border-width: 3px;
     --origam-code---border-color: #fffefb;
 
@@ -466,7 +465,7 @@
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-playground__frame {
     border-width: 3px !important;
     border-color: #fffefb !important;
-    box-shadow:   9px 9px 0 #171717 !important;
+    box-shadow:   9px 9px 0 #fffefb !important;
 }/* ── CARTOON — Playground toolbar: 3px bottom border ────────────────────── *//*
  * Maquette m-winbar measured: 3px solid #171717 on all sides (full outline).
  * In the live, .home-playground__toolbar only has border-block-end.
@@ -479,7 +478,7 @@
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-playground__toolbar {
     background-color: #3d2e0a;
-    border-block-end: 3px solid #171717 !important;
+    border-block-end: 3px solid #fffefb !important;
 }/* ── CARTOON — Playground preview area: near-white dot-grid + transparent bg (dark) ── *//*
  * Maquette preview dotgrid measured:
  *   background-color: transparent
@@ -505,7 +504,7 @@
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-playground__preview-card {
     border-width: 3px !important;
     border-color: #fffefb !important;
-    box-shadow:   6px 6px 0 #171717 !important;
+    box-shadow:   6px 6px 0 #fffefb !important;
 }/* ── CARTOON — Playground code panel: no border ────────────────────────── *//*
  * Maquette: the code editor area (m-code-line) has no border.
  * Live origam-code renders with border: 1px solid (from DS default).
