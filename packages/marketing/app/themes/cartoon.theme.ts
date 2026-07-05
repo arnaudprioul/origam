@@ -169,7 +169,12 @@ export const cartoonLightTheme: IOrigamTheme = {
         '--origam-list---padding-block-start': '0',
         '--origam-list---padding-block-end': '0',
         '--origam-list-item---padding-inline-start': '12px',
-        '--origam-list-item---padding-inline-end': '12px'
+        '--origam-list-item---padding-inline-end': '12px',
+        '--origam-field---border-width': '3px',
+        '--origam-field---border-width-outlined': '3px',
+        '--origam-field---border-opacity': '1',
+        '--origam-field---border-opacity-outlined': '1',
+        '--origam-field---border-color': 'var(--origam-color__border---default)'
     }
 }
 
@@ -311,7 +316,12 @@ export const cartoonDarkTheme: IOrigamTheme = {
         '--origam-list---padding-block-start': '0',
         '--origam-list---padding-block-end': '0',
         '--origam-list-item---padding-inline-start': '12px',
-        '--origam-list-item---padding-inline-end': '12px'
+        '--origam-list-item---padding-inline-end': '12px',
+        '--origam-field---border-width': '3px',
+        '--origam-field---border-width-outlined': '3px',
+        '--origam-field---border-opacity': '1',
+        '--origam-field---border-opacity-outlined': '1',
+        '--origam-field---border-color': 'var(--origam-color__border---default)'
     }
 }
 
