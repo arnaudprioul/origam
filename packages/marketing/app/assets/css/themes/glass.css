@@ -116,6 +116,10 @@
     --origam-color__feedback--info---fg: #ffffff;
     --origam-color__feedback--info---fgSubtle: #1d4ed8;
     --origam-color__feedback--info---border: #2563eb;
+
+    --origam-alert---backdrop-filter: blur(3px) saturate(1.8) brightness(1.08);
+    --origam-alert---background-color: rgba(255, 255, 255, 0.18);
+    --origam-alert---border-color: rgba(124, 58, 237, 0.20);
 }/* ════════════════════════════════════════════════════════════════════════════
    GLASS DARK
    ════════════════════════════════════════════════════════════════════════════ */
@@ -195,6 +199,35 @@
     --origam-color__feedback--info---fg: #0f0e1a;
     --origam-color__feedback--info---fgSubtle: #93c5fd;
     --origam-color__feedback--info---border: #93c5fd;
+
+    --origam-alert---backdrop-filter: blur(3px) saturate(1.8) brightness(1.08);
+    --origam-alert---background-color: rgba(255, 255, 255, 0.06);
+    --origam-alert---border-color: rgba(255, 255, 255, 0.12);
+}/* ════════════════════════════════════════════════════════════════════════════
+   GLASS — ALERT STATUS (frosted, translucent)
+   OrigamAlert is always "active" so it paints its status surface INLINE via
+   useColorEffect (solid feedback fill). That inline style wins over the DS
+   `--origam-alert--{status}---bg` token, so a glass status alert stays opaque.
+   We override with the theme selector (mode-agnostic: the feedback bgSubtle /
+   fgSubtle vars resolve per data-mode) so the surface turns into a translucent
+   tint the backdrop-filter can blur through — the same frosted look as the
+   tonal buttons — with a readable coloured title/text instead of white-on-fill.
+   ════════════════════════════════════════════════════════════════════════════ */
+:root:root[data-theme="glass"] .origam-alert.origam-alert--info {
+    background-color: var(--origam-color__feedback--info---bgSubtle) !important;
+    color: var(--origam-color__feedback--info---fgSubtle) !important;
+}
+:root:root[data-theme="glass"] .origam-alert.origam-alert--success {
+    background-color: var(--origam-color__feedback--success---bgSubtle) !important;
+    color: var(--origam-color__feedback--success---fgSubtle) !important;
+}
+:root:root[data-theme="glass"] .origam-alert.origam-alert--warning {
+    background-color: var(--origam-color__feedback--warning---bgSubtle) !important;
+    color: var(--origam-color__feedback--warning---fgSubtle) !important;
+}
+:root:root[data-theme="glass"] .origam-alert.origam-alert--error {
+    background-color: var(--origam-color__feedback--danger---bgSubtle) !important;
+    color: var(--origam-color__feedback--danger---fgSubtle) !important;
 }/* ════════════════════════════════════════════════════════════════════════════
    GLASS — PAGE BACKGROUND (multi-colour radial gradient)
    background-color + background-image + background-attachment are now all

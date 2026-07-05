@@ -1,6 +1,7 @@
 {
   "alert": {
     "background-color":        { "$type": "color",      "$value": "{color.surface.disabled}" },
+    "backdrop-filter":         { "$type": "other",      "$value": "none" },
     "color":                   { "$type": "color",      "$value": "{color.text.primary}" },
     "border-color":            { "$type": "color",      "$value": "transparent" },
     "border-style":            { "$type": "other",      "$value": "solid" },

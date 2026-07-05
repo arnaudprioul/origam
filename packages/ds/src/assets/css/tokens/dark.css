@@ -402,6 +402,7 @@
   --origam-badge--error---background-color: var(--origam-color__feedback--danger---bg);
   --origam-badge--error---color: var(--origam-color__feedback--danger---fg);
   --origam-alert---background-color: var(--origam-color__surface---disabled);
+  --origam-alert---backdrop-filter: none;
   --origam-alert---color: var(--origam-color__text---primary);
   --origam-alert---border-color: rgba(0, 0, 0, 0);
   --origam-alert---border-style: solid;
@@ -3154,6 +3155,7 @@
     --origam-badge--error---background-color: var(--origam-color__feedback--danger---bg);
     --origam-badge--error---color: var(--origam-color__feedback--danger---fg);
     --origam-alert---background-color: var(--origam-color__surface---disabled);
+    --origam-alert---backdrop-filter: none;
     --origam-alert---color: var(--origam-color__text---primary);
     --origam-alert---border-color: rgba(0, 0, 0, 0);
     --origam-alert---border-style: solid;
