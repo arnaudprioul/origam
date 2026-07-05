@@ -145,7 +145,14 @@ export const cartoonLightTheme: IOrigamTheme = {
         '--origam-btn---border-width-outlined': '3px',
         '--origam-btn---border-width-ghost': '3px',
         '--origam-btn---box-shadow-elevated': '4px 4px 0 #171717',
-        '--origam-btn---box-shadow-ghost': '4px 4px 0 #171717'
+        '--origam-btn---box-shadow-ghost': '4px 4px 0 #171717',
+        '--origam-card---border-color': 'var(--origam-color__border---default)',
+        '--origam-card---border-style': 'solid',
+        '--origam-card---border-top-width': '3px',
+        '--origam-card---border-right-width': '3px',
+        '--origam-card---border-bottom-width': '3px',
+        '--origam-card---border-left-width': '3px',
+        '--origam-card---box-shadow': '6px 6px 0 #171717'
     }
 }
 
@@ -263,7 +270,14 @@ export const cartoonDarkTheme: IOrigamTheme = {
         '--origam-btn---border-width-outlined': '3px',
         '--origam-btn---border-width-ghost': '3px',
         '--origam-btn---box-shadow-elevated': '4px 4px 0 #fffefb',
-        '--origam-btn---box-shadow-ghost': '4px 4px 0 #fffefb'
+        '--origam-btn---box-shadow-ghost': '4px 4px 0 #fffefb',
+        '--origam-card---border-color': 'var(--origam-color__border---default)',
+        '--origam-card---border-style': 'solid',
+        '--origam-card---border-top-width': '3px',
+        '--origam-card---border-right-width': '3px',
+        '--origam-card---border-bottom-width': '3px',
+        '--origam-card---border-left-width': '3px',
+        '--origam-card---box-shadow': '6px 6px 0 #fffefb'
     }
 }
 
