@@ -127,6 +127,7 @@ const modeLabel = (mode: TEditMode): string =>
                 >
                     <span class="tb-preview__pane-label">{{ modeLabel(pane.mode) }}</span>
                     <origam-theme-provider
+                        theme="origam"
                         :mode="pane.mode"
                         class="tb-preview__provider"
                     >
