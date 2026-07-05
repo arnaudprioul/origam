@@ -94,8 +94,7 @@
      * Cartoon: hard 6 px offset neo-brutalist shadow (same black as borders).
      * --origam-shadow---card-elevated above is a bespoke marketing token only
      * read by the home section wrappers; OrigamCard itself reads ---box-shadow.
-     */
-    --origam-card---box-shadow: 6px 6px 0 #171717;/*
+     *//*
      * OrigamCode component-level border (light).
      * DS default: 1px subtle border. Cartoon: 3px solid near-black.
      * The playground code pane suppresses this via a targeted override below,
@@ -146,13 +145,7 @@
     --origam-list---padding-block-start:     0;
     --origam-list---padding-block-end:       0;
     --origam-list-item---padding-inline-start: 12px;
-    --origam-list-item---padding-inline-end:   12px;/* ── Shadows — near-white hard offset in dark (white border + black shadow) *//* ── Card tokens — near-white border in dark ─────────────────────────── */
-    --origam-card---border-color:        #fffefb;
-    --origam-card---border-style:        solid;
-    --origam-card---border-top-width:    3px;
-    --origam-card---border-right-width:  3px;
-    --origam-card---border-bottom-width: 3px;
-    --origam-card---border-left-width:   3px;/* ── Chip tokens — cartoon border + shadow in dark (near-white) ─────── */
+    --origam-list-item---padding-inline-end:   12px;/* ── Chip tokens — cartoon border + shadow in dark (near-white) ─────── */
     --origam-chip---border-color:         #fffefb;
     --origam-chip---border-style:         solid;
     --origam-chip---border-width:         3px;
@@ -188,7 +181,7 @@
      * border and read as a strong "depth punch" against the dark card surface
      * (user rule: in dark mode shadows are white for strong contrast).
      */
-    --origam-card---box-shadow: 6px 6px 0 #fffefb;/* OrigamCode component-level border (dark). Near-white border, same weight. */
+/* OrigamCode component-level border (dark). Near-white border, same weight. */
     --origam-code---border-width: 3px;
     --origam-code---border-color: #fffefb;
 
@@ -286,13 +279,6 @@
  */
 
 :root:root[data-theme="cartoon"] {
-    --origam-card---border-color:        var(--origam-color__border---default);
-    --origam-card---border-style:        solid;
-    --origam-card---border-top-width:    3px;
-    --origam-card---border-right-width:  3px;
-    --origam-card---border-bottom-width: 3px;
-    --origam-card---border-left-width:   3px;
-
     --origam-color__feedback--success---bg: #16a34a;
     --origam-color__feedback--success---bgSubtle: #bbf7d0;
     --origam-color__feedback--success---fg: #000000;
