@@ -152,7 +152,14 @@ export const cartoonLightTheme: IOrigamTheme = {
         '--origam-card---border-right-width': '3px',
         '--origam-card---border-bottom-width': '3px',
         '--origam-card---border-left-width': '3px',
-        '--origam-card---box-shadow': '6px 6px 0 #171717'
+        '--origam-card---box-shadow': '6px 6px 0 #171717',
+        '--origam-appbar---bg': '#fff9f0',
+        '--origam-chip---border-color': '#171717',
+        '--origam-chip---border-style': 'solid',
+        '--origam-chip---border-width': '3px',
+        '--origam-chip---border-width-outlined': '3px',
+        '--origam-code---border-width': '3px',
+        '--origam-code---border-color': '#171717'
     }
 }
 
@@ -277,7 +284,14 @@ export const cartoonDarkTheme: IOrigamTheme = {
         '--origam-card---border-right-width': '3px',
         '--origam-card---border-bottom-width': '3px',
         '--origam-card---border-left-width': '3px',
-        '--origam-card---box-shadow': '6px 6px 0 #fffefb'
+        '--origam-card---box-shadow': '6px 6px 0 #fffefb',
+        '--origam-appbar---bg': '#1a1a1a',
+        '--origam-chip---border-color': '#fffefb',
+        '--origam-chip---border-style': 'solid',
+        '--origam-chip---border-width': '3px',
+        '--origam-chip---border-width-outlined': '3px',
+        '--origam-code---border-width': '3px',
+        '--origam-code---border-color': '#fffefb'
     }
 }
 
