@@ -174,7 +174,9 @@ export const cartoonLightTheme: IOrigamTheme = {
         '--origam-field---border-width-outlined': '3px',
         '--origam-field---border-opacity': '1',
         '--origam-field---border-opacity-outlined': '1',
-        '--origam-field---border-color': 'var(--origam-color__border---default)'
+        '--origam-field---border-color': 'var(--origam-color__border---default)',
+        '--origam-font-family---heading': "Inter, -apple-system, 'system-ui', sans-serif",
+        '--origam-title---font-family': "Inter, -apple-system, 'system-ui', sans-serif"
     }
 }
 
@@ -321,7 +323,9 @@ export const cartoonDarkTheme: IOrigamTheme = {
         '--origam-field---border-width-outlined': '3px',
         '--origam-field---border-opacity': '1',
         '--origam-field---border-opacity-outlined': '1',
-        '--origam-field---border-color': 'var(--origam-color__border---default)'
+        '--origam-field---border-color': 'var(--origam-color__border---default)',
+        '--origam-font-family---heading': "Inter, -apple-system, 'system-ui', sans-serif",
+        '--origam-title---font-family': "Inter, -apple-system, 'system-ui', sans-serif"
     }
 }
 

@@ -32,8 +32,7 @@
 
 :root:root[data-theme="cartoon"],
 :root:root[data-theme="cartoon"][data-mode="light"] {/* ── Heading font — Inter (matches maquette, same as shared default) ──── */
-    --origam-font-family---heading: Inter, -apple-system, 'system-ui', sans-serif;
-    --origam-title---font-family:   Inter, -apple-system, 'system-ui', sans-serif;/* ── Radii — chunky rounded for cartoon aesthetic ─────────────────────── *//* ── Surfaces ───────────────────────────────────────────────────────────── *//* ── Page background: warm cream + 4 radial pastel glows ─────────────── */
+/* ── Radii — chunky rounded for cartoon aesthetic ─────────────────────── *//* ── Surfaces ───────────────────────────────────────────────────────────── *//* ── Page background: warm cream + 4 radial pastel glows ─────────────── */
     --origam-page---background-image:
         radial-gradient(circle at 10% 12%, #ffe5a5 0%, transparent 26%),
         radial-gradient(circle at 90% 14%, #c5e8ff 0%, transparent 26%),
@@ -85,8 +84,7 @@
 }/* ── CARTOON DARK ────────────────────────────────────────────────────────── */
 
 :root:root[data-theme="cartoon"][data-mode="dark"] {/* ── Heading font — identical Inter stack ─────────────────────────────── */
-    --origam-font-family---heading: Inter, -apple-system, 'system-ui', sans-serif;
-    --origam-title---font-family:   Inter, -apple-system, 'system-ui', sans-serif;/* ── Radii — identical to light ─────────────────────────────────────────── *//* ── Surfaces — near-black ────────────────────────────────────────────── *//* ── Page background: NO page-wide glow in dark. The maquette glows are
+/* ── Radii — identical to light ─────────────────────────────────────────── *//* ── Surfaces — near-black ────────────────────────────────────────────── *//* ── Page background: NO page-wide glow in dark. The maquette glows are
        per-section decor (amber/pink, section-sized), so they ride the
        hero-glow / cta-glow tokens below — a page-wide background-image would
        stretch the radial over the whole tall page into a garish wash. ─────── */
