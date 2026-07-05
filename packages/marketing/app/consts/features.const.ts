@@ -29,18 +29,20 @@ export const FEATURE_CARD_VARS: CSSProperties = {
 } as CSSProperties
 
 /**
- * Per-instance OrigamSheet override for the feature icon tile.
+ * Per-instance override for the feature icon tile (OrigamAvatar).
  *
- * Radius now rides the typed `rounded="var(--origam-radius---card)"` prop
- * (useRounded accepts custom-property refs since the v2.6 DS fix). `bgColor`
- * still warns + deprecates a raw `var(...)` (it expects a TIntent), and the
- * `action-primary---bgSubtle` token is NOT an intent, so — per the project
- * color policy ("one-off custom colors via :style custom-prop") — we paint
- * the sheet's public bg custom-prop directly. Border colour/width still ride
- * the Sheet's typed props (borderColor passthrough does not deprecate).
+ * Size (44×44) AND radius (card) are pinned in CSS on `.home-features__icon-tile`,
+ * NOT via the avatar's `size` / `rounded` props. Reason: those props hydrate
+ * non-deterministically on this grid — the SSR markup and the client render
+ * disagree, so a subset of avatars keep their SSR shape (base pill / theme
+ * `rounded: lg`) while the rest apply the intended value, yielding a random
+ * mix of circles and rounded-squares per reload. Forcing size + radius in CSS
+ * (with `!important` on the radius, to beat the theme's `origam--rounded-lg`
+ * default that survives the mismatch) makes all six tiles identical and stable.
+ * `bgColor` expects a TIntent and `action-primary---bgSubtle` is a token, not
+ * an intent, so — per the project color policy — we paint the sheet/avatar bg
+ * custom-prop directly below.
  */
-export const FEATURE_ICON_TILE_RADIUS = 'var(--origam-radius---card, 10px)'
-
 export const FEATURE_ICON_TILE_VARS: CSSProperties = {
     '--origam-sheet---background': 'var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.1))'
 } as CSSProperties
