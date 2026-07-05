@@ -223,7 +223,7 @@
 
       <div class="theming__actions">
         <origam-btn
-          variant="text"
+          variant="outlined"
           size="small"
           prepend-icon="mdi-restore"
           data-cy="theming-reset"
@@ -251,7 +251,7 @@
         </origam-btn>
         <origam-btn
           color="primary"
-          variant="elevated"
+          variant="outlined"
           size="small"
           prepend-icon="mdi-download"
           data-cy="theming-export-ts"
