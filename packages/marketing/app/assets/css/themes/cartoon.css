@@ -82,26 +82,6 @@
      * up the cartoon border here.
      */
 
-    --origam-color__feedback--success---bg: #16a34a;
-    --origam-color__feedback--success---bgSubtle: #bbf7d0;
-    --origam-color__feedback--success---fg: #000000;
-    --origam-color__feedback--success---fgSubtle: #166534;
-    --origam-color__feedback--success---border: #171717;
-    --origam-color__feedback--warning---bg: #fbbf24;
-    --origam-color__feedback--warning---bgSubtle: #fef3c7;
-    --origam-color__feedback--warning---fg: #171717;
-    --origam-color__feedback--warning---fgSubtle: #b45309;
-    --origam-color__feedback--warning---border: #171717;
-    --origam-color__feedback--danger---bg: #ef4444;
-    --origam-color__feedback--danger---bgSubtle: #fecdd3;
-    --origam-color__feedback--danger---fg: #000000;
-    --origam-color__feedback--danger---fgSubtle: #b91c1c;
-    --origam-color__feedback--danger---border: #171717;
-    --origam-color__feedback--info---bg: #60a5fa;
-    --origam-color__feedback--info---bgSubtle: #dbeafe;
-    --origam-color__feedback--info---fg: #171717;
-    --origam-color__feedback--info---fgSubtle: #1d4ed8;
-    --origam-color__feedback--info---border: #171717;
 }/* ── CARTOON DARK ────────────────────────────────────────────────────────── */
 
 :root:root[data-theme="cartoon"][data-mode="dark"] {/* ── Heading font — identical Inter stack ─────────────────────────────── */
@@ -149,26 +129,6 @@
      */
 /* OrigamCode component-level border (dark). Near-white border, same weight. */
 
-    --origam-color__feedback--success---bg: #4ade80;
-    --origam-color__feedback--success---bgSubtle: #14532d;
-    --origam-color__feedback--success---fg: #171717;
-    --origam-color__feedback--success---fgSubtle: #86efac;
-    --origam-color__feedback--success---border: #fffefb;
-    --origam-color__feedback--warning---bg: #fbbf24;
-    --origam-color__feedback--warning---bgSubtle: #78350f;
-    --origam-color__feedback--warning---fg: #171717;
-    --origam-color__feedback--warning---fgSubtle: #fcd34d;
-    --origam-color__feedback--warning---border: #fffefb;
-    --origam-color__feedback--danger---bg: #f87171;
-    --origam-color__feedback--danger---bgSubtle: #7f1d1d;
-    --origam-color__feedback--danger---fg: #171717;
-    --origam-color__feedback--danger---fgSubtle: #fca5a5;
-    --origam-color__feedback--danger---border: #fffefb;
-    --origam-color__feedback--info---bg: #60a5fa;
-    --origam-color__feedback--info---bgSubtle: #1e3a8a;
-    --origam-color__feedback--info---fg: #171717;
-    --origam-color__feedback--info---fgSubtle: #93c5fd;
-    --origam-color__feedback--info---border: #fffefb;
 }/* ── CARTOON — Appbar hard border bottom ───────────────────────────────── *//*
  * The DS appbar token only controls background. The 3 px solid bottom border
  * is a Cartoon-specific structural detail.
@@ -243,26 +203,6 @@
  */
 
 :root:root[data-theme="cartoon"] {
-    --origam-color__feedback--success---bg: #16a34a;
-    --origam-color__feedback--success---bgSubtle: #bbf7d0;
-    --origam-color__feedback--success---fg: #000000;
-    --origam-color__feedback--success---fgSubtle: #166534;
-    --origam-color__feedback--success---border: #171717;
-    --origam-color__feedback--warning---bg: #fbbf24;
-    --origam-color__feedback--warning---bgSubtle: #fef3c7;
-    --origam-color__feedback--warning---fg: #171717;
-    --origam-color__feedback--warning---fgSubtle: #b45309;
-    --origam-color__feedback--warning---border: #171717;
-    --origam-color__feedback--danger---bg: #ef4444;
-    --origam-color__feedback--danger---bgSubtle: #fecdd3;
-    --origam-color__feedback--danger---fg: #000000;
-    --origam-color__feedback--danger---fgSubtle: #b91c1c;
-    --origam-color__feedback--danger---border: #171717;
-    --origam-color__feedback--info---bg: #60a5fa;
-    --origam-color__feedback--info---bgSubtle: #dbeafe;
-    --origam-color__feedback--info---fg: #171717;
-    --origam-color__feedback--info---fgSubtle: #1d4ed8;
-    --origam-color__feedback--info---border: #171717;
 }/* ── CARTOON — button 3 px border override ─────────────────────────────── *//*
  * HomeHero / HomeCta scoped CSS writes `border: 1px solid …` on secondary
  * buttons. The Cartoon design requires 3 px. We override with higher specificity
@@ -639,26 +579,6 @@
         radial-gradient(circle at 10% 14%, rgba(252, 211, 77, 0.50) 0%, transparent 38%),
         radial-gradient(circle at 90% 14%, rgba(251, 207, 232, 0.42) 0%, transparent 38%);
 
-    --origam-color__feedback--success---bg: #4ade80;
-    --origam-color__feedback--success---bgSubtle: #14532d;
-    --origam-color__feedback--success---fg: #171717;
-    --origam-color__feedback--success---fgSubtle: #86efac;
-    --origam-color__feedback--success---border: #fffefb;
-    --origam-color__feedback--warning---bg: #fbbf24;
-    --origam-color__feedback--warning---bgSubtle: #78350f;
-    --origam-color__feedback--warning---fg: #171717;
-    --origam-color__feedback--warning---fgSubtle: #fcd34d;
-    --origam-color__feedback--warning---border: #fffefb;
-    --origam-color__feedback--danger---bg: #f87171;
-    --origam-color__feedback--danger---bgSubtle: #7f1d1d;
-    --origam-color__feedback--danger---fg: #171717;
-    --origam-color__feedback--danger---fgSubtle: #fca5a5;
-    --origam-color__feedback--danger---border: #fffefb;
-    --origam-color__feedback--info---bg: #60a5fa;
-    --origam-color__feedback--info---bgSubtle: #1e3a8a;
-    --origam-color__feedback--info---fg: #171717;
-    --origam-color__feedback--info---fgSubtle: #93c5fd;
-    --origam-color__feedback--info---border: #fffefb;
 }/* Showcase data table: 1px cell rule + 3px top outer border (point 6).
    Row dividers remain 1px for readability; the table outer top border is 3px. */
 :root:root[data-theme="cartoon"] .home-showcase__th,
