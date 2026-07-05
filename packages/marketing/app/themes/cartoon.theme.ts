@@ -64,32 +64,32 @@ export const cartoonLightTheme: IOrigamTheme = {
             },
             feedback: {
                 success: {
-                    bg: '#15803d',
-                    bgSubtle: 'rgba(21, 128, 61, 0.10)',
-                    fg: '#ffffff',
-                    fgSubtle: '#15803d',
-                    border: '#15803d'
+                    bg: '#16a34a',
+                    bgSubtle: '#bbf7d0',
+                    fg: '#000000',
+                    fgSubtle: '#166534',
+                    border: '#171717'
                 },
                 warning: {
-                    bg: '#b45309',
-                    bgSubtle: 'rgba(180, 83, 9, 0.10)',
-                    fg: '#ffffff',
+                    bg: '#fbbf24',
+                    bgSubtle: '#fef3c7',
+                    fg: '#171717',
                     fgSubtle: '#b45309',
-                    border: '#b45309'
+                    border: '#171717'
                 },
                 danger: {
-                    bg: '#dc2626',
-                    bgSubtle: 'rgba(220, 38, 38, 0.10)',
-                    fg: '#ffffff',
-                    fgSubtle: '#dc2626',
-                    border: '#dc2626'
+                    bg: '#ef4444',
+                    bgSubtle: '#fecdd3',
+                    fg: '#000000',
+                    fgSubtle: '#b91c1c',
+                    border: '#171717'
                 },
                 info: {
-                    bg: '#0891b2',
-                    bgSubtle: 'rgba(8, 145, 178, 0.10)',
-                    fg: '#ffffff',
-                    fgSubtle: '#0891b2',
-                    border: '#0891b2'
+                    bg: '#60a5fa',
+                    bgSubtle: '#dbeafe',
+                    fg: '#171717',
+                    fgSubtle: '#1d4ed8',
+                    border: '#171717'
                 }
             },
             'btn-primary-bg': '#ff8fa3',
