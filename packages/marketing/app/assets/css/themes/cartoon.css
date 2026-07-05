@@ -49,15 +49,7 @@
         linear-gradient(rgba(23, 23, 23, 0.06) 1px, transparent 1px),
         linear-gradient(90deg, rgba(23, 23, 23, 0.06) 1px, transparent 1px);/* KPI values: solid rose (measured: rgb(255,143,163) — no gradient in light) */
     --origam-gradient---kpi-value: linear-gradient(#ff8fa3, #ff8fa3);/* ── Chip tokens — cartoon border + shadow in light (near-black) ───────── */
-/* ── Field tokens — cartoon bold 3px border (text-field, number-field, select,
-       … all render OrigamField). Colour follows the semantic border token
-       (black light / white dark); the hard-shadow comes from the elevation prop
-       set on each field in the theme object. Border width is mode-independent. */
-    --origam-field---border-width:            3px;
-    --origam-field---border-width-outlined:   3px;
-    --origam-field---border-opacity:          1;
-    --origam-field---border-opacity-outlined: 1;
-    --origam-field---border-color:            var(--origam-color__border---default);/* ── Button tokens ──────────────────────────────────────────────────────── *//*
+/* ── Button tokens ──────────────────────────────────────────────────────── *//*
      * PRIMARY — solid rose pill, near-black text, 3 px border, hard shadow.
      * Measured: bg #ff8fa3, color #3a2a2e, border 3px #171717,
      *           box-shadow rgb(23,23,23) 4px 4px 0.
