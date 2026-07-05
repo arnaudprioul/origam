@@ -74,27 +74,18 @@
      * Without these, real OrigamBtn instances fall back to the flat DS
      * defaults: no shadow on elevated, no border on outlined/ghost.
      */
-    --origam-btn---border-color:          rgba(124, 58, 237, 0.35);
-    --origam-btn---border-width-outlined: 1px;
-    --origam-btn---border-width-ghost:    1px;
-    --origam-btn---box-shadow-elevated:
-        inset 0 1px 1px rgba(255, 255, 255, 0.90),
-        inset 1px 0 1px rgba(255, 255, 255, 0.50),
-        inset 0 -1px 1px rgba(124, 58, 237, 0.12),
-        0 10px 30px -12px rgba(60, 30, 120, 0.40);
-    --origam-btn---box-shadow-ghost:      none;
-    --origam-btn---backdrop-filter-ghost: blur(12px) saturate(1.8) brightness(1.05);/*
+/*
      * OrigamCard component-level default — maps to the marketing display
      * glass shadow (already defined in --origam-shadow---card-elevated above).
      * On pages other than home (e.g. /components/btn), cards have no inline
      * override so they fall back to the DS default flat shadow; redirect them
      * to the themed glass shadow via this token.
      */
-    --origam-card---box-shadow: var(--origam-shadow---card-elevated);/*
+/*
      * OrigamCode component-level default — glass uses larger radii (16px)
      * to match the pill-heavy aesthetic; DS default is 8px.
      */
-    --origam-code---border-radius: 16px;
+
 
     --origam-color__feedback--success---bg: #16a34a;
     --origam-color__feedback--success---bgSubtle: rgba(22, 163, 74, 0.1);
@@ -166,18 +157,9 @@
     --origam-gradient---btn-primary:   none;
 
     --origam-gradient---btn-secondary:   none;/* OrigamBtn component-level defaults (dark) — see light-mode note. */
-    --origam-btn---border-color:          rgba(255, 255, 255, 0.20);
-    --origam-btn---border-width-outlined: 1px;
-    --origam-btn---border-width-ghost:    1px;
-    --origam-btn---box-shadow-elevated:
-        inset 0 1px 1px rgba(255, 255, 255, 0.60),
-        inset 1.5px 0 1px rgba(255, 255, 255, 0.28),
-        inset 0 -1px 1px rgba(0, 0, 0, 0.20),
-        0 8px 24px -6px rgba(167, 139, 250, 0.60);
-    --origam-btn---box-shadow-ghost:      none;
-    --origam-btn---backdrop-filter-ghost: blur(12px) saturate(1.6) brightness(1.02);/* OrigamCard component-level default (dark) */
-    --origam-card---box-shadow: var(--origam-shadow---card-elevated);/* OrigamCode component-level default (dark) */
-    --origam-code---border-radius: 16px;
+/* OrigamCard component-level default (dark) */
+/* OrigamCode component-level default (dark) */
+
 
     --origam-color__feedback--success---bg: #6ee7b7;
     --origam-color__feedback--success---bgSubtle: rgba(110, 231, 183, 0.14);
@@ -323,7 +305,7 @@
 :root:root[data-theme="glass"] [data-cy="hero-install-command"] {
     --origam-code---background-color: rgba(255, 255, 255, 0.60);
     --origam-code__compact---background-color: rgba(255, 255, 255, 0.60);
-    --origam-code---border-radius: 16px;
+
     --origam-code---border-color: rgba(124, 58, 237, 0.22);
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.65),

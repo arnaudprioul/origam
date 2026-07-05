@@ -136,7 +136,19 @@ export const glassLightTheme: IOrigamTheme = {
         'origam-checkbox': { rounded: 'lg' },
         'origam-snackbar': { rounded: 'lg', border: true, elevation: 3 }
     },
-    cssVars: {}
+    // Overrides bruts glassmorphism non exprimables en props (bordures translucides,
+    // backdrop-filter, ombres douces à reflets internes). Migrés depuis glass.css →
+    // appliqués par le DS via `[data-theme="glass"]` (sous-arbre-capable).
+    cssVars: {
+        '--origam-btn---border-color': 'rgba(124, 58, 237, 0.35)',
+        '--origam-btn---border-width-outlined': '1px',
+        '--origam-btn---border-width-ghost': '1px',
+        '--origam-btn---box-shadow-elevated': 'inset 0 1px 1px rgba(255, 255, 255, 0.90), inset 1px 0 1px rgba(255, 255, 255, 0.50), inset 0 -1px 1px rgba(124, 58, 237, 0.12), 0 10px 30px -12px rgba(60, 30, 120, 0.40)',
+        '--origam-btn---box-shadow-ghost': 'none',
+        '--origam-btn---backdrop-filter-ghost': 'blur(12px) saturate(1.8) brightness(1.05)',
+        '--origam-card---box-shadow': 'var(--origam-shadow---card-elevated)',
+        '--origam-code---border-radius': '16px'
+    }
 }
 
 export const glassDarkTheme: IOrigamTheme = {
@@ -247,7 +259,16 @@ export const glassDarkTheme: IOrigamTheme = {
             xl: 'inset 0 1px 1px rgba(255, 255, 255, 0.70), inset 1.5px 0 1px rgba(255, 255, 255, 0.35), inset -1.5px 0 1px rgba(255, 255, 255, 0.20), inset 0 -10px 22px rgba(255, 255, 255, 0.06), inset 0 -1px 1px rgba(0, 0, 0, 0.25), 0 16px 48px -12px rgba(0, 0, 0, 0.65), 0 4px 10px -4px rgba(0, 0, 0, 0.40)'
         }
     },
-    cssVars: {}
+    cssVars: {
+        '--origam-btn---border-color': 'rgba(255, 255, 255, 0.20)',
+        '--origam-btn---border-width-outlined': '1px',
+        '--origam-btn---border-width-ghost': '1px',
+        '--origam-btn---box-shadow-elevated': 'inset 0 1px 1px rgba(255, 255, 255, 0.60), inset 1.5px 0 1px rgba(255, 255, 255, 0.28), inset 0 -1px 1px rgba(0, 0, 0, 0.20), 0 8px 24px -6px rgba(167, 139, 250, 0.60)',
+        '--origam-btn---box-shadow-ghost': 'none',
+        '--origam-btn---backdrop-filter-ghost': 'blur(12px) saturate(1.6) brightness(1.02)',
+        '--origam-card---box-shadow': 'var(--origam-shadow---card-elevated)',
+        '--origam-code---border-radius': '16px'
+    }
 }
 
 export const glassThemes: IOrigamTheme[] = [glassLightTheme, glassDarkTheme]
