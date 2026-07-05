@@ -137,7 +137,16 @@ export const cartoonLightTheme: IOrigamTheme = {
         'origam-checkbox': { rounded: 'md' },
         'origam-snackbar': { rounded: 'lg', border: true, elevation: 4 }
     },
-    cssVars: {}
+    // Overrides bruts non exprimables en props (couleur + épaisseur de bordure,
+    // hard-shadow de bouton). Migrés depuis cartoon.css → appliqués par le DS via
+    // `[data-theme="cartoon"]` (sous-arbre-capable).
+    cssVars: {
+        '--origam-btn---border-color': '#171717',
+        '--origam-btn---border-width-outlined': '3px',
+        '--origam-btn---border-width-ghost': '3px',
+        '--origam-btn---box-shadow-elevated': '4px 4px 0 #171717',
+        '--origam-btn---box-shadow-ghost': '4px 4px 0 #171717'
+    }
 }
 
 export const cartoonDarkTheme: IOrigamTheme = {
@@ -249,7 +258,13 @@ export const cartoonDarkTheme: IOrigamTheme = {
             xl: '8px 8px 0 #fffefb'
         }
     },
-    cssVars: {}
+    cssVars: {
+        '--origam-btn---border-color': '#fffefb',
+        '--origam-btn---border-width-outlined': '3px',
+        '--origam-btn---border-width-ghost': '3px',
+        '--origam-btn---box-shadow-elevated': '4px 4px 0 #fffefb',
+        '--origam-btn---box-shadow-ghost': '4px 4px 0 #fffefb'
+    }
 }
 
 export const cartoonThemes: IOrigamTheme[] = [cartoonLightTheme, cartoonDarkTheme]
