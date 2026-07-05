@@ -246,10 +246,10 @@
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .site-appbar .origam-chip,
 :root:root[data-theme="cartoon"][data-mode="dark"] .brand__version {
-    border-color:  #171717 !important;
+    border-color:  #fffefb !important;
     border-width:  3px !important;
     border-style:  solid !important;
-    box-shadow:    2px 2px 0 #171717 !important;
+    box-shadow:    2px 2px 0 #fffefb !important;
     background-color: #ffe5a5 !important;
     color:         #3a2a2e !important;
 }/* ── CARTOON — Appbar action buttons: 3 px border + hard shadow ─────────── *//*
