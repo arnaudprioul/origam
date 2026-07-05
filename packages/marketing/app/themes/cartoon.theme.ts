@@ -159,7 +159,17 @@ export const cartoonLightTheme: IOrigamTheme = {
         '--origam-chip---border-width': '3px',
         '--origam-chip---border-width-outlined': '3px',
         '--origam-code---border-width': '3px',
-        '--origam-code---border-color': '#171717'
+        '--origam-code---border-color': '#171717',
+        '--origam-menu---background': 'var(--origam-color__surface---default)',
+        '--origam-menu---color': 'var(--origam-color__text---primary)',
+        '--origam-menu---border-radius': '14px',
+        '--origam-menu---box-shadow': '4px 4px 0 #171717, 0 0 0 3px #171717',
+        '--origam-menu__content---padding': '6px',
+        '--origam-list---background': 'transparent',
+        '--origam-list---padding-block-start': '0',
+        '--origam-list---padding-block-end': '0',
+        '--origam-list-item---padding-inline-start': '12px',
+        '--origam-list-item---padding-inline-end': '12px'
     }
 }
 
@@ -291,7 +301,17 @@ export const cartoonDarkTheme: IOrigamTheme = {
         '--origam-chip---border-width': '3px',
         '--origam-chip---border-width-outlined': '3px',
         '--origam-code---border-width': '3px',
-        '--origam-code---border-color': '#fffefb'
+        '--origam-code---border-color': '#fffefb',
+        '--origam-menu---background': 'var(--origam-color__surface---default)',
+        '--origam-menu---color': 'var(--origam-color__text---primary)',
+        '--origam-menu---border-radius': '14px',
+        '--origam-menu---box-shadow': '4px 4px 0 #fffefb, 0 0 0 3px #fffefb',
+        '--origam-menu__content---padding': '6px',
+        '--origam-list---background': 'transparent',
+        '--origam-list---padding-block-start': '0',
+        '--origam-list---padding-block-end': '0',
+        '--origam-list-item---padding-inline-start': '12px',
+        '--origam-list-item---padding-inline-end': '12px'
     }
 }
 
