@@ -69,8 +69,7 @@
     --origam-field---border-width-outlined:   3px;
     --origam-field---border-opacity:          1;
     --origam-field---border-opacity-outlined: 1;
-    --origam-field---border-color:            var(--origam-color__border---default);
-    --origam-field---border-radius:           var(--origam-radius---lg, 20px);/* ── Button tokens ──────────────────────────────────────────────────────── *//*
+    --origam-field---border-color:            var(--origam-color__border---default);/* ── Button tokens ──────────────────────────────────────────────────────── *//*
      * PRIMARY — solid rose pill, near-black text, 3 px border, hard shadow.
      * Measured: bg #ff8fa3, color #3a2a2e, border 3px #171717,
      *           box-shadow rgb(23,23,23) 4px 4px 0.
@@ -268,15 +267,24 @@
  * These are secondary/action buttons — transparent bg, near-black border.
  */
 
-:root:root[data-theme="cartoon"] .appbar-actions__btn {
+:root:root[data-theme="cartoon"] .appbar-actions__btn,
+:root:root[data-theme="cartoon"] .search-trigger {
     border:     3px solid #171717 !important;
     box-shadow: 3px 3px 0 #171717 !important;
     border-radius: var(--origam-radius---btn, 14px) !important;
 }
 
-:root:root[data-theme="cartoon"][data-mode="dark"] .appbar-actions__btn {
+:root:root[data-theme="cartoon"][data-mode="dark"] .appbar-actions__btn,
+:root:root[data-theme="cartoon"][data-mode="dark"] .search-trigger {
     border:     3px solid #fffefb !important;
     box-shadow: 3px 3px 0 #fffefb !important;
+}/* ── CARTOON — Field border radius: the field resets --origam-field---border-radius
+   to a small value on itself (scoped), overriding the theme :root token, so the
+   visible __outline border stays barely-rounded while the box follows rounded='lg'.
+   Force the token on the field element so the border matches the box (lg) — fixes
+   text-field, select and every field type at once. */
+:root:root[data-theme="cartoon"] .origam-field {
+    --origam-field---border-radius: var(--origam-radius---lg, 20px) !important;
 }/* ── CARTOON — Showcase / feature widget cards 3 px border ──────────────── *//*
  * The DS OrigamCard "flat" variant has no border. Cartoon shows all cards with
  * a 3 px solid near-black border (measured: 3px solid #171717 in light,

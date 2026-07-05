@@ -133,6 +133,9 @@
   >
     <origam-alert
       status="warning"
+      border
+      rounded="lg"
+      :elevation="2"
       class="theming__dev-banner"
       data-cy="theming-dev-banner"
       :title="t('theming.dev_banner.title', 'Feature under development')"
