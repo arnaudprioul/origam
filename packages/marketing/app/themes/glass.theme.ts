@@ -163,6 +163,9 @@ export const glassLightTheme: IOrigamTheme = {
         '--origam-list---padding-block-end': '0',
         '--origam-list-item---padding-inline-start': '12px',
         '--origam-list-item---padding-inline-end': '12px',
+        '--origam-alert---backdrop-filter': 'blur(3px) saturate(1.8) brightness(1.08)',
+        '--origam-alert---background-color': 'rgba(255, 255, 255, 0.18)',
+        '--origam-alert---border-color': 'rgba(124, 58, 237, 0.20)',
     }
 }
 
@@ -298,6 +301,9 @@ export const glassDarkTheme: IOrigamTheme = {
         '--origam-list---padding-block-end': '0',
         '--origam-list-item---padding-inline-start': '12px',
         '--origam-list-item---padding-inline-end': '12px',
+        '--origam-alert---backdrop-filter': 'blur(3px) saturate(1.8) brightness(1.08)',
+        '--origam-alert---background-color': 'rgba(255, 255, 255, 0.06)',
+        '--origam-alert---border-color': 'rgba(255, 255, 255, 0.12)',
     }
 }
 
