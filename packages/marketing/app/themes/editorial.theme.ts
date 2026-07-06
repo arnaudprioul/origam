@@ -64,32 +64,32 @@ export const editorialLightTheme: IOrigamTheme = {
             },
             feedback: {
                 success: {
-                    bg: '#16a34a',
-                    bgSubtle: 'rgba(22, 163, 74, 0.10)',
+                    bg: '#15803d',
+                    bgSubtle: 'rgba(21, 128, 61, 0.08)',
                     fg: '#ffffff',
                     fgSubtle: '#166534',
-                    border: '#166534'
+                    border: '#15803d'
                 },
                 warning: {
-                    bg: '#d97706',
-                    bgSubtle: 'rgba(217, 119, 6, 0.10)',
+                    bg: '#b45309',
+                    bgSubtle: 'rgba(180, 83, 9, 0.08)',
                     fg: '#ffffff',
                     fgSubtle: '#92400e',
-                    border: '#92400e'
+                    border: '#b45309'
                 },
                 danger: {
-                    bg: '#dc2626',
-                    bgSubtle: 'rgba(220, 38, 38, 0.10)',
+                    bg: '#b91c1c',
+                    bgSubtle: 'rgba(185, 28, 28, 0.08)',
                     fg: '#ffffff',
                     fgSubtle: '#991b1b',
-                    border: '#991b1b'
+                    border: '#b91c1c'
                 },
                 info: {
-                    bg: '#2563eb',
-                    bgSubtle: 'rgba(37, 99, 235, 0.10)',
+                    bg: '#1d4ed8',
+                    bgSubtle: 'rgba(29, 78, 216, 0.08)',
                     fg: '#ffffff',
-                    fgSubtle: '#1d4ed8',
-                    border: '#2563eb'
+                    fgSubtle: '#1e40af',
+                    border: '#1d4ed8'
                 }
             },
             'btn-primary-bg': '#5b21b6',

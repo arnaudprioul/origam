@@ -120,26 +120,6 @@
      * OrigamAlert component-level defaults (light) — editorial: 0px radius.
      */
 
-    --origam-color__feedback--success---bg: #15803d;
-    --origam-color__feedback--success---bgSubtle: rgba(21, 128, 61, 0.08);
-    --origam-color__feedback--success---fg: #ffffff;
-    --origam-color__feedback--success---fgSubtle: #166534;
-    --origam-color__feedback--success---border: #15803d;
-    --origam-color__feedback--warning---bg: #b45309;
-    --origam-color__feedback--warning---bgSubtle: rgba(180, 83, 9, 0.08);
-    --origam-color__feedback--warning---fg: #ffffff;
-    --origam-color__feedback--warning---fgSubtle: #92400e;
-    --origam-color__feedback--warning---border: #b45309;
-    --origam-color__feedback--danger---bg: #b91c1c;
-    --origam-color__feedback--danger---bgSubtle: rgba(185, 28, 28, 0.08);
-    --origam-color__feedback--danger---fg: #ffffff;
-    --origam-color__feedback--danger---fgSubtle: #991b1b;
-    --origam-color__feedback--danger---border: #b91c1c;
-    --origam-color__feedback--info---bg: #1d4ed8;
-    --origam-color__feedback--info---bgSubtle: rgba(29, 78, 216, 0.08);
-    --origam-color__feedback--info---fg: #ffffff;
-    --origam-color__feedback--info---fgSubtle: #1e40af;
-    --origam-color__feedback--info---border: #1d4ed8;
 }/* ── EDITORIAL LIGHT — appbar: border-block-end ink ─────────────────────── *//* Measured: nav border-bottom: 1px solid rgba(26,23,20,0.16)               */
 
 :root:root[data-theme="editorial"] .home-appbar,
@@ -328,26 +308,6 @@
 /* OrigamField component-level defaults (dark) — editorial: 0px radius, translucent border. */
 /* OrigamAlert component-level defaults (dark) — editorial: 0px radius. */
 
-    --origam-color__feedback--success---bg: #6ee7b7;
-    --origam-color__feedback--success---bgSubtle: rgba(110, 231, 183, 0.1);
-    --origam-color__feedback--success---fg: #0a0a0a;
-    --origam-color__feedback--success---fgSubtle: #6ee7b7;
-    --origam-color__feedback--success---border: #6ee7b7;
-    --origam-color__feedback--warning---bg: #fcd34d;
-    --origam-color__feedback--warning---bgSubtle: rgba(252, 211, 77, 0.1);
-    --origam-color__feedback--warning---fg: #0a0a0a;
-    --origam-color__feedback--warning---fgSubtle: #fcd34d;
-    --origam-color__feedback--warning---border: #fcd34d;
-    --origam-color__feedback--danger---bg: #fca5a5;
-    --origam-color__feedback--danger---bgSubtle: rgba(252, 165, 165, 0.1);
-    --origam-color__feedback--danger---fg: #0a0a0a;
-    --origam-color__feedback--danger---fgSubtle: #fca5a5;
-    --origam-color__feedback--danger---border: #fca5a5;
-    --origam-color__feedback--info---bg: #93c5fd;
-    --origam-color__feedback--info---bgSubtle: rgba(147, 197, 253, 0.1);
-    --origam-color__feedback--info---fg: #0a0a0a;
-    --origam-color__feedback--info---fgSubtle: #93c5fd;
-    --origam-color__feedback--info---border: #93c5fd;
 }/* ── EDITORIAL DARK — appbar: border-block-end white translucent ─────────── *//* Measured: nav border-bottom: 1px solid rgba(255,255,255,0.10)             */
 
 :root:root[data-theme="editorial"][data-mode="dark"] .home-appbar,
