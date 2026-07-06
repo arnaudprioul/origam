@@ -64,29 +64,29 @@ export const appleLightTheme: IOrigamTheme = {
             },
             feedback: {
                 success: {
-                    bg: '#198529',
-                    bgSubtle: 'rgba(25, 133, 41, 0.10)',
-                    fg: '#ffffff',
-                    fgSubtle: '#198529',
-                    border: '#198529'
+                    bg: '#28cd41',
+                    bgSubtle: '#e8f8ec',
+                    fg: '#000000',
+                    fgSubtle: '#166534',
+                    border: '#28cd41'
                 },
                 warning: {
-                    bg: '#a86600',
-                    bgSubtle: 'rgba(168, 102, 0, 0.10)',
-                    fg: '#ffffff',
-                    fgSubtle: '#a86600',
-                    border: '#a86600'
+                    bg: '#ff9f0a',
+                    bgSubtle: '#fff4e5',
+                    fg: '#000000',
+                    fgSubtle: '#78350f',
+                    border: '#ff9f0a'
                 },
                 danger: {
-                    bg: '#c2271c',
-                    bgSubtle: 'rgba(194, 39, 28, 0.10)',
-                    fg: '#ffffff',
+                    bg: '#ff3b30',
+                    bgSubtle: '#ffe9e7',
+                    fg: '#000000',
                     fgSubtle: '#c2271c',
-                    border: '#c2271c'
+                    border: '#ff3b30'
                 },
                 info: {
                     bg: '#0071e3',
-                    bgSubtle: 'rgba(0, 113, 227, 0.10)',
+                    bgSubtle: '#f0f7ff',
                     fg: '#ffffff',
                     fgSubtle: '#0058b0',
                     border: '#0071e3'
