@@ -137,7 +137,44 @@ export const materialLightTheme: IOrigamTheme = {
         'origam-checkbox': { rounded: 'md' },
         'origam-snackbar': { rounded: 'lg', elevation: 3 }
     },
-    cssVars: {}
+    cssVars: {
+        "--origam-font-family---heading": "'Roboto', 'Inter', -apple-system, sans-serif",
+        "--origam-title---font-family": "'Roboto', 'Inter', -apple-system, sans-serif",
+        '--origam-font-weight---extrabold': '600',
+        '--origam-letter-spacing---hero': '-0.025em',
+        '--origam-appbar---backdrop-filter': 'saturate(140%) blur(16px)',
+        '--origam-menu---background': 'var(--origam-color__surface---raised)',
+        '--origam-menu---color': 'var(--origam-color__text---primary)',
+        '--origam-menu---border-radius': '16px',
+        '--origam-menu__content---padding': '6px',
+        '--origam-list---background': 'transparent',
+        '--origam-list---padding-block-start': '0',
+        '--origam-list---padding-block-end': '0',
+        '--origam-list-item---padding-inline-start': '12px',
+        '--origam-list-item---padding-inline-end': '12px',
+        '--origam-card---background': 'var(--origam-color__surface---raised)',
+        '--origam-card---border-radius': '28px',
+        '--origam-card---border-width': '1px',
+        '--origam-card---border-color': 'var(--origam-color__border---default)',
+        '--origam-chip---border-radius': '999px',
+        '--origam-chip---background': 'var(--origam-color__surface---raised)',
+        '--origam-chip---background-color': 'var(--origam-color__surface---raised)',
+        '--origam-chip---border-color': 'var(--origam-color__border---default)',
+        '--origam-btn---border-radius': '999px',
+        '--origam-btn---border-radius-rounded': '999px',
+        '--origam-btn---border-color': 'var(--origam-color__border---default)',
+        '--origam-btn---border-width-outlined': '1px',
+        '--origam-btn---border-width-ghost': '1px',
+        '--origam-btn---box-shadow-elevated': '0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)',
+        '--origam-btn---box-shadow-ghost': 'none',
+        '--origam-code---border-radius': '12px',
+        '--origam-code---border-width': '0',
+        '--origam-alert---border-radius': 'var(--origam-radius---lg, 12px)',
+        '--origam-alert---box-shadow-elevated': '0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)',
+        '--origam-table---border-radius': '28px',
+        '--origam-appbar---bg': 'color-mix(in srgb, #fef7ff 72%, transparent)',
+        '--origam-menu---box-shadow': '0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(208, 188, 255, 0.15), 0 0 0 1px var(--origam-color__border---default)'
+    }
 }
 
 export const materialDarkTheme: IOrigamTheme = {
@@ -249,7 +286,44 @@ export const materialDarkTheme: IOrigamTheme = {
             xl: '0 8px 12px 6px rgba(0,0,0,0.3), 0 4px 4px rgba(0,0,0,0.5)'
         }
     },
-    cssVars: {}
+    cssVars: {
+        "--origam-font-family---heading": "'Roboto', 'Inter', -apple-system, sans-serif",
+        "--origam-title---font-family": "'Roboto', 'Inter', -apple-system, sans-serif",
+        '--origam-font-weight---extrabold': '600',
+        '--origam-letter-spacing---hero': '-0.025em',
+        '--origam-appbar---backdrop-filter': 'saturate(140%) blur(16px)',
+        '--origam-menu---background': 'var(--origam-color__surface---raised)',
+        '--origam-menu---color': 'var(--origam-color__text---primary)',
+        '--origam-menu---border-radius': '16px',
+        '--origam-menu__content---padding': '6px',
+        '--origam-list---background': 'transparent',
+        '--origam-list---padding-block-start': '0',
+        '--origam-list---padding-block-end': '0',
+        '--origam-list-item---padding-inline-start': '12px',
+        '--origam-list-item---padding-inline-end': '12px',
+        '--origam-card---background': 'var(--origam-color__surface---raised)',
+        '--origam-card---border-radius': '28px',
+        '--origam-card---border-width': '1px',
+        '--origam-card---border-color': 'var(--origam-color__border---default)',
+        '--origam-chip---border-radius': '999px',
+        '--origam-chip---background': 'var(--origam-color__surface---raised)',
+        '--origam-chip---background-color': 'var(--origam-color__surface---raised)',
+        '--origam-chip---border-color': 'var(--origam-color__border---default)',
+        '--origam-btn---border-radius': '999px',
+        '--origam-btn---border-radius-rounded': '999px',
+        '--origam-btn---border-color': 'var(--origam-color__border---default)',
+        '--origam-btn---border-width-outlined': '1px',
+        '--origam-btn---border-width-ghost': '1px',
+        '--origam-btn---box-shadow-elevated': '0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)',
+        '--origam-btn---box-shadow-ghost': 'none',
+        '--origam-code---border-radius': '12px',
+        '--origam-code---border-width': '0',
+        '--origam-alert---border-radius': 'var(--origam-radius---lg, 12px)',
+        '--origam-alert---box-shadow-elevated': '0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)',
+        '--origam-table---border-radius': '28px',
+        '--origam-appbar---bg': 'color-mix(in srgb, #1c1b1f 72%, transparent)',
+        '--origam-menu---box-shadow': '0 4px 24px -4px rgba(0, 0, 0, 0.50), 0 1px 2px rgba(0, 0, 0, 0.30), 0 0 0 1px var(--origam-color__border---default)'
+    }
 }
 
 export const materialThemes: IOrigamTheme[] = [materialLightTheme, materialDarkTheme]

@@ -22,22 +22,10 @@
 
 :root:root[data-theme="material"],
 :root:root[data-theme="material"][data-mode="light"] {/* ── Heading font override — Roboto body stack ─────────────────────── */
-    --origam-font-family---heading: 'Roboto', 'Inter', -apple-system, sans-serif;
-    --origam-title---font-family: 'Roboto', 'Inter', -apple-system, sans-serif;/* ── Hero title override — M2 weight 600, tighter tracking ────────── */
-    --origam-font-weight---extrabold: 600;
-    --origam-letter-spacing---hero: -0.025em;/* ── Radii ─────────────────────────────────────────────────────────── *//* --m-radius=16px (btn/chip), --m-radius-sm=12px (icon tile, small),   *//* --m-radius-lg=28px (cards/panels), --m-radius-pill=999px             *//* ── Surfaces ──────────────────────────────────────────────────────── *//* --m-bg=#FEF7FF → page default surface                               *//* --m-surface=#FFFFFF → raised surface (cards, dialogs)               *//* --m-surface-2=#F7F2FA → sunken surface (inputs, code pill)          *//* ── Text ──────────────────────────────────────────────────────────── *//* --m-text=#1C1B1F → primary                                          *//* --m-text-soft / --m-text-quiet=#49454F → secondary, tertiary        *//* --m-text-dim=#79747E → disabled                                     *//* ── Actions / primary ─────────────────────────────────────────────── *//* --m-accent=#6750A4 → primary bg                                     *//* --m-accent-soft=#21005D → dark variant for hover / fgSubtle         *//* --m-accent-bg=#EADDFF → bgSubtle (FilledTonal surface)              *//* ── Actions / secondary ───────────────────────────────────────────── *//* ── Actions / ghost ───────────────────────────────────────────────── *//* ── Borders ───────────────────────────────────────────────────────── *//* --m-border=rgba(28,27,31,0.12) → default (translucent, no hard edge) *//* --m-border-soft=rgba(28,27,31,0.06) → subtle                        *//* --m-border-strong=rgba(28,27,31,0.30) → strong                      *//* --m-accent-border=#6750A4 → focus / accent ring                     *//* ── Feedback ──────────────────────────────────────────────────────── *//* --m-success=#1B5E20 --m-warning=#E65100 --m-danger=#601410          *//* ── Appbar — frosted glass (measured: bg=color(srgb .996 .969 1/0.72)) *//* --m-nav-bg=color-mix(in srgb, #FEF7FF 72%, transparent)             *//* --m-nav-blur=saturate(140%) blur(16px)                               *//* border-block-end: 1px solid rgba(28,27,31,0.12)                     */
-    --origam-appbar---bg: color-mix(in srgb, #fef7ff 72%, transparent);
-    --origam-appbar---backdrop-filter: saturate(140%) blur(16px);/* ── Menu — appbar dropdowns ───────────────────────────────────────── */
-    --origam-menu---background: var(--origam-color__surface---raised);
-    --origam-menu---color: var(--origam-color__text---primary);
-    --origam-menu---border-radius: 16px;
-    --origam-menu---box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(208, 188, 255, 0.15), 0 0 0 1px var(--origam-color__border---default);
-    --origam-menu__content---padding: 6px;
-    --origam-list---background: transparent;
-    --origam-list---padding-block-start: 0;
-    --origam-list---padding-block-end: 0;
-    --origam-list-item---padding-inline-start: 12px;
-    --origam-list-item---padding-inline-end: 12px;/* ── Shadows ───────────────────────────────────────────────────────── *//* Material elev-1 (card standard): measured from maquette showcase     *//* Material elev-3 (showcase card): measured from showcase card         *//* ── Gradients — marketing display ────────────────────────────────── *//* --m-bg-decor-1 → hero glow radial (section-scoped via ::after)      *//* --m-bg-decor-2 → cta right radial                                   *//* --m-glow-text  → hero title gradient white→lavender→purple          *//* --m-shadow-card → grid background (1px rgba lines)                  */
+/* ── Hero title override — M2 weight 600, tighter tracking ────────── */
+/* ── Radii ─────────────────────────────────────────────────────────── *//* --m-radius=16px (btn/chip), --m-radius-sm=12px (icon tile, small),   *//* --m-radius-lg=28px (cards/panels), --m-radius-pill=999px             *//* ── Surfaces ──────────────────────────────────────────────────────── *//* --m-bg=#FEF7FF → page default surface                               *//* --m-surface=#FFFFFF → raised surface (cards, dialogs)               *//* --m-surface-2=#F7F2FA → sunken surface (inputs, code pill)          *//* ── Text ──────────────────────────────────────────────────────────── *//* --m-text=#1C1B1F → primary                                          *//* --m-text-soft / --m-text-quiet=#49454F → secondary, tertiary        *//* --m-text-dim=#79747E → disabled                                     *//* ── Actions / primary ─────────────────────────────────────────────── *//* --m-accent=#6750A4 → primary bg                                     *//* --m-accent-soft=#21005D → dark variant for hover / fgSubtle         *//* --m-accent-bg=#EADDFF → bgSubtle (FilledTonal surface)              *//* ── Actions / secondary ───────────────────────────────────────────── *//* ── Actions / ghost ───────────────────────────────────────────────── *//* ── Borders ───────────────────────────────────────────────────────── *//* --m-border=rgba(28,27,31,0.12) → default (translucent, no hard edge) *//* --m-border-soft=rgba(28,27,31,0.06) → subtle                        *//* --m-border-strong=rgba(28,27,31,0.30) → strong                      *//* --m-accent-border=#6750A4 → focus / accent ring                     *//* ── Feedback ──────────────────────────────────────────────────────── *//* --m-success=#1B5E20 --m-warning=#E65100 --m-danger=#601410          *//* ── Appbar — frosted glass (measured: bg=color(srgb .996 .969 1/0.72)) *//* --m-nav-bg=color-mix(in srgb, #FEF7FF 72%, transparent)             *//* --m-nav-blur=saturate(140%) blur(16px)                               *//* border-block-end: 1px solid rgba(28,27,31,0.12)                     */
+/* ── Menu — appbar dropdowns ───────────────────────────────────────── */
+/* ── Shadows ───────────────────────────────────────────────────────── *//* Material elev-1 (card standard): measured from maquette showcase     *//* Material elev-3 (showcase card): measured from showcase card         *//* ── Gradients — marketing display ────────────────────────────────── *//* --m-bg-decor-1 → hero glow radial (section-scoped via ::after)      *//* --m-bg-decor-2 → cta right radial                                   *//* --m-glow-text  → hero title gradient white→lavender→purple          *//* --m-shadow-card → grid background (1px rgba lines)                  */
     --origam-gradient---hero-glow: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(208, 188, 255, 0.16), transparent 60%);
     --origam-gradient---cta-glow: none;
     --origam-gradient---cta-glow-top: radial-gradient(ellipse 70% 55% at 50% 0%, rgba(208, 188, 255, 0.14), transparent 65%);
@@ -57,15 +45,8 @@
      * Use degenerate gradient (background-image) to paint the tonal surface.
      */
     --origam-gradient---btn-secondary: linear-gradient(#eaddff, #eaddff);/* ── Card / chip / showcase tokens ────────────────────────────────── */
-    --origam-card---background: var(--origam-color__surface---raised);
-    --origam-card---border-radius: 28px;
-    --origam-card---border-width: 1px;
-    --origam-card---border-color: var(--origam-color__border---default);
 
-    --origam-chip---border-radius: 999px;
-    --origam-chip---background: var(--origam-color__surface---raised);
-    --origam-chip---background-color: var(--origam-color__surface---raised);
-    --origam-chip---border-color: var(--origam-color__border---default);/*
+/*
      * OrigamBtn component-level defaults (tokens consumed by the component,
      * not the bespoke --origam-color---btn-* / --origam-shadow---btn-*
      * tokens above which the home CTA reads). Without these, real OrigamBtn
@@ -73,18 +54,9 @@
      * the DS base defaults (4px radius, thin border, flat surface) instead of
      * the Material pill shape + two-layer elevation.
      */
-    --origam-btn---border-radius: 999px;
-    --origam-btn---border-radius-rounded: 999px;
-    --origam-btn---border-color: var(--origam-color__border---default);
-    --origam-btn---border-width-outlined: 1px;
-    --origam-btn---border-width-ghost: 1px;
-    --origam-btn---box-shadow-elevated: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
-    --origam-btn---box-shadow-ghost: none;/* ── OrigamCode component-level defaults ─────────────────────────── */
-    --origam-code---border-radius: 12px;
-    --origam-code---border-width: 0;/* ── OrigamAlert component-level defaults ────────────────────────── */
-    --origam-alert---border-radius: var(--origam-radius---lg, 12px);
-    --origam-alert---box-shadow-elevated: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);/* ── OrigamTable component-level defaults ────────────────────────── */
-    --origam-table---border-radius: 28px;
+/* ── OrigamCode component-level defaults ─────────────────────────── */
+/* ── OrigamAlert component-level defaults ────────────────────────── */
+/* ── OrigamTable component-level defaults ────────────────────────── */
 
     --origam-color__feedback--success---bg: #388e3c;
     --origam-color__feedback--success---bgSubtle: #e8f5e9;
@@ -174,22 +146,10 @@
 }/* ── MATERIAL DARK ────────────────────────────────────────────────────────── */
 
 :root:root[data-theme="material"][data-mode="dark"] {/* ── Heading font — identical Roboto stack ─────────────────────────── */
-    --origam-font-family---heading: 'Roboto', 'Inter', -apple-system, sans-serif;
-    --origam-title---font-family: 'Roboto', 'Inter', -apple-system, sans-serif;/* ── Hero title override — same M2 weight ──────────────────────────── */
-    --origam-font-weight---extrabold: 600;
-    --origam-letter-spacing---hero: -0.025em;/* ── Radii — identical to light ────────────────────────────────────── *//* ── Surfaces ──────────────────────────────────────────────────────── *//* --m-bg=#1C1B1F → page default surface (deepest dark)                *//* --m-surface=#2B2930 → raised surface (cards, dialogs)               *//* --m-surface-2=#36343B → sunken / overlay                            *//* ── Text ──────────────────────────────────────────────────────────── *//* --m-text=#E6E1E5 → primary                                          *//* --m-text-soft / --m-text-quiet=#CAC4D0 → secondary, tertiary        *//* --m-text-dim=#79747E → disabled                                     *//* ── Actions / primary ─────────────────────────────────────────────── *//* --m-accent=#D0BCFF → primary bg (light purple on dark)              *//* --m-accent-soft=#EADDFF → bgHover, fgSubtle                        *//* --m-accent-bg=#4A4458 → bgSubtle (dark FilledTonal surface)        *//* --m-accent-fg=#381E72 → fg on primary (dark text on light purple)   *//* ── Actions / secondary ───────────────────────────────────────────── *//* Dark tonal: bg=#4A4458 (rgb 74,68,88), fg=#EADDFF                   *//* ── Actions / ghost ───────────────────────────────────────────────── *//* ── Borders ───────────────────────────────────────────────────────── *//* --m-border=rgba(202,196,208,0.12) → default                         *//* --m-border-soft=rgba(202,196,208,0.06) → subtle                     *//* --m-border-strong=rgba(202,196,208,0.30) → strong                   *//* ── Feedback ──────────────────────────────────────────────────────── *//* --m-success=#C5E1A5 --m-warning=#FFE082 --m-danger=#F9DEDC          *//* ── Appbar — frosted glass dark                                       *//* Measured: bg=color(srgb 0.11 0.106 0.122/0.72) = rgba(28,27,31,.72) *//* border-block-end: 1px solid rgba(202,196,208,0.12)                  */
-    --origam-appbar---bg: color-mix(in srgb, #1c1b1f 72%, transparent);
-    --origam-appbar---backdrop-filter: saturate(140%) blur(16px);/* ── Menu — appbar dropdowns ───────────────────────────────────────── */
-    --origam-menu---background: var(--origam-color__surface---raised);
-    --origam-menu---color: var(--origam-color__text---primary);
-    --origam-menu---border-radius: 16px;
-    --origam-menu---box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.50), 0 1px 2px rgba(0, 0, 0, 0.30), 0 0 0 1px var(--origam-color__border---default);
-    --origam-menu__content---padding: 6px;
-    --origam-list---background: transparent;
-    --origam-list---padding-block-start: 0;
-    --origam-list---padding-block-end: 0;
-    --origam-list-item---padding-inline-start: 12px;
-    --origam-list-item---padding-inline-end: 12px;/* ── Shadows ───────────────────────────────────────────────────────── *//* Dark Material shadows: same 2-layer formula, slightly darker         *//* ── Gradients — marketing display ────────────────────────────────── *//* Hero glow: same purple lavender radial (slightly brighter on dark)   *//* Hero title: same gradient (white→lavender→purple reads on dark)      */
+/* ── Hero title override — same M2 weight ──────────────────────────── */
+/* ── Radii — identical to light ────────────────────────────────────── *//* ── Surfaces ──────────────────────────────────────────────────────── *//* --m-bg=#1C1B1F → page default surface (deepest dark)                *//* --m-surface=#2B2930 → raised surface (cards, dialogs)               *//* --m-surface-2=#36343B → sunken / overlay                            *//* ── Text ──────────────────────────────────────────────────────────── *//* --m-text=#E6E1E5 → primary                                          *//* --m-text-soft / --m-text-quiet=#CAC4D0 → secondary, tertiary        *//* --m-text-dim=#79747E → disabled                                     *//* ── Actions / primary ─────────────────────────────────────────────── *//* --m-accent=#D0BCFF → primary bg (light purple on dark)              *//* --m-accent-soft=#EADDFF → bgHover, fgSubtle                        *//* --m-accent-bg=#4A4458 → bgSubtle (dark FilledTonal surface)        *//* --m-accent-fg=#381E72 → fg on primary (dark text on light purple)   *//* ── Actions / secondary ───────────────────────────────────────────── *//* Dark tonal: bg=#4A4458 (rgb 74,68,88), fg=#EADDFF                   *//* ── Actions / ghost ───────────────────────────────────────────────── *//* ── Borders ───────────────────────────────────────────────────────── *//* --m-border=rgba(202,196,208,0.12) → default                         *//* --m-border-soft=rgba(202,196,208,0.06) → subtle                     *//* --m-border-strong=rgba(202,196,208,0.30) → strong                   *//* ── Feedback ──────────────────────────────────────────────────────── *//* --m-success=#C5E1A5 --m-warning=#FFE082 --m-danger=#F9DEDC          *//* ── Appbar — frosted glass dark                                       *//* Measured: bg=color(srgb 0.11 0.106 0.122/0.72) = rgba(28,27,31,.72) *//* border-block-end: 1px solid rgba(202,196,208,0.12)                  */
+/* ── Menu — appbar dropdowns ───────────────────────────────────────── */
+/* ── Shadows ───────────────────────────────────────────────────────── *//* Dark Material shadows: same 2-layer formula, slightly darker         *//* ── Gradients — marketing display ────────────────────────────────── *//* Hero glow: same purple lavender radial (slightly brighter on dark)   *//* Hero title: same gradient (white→lavender→purple reads on dark)      */
     --origam-gradient---hero-glow: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(208, 188, 255, 0.18), transparent 60%);
     --origam-gradient---cta-glow: none;
     --origam-gradient---cta-glow-top: radial-gradient(ellipse 70% 55% at 50% 0%, rgba(208, 188, 255, 0.16), transparent 65%);
@@ -207,27 +167,11 @@
      * NOTE: same degenerate gradient trick as light — variant text blocks bg-color.
      */
     --origam-gradient---btn-secondary: linear-gradient(#4a4458, #4a4458);/* ── Card / chip / showcase tokens ────────────────────────────────── */
-    --origam-card---background: var(--origam-color__surface---raised);
-    --origam-card---border-radius: 28px;
-    --origam-card---border-width: 1px;
-    --origam-card---border-color: var(--origam-color__border---default);
 
-    --origam-chip---border-radius: 999px;
-    --origam-chip---background: var(--origam-color__surface---raised);
-    --origam-chip---background-color: var(--origam-color__surface---raised);
-    --origam-chip---border-color: var(--origam-color__border---default);/* OrigamBtn component-level defaults (dark) — see light-mode note. */
-    --origam-btn---border-radius: 999px;
-    --origam-btn---border-radius-rounded: 999px;
-    --origam-btn---border-color: var(--origam-color__border---default);
-    --origam-btn---border-width-outlined: 1px;
-    --origam-btn---border-width-ghost: 1px;
-    --origam-btn---box-shadow-elevated: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
-    --origam-btn---box-shadow-ghost: none;/* OrigamCode component-level defaults (dark). */
-    --origam-code---border-radius: 12px;
-    --origam-code---border-width: 0;/* OrigamAlert component-level defaults (dark). */
-    --origam-alert---border-radius: var(--origam-radius---lg, 12px);
-    --origam-alert---box-shadow-elevated: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);/* OrigamTable component-level defaults (dark). */
-    --origam-table---border-radius: 28px;
+/* OrigamBtn component-level defaults (dark) — see light-mode note. */
+/* OrigamCode component-level defaults (dark). */
+/* OrigamAlert component-level defaults (dark). */
+/* OrigamTable component-level defaults (dark). */
 
     --origam-color__feedback--success---bg: #9ccc65;
     --origam-color__feedback--success---bgSubtle: #33401c;
