@@ -64,32 +64,32 @@ export const materialLightTheme: IOrigamTheme = {
             },
             feedback: {
                 success: {
-                    bg: '#2e7d32',
-                    bgSubtle: 'rgba(110, 231, 183, 0.14)',
-                    fg: '#ffffff',
+                    bg: '#388e3c',
+                    bgSubtle: '#e8f5e9',
+                    fg: '#000000',
                     fgSubtle: '#1b5e20',
-                    border: '#1b5e20'
+                    border: '#388e3c'
                 },
                 warning: {
-                    bg: '#e65100',
-                    bgSubtle: 'rgba(230, 81, 0, 0.10)',
-                    fg: '#ffffff',
-                    fgSubtle: '#bf360c',
-                    border: '#e65100'
+                    bg: '#f57c00',
+                    bgSubtle: '#fff3e0',
+                    fg: '#000000',
+                    fgSubtle: '#9a3412',
+                    border: '#f57c00'
                 },
                 danger: {
-                    bg: '#b00020',
-                    bgSubtle: 'rgba(176, 0, 32, 0.10)',
+                    bg: '#b3261e',
+                    bgSubtle: '#f9dedc',
                     fg: '#ffffff',
                     fgSubtle: '#601410',
-                    border: '#b00020'
+                    border: '#b3261e'
                 },
                 info: {
-                    bg: '#6750a4',
-                    bgSubtle: 'rgba(103, 80, 164, 0.10)',
-                    fg: '#ffffff',
-                    fgSubtle: '#21005d',
-                    border: '#6750a4'
+                    bg: '#0288d1',
+                    bgSubtle: '#e1f5fe',
+                    fg: '#000000',
+                    fgSubtle: '#01579b',
+                    border: '#0288d1'
                 }
             },
             'btn-primary-bg': 'transparent',

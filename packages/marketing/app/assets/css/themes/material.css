@@ -58,26 +58,6 @@
 /* ── OrigamAlert component-level defaults ────────────────────────── */
 /* ── OrigamTable component-level defaults ────────────────────────── */
 
-    --origam-color__feedback--success---bg: #388e3c;
-    --origam-color__feedback--success---bgSubtle: #e8f5e9;
-    --origam-color__feedback--success---fg: #000000;
-    --origam-color__feedback--success---fgSubtle: #1b5e20;
-    --origam-color__feedback--success---border: #388e3c;
-    --origam-color__feedback--warning---bg: #f57c00;
-    --origam-color__feedback--warning---bgSubtle: #fff3e0;
-    --origam-color__feedback--warning---fg: #000000;
-    --origam-color__feedback--warning---fgSubtle: #9a3412;
-    --origam-color__feedback--warning---border: #f57c00;
-    --origam-color__feedback--danger---bg: #b3261e;
-    --origam-color__feedback--danger---bgSubtle: #f9dedc;
-    --origam-color__feedback--danger---fg: #ffffff;
-    --origam-color__feedback--danger---fgSubtle: #601410;
-    --origam-color__feedback--danger---border: #b3261e;
-    --origam-color__feedback--info---bg: #0288d1;
-    --origam-color__feedback--info---bgSubtle: #e1f5fe;
-    --origam-color__feedback--info---fg: #000000;
-    --origam-color__feedback--info---fgSubtle: #01579b;
-    --origam-color__feedback--info---border: #0288d1;
 }/* ── MATERIAL — appbar buttons: 16px radius (measured in maquette) ──────── *//* DS uses 8px for outlined variant in appbar; Material uses --m-radius=16px  *//* Gap DS: border-radius not exposed via token on OrigamBtn appbar context    */
 
 :root:root[data-theme="material"] .site-appbar .origam-btn {
@@ -173,26 +153,6 @@
 /* OrigamAlert component-level defaults (dark). */
 /* OrigamTable component-level defaults (dark). */
 
-    --origam-color__feedback--success---bg: #9ccc65;
-    --origam-color__feedback--success---bgSubtle: #33401c;
-    --origam-color__feedback--success---fg: #1c1b1f;
-    --origam-color__feedback--success---fgSubtle: #c5e1a5;
-    --origam-color__feedback--success---border: #9ccc65;
-    --origam-color__feedback--warning---bg: #ffd54f;
-    --origam-color__feedback--warning---bgSubtle: #3d2f00;
-    --origam-color__feedback--warning---fg: #1c1b1f;
-    --origam-color__feedback--warning---fgSubtle: #ffe082;
-    --origam-color__feedback--warning---border: #ffd54f;
-    --origam-color__feedback--danger---bg: #f2b8b5;
-    --origam-color__feedback--danger---bgSubtle: #601410;
-    --origam-color__feedback--danger---fg: #601410;
-    --origam-color__feedback--danger---fgSubtle: #f9dedc;
-    --origam-color__feedback--danger---border: #f2b8b5;
-    --origam-color__feedback--info---bg: #80cefe;
-    --origam-color__feedback--info---bgSubtle: #003c5c;
-    --origam-color__feedback--info---fg: #1c1b1f;
-    --origam-color__feedback--info---fgSubtle: #b3e5fc;
-    --origam-color__feedback--info---border: #80cefe;
 }/* ── MATERIAL DARK — hero glow section-scoped ────────────────────────────── */
 
 :root:root[data-theme="material"][data-mode="dark"] .home-hero::after {
