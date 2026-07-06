@@ -137,7 +137,29 @@ export const geekLightTheme: IOrigamTheme = {
         'origam-checkbox': { rounded: 'xs' },
         'origam-snackbar': { rounded: 'sm', border: true, elevation: 3 }
     },
-    cssVars: {}
+    cssVars: {
+        "--origam-font-family---heading": "'JetBrains Mono', 'Fira Code', ui-monospace, monospace",
+        "--origam-title---font-family": "'JetBrains Mono', 'Fira Code', ui-monospace, monospace",
+        '--origam-appbar---bg': 'rgba(251, 245, 255, 0.80)',
+        '--origam-menu---background': 'var(--origam-color__surface---default)',
+        '--origam-menu---color': 'var(--origam-color__text---primary)',
+        '--origam-menu---border-radius': '4px',
+        '--origam-menu---box-shadow': '0 4px 16px -4px rgba(124, 58, 237, 0.14), 0 1px 4px -1px rgba(124, 58, 237, 0.08), 0 0 0 1px var(--origam-color__border---default)',
+        '--origam-menu__content---padding': '4px',
+        '--origam-list---background': 'transparent',
+        '--origam-list---padding-block-start': '0',
+        '--origam-list---padding-block-end': '0',
+        '--origam-list-item---padding-inline-start': '12px',
+        '--origam-list-item---padding-inline-end': '12px',
+        '--origam-btn---border-color': 'rgba(217, 70, 239, 0.55)',
+        '--origam-btn---border-width-outlined': '1px',
+        '--origam-btn---border-width-ghost': '1px',
+        '--origam-btn---box-shadow-elevated': '0 4px 14px -4px rgba(124, 58, 237, 0.30), 0 1px 3px -1px rgba(124, 58, 237, 0.15)',
+        '--origam-btn---box-shadow-ghost': 'rgba(217, 70, 239, 0.35) 0px 0px 10px -4px',
+        '--origam-card---box-shadow': '0 1px 3px rgba(124, 58, 237, 0.06), 0 8px 24px -16px rgba(124, 58, 237, 0.20)',
+        '--origam-code---border-color': 'rgba(168, 85, 247, 0.28)',
+        '--origam-code---border-width': '1px'
+    }
 }
 
 export const geekDarkTheme: IOrigamTheme = {
@@ -249,7 +271,29 @@ export const geekDarkTheme: IOrigamTheme = {
             xl: 'rgba(0, 240, 255, 0.50) 0px 0px 18px -2px, rgba(199, 125, 255, 0.45) 0px 0px 32px -6px, rgba(255, 255, 255, 0.40) 0px 1px 0px 0px inset'
         }
     },
-    cssVars: {}
+    cssVars: {
+        "--origam-font-family---heading": "'JetBrains Mono', 'Fira Code', ui-monospace, monospace",
+        "--origam-title---font-family": "'JetBrains Mono', 'Fira Code', ui-monospace, monospace",
+        '--origam-appbar---bg': 'rgba(10, 6, 18, 0.85)',
+        '--origam-menu---background': 'var(--origam-color__surface---default)',
+        '--origam-menu---color': 'var(--origam-color__text---primary)',
+        '--origam-menu---border-radius': '8px',
+        '--origam-menu---box-shadow': '0 4px 24px -4px rgba(0, 0, 0, 0.70), 0 1px 4px -1px rgba(0, 0, 0, 0.40), 0 0 0 1px var(--origam-color__border---default), 0 0 20px -8px rgba(0, 240, 255, 0.20)',
+        '--origam-menu__content---padding': '4px',
+        '--origam-list---background': 'transparent',
+        '--origam-list---padding-block-start': '0',
+        '--origam-list---padding-block-end': '0',
+        '--origam-list-item---padding-inline-start': '12px',
+        '--origam-list-item---padding-inline-end': '12px',
+        '--origam-btn---border-color': 'rgba(0, 240, 255, 0.40)',
+        '--origam-btn---border-width-outlined': '1px',
+        '--origam-btn---border-width-ghost': '1px',
+        '--origam-btn---box-shadow-elevated': '0 8px 24px -8px rgba(0, 240, 255, 0.50), 0 0 32px -8px rgba(199, 125, 255, 0.35)',
+        '--origam-btn---box-shadow-ghost': 'rgba(0, 240, 255, 0.25) 0px 0px 12px -4px',
+        '--origam-card---box-shadow': 'inset 0 1px 0 rgba(199, 125, 255, 0.08), 0 8px 28px -12px rgba(0, 0, 0, 0.80), 0 0 0 1px rgba(0, 240, 255, 0.04)',
+        '--origam-code---border-color': 'rgba(124, 77, 255, 0.28)',
+        '--origam-code---border-width': '1px'
+    }
 }
 
 export const geekThemes: IOrigamTheme[] = [geekLightTheme, geekDarkTheme]
