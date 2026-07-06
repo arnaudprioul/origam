@@ -26,6 +26,7 @@
 	import type { IDatePickerYearsProps} from "../../interfaces"
 
 	import type { IDatePickerYearsEmits } from '../../interfaces/DatePicker/date-picker-years.interface'
+	import type { TTemplateRef } from "../../types"
 	import { convertToUnit, createRange, int, templateRef } from "../../utils"
 
 	import { computed, nextTick, onMounted, StyleValue, watchEffect } from "vue"
@@ -129,7 +130,7 @@
 
 	onMounted(async () => {
 		await nextTick()
-		yearRef.el?.scrollIntoView({block: 'center'})
+		;(yearRef as unknown as TTemplateRef).el?.scrollIntoView({block: 'center'})
 	})
 
 	/*********************************************************
