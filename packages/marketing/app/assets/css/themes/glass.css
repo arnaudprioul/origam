@@ -90,9 +90,6 @@
     --origam-color__feedback--info---fgSubtle: #1d4ed8;
     --origam-color__feedback--info---border: #2563eb;
 
-    --origam-alert---backdrop-filter: blur(3px) saturate(1.8) brightness(1.08);
-    --origam-alert---background-color: rgba(255, 255, 255, 0.18);
-    --origam-alert---border-color: rgba(124, 58, 237, 0.20);
 }/* ════════════════════════════════════════════════════════════════════════════
    GLASS DARK
    ════════════════════════════════════════════════════════════════════════════ */
@@ -147,9 +144,6 @@
     --origam-color__feedback--info---fgSubtle: #93c5fd;
     --origam-color__feedback--info---border: #93c5fd;
 
-    --origam-alert---backdrop-filter: blur(3px) saturate(1.8) brightness(1.08);
-    --origam-alert---background-color: rgba(255, 255, 255, 0.06);
-    --origam-alert---border-color: rgba(255, 255, 255, 0.12);
 }/* ════════════════════════════════════════════════════════════════════════════
    GLASS — ALERT STATUS (frosted, translucent)
    OrigamAlert is always "active" so it paints its status surface INLINE via
