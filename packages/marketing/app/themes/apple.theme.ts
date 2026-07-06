@@ -132,7 +132,29 @@ export const appleLightTheme: IOrigamTheme = {
         'origam-checkbox': { rounded: 'sm' },
         'origam-snackbar': { rounded: 'lg', elevation: 4 }
     },
-    cssVars: {}
+    cssVars: {
+        "--origam-font-family---heading": "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif",
+        "--origam-title---font-family": "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif",
+        '--origam-appbar---backdrop-filter': 'saturate(180%) blur(20px)',
+        '--origam-menu---color': 'var(--origam-color__text---primary)',
+        '--origam-menu---border-radius': '12px',
+        '--origam-menu__content---padding': '6px',
+        '--origam-list---background': 'transparent',
+        '--origam-list---padding-block-start': '0',
+        '--origam-list---padding-block-end': '0',
+        '--origam-list-item---padding-inline-start': '12px',
+        '--origam-list-item---padding-inline-end': '12px',
+        '--origam-btn---border-width-outlined': '1px',
+        '--origam-btn---border-width-ghost': '1px',
+        '--origam-btn---box-shadow-ghost': 'none',
+        '--origam-card---box-shadow': 'var(--origam-shadow---card-elevated)',
+        '--origam-code---border-radius': '12px',
+        '--origam-appbar---bg': 'color-mix(in srgb, #ffffff 80%, transparent)',
+        '--origam-menu---background': 'color-mix(in srgb, var(--origam-color__surface---raised) 92%, transparent)',
+        '--origam-menu---box-shadow': '0 4px 16px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.06), 0 0 0 0.5px var(--origam-color__border---default)',
+        '--origam-btn---border-color': '#d2d2d7',
+        '--origam-btn---box-shadow-elevated': '0 2px 8px rgba(0, 113, 227, 0.25)'
+    }
 }
 
 export const appleDarkTheme: IOrigamTheme = {
@@ -239,7 +261,29 @@ export const appleDarkTheme: IOrigamTheme = {
             xl: '0 12px 32px rgba(0, 0, 0, 0.50), 0 4px 8px rgba(0, 0, 0, 0.30)'
         }
     },
-    cssVars: {}
+    cssVars: {
+        "--origam-font-family---heading": "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif",
+        "--origam-title---font-family": "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif",
+        '--origam-appbar---backdrop-filter': 'saturate(180%) blur(20px)',
+        '--origam-menu---color': 'var(--origam-color__text---primary)',
+        '--origam-menu---border-radius': '12px',
+        '--origam-menu__content---padding': '6px',
+        '--origam-list---background': 'transparent',
+        '--origam-list---padding-block-start': '0',
+        '--origam-list---padding-block-end': '0',
+        '--origam-list-item---padding-inline-start': '12px',
+        '--origam-list-item---padding-inline-end': '12px',
+        '--origam-btn---border-width-outlined': '1px',
+        '--origam-btn---border-width-ghost': '1px',
+        '--origam-btn---box-shadow-ghost': 'none',
+        '--origam-card---box-shadow': 'var(--origam-shadow---card-elevated)',
+        '--origam-code---border-radius': '12px',
+        '--origam-appbar---bg': 'color-mix(in srgb, #000000 80%, transparent)',
+        '--origam-menu---background': 'var(--origam-color__surface---raised)',
+        '--origam-menu---box-shadow': '0 4px 24px rgba(0, 0, 0, 0.50), 0 1px 2px rgba(0, 0, 0, 0.40), 0 0 0 0.5px var(--origam-color__border---default)',
+        '--origam-btn---border-color': '#38383a',
+        '--origam-btn---box-shadow-elevated': '0 2px 8px rgba(10, 132, 255, 0.30)'
+    }
 }
 
 export const appleThemes: IOrigamTheme[] = [appleLightTheme, appleDarkTheme]
