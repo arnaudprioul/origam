@@ -147,7 +147,22 @@ export const glassLightTheme: IOrigamTheme = {
         '--origam-btn---box-shadow-ghost': 'none',
         '--origam-btn---backdrop-filter-ghost': 'blur(12px) saturate(1.8) brightness(1.05)',
         '--origam-card---box-shadow': 'var(--origam-shadow---card-elevated)',
-        '--origam-code---border-radius': '16px'
+        '--origam-code---border-radius': '16px',
+        '--origam-card---backdrop-filter': 'blur(3px) saturate(1.8) brightness(1.08)',
+        '--origam-sheet---backdrop-filter': 'blur(3px) saturate(1.8) brightness(1.08)',
+        '--origam-appbar---backdrop-filter': 'saturate(2) brightness(1.1) blur(26px)',
+        '--origam-menu---backdrop-filter': 'blur(20px) saturate(1.8) brightness(1.05)',
+        '--origam-appbar---bg': 'rgba(255, 255, 255, 0.30)',
+        '--origam-menu---background': 'rgba(255, 255, 255, 0.80)',
+        '--origam-menu---color': 'var(--origam-color__text---primary)',
+        '--origam-menu---border-radius': '16px',
+        '--origam-menu---box-shadow': '0 8px 32px -8px rgba(124, 58, 237, 0.18), 0 1px 4px -1px rgba(124, 58, 237, 0.10), 0 0 0 1px var(--origam-color__border---default), inset 0 1px 0 rgba(255, 255, 255, 0.60)',
+        '--origam-menu__content---padding': '6px',
+        '--origam-list---background': 'transparent',
+        '--origam-list---padding-block-start': '0',
+        '--origam-list---padding-block-end': '0',
+        '--origam-list-item---padding-inline-start': '12px',
+        '--origam-list-item---padding-inline-end': '12px',
     }
 }
 
@@ -267,7 +282,22 @@ export const glassDarkTheme: IOrigamTheme = {
         '--origam-btn---box-shadow-ghost': 'none',
         '--origam-btn---backdrop-filter-ghost': 'blur(12px) saturate(1.6) brightness(1.02)',
         '--origam-card---box-shadow': 'var(--origam-shadow---card-elevated)',
-        '--origam-code---border-radius': '16px'
+        '--origam-code---border-radius': '16px',
+        '--origam-card---backdrop-filter': 'blur(3px) saturate(1.8) brightness(1.08)',
+        '--origam-sheet---backdrop-filter': 'blur(3px) saturate(1.8) brightness(1.08)',
+        '--origam-appbar---backdrop-filter': 'saturate(2) brightness(1.1) blur(26px)',
+        '--origam-menu---backdrop-filter': 'blur(20px) saturate(1.6) brightness(1.02)',
+        '--origam-appbar---bg': 'rgba(255, 255, 255, 0.06)',
+        '--origam-menu---background': 'rgba(20, 18, 40, 0.85)',
+        '--origam-menu---color': 'var(--origam-color__text---primary)',
+        '--origam-menu---border-radius': '22px',
+        '--origam-menu---box-shadow': '0 8px 32px -8px rgba(0, 0, 0, 0.60), 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.10)',
+        '--origam-menu__content---padding': '6px',
+        '--origam-list---background': 'transparent',
+        '--origam-list---padding-block-start': '0',
+        '--origam-list---padding-block-end': '0',
+        '--origam-list-item---padding-inline-start': '12px',
+        '--origam-list-item---padding-inline-end': '12px',
     }
 }
 
