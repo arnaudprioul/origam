@@ -86,26 +86,6 @@
      * OrigamAlert component-level defaults — ecom alerts: 6px radius.
      */
 
-    --origam-color__feedback--success---bg: #16a34a;
-    --origam-color__feedback--success---bgSubtle: #f0fdf4;
-    --origam-color__feedback--success---fg: #000000;
-    --origam-color__feedback--success---fgSubtle: #15803d;
-    --origam-color__feedback--success---border: #16a34a;
-    --origam-color__feedback--warning---bg: #b45309;
-    --origam-color__feedback--warning---bgSubtle: #fffbeb;
-    --origam-color__feedback--warning---fg: #ffffff;
-    --origam-color__feedback--warning---fgSubtle: #92400e;
-    --origam-color__feedback--warning---border: #b45309;
-    --origam-color__feedback--danger---bg: #dc2626;
-    --origam-color__feedback--danger---bgSubtle: #fff1f2;
-    --origam-color__feedback--danger---fg: #ffffff;
-    --origam-color__feedback--danger---fgSubtle: #b91c1c;
-    --origam-color__feedback--danger---border: #dc2626;
-    --origam-color__feedback--info---bg: #1677ff;
-    --origam-color__feedback--info---bgSubtle: #eff6ff;
-    --origam-color__feedback--info---fg: #000000;
-    --origam-color__feedback--info---fgSubtle: #1d4ed8;
-    --origam-color__feedback--info---border: #1677ff;
 }/* ── ECOM — hero glow is section-scoped, needs full section height ────────── */
 
 :root:root[data-theme="ecom"] .home-hero::after {
@@ -174,24 +154,4 @@
 /* OrigamField component-level defaults (dark). */
 /* OrigamAlert component-level defaults (dark). */
 
-    --origam-color__feedback--success---bg: #4ade80;
-    --origam-color__feedback--success---bgSubtle: rgba(74, 222, 128, 0.14);
-    --origam-color__feedback--success---fg: #1a0f0a;
-    --origam-color__feedback--success---fgSubtle: #86efac;
-    --origam-color__feedback--success---border: #4ade80;
-    --origam-color__feedback--warning---bg: #fbbf24;
-    --origam-color__feedback--warning---bgSubtle: rgba(251, 191, 36, 0.14);
-    --origam-color__feedback--warning---fg: #1a0f0a;
-    --origam-color__feedback--warning---fgSubtle: #fcd34d;
-    --origam-color__feedback--warning---border: #fbbf24;
-    --origam-color__feedback--danger---bg: #ef4444;
-    --origam-color__feedback--danger---bgSubtle: rgba(239, 68, 68, 0.14);
-    --origam-color__feedback--danger---fg: #1a0f0a;
-    --origam-color__feedback--danger---fgSubtle: #fca5a5;
-    --origam-color__feedback--danger---border: #ef4444;
-    --origam-color__feedback--info---bg: #60a5fa;
-    --origam-color__feedback--info---bgSubtle: rgba(96, 165, 250, 0.14);
-    --origam-color__feedback--info---fg: #1a0f0a;
-    --origam-color__feedback--info---fgSubtle: #93c5fd;
-    --origam-color__feedback--info---border: #60a5fa;
 }
