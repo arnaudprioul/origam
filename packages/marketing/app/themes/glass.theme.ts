@@ -64,32 +64,32 @@ export const glassLightTheme: IOrigamTheme = {
             },
             feedback: {
                 success: {
-                    bg: '#15803d',
-                    bgSubtle: 'rgba(21, 128, 61, 0.08)',
-                    fg: '#ffffff',
+                    bg: '#16a34a',
+                    bgSubtle: 'rgba(22, 163, 74, 0.1)',
+                    fg: '#000000',
                     fgSubtle: '#15803d',
-                    border: '#15803d'
+                    border: '#16a34a'
                 },
                 warning: {
-                    bg: '#b45309',
-                    bgSubtle: 'rgba(180, 83, 9, 0.08)',
-                    fg: '#ffffff',
+                    bg: '#d97706',
+                    bgSubtle: 'rgba(217, 119, 6, 0.1)',
+                    fg: '#000000',
                     fgSubtle: '#b45309',
-                    border: '#b45309'
+                    border: '#d97706'
                 },
                 danger: {
-                    bg: '#b91c1c',
-                    bgSubtle: 'rgba(185, 28, 28, 0.08)',
+                    bg: '#dc2626',
+                    bgSubtle: 'rgba(220, 38, 38, 0.1)',
                     fg: '#ffffff',
                     fgSubtle: '#b91c1c',
-                    border: '#b91c1c'
+                    border: '#dc2626'
                 },
                 info: {
-                    bg: '#0891b2',
-                    bgSubtle: 'rgba(8, 145, 178, 0.08)',
+                    bg: '#2563eb',
+                    bgSubtle: 'rgba(37, 99, 235, 0.1)',
                     fg: '#ffffff',
-                    fgSubtle: '#0891b2',
-                    border: '#0891b2'
+                    fgSubtle: '#1d4ed8',
+                    border: '#2563eb'
                 }
             },
             'btn-primary-text': '#1a1538',
