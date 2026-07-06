@@ -11,6 +11,7 @@ import {
     ORIGAM_GO_TO_KEY,
     ORIGAM_ICONS_KEY,
     ORIGAM_LOCALE_KEY,
+    ORIGAM_THEME_DEFAULTS_KEY,
     ORIGAM_THEMES_KEY
 } from './consts'
 
@@ -112,6 +113,12 @@ export function createOrigam (origam: IOrigamOptions = {}) {
             app.provide(ORIGAM_GO_TO_KEY, goTo)
             app.provide(ORIGAM_THEMES_KEY, installedThemes)
             app.provide(ORIGAM_DEFAULTS_KEY, defaultsRef)
+            // Resolver over the full install list so `<OrigamThemeProvider>` can
+            // re-apply a named brand's default props to its sub-tree, mirroring
+            // the document-root defaults collapse. Static (install-time) — no
+            // reassignment on theme switch needed.
+            app.provide(ORIGAM_THEME_DEFAULTS_KEY, (brand: string, mode?: TModeResolved) =>
+                activeDefaultsFor(allThemes, brand, mode))
 
             if (IN_BROWSER && options.ssr) {
                 if (app.$nuxt) {

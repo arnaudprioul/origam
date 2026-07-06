@@ -76,6 +76,7 @@
     "./components": "./dist/src/components/index.js",
     "./components/*": "./dist/src/components/*/index.js",
     "./composables": "./dist/src/composables/index.js",
+    "./themes": "./dist/src/themes/index.js",
     "./directives": "./dist/src/directives/index.js",
     "./enums": "./dist/src/enums/index.js",
     "./consts": "./dist/src/consts/index.js",

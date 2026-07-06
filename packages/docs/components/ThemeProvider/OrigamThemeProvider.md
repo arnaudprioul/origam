@@ -54,6 +54,28 @@
 
 `OrigamThemeProvider` emits no events.
 
+## Component default props (props-first)
+
+Setting `theme="<brand>"` does **two** things, not one:
+
+1. **CSS variables** — re-scopes the token set via `data-theme` / `data-mode` (above).
+2. **Per-component default props** — re-applies that brand's `theme.components` map (the `{ 'origam-btn': { variant, rounded, … } }` defaults declared on the theme object) to the sub-tree, exactly as they apply at the document root.
+
+So a component rendered inside the provider **without an explicit prop** now resolves that prop from the sub-tree's brand, not the ambient document brand. This makes props-first theming work in a scoped sub-tree — the whole point of authoring a theme "props first, CSS last".
+
+```vue
+<template>
+    <!-- Document brand = "cartoon" (bold, outlined).                     -->
+    <!-- Inside: brand "material" defaults apply — this btn is elevated,  -->
+    <!-- pill-rounded, WITHOUT passing any prop.                          -->
+    <OrigamThemeProvider theme="material">
+        <OrigamBtn>Material default look</OrigamBtn>
+    </OrigamThemeProvider>
+</template>
+```
+
+An explicit prop on the child always wins over the sub-tree default. `theme="auto"` leaves the inherited defaults untouched (no override). The mechanism relies on the resolver `createOrigam` provides under `ORIGAM_THEME_DEFAULTS_KEY`; used outside a `createOrigam` app, the provider silently falls back to CSS-var re-scoping only.
+
 ## CSS behaviour
 
 The component sets `display: contents` by default, so it is visually transparent — it does not introduce an extra layout box. Style the wrapper via `class` or `style` props when layout is needed.
