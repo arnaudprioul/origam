@@ -65,31 +65,31 @@ export const ecomLightTheme: IOrigamTheme = {
             feedback: {
                 success: {
                     bg: '#16a34a',
-                    bgSubtle: 'rgba(22, 163, 74, 0.10)',
-                    fg: '#ffffff',
-                    fgSubtle: '#166534',
-                    border: '#166534'
+                    bgSubtle: '#f0fdf4',
+                    fg: '#000000',
+                    fgSubtle: '#15803d',
+                    border: '#16a34a'
                 },
                 warning: {
-                    bg: '#d97706',
-                    bgSubtle: 'rgba(217, 119, 6, 0.10)',
+                    bg: '#b45309',
+                    bgSubtle: '#fffbeb',
                     fg: '#ffffff',
                     fgSubtle: '#92400e',
-                    border: '#92400e'
+                    border: '#b45309'
                 },
                 danger: {
-                    bg: '#e11d48',
-                    bgSubtle: 'rgba(225, 29, 72, 0.10)',
+                    bg: '#dc2626',
+                    bgSubtle: '#fff1f2',
                     fg: '#ffffff',
-                    fgSubtle: '#9f1239',
-                    border: '#9f1239'
+                    fgSubtle: '#b91c1c',
+                    border: '#dc2626'
                 },
                 info: {
-                    bg: '#0ea5e9',
-                    bgSubtle: 'rgba(14, 165, 233, 0.10)',
-                    fg: '#ffffff',
-                    fgSubtle: '#0369a1',
-                    border: '#0ea5e9'
+                    bg: '#1677ff',
+                    bgSubtle: '#eff6ff',
+                    fg: '#000000',
+                    fgSubtle: '#1d4ed8',
+                    border: '#1677ff'
                 }
             },
             'btn-primary-bg': '#e11d48',
