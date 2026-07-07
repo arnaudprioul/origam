@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "origam": "workspace:*",
+    "shiki": "^4.3.1",
     "vue": "3.5.39"
   },
   "devDependencies": {
