@@ -105,15 +105,18 @@
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
-    "qrcode-generator": "^2.0.4",
-    "shiki": "^4.3.1"
+    "qrcode-generator": "^2.0.4"
   },
   "peerDependencies": {
+    "shiki": "^4.3.1",
     "vue": "^3.5.0",
     "vue-i18n": "^11.0.0",
     "vue-router": "^4.5.0"
   },
   "peerDependenciesMeta": {
+    "shiki": {
+      "optional": true
+    },
     "vue-i18n": {
       "optional": true
     },

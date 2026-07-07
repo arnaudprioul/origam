@@ -41,8 +41,19 @@ type ShikiHighlighter = {
 
 let _highlighterPromise: Promise<ShikiHighlighter> | null = null
 let _highlighterReady = false
+// `shiki` is an OPTIONAL peer dependency. When it is not installed, the dynamic
+// import below throws — we degrade to plain, un-highlighted code instead of
+// breaking the component. Consumers who want syntax colouring add `shiki` to
+// their own dependencies.
+let _highlighterUnavailable = false
+let _unavailableWarned = false
 const _cache = new Map<string, string>()
 let _unsupportedLangWarned = new Set<string>()
+
+/** Minimal HTML escaping for the plain (no-shiki) fallback path. */
+function escapeHtml (s: string): string {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
 
 function makeCacheKey (code: string, lang: string): string {
     return `${lang}::${code}`
@@ -68,7 +79,8 @@ function lruSet (key: string, value: string): void {
     _cache.set(key, value)
 }
 
-async function loadHighlighter (): Promise<ShikiHighlighter> {
+async function loadHighlighter (): Promise<ShikiHighlighter | null> {
+    if (_highlighterUnavailable) return null
     if (_highlighterPromise) return _highlighterPromise
 
     _highlighterPromise = (async () => {
@@ -95,7 +107,21 @@ async function loadHighlighter (): Promise<ShikiHighlighter> {
         return highlighter as unknown as ShikiHighlighter
     })()
 
-    return _highlighterPromise
+    // shiki not installed (optional peer) or failed to load → degrade to plain.
+    return _highlighterPromise.catch((err: unknown) => {
+        _highlighterUnavailable = true
+        _highlighterPromise = null
+        if (!_unavailableWarned) {
+            _unavailableWarned = true
+            console.warn(
+                '[origam] OrigamCode: `shiki` is not installed — rendering plain, ' +
+                'unhighlighted code. Add `shiki` to your dependencies to enable ' +
+                'syntax highlighting.',
+                err
+            )
+        }
+        return null
+    })
 }
 
 function resolveLang (lang: TCodeLang): string {
@@ -126,6 +152,15 @@ export function useCode (): IUseCodeReturn {
         if (cached !== undefined) return cached
 
         const highlighter = await loadHighlighter()
+        if (!highlighter) {
+            // shiki unavailable → plain, escaped code. `paintIntoDom` still
+            // splits on `\n` and wraps each line in a `.origam-code__row`, so
+            // line numbers / highlight-lines / copy keep working — only the
+            // syntax colours are absent.
+            const plain = escapeHtml(code)
+            lruSet(key, plain)
+            return plain
+        }
         const opts = {
             lang: resolvedLang,
             themes: { light: LIGHT_THEME, dark: DARK_THEME },
@@ -168,6 +203,8 @@ export function useCode (): IUseCodeReturn {
 export function resetCodeHighlighterForTesting (): void {
     _highlighterPromise = null
     _highlighterReady = false
+    _highlighterUnavailable = false
+    _unavailableWarned = false
     _cache.clear()
     _unsupportedLangWarned = new Set<string>()
 }
