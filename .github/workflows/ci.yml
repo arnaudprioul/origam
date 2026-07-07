@@ -218,7 +218,15 @@ jobs:
     name: E2E tests (Playwright / Chromium)
     runs-on: ubuntu-latest
     needs: tokens
-    timeout-minutes: 45
+    # The GREEN_SPECS suite exceeds a single runner's 45-min budget even at
+    # workers=100%. Shard it across parallel jobs (Playwright `--shard=i/N`);
+    # each job runs ~1/N of the tests, so wall-clock drops well under the
+    # timeout. fail-fast:false so one shard's failure doesn't cancel the others.
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    timeout-minutes: 30
     # E2E_GREEN_ONLY: run only the specs migrated to the unified-story format
     #   (GREEN_SPECS in playwright.config.ts); grows wave by wave.
     # E2E_STATIC: serve the PREBUILT static Histoire (built below) via
@@ -270,13 +278,13 @@ jobs:
         run: pnpm -F @origam/stories build
 
       - name: Run Playwright (chromium)
-        run: pnpm -F @origam/tests exec playwright test --project=chromium
+        run: pnpm -F @origam/tests exec playwright test --project=chromium --shard=${{ matrix.shard }}/4
 
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-shard-${{ matrix.shard }}
           path: |
             packages/tests/e2e/.report
             packages/tests/e2e/.results
