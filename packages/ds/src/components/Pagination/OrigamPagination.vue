@@ -183,7 +183,7 @@
 
 	import { useDensity, useDisplay, useLocale, useProps, useRefs, useResizeObserver, useSize, useTypography, useVModel , useStyle} from "../../composables"
 
-	import { KEYBOARD_VALUES, MDI_ICONS } from "../../enums"
+	import { KEYBOARD_VALUES, MDI_ICONS, VARIANT } from "../../enums"
 
 	import type { IPaginationProps} from "../../interfaces"
 
@@ -384,6 +384,12 @@
 		// in each state and the clash detection kicks for white text.
 		const baseBg = props.bgColor || props.color
 		return {
+			// In colored mode force `flat` so the btn actually PAINTS the
+			// pagination-driven `--origam-btn---background-color`. The theme's
+			// default `text` variant sets `background-color: transparent
+			// !important`, which would otherwise swallow the colored fill. When
+			// no color is set, leave `variant` undefined → the neutral text look.
+			variant: baseBg ? VARIANT.FLAT : undefined,
 			color: props.color,
 			bgColor: baseBg,
 			hoverColor: props.hoverColor,
