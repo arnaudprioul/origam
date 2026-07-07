@@ -347,7 +347,7 @@ test.describe('OrigamBadge', () => {
 
     test.describe('Default (playground)', () => {
         test('renders badge root with --active class and content "3"', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(16))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -356,7 +356,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('root tag defaults to <div>', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(16))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -365,7 +365,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('pill receives a non-transparent background from the primary token', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(16))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
