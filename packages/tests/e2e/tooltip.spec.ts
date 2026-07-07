@@ -42,11 +42,9 @@ import { expect, FrameLocator, test } from '@playwright/test'
  */
 
 const STORY_ID   = 'components-stories-tooltip-origamtooltip-story-vue'
-// Histoire dev server uses vite.base = '/stories/' → story URLs are under /stories/story/...
-// The playwright.config baseURL (http://localhost:6006) must be prefixed with /stories to hit
-// the actual SPA. Using an absolute URL here avoids relying on the baseURL resolution.
-const STORY_BASE = 'http://localhost:6006/stories'
-const STORY_PATH = STORY_BASE + '/stories/story/' + STORY_ID
+// Root-relative path (resolves against baseURL). The previous absolute form
+// doubled the `/stories/` segment → 404 → the sandbox never rendered.
+const STORY_PATH = '/stories/story/' + STORY_ID
 
 const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
