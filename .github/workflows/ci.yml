@@ -66,6 +66,12 @@ jobs:
       - name: vue-tsc --noEmit
         run: pnpm -F origam run type-check
 
+      # `noUnusedLocals` is temporarily OFF on the DS (TS 6 x @vue/language-core
+      # false-positives on template refs). This canary fails once the upstream
+      # engine is fixed, forcing us to re-enable the flag. See the script header.
+      - name: noUnusedLocals re-enable canary
+        run: pnpm -F origam run type-check:canary
+
   tokens:
     name: Tokens build & lint
     runs-on: ubuntu-latest
