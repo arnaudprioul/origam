@@ -27,14 +27,18 @@
  *   2. Run `pnpm -F origam type-check` → confirm 0 errors.
  *   3. Delete this script + its `type-check:canary` package.json entry + CI step.
  *
- * Exit codes: 0 = nothing to do (stay OFF). 1 = re-enable now (or unexpected).
+ * FAIL-OPEN: this canary must NEVER redden CI on its own errors. If it cannot
+ * resolve the engine version or the probe blows up, it exits 0 (stay OFF) with a
+ * warning. It only exits 1 when it AFFIRMATIVELY confirms the upstream fix landed.
+ *
+ * Exit codes: 0 = nothing to do (stay OFF, or could not determine). 1 = re-enable now.
  */
 
 import { execFileSync } from 'node:child_process'
-import { mkdtempSync, writeFileSync, rmSync } from 'node:fs'
+import { mkdtempSync, writeFileSync, rmSync, existsSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, dirname, resolve } from 'node:path'
-import { fileURLToPath, pathToFileURL } from 'node:url'
+import { fileURLToPath } from 'node:url'
 import { createRequire } from 'node:module'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -55,7 +59,15 @@ function cmp (a, b) {
 }
 
 function installedLanguageCoreVersion () {
-    const pkg = require.resolve('@vue/language-core/package.json', { paths: [DS_ROOT] })
+    // @vue/language-core is a (transitive) dependency of vue-tsc, not a direct
+    // dependency of the DS package. Under pnpm's strict, non-hoisted layout it
+    // is NOT resolvable from DS_ROOT — resolve it FROM vue-tsc's location.
+    const paths = [DS_ROOT]
+    try {
+        const vueTscPkg = require.resolve('vue-tsc/package.json', { paths: [DS_ROOT] })
+        paths.unshift(dirname(vueTscPkg))
+    } catch { /* fall back to DS_ROOT below */ }
+    const pkg = require.resolve('@vue/language-core/package.json', { paths })
     return require(pkg).version
 }
 
@@ -68,11 +80,14 @@ function countTemplateRefUnusedErrors () {
         compilerOptions: { noUnusedLocals: true, noUnusedParameters: true }
     }))
     try {
-        execFileSync('node_modules/.bin/vue-tsc', ['--noEmit', '-p', tsconfigPath], {
+        execFileSync(vueTscBin(), ['--noEmit', '-p', tsconfigPath], {
             cwd: DS_ROOT, stdio: 'pipe'
         })
-        return 0 // exit 0 → no errors
+        return 0 // vue-tsc exited 0 → no errors → the fix has landed
     } catch (e) {
+        // Distinguish "vue-tsc ran and reported errors" (has an exit status) from
+        // a spawn failure (ENOENT, no status) — the latter must NOT read as 0.
+        if (e.status == null) throw e
         const out = `${e.stdout ?? ''}${e.stderr ?? ''}`
         return (out.match(/error TS6133/g) ?? []).length
     } finally {
@@ -80,25 +95,42 @@ function countTemplateRefUnusedErrors () {
     }
 }
 
-const version = installedLanguageCoreVersion()
+/** Resolve the vue-tsc executable robustly under pnpm's layout. */
+function vueTscBin () {
+    const local = join(DS_ROOT, 'node_modules', '.bin', 'vue-tsc')
+    if (existsSync(local)) return local
+    const root = resolve(DS_ROOT, '..', '..', 'node_modules', '.bin', 'vue-tsc')
+    if (existsSync(root)) return root
+    // Last resort: derive from the resolved vue-tsc package.
+    const pkg = require.resolve('vue-tsc/package.json', { paths: [DS_ROOT] })
+    return join(dirname(pkg), 'bin', 'vue-tsc.js')
+}
 
-if (cmp(version, LAST_BROKEN) <= 0) {
-    console.log(`[canary] @vue/language-core ${version} <= ${LAST_BROKEN} — known TS6 template-ref limitation. noUnusedLocals stays OFF. OK.`)
+try {
+    const version = installedLanguageCoreVersion()
+
+    if (cmp(version, LAST_BROKEN) <= 0) {
+        console.log(`[canary] @vue/language-core ${version} <= ${LAST_BROKEN} — known TS6 template-ref limitation. noUnusedLocals stays OFF. OK.`)
+        process.exit(0)
+    }
+
+    console.log(`[canary] @vue/language-core ${version} > ${LAST_BROKEN} — probing whether noUnusedLocals can be re-enabled…`)
+    const errors = countTemplateRefUnusedErrors()
+
+    if (errors === 0) {
+        console.error(
+            `\n[canary] ✅ @vue/language-core ${version} no longer false-positives on template refs.\n` +
+            `         → RE-ENABLE noUnusedLocals: remove the "noUnusedLocals"/"noUnusedParameters": false\n` +
+            `           overrides from packages/ds/tsconfig.json, confirm \`pnpm -F origam type-check\` is 0,\n` +
+            `           then delete this canary (script + package.json entry + CI step).\n`
+        )
+        process.exit(1)
+    }
+
+    console.log(`[canary] @vue/language-core ${version} still reports ${errors} template-ref TS6133 — staying OFF. OK.`)
+    process.exit(0)
+} catch (err) {
+    // FAIL-OPEN: never redden CI on the canary's own resolution/probe errors.
+    console.warn(`[canary] could not evaluate (${err?.message ?? err}) — assuming noUnusedLocals stays OFF. OK.`)
     process.exit(0)
 }
-
-console.log(`[canary] @vue/language-core ${version} > ${LAST_BROKEN} — probing whether noUnusedLocals can be re-enabled…`)
-const errors = countTemplateRefUnusedErrors()
-
-if (errors === 0) {
-    console.error(
-        `\n[canary] ✅ @vue/language-core ${version} no longer false-positives on template refs.\n` +
-        `         → RE-ENABLE noUnusedLocals: remove the "noUnusedLocals"/"noUnusedParameters": false\n` +
-        `           overrides from packages/ds/tsconfig.json, confirm \`pnpm -F origam type-check\` is 0,\n` +
-        `           then delete this canary (script + package.json entry + CI step).\n`
-    )
-    process.exit(1)
-}
-
-console.log(`[canary] @vue/language-core ${version} still reports ${errors} template-ref TS6133 — staying OFF. OK.`)
-process.exit(0)
