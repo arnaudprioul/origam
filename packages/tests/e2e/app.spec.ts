@@ -22,7 +22,7 @@ test.describe('OrigamApp', () => {
 	test.setTimeout(45000)
 
 	test('Default — app shell renders with toolbar and main', async ({ page }) => {
-		await page.goto(variantUrl(5))
+		await page.goto(variantUrl(6))
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const app = sandbox.locator('[data-cy="app-playground"]')
@@ -31,7 +31,7 @@ test.describe('OrigamApp', () => {
 	})
 
 	test('Default — toolbar renders inside app', async ({ page }) => {
-		await page.goto(variantUrl(5))
+		await page.goto(variantUrl(6))
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const toolbar = sandbox.locator('[data-cy="app-playground-toolbar"]')
@@ -39,7 +39,7 @@ test.describe('OrigamApp', () => {
 	})
 
 	test('Default — main area renders inside app', async ({ page }) => {
-		await page.goto(variantUrl(5))
+		await page.goto(variantUrl(6))
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const main = sandbox.locator('[data-cy="app-playground-main"]')
@@ -71,7 +71,7 @@ test.describe('OrigamApp', () => {
 	})
 
 	test('Slot — default — app renders with slot content', async ({ page }) => {
-		await page.goto(variantUrl(4))
+		await page.goto(variantUrl(5))
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const app = sandbox.locator('[data-cy="app-slot-default"]')
@@ -79,7 +79,7 @@ test.describe('OrigamApp', () => {
 	})
 
 	test('Playground — app renders with playground controls', async ({ page }) => {
-		await page.goto(variantUrl(5))
+		await page.goto(variantUrl(6))
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const app = sandbox.locator('[data-cy="app-playground"]')

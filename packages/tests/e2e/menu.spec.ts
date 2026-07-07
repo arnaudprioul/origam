@@ -50,10 +50,12 @@ import { expect, FrameLocator, test } from '@playwright/test'
  */
 
 const STORY_ID   = 'components-stories-menu-origammenu-story-vue'
-// Histoire dev server uses vite.base = '/stories/' → story URLs are under /stories/story/...
-// Use absolute URL to avoid baseURL resolution ambiguity.
-const STORY_BASE = 'http://localhost:6006/stories'
-const STORY_PATH = STORY_BASE + '/stories/story/' + STORY_ID
+// Story URLs live at `/stories/story/<id>` (Histoire vite.base = '/stories/').
+// Use a root-relative path so it resolves against the configured baseURL —
+// mirrors the passing specs (btn/stepper). The previous absolute form doubled
+// the `/stories/` segment (`.../stories/stories/story/...`) → 404 → the sandbox
+// never rendered and every menu assertion timed out.
+const STORY_PATH = '/stories/story/' + STORY_ID
 
 const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
