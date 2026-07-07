@@ -168,10 +168,10 @@ test.describe('OrigamTimeline', () => {
     // Second item: truncateLine not set → showConnector = true            //
     // ------------------------------------------------------------------ //
 
-    test.describe('Slots - Default (variant 2)', () => {
+    test.describe('Slots - Default (variant 4)', () => {
 
         test('timeline renders with two manually-slotted items', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(4))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -180,7 +180,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('default slot overrides the item body (renders a <ul> list)', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(4))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -191,7 +191,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('item title texts are rendered correctly from slot', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(4))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -203,7 +203,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('second item (isLast=true) carries origam-timeline-item--last class', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(4))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -212,7 +212,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('first item (isLast=false) does NOT carry origam-timeline-item--last', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(4))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -228,10 +228,10 @@ test.describe('OrigamTimeline', () => {
     // releaseEntries : 4 items                                            //
     // ------------------------------------------------------------------ //
 
-    test.describe('Default playground (variant 3)', () => {
+    test.describe('Default playground (variant 5)', () => {
 
         test('timeline root renders with four items in playground state', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(5))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -240,7 +240,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('each item renders a title from the releaseEntries data', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(5))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -250,7 +250,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('each item renders a subtitle', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(5))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -259,7 +259,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('each item renders a description in the body', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(5))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -268,7 +268,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('orientation-vertical is applied by default', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(5))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
