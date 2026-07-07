@@ -2,11 +2,12 @@ import { expect, test, type Page } from '@playwright/test'
 
 const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
 
-const open = async (page: Page, slug: string, variant: string) => {
-    await page.goto(`/story/${slug}`)
-    await page.waitForLoadState('networkidle')
-    await page.getByText(variant, { exact: true }).first().click()
-    await page.waitForTimeout(900)
+// Deep-link straight to the variant (root-relative `/stories/story/...`,
+// resolved against baseURL). The old form hit `/story/<slug>` (missing the
+// `/stories` base → 404), then `waitForLoadState('networkidle')` (never resolves
+// under Histoire's HMR websocket) + a brittle `getByText(...).click()`.
+const open = async (page: Page, slug: string, variantIdx: number) => {
+    await page.goto(`/stories/story/${slug}?variantId=${slug}-${variantIdx}`)
 }
 
 /**
@@ -18,7 +19,7 @@ const open = async (page: Page, slug: string, variant: string) => {
  */
 
 test('OrigamTextField — field renders at 36px default (P1·B size scale)', async ({ page }) => {
-    await open(page, 'components-stories-textfield-origamtextfield-story-vue', 'Design')
+    await open(page, 'components-stories-textfield-origamtextfield-story-vue', 0)
     const sandbox = sandboxOf(page)
     const field = sandbox.locator('.origam-field').first()
     await expect(field).toBeVisible({ timeout: 8000 })
