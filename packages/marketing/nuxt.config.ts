@@ -198,7 +198,8 @@ export default defineNuxtConfig({
                 'origam/utils': resolve(__dirname, '../ds/src/utils'),
                 'origam/types': resolve(__dirname, '../ds/src/types'),
                 'origam/interfaces': resolve(__dirname, '../ds/src/interfaces'),
-                'origam/services': resolve(__dirname, '../ds/src/services')
+                'origam/services': resolve(__dirname, '../ds/src/services'),
+                'origam/themes': resolve(__dirname, '../ds/src/themes')
             }
         }
     }
