@@ -1,5 +1,11 @@
 import type { IOrigamTheme } from 'origam/interfaces'
-import { origamDarkTheme as baseDark, origamLightTheme as baseLight } from 'origam/themes'
+// Import the DS baseline from SOURCE (not the `origam/themes` package subpath,
+// which resolves to `dist/`). `nuxt.config.ts` pulls this file in at config-load
+// time (jiti) — before any Vite alias applies and before the DS lib is built —
+// so a `dist`-bound import breaks `nuxt prepare` when the lib isn't compiled
+// (e.g. the docs-fixtures workflow). The relative source path resolves at both
+// config-load and runtime, mirroring the `origam/* → ../ds/src` aliases.
+import { origamDarkTheme as baseDark, origamLightTheme as baseLight } from '../../../ds/src/themes/origam.theme'
 
 /**
  * Origam — NAMED reset theme for the /theming playground.
