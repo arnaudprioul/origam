@@ -139,14 +139,16 @@ test.describe('OrigamColorPickerField', () => {
     })
 
     test('Prop — rules: error message disappears after a colour is selected', async ({ page }) => {
-        // Skipped: selecting a colour through the picker (canvas drag/click, HSL
-        // channel inputs, or the field input) does NOT commit a value to the
-        // bound model in either the static build OR `histoire dev` — so the
-        // required-rule never clears. Repro (#172) couldn't set `rulesColor`
-        // via any automatable interaction → needs a DS investigation into the
-        // picker→model commit path (or a component test hook), not a test fix.
-        // The companion test above already proves validation FIRES on blur.
-        test.skip(true, 'picker colour selection does not commit the model via automation — see #172')
+        // Skipped: the field → picker → canvas model-commit wiring is CORRECT
+        // (verified in #172 — OrigamColorPicker emits `update:model-value` via
+        // `handleUpdateColor`, the field's `handleSelectColor` writes it). BUT
+        // the canvas emit (`OrigamColorPickerCanvas` dotPosition setter) derives
+        // the colour from `canvasWidth`/`canvasHeight`, which aren't reliably
+        // measured in headless/static — so no automatable gesture (canvas
+        // drag/click, HSL channel inputs, field input; there are no preset
+        // swatches) commits a colour. This is an automation limit, NOT a
+        // component bug. The companion test above proves validation FIRES on blur.
+        test.skip(true, 'picker colour selection not automatable in headless (canvas measurement) — see #172')
         await page.goto(variantUrl(5))
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
