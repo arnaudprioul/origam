@@ -45,8 +45,13 @@ cypress/videos
 .DS_Store
 Thumbs.db
 
-# Docker / CI scaffolding (avoid recursive copies)
-docker
+# Docker / CI scaffolding (avoid recursive copies). EXCEPTION: nginx.conf must
+# stay in the context — Dockerfile.docs / Dockerfile.stories `COPY docker/nginx.conf
+# /etc/nginx/nginx.conf`. Excluding the whole `docker` dir removed it from the
+# build context, so buildx failed with `"/docker/nginx.conf": not found` — the
+# Docker workflow has been red since the monorepo move because of this.
+docker/*
+!docker/nginx.conf
 .dockerignore
 Dockerfile*
 
