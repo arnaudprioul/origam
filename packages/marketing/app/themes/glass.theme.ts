@@ -64,32 +64,32 @@ export const glassLightTheme: IOrigamTheme = {
             },
             feedback: {
                 success: {
-                    bg: '#15803d',
-                    bgSubtle: 'rgba(21, 128, 61, 0.08)',
-                    fg: '#ffffff',
+                    bg: '#16a34a',
+                    bgSubtle: 'rgba(22, 163, 74, 0.1)',
+                    fg: '#000000',
                     fgSubtle: '#15803d',
-                    border: '#15803d'
+                    border: '#16a34a'
                 },
                 warning: {
-                    bg: '#b45309',
-                    bgSubtle: 'rgba(180, 83, 9, 0.08)',
-                    fg: '#ffffff',
+                    bg: '#d97706',
+                    bgSubtle: 'rgba(217, 119, 6, 0.1)',
+                    fg: '#000000',
                     fgSubtle: '#b45309',
-                    border: '#b45309'
+                    border: '#d97706'
                 },
                 danger: {
-                    bg: '#b91c1c',
-                    bgSubtle: 'rgba(185, 28, 28, 0.08)',
+                    bg: '#dc2626',
+                    bgSubtle: 'rgba(220, 38, 38, 0.1)',
                     fg: '#ffffff',
                     fgSubtle: '#b91c1c',
-                    border: '#b91c1c'
+                    border: '#dc2626'
                 },
                 info: {
-                    bg: '#0891b2',
-                    bgSubtle: 'rgba(8, 145, 178, 0.08)',
+                    bg: '#2563eb',
+                    bgSubtle: 'rgba(37, 99, 235, 0.1)',
                     fg: '#ffffff',
-                    fgSubtle: '#0891b2',
-                    border: '#0891b2'
+                    fgSubtle: '#1d4ed8',
+                    border: '#2563eb'
                 }
             },
             'btn-primary-text': '#1a1538',
@@ -97,14 +97,76 @@ export const glassLightTheme: IOrigamTheme = {
             'btn-secondary-border': 'transparent',
             'btn-secondary-text': '#1a1538'
         },
+        // ⛔ ELEVATION = le tier `shadow` sémantique. Échelle croissante glassmorphism :
+        // inset white highlights (reflets internes) + blur diffus violet. Les composants
+        // consomment via la prop `elevation` (ci-dessous), jamais de shadow custom nommée.
         shadow: {
-            'card-elevated': 'inset 0 1px 1px rgba(255, 255, 255, 0.90), inset 1px 0 1px rgba(255, 255, 255, 0.50), inset 0 -1px 1px rgba(124, 58, 237, 0.12), 0 10px 30px -12px rgba(60, 30, 120, 0.40)',
-            'glow-primary': 'inset 0 1px 0 rgba(255, 255, 255, 0.60), 0 8px 24px -8px rgba(124, 58, 237, 0.45)',
-            'btn-primary': 'inset 0 1px 1px rgba(255, 255, 255, 0.90), inset 1px 0 1px rgba(255, 255, 255, 0.50), inset 0 -1px 1px rgba(124, 58, 237, 0.12), 0 10px 30px -12px rgba(60, 30, 120, 0.40)',
-            'btn-secondary': 'inset 0 1px 1px rgba(255, 255, 255, 0.90), inset 1px 0 1px rgba(255, 255, 255, 0.50), inset 0 -1px 1px rgba(124, 58, 237, 0.12), 0 10px 30px -12px rgba(60, 30, 120, 0.40)'
+            none: 'none',
+            xs: 'inset 0 1px 0 rgba(255, 255, 255, 0.70), 0 1px 4px -1px rgba(60, 30, 120, 0.08)',
+            sm: 'inset 0 1px 1px rgba(255, 255, 255, 0.80), inset 1px 0 1px rgba(255, 255, 255, 0.40), 0 4px 12px -4px rgba(60, 30, 120, 0.15)',
+            md: 'inset 0 1px 1px rgba(255, 255, 255, 0.90), inset 1px 0 1px rgba(255, 255, 255, 0.50), inset 0 -1px 1px rgba(124, 58, 237, 0.10), 0 6px 20px -6px rgba(60, 30, 120, 0.25)',
+            lg: 'inset 0 1px 1px rgba(255, 255, 255, 0.90), inset 1px 0 1px rgba(255, 255, 255, 0.50), inset 0 -1px 1px rgba(124, 58, 237, 0.12), 0 10px 30px -12px rgba(60, 30, 120, 0.40)',
+            xl: 'inset 0 1px 1px rgba(255, 255, 255, 0.90), inset 1px 0 1px rgba(255, 255, 255, 0.60), inset 0 -1px 1px rgba(124, 58, 237, 0.18), 0 16px 48px -16px rgba(60, 30, 120, 0.55), 0 4px 12px -4px rgba(60, 30, 120, 0.20)'
         }
     },
-    cssVars: {}
+    // ⛔ PROPS D'ABORD (logique DS). Overrides glass superposés sur la baseline
+    // `origam` (deep-merge). Identité glassmorphism = très arrondi + translucide
+    // + bordures subtiles + elevation diffuse. Seuls les reflets et couleurs
+    // translucides (non exprimables en props) restent dans `vars`.
+    components: {
+        'origam-btn': { variant: 'tonal', rounded: 'lg', pill: true, elevation: 2 },
+        'origam-btn-group': { variant: 'tonal', rounded: 'lg' },
+        'origam-btn-toggle': { variant: 'tonal', rounded: 'lg' },
+        'origam-card': { rounded: 'lg', border: true, flat: false, elevation: 3 },
+        'origam-chip': { variant: 'tonal', rounded: 'lg', border: true, pill: true },
+        'origam-alert': { rounded: 'lg', border: true, elevation: 2 },
+        'origam-field': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-text-field': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-textarea-field': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-number-field': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-password-field': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-select': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-date-picker-field': { rounded: 'lg', border: true },
+        'origam-file-field': { rounded: 'lg', border: true },
+        'origam-color-picker-field': { rounded: 'lg', border: true },
+        'origam-code': { rounded: 'lg', border: true, elevation: 2 },
+        'origam-menu': { rounded: 'lg', border: true, elevation: 3 },
+        'origam-table': { rounded: 'lg', border: true },
+        'origam-avatar': { rounded: 'lg', border: true },
+        'origam-checkbox': { rounded: 'lg' },
+        'origam-snackbar': { rounded: 'lg', border: true, elevation: 3 }
+    },
+    // Overrides bruts glassmorphism non exprimables en props (bordures translucides,
+    // backdrop-filter, ombres douces à reflets internes). Migrés depuis glass.css →
+    // appliqués par le DS via `[data-theme="glass"]` (sous-arbre-capable).
+    cssVars: {
+        '--origam-btn---border-color': 'rgba(124, 58, 237, 0.35)',
+        '--origam-btn---border-width-outlined': '1px',
+        '--origam-btn---border-width-ghost': '1px',
+        '--origam-btn---box-shadow-elevated': 'inset 0 1px 1px rgba(255, 255, 255, 0.90), inset 1px 0 1px rgba(255, 255, 255, 0.50), inset 0 -1px 1px rgba(124, 58, 237, 0.12), 0 10px 30px -12px rgba(60, 30, 120, 0.40)',
+        '--origam-btn---box-shadow-ghost': 'none',
+        '--origam-btn---backdrop-filter-ghost': 'blur(12px) saturate(1.8) brightness(1.05)',
+        '--origam-card---box-shadow': 'var(--origam-shadow---card-elevated)',
+        '--origam-code---border-radius': '16px',
+        '--origam-card---backdrop-filter': 'blur(3px) saturate(1.8) brightness(1.08)',
+        '--origam-sheet---backdrop-filter': 'blur(3px) saturate(1.8) brightness(1.08)',
+        '--origam-appbar---backdrop-filter': 'saturate(2) brightness(1.1) blur(26px)',
+        '--origam-menu---backdrop-filter': 'blur(20px) saturate(1.8) brightness(1.05)',
+        '--origam-appbar---bg': 'rgba(255, 255, 255, 0.30)',
+        '--origam-menu---background': 'rgba(255, 255, 255, 0.80)',
+        '--origam-menu---color': 'var(--origam-color__text---primary)',
+        '--origam-menu---border-radius': '16px',
+        '--origam-menu---box-shadow': '0 8px 32px -8px rgba(124, 58, 237, 0.18), 0 1px 4px -1px rgba(124, 58, 237, 0.10), 0 0 0 1px var(--origam-color__border---default), inset 0 1px 0 rgba(255, 255, 255, 0.60)',
+        '--origam-menu__content---padding': '6px',
+        '--origam-list---background': 'transparent',
+        '--origam-list---padding-block-start': '0',
+        '--origam-list---padding-block-end': '0',
+        '--origam-list-item---padding-inline-start': '12px',
+        '--origam-list-item---padding-inline-end': '12px',
+        '--origam-alert---backdrop-filter': 'blur(3px) saturate(1.8) brightness(1.08)',
+        '--origam-alert---background-color': 'rgba(255, 255, 255, 0.18)',
+        '--origam-alert---border-color': 'rgba(124, 58, 237, 0.20)',
+    }
 }
 
 export const glassDarkTheme: IOrigamTheme = {
@@ -204,14 +266,45 @@ export const glassDarkTheme: IOrigamTheme = {
             'btn-secondary-border': 'transparent',
             'btn-secondary-text': '#ffffff'
         },
+        // ELEVATION (dark) : même rampe glassmorphism, reflets blancs atténués sur fond
+        // sombre + ombres portées profondes. Consommée via la prop `elevation`.
         shadow: {
-            'card-elevated': 'inset 0 1px 1px rgba(255, 255, 255, 0.60), inset 1.5px 0 1px rgba(255, 255, 255, 0.28), inset -1.5px 0 1px rgba(255, 255, 255, 0.14), inset 0 -10px 22px rgba(255, 255, 255, 0.05), inset 0 -1px 1px rgba(0, 0, 0, 0.20), 0 12px 34px -10px rgba(0, 0, 0, 0.50), 0 2px 6px -2px rgba(0, 0, 0, 0.30)',
-            'glow-primary': 'inset 0 1px 0 rgba(255, 255, 255, 0.20), 0 8px 24px -6px rgba(167, 139, 250, 0.60)',
-            'btn-primary': 'inset 0 1px 1px rgba(255, 255, 255, 0.70), inset 0 -2px 6px rgba(0, 0, 0, 0.15), 0 8px 24px -6px rgba(167, 139, 250, 0.60)',
-            'btn-secondary': 'inset 0 1px 1px rgba(255, 255, 255, 0.30), inset 0 -1px 1px rgba(0, 0, 0, 0.10), 0 8px 24px -6px rgba(167, 139, 250, 0.30)'
+            none: 'none',
+            xs: 'inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 4px -1px rgba(0, 0, 0, 0.25)',
+            sm: 'inset 0 1px 1px rgba(255, 255, 255, 0.18), inset 1px 0 1px rgba(255, 255, 255, 0.10), 0 4px 12px -4px rgba(0, 0, 0, 0.35)',
+            md: 'inset 0 1px 1px rgba(255, 255, 255, 0.25), inset 1.5px 0 1px rgba(255, 255, 255, 0.14), inset 0 -1px 1px rgba(0, 0, 0, 0.10), 0 8px 24px -8px rgba(0, 0, 0, 0.45)',
+            lg: 'inset 0 1px 1px rgba(255, 255, 255, 0.60), inset 1.5px 0 1px rgba(255, 255, 255, 0.28), inset -1.5px 0 1px rgba(255, 255, 255, 0.14), inset 0 -10px 22px rgba(255, 255, 255, 0.05), inset 0 -1px 1px rgba(0, 0, 0, 0.20), 0 12px 34px -10px rgba(0, 0, 0, 0.50), 0 2px 6px -2px rgba(0, 0, 0, 0.30)',
+            xl: 'inset 0 1px 1px rgba(255, 255, 255, 0.70), inset 1.5px 0 1px rgba(255, 255, 255, 0.35), inset -1.5px 0 1px rgba(255, 255, 255, 0.20), inset 0 -10px 22px rgba(255, 255, 255, 0.06), inset 0 -1px 1px rgba(0, 0, 0, 0.25), 0 16px 48px -12px rgba(0, 0, 0, 0.65), 0 4px 10px -4px rgba(0, 0, 0, 0.40)'
         }
     },
-    cssVars: {}
+    cssVars: {
+        '--origam-btn---border-color': 'rgba(255, 255, 255, 0.20)',
+        '--origam-btn---border-width-outlined': '1px',
+        '--origam-btn---border-width-ghost': '1px',
+        '--origam-btn---box-shadow-elevated': 'inset 0 1px 1px rgba(255, 255, 255, 0.60), inset 1.5px 0 1px rgba(255, 255, 255, 0.28), inset 0 -1px 1px rgba(0, 0, 0, 0.20), 0 8px 24px -6px rgba(167, 139, 250, 0.60)',
+        '--origam-btn---box-shadow-ghost': 'none',
+        '--origam-btn---backdrop-filter-ghost': 'blur(12px) saturate(1.6) brightness(1.02)',
+        '--origam-card---box-shadow': 'var(--origam-shadow---card-elevated)',
+        '--origam-code---border-radius': '16px',
+        '--origam-card---backdrop-filter': 'blur(3px) saturate(1.8) brightness(1.08)',
+        '--origam-sheet---backdrop-filter': 'blur(3px) saturate(1.8) brightness(1.08)',
+        '--origam-appbar---backdrop-filter': 'saturate(2) brightness(1.1) blur(26px)',
+        '--origam-menu---backdrop-filter': 'blur(20px) saturate(1.6) brightness(1.02)',
+        '--origam-appbar---bg': 'rgba(255, 255, 255, 0.06)',
+        '--origam-menu---background': 'rgba(20, 18, 40, 0.85)',
+        '--origam-menu---color': 'var(--origam-color__text---primary)',
+        '--origam-menu---border-radius': '22px',
+        '--origam-menu---box-shadow': '0 8px 32px -8px rgba(0, 0, 0, 0.60), 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.10)',
+        '--origam-menu__content---padding': '6px',
+        '--origam-list---background': 'transparent',
+        '--origam-list---padding-block-start': '0',
+        '--origam-list---padding-block-end': '0',
+        '--origam-list-item---padding-inline-start': '12px',
+        '--origam-list-item---padding-inline-end': '12px',
+        '--origam-alert---backdrop-filter': 'blur(3px) saturate(1.8) brightness(1.08)',
+        '--origam-alert---background-color': 'rgba(255, 255, 255, 0.06)',
+        '--origam-alert---border-color': 'rgba(255, 255, 255, 0.12)',
+    }
 }
 
 export const glassThemes: IOrigamTheme[] = [glassLightTheme, glassDarkTheme]

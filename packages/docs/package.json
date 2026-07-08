@@ -15,7 +15,8 @@
   },
   "dependencies": {
     "origam": "workspace:*",
-    "vue": "^3.5.0"
+    "shiki": "^4.3.1",
+    "vue": "3.5.39"
   },
   "devDependencies": {
     "vitepress": "^1.6.4"

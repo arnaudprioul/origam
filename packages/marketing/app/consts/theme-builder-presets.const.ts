@@ -7,8 +7,38 @@
  * Brand presets: GÉNÉRÉS depuis packages/marketing/app/assets/css/themes/*.css
  * via scripts/generate-brand-presets.mjs — ne PAS éditer à la main.
  */
+import type { IOrigamTheme } from 'origam/interfaces'
+import { resolveThemeVars } from 'origam/utils'
+
 import type { IThemeBuilderPreset } from '~/interfaces/theme-builder.interface'
 import { THEME_BUILDER_BRAND_PRESETS } from '~/consts/theme-builder-brand-presets.const'
+import { cartoonThemes } from '~/themes/cartoon.theme'
+import { appleThemes } from '~/themes/apple.theme'
+import { geekThemes } from '~/themes/geek.theme'
+import { glassThemes } from '~/themes/glass.theme'
+import { editorialThemes } from '~/themes/editorial.theme'
+import { materialThemes } from '~/themes/material.theme'
+import { ecomThemes } from '~/themes/ecom.theme'
+
+/**
+ * PROPS-FIRST (logique DS) : un preset est sourcé depuis l'objet `IOrigamTheme`
+ * canonique (`app/themes/*.theme.ts`). On résout `vars → --origam-*` via le DS
+ * (`resolveThemeVars`) et on prend `theme.components` (props par composant). Ça
+ * remplace la génération CSS fragile, thème par thème.
+ */
+function presetFromThemes (key: string, labelFallback: string, themes: IOrigamTheme[]): IThemeBuilderPreset {
+    const light = themes.find(t => t.mode !== 'dark') ?? themes[0]
+    const dark = themes.find(t => t.mode === 'dark') ?? light
+    const lightVars = resolveThemeVars(light) as Record<string, string>
+    return {
+        key,
+        labelKey: `theming.preset.${key}`,
+        labelFallback,
+        light: lightVars,
+        dark: { ...lightVars, ...(resolveThemeVars(dark) as Record<string, string>) },
+        components: { ...(light.components ?? {}), ...(dark.components ?? {}) }
+    }
+}
 
 export const THEME_BUILDER_PRESET_LIGHT_VARS: Record<string, string> = {
         "--origam-alert---accent-width": "24px",
@@ -157,6 +187,26 @@ export const THEME_BUILDER_PRESET_LIGHT_VARS: Record<string, string> = {
         "--origam-chip---padding-sm": "10px",
         "--origam-chip---padding-xl": "17px",
         "--origam-chip---padding-xs": "8px",
+        "--origam-color__feedback--danger---bg": "#ef4444",
+        "--origam-color__feedback--danger---bgSubtle": "#fff1f2",
+        "--origam-color__feedback--danger---border": "#cf6679",
+        "--origam-color__feedback--danger---fg": "#ffffff",
+        "--origam-color__feedback--danger---fgSubtle": "#b91c1c",
+        "--origam-color__feedback--info---bg": "#2196f3",
+        "--origam-color__feedback--info---bgSubtle": "#eff6ff",
+        "--origam-color__feedback--info---border": "#2196f3",
+        "--origam-color__feedback--info---fg": "#ffffff",
+        "--origam-color__feedback--info---fgSubtle": "#1e40af",
+        "--origam-color__feedback--success---bg": "#4caf50",
+        "--origam-color__feedback--success---bgSubtle": "#f0fdf4",
+        "--origam-color__feedback--success---border": "#4caf50",
+        "--origam-color__feedback--success---fg": "#ffffff",
+        "--origam-color__feedback--success---fgSubtle": "#16a34a",
+        "--origam-color__feedback--warning---bg": "#fb8c00",
+        "--origam-color__feedback--warning---bgSubtle": "#fffbeb",
+        "--origam-color__feedback--warning---border": "#fb8c00",
+        "--origam-color__feedback--warning---fg": "#ffffff",
+        "--origam-color__feedback--warning---fgSubtle": "#b45309",
         "--origam-divider---border-style": "solid",
         "--origam-divider---color": "#d4d4d4",
         "--origam-divider---margin-block": "0px",
@@ -386,6 +436,26 @@ export const THEME_BUILDER_PRESET_DARK_VARS: Record<string, string> = {
         "--origam-chip---padding-sm": "10px",
         "--origam-chip---padding-xl": "17px",
         "--origam-chip---padding-xs": "8px",
+        "--origam-color__feedback--danger---bg": "#ef4444",
+        "--origam-color__feedback--danger---bgSubtle": "#171717",
+        "--origam-color__feedback--danger---border": "#cf6679",
+        "--origam-color__feedback--danger---fg": "#ffffff",
+        "--origam-color__feedback--danger---fgSubtle": "#cf6679",
+        "--origam-color__feedback--info---bg": "#2196f3",
+        "--origam-color__feedback--info---bgSubtle": "#171717",
+        "--origam-color__feedback--info---border": "#2196f3",
+        "--origam-color__feedback--info---fg": "#ffffff",
+        "--origam-color__feedback--info---fgSubtle": "#60a5fa",
+        "--origam-color__feedback--success---bg": "#4caf50",
+        "--origam-color__feedback--success---bgSubtle": "#171717",
+        "--origam-color__feedback--success---border": "#4caf50",
+        "--origam-color__feedback--success---fg": "#ffffff",
+        "--origam-color__feedback--success---fgSubtle": "#4ade80",
+        "--origam-color__feedback--warning---bg": "#fb8c00",
+        "--origam-color__feedback--warning---bgSubtle": "#171717",
+        "--origam-color__feedback--warning---border": "#fb8c00",
+        "--origam-color__feedback--warning---fg": "#ffffff",
+        "--origam-color__feedback--warning---fgSubtle": "#fbbf24",
         "--origam-divider---border-style": "solid",
         "--origam-divider---color": "#262626",
         "--origam-divider---margin-block": "0px",
@@ -476,5 +546,17 @@ export const THEME_BUILDER_PRESETS: IThemeBuilderPreset[] = [
         light: THEME_BUILDER_PRESET_LIGHT_VARS,
         dark: THEME_BUILDER_PRESET_DARK_VARS
     },
-    ...THEME_BUILDER_BRAND_PRESETS
+    // Brands sourcés depuis leur objet IOrigamTheme (props-first).
+    presetFromThemes('cartoon', 'Cartoon', cartoonThemes),
+    presetFromThemes('apple', 'Apple', appleThemes),
+    presetFromThemes('geek', 'Geek', geekThemes),
+    presetFromThemes('glass', 'Glass', glassThemes),
+    presetFromThemes('editorial', 'Editorial', editorialThemes),
+    presetFromThemes('material', 'Material', materialThemes),
+    presetFromThemes('ecom', 'E-commerce', ecomThemes),
+    // `sobre` est exclu : c'est la baseline DS = le thème `origam` ci-dessus
+    // (même identité), donc le lister en plus ferait un doublon.
+    ...THEME_BUILDER_BRAND_PRESETS.filter(
+        p => !['cartoon', 'apple', 'geek', 'glass', 'editorial', 'material', 'ecom', 'sobre'].includes(p.key)
+    )
 ]

@@ -13,7 +13,9 @@
 
     "border-color":           { "$type": "color",        "$value": "{color.border.default}",       "$description": "Default outline/underline border color" },
     "border-width":           { "$type": "dimension",    "$value": "{border.width.thin}",          "$description": "Default border width for outlined/underlined variants" },
+    "border-width-outlined":  { "$type": "dimension",    "$value": "{border.width.thin}",          "$description": "Outlined-variant border width (themeable; the variant reads this)" },
     "border-opacity":         { "$type": "number",       "$value": 0.38,                           "$description": "Default border opacity (translucent on inactive state)" },
+    "border-opacity-outlined":{ "$type": "number",       "$value": 0.38,                           "$description": "Outlined-variant border opacity (themeable; the variant reads this)" },
 
     "background-color":       { "$type": "color",        "$value": "transparent",                  "$description": "Field background (transparent by default; solo/filled variants override)" },
     "color":                  { "$type": "color",        "$value": "{color.text.primary}",         "$description": "Field text color inherited by children" },

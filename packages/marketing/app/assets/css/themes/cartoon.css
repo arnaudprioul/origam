@@ -32,24 +32,14 @@
 
 :root:root[data-theme="cartoon"],
 :root:root[data-theme="cartoon"][data-mode="light"] {/* ── Heading font — Inter (matches maquette, same as shared default) ──── */
-    --origam-font-family---heading: Inter, -apple-system, 'system-ui', sans-serif;
-    --origam-title---font-family:   Inter, -apple-system, 'system-ui', sans-serif;/* ── Radii — chunky rounded for cartoon aesthetic ─────────────────────── *//* ── Surfaces ───────────────────────────────────────────────────────────── *//* ── Page background: warm cream + 4 radial pastel glows ─────────────── */
+/* ── Radii — chunky rounded for cartoon aesthetic ─────────────────────── *//* ── Surfaces ───────────────────────────────────────────────────────────── *//* ── Page background: warm cream + 4 radial pastel glows ─────────────── */
     --origam-page---background-image:
         radial-gradient(circle at 10% 12%, #ffe5a5 0%, transparent 26%),
         radial-gradient(circle at 90% 14%, #c5e8ff 0%, transparent 26%),
         radial-gradient(circle at 78% 88%, #ffd6e8 0%, transparent 28%),
         radial-gradient(circle at 14% 90%, #c8f5d9 0%, transparent 26%);/* ── Text ───────────────────────────────────────────────────────────────── *//* ── Actions / primary ──────────────────────────────────────────────────── *//* ── Actions / secondary ────────────────────────────────────────────────── *//* ── Actions / ghost ────────────────────────────────────────────────────── *//* ── Borders — near-black everywhere (Cartoon aesthetic) ─────────────── *//* ── Feedback ───────────────────────────────────────────────────────────── *//* ── Appbar — warm cream, hard bottom border (measured: 3 px solid #171717) */
-    --origam-appbar---bg: #fff9f0;/* ── Menu — appbar dropdowns ──────────────────────────────────────────── */
-    --origam-menu---background:    var(--origam-color__surface---default);
-    --origam-menu---color:         var(--origam-color__text---primary);
-    --origam-menu---border-radius: 14px;
-    --origam-menu---box-shadow:    4px 4px 0 #171717, 0 0 0 3px #171717;
-    --origam-menu__content---padding: 6px;
-    --origam-list---background:              transparent;
-    --origam-list---padding-block-start:     0;
-    --origam-list---padding-block-end:       0;
-    --origam-list-item---padding-inline-start: 12px;
-    --origam-list-item---padding-inline-end:   12px;/* ── Shadows — hard offset (Cartoon "neo-brutalist" style) ───────────── *//* ── Gradients — marketing display ─────────────────────────────────────── *//* Hero section: amber glow top-left (measured on hero inner div) */
+/* ── Menu — appbar dropdowns ──────────────────────────────────────────── */
+/* ── Shadows — hard offset (Cartoon "neo-brutalist" style) ───────────── *//* ── Gradients — marketing display ─────────────────────────────────────── *//* Hero section: amber glow top-left (measured on hero inner div) */
     --origam-gradient---hero-glow: radial-gradient(circle at 10% 10%, #fcd34d 0%, transparent 30%);/* CTA section glows */
     --origam-gradient---cta-glow:     radial-gradient(circle at 90% 10%, #fbcfe8 0%, transparent 30%);
     --origam-gradient---cta-glow-top: radial-gradient(circle at 50% 0%, #fcd34d 0%, transparent 30%);/* Hero title: violet → rose → amber gradient (measured: #7c3aed → #ec4899 → #f59e0b) */
@@ -58,10 +48,7 @@
         linear-gradient(rgba(23, 23, 23, 0.06) 1px, transparent 1px),
         linear-gradient(90deg, rgba(23, 23, 23, 0.06) 1px, transparent 1px);/* KPI values: solid rose (measured: rgb(255,143,163) — no gradient in light) */
     --origam-gradient---kpi-value: linear-gradient(#ff8fa3, #ff8fa3);/* ── Chip tokens — cartoon border + shadow in light (near-black) ───────── */
-    --origam-chip---border-color:         #171717;
-    --origam-chip---border-style:         solid;
-    --origam-chip---border-width:         3px;
-    --origam-chip---border-width-outlined: 3px;/* ── Button tokens ──────────────────────────────────────────────────────── *//*
+/* ── Button tokens ──────────────────────────────────────────────────────── *//*
      * PRIMARY — solid rose pill, near-black text, 3 px border, hard shadow.
      * Measured: bg #ff8fa3, color #3a2a2e, border 3px #171717,
      *           box-shadow rgb(23,23,23) 4px 4px 0.
@@ -80,58 +67,33 @@
      * CTA buttons read). Without these, real OrigamBtn instances fall back to
      * the thin/flat base defaults instead of the cartoon chunky look.
      */
-    --origam-btn---border-color:          #171717;
-    --origam-btn---border-width-outlined: 3px;
-    --origam-btn---border-width-ghost:    3px;
-    --origam-btn---box-shadow-elevated:   4px 4px 0 #171717;
-    --origam-btn---box-shadow-ghost:      4px 4px 0 #171717;/*
+/*
      * OrigamCard component-level box-shadow (light).
      * The DS default is a subtle Tailwind-like blur shadow.
      * Cartoon: hard 6 px offset neo-brutalist shadow (same black as borders).
      * --origam-shadow---card-elevated above is a bespoke marketing token only
      * read by the home section wrappers; OrigamCard itself reads ---box-shadow.
-     */
-    --origam-card---box-shadow: 6px 6px 0 #171717;/*
+     *//*
      * OrigamCode component-level border (light).
      * DS default: 1px subtle border. Cartoon: 3px solid near-black.
      * The playground code pane suppresses this via a targeted override below,
      * so only standalone Code blocks (hero install pill, snippet demos) pick
      * up the cartoon border here.
      */
-    --origam-code---border-width: 3px;
-    --origam-code---border-color: #171717;
+
 }/* ── CARTOON DARK ────────────────────────────────────────────────────────── */
 
 :root:root[data-theme="cartoon"][data-mode="dark"] {/* ── Heading font — identical Inter stack ─────────────────────────────── */
-    --origam-font-family---heading: Inter, -apple-system, 'system-ui', sans-serif;
-    --origam-title---font-family:   Inter, -apple-system, 'system-ui', sans-serif;/* ── Radii — identical to light ─────────────────────────────────────────── *//* ── Surfaces — near-black ────────────────────────────────────────────── *//* ── Page background: NO page-wide glow in dark. The maquette glows are
+/* ── Radii — identical to light ─────────────────────────────────────────── *//* ── Surfaces — near-black ────────────────────────────────────────────── *//* ── Page background: NO page-wide glow in dark. The maquette glows are
        per-section decor (amber/pink, section-sized), so they ride the
        hero-glow / cta-glow tokens below — a page-wide background-image would
        stretch the radial over the whole tall page into a garish wash. ─────── */
     --origam-page---background-image: none;/* ── Text ───────────────────────────────────────────────────────────────── *//* ── Actions / primary — same rose pink in dark ─────────────────────── *//* fgSubtle dark: maquette eyebrow/sections use violet #5b21b6 (rgb(91,33,182)),
        same as light value (not amber). *//* ── Actions / secondary ────────────────────────────────────────────────── *//* ── Actions / ghost ────────────────────────────────────────────────────── *//* ── Borders — hard black in dark for cards/surfaces (#171717);
        near-white elements (appbar, playground frame, hero/cta btns) overridden below. ── *//* ── Feedback ───────────────────────────────────────────────────────────── *//* ── Appbar — near-black, hard bottom border near-white ─────────────── */
-    --origam-appbar---bg: #1a1a1a;/* ── Menu — appbar dropdowns ──────────────────────────────────────────── */
-    --origam-menu---background:    var(--origam-color__surface---default);
-    --origam-menu---color:         var(--origam-color__text---primary);
-    --origam-menu---border-radius: 14px;
-    --origam-menu---box-shadow:    4px 4px 0 #fffefb, 0 0 0 3px #fffefb;
-    --origam-menu__content---padding: 6px;
-    --origam-list---background:              transparent;
-    --origam-list---padding-block-start:     0;
-    --origam-list---padding-block-end:       0;
-    --origam-list-item---padding-inline-start: 12px;
-    --origam-list-item---padding-inline-end:   12px;/* ── Shadows — near-white hard offset in dark (white border + black shadow) *//* ── Card tokens — near-white border in dark ─────────────────────────── */
-    --origam-card---border-color:        #fffefb;
-    --origam-card---border-style:        solid;
-    --origam-card---border-top-width:    3px;
-    --origam-card---border-right-width:  3px;
-    --origam-card---border-bottom-width: 3px;
-    --origam-card---border-left-width:   3px;/* ── Chip tokens — cartoon border + shadow in dark (near-white) ─────── */
-    --origam-chip---border-color:         #fffefb;
-    --origam-chip---border-style:         solid;
-    --origam-chip---border-width:         3px;
-    --origam-chip---border-width-outlined: 3px;/* ── Gradients — marketing display ─────────────────────────────────────── *//* Section-scoped glows (sized to the hero/cta band, not the whole page):
+/* ── Menu — appbar dropdowns ──────────────────────────────────────────── */
+/* ── Chip tokens — cartoon border + shadow in dark (near-white) ─────── */
+/* ── Gradients — marketing display ─────────────────────────────────────── *//* Section-scoped glows (sized to the hero/cta band, not the whole page):
        amber top-left + pink top-right, like the maquette m-decor. */
     --origam-gradient---hero-glow:
         radial-gradient(circle at 12% 22%, rgba(252, 211, 77, 0.55) 0%, transparent 42%),
@@ -157,20 +119,14 @@
      * User spec: dark = borders + shadows near-white #fffefb everywhere.
      */
     --origam-gradient---btn-secondary:     none;/* OrigamBtn component-level defaults (dark) — see light-mode note. */
-    --origam-btn---border-color:          #fffefb;
-    --origam-btn---border-width-outlined: 3px;
-    --origam-btn---border-width-ghost:    3px;
-    --origam-btn---box-shadow-elevated:   4px 4px 0 #fffefb;
-    --origam-btn---box-shadow-ghost:      4px 4px 0 #fffefb;/*
+/*
      * OrigamCard component-level box-shadow (dark).
-     * Cartoon dark: hard 6 px offset, black base (#171717) — not near-white,
-     * because the card border is already near-white and the shadow sits on a
-     * dark surface where the near-black offset reads as a "depth punch".
-     * Measured on the maquette card at rgb(38,38,38) surface + black shadow.
+     * Cartoon dark: hard 6 px offset, near-WHITE (#fffefb) to match the white
+     * border and read as a strong "depth punch" against the dark card surface
+     * (user rule: in dark mode shadows are white for strong contrast).
      */
-    --origam-card---box-shadow: 6px 6px 0 #171717;/* OrigamCode component-level border (dark). Near-white border, same weight. */
-    --origam-code---border-width: 3px;
-    --origam-code---border-color: #fffefb;
+/* OrigamCode component-level border (dark). Near-white border, same weight. */
+
 }/* ── CARTOON — Appbar hard border bottom ───────────────────────────────── *//*
  * The DS appbar token only controls background. The 3 px solid bottom border
  * is a Cartoon-specific structural detail.
@@ -205,10 +161,10 @@
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .site-appbar .origam-chip,
 :root:root[data-theme="cartoon"][data-mode="dark"] .brand__version {
-    border-color:  #171717 !important;
+    border-color:  #fffefb !important;
     border-width:  3px !important;
     border-style:  solid !important;
-    box-shadow:    2px 2px 0 #171717 !important;
+    box-shadow:    2px 2px 0 #fffefb !important;
     background-color: #ffe5a5 !important;
     color:         #3a2a2e !important;
 }/* ── CARTOON — Appbar action buttons: 3 px border + hard shadow ─────────── *//*
@@ -218,15 +174,24 @@
  * These are secondary/action buttons — transparent bg, near-black border.
  */
 
-:root:root[data-theme="cartoon"] .appbar-actions__btn {
+:root:root[data-theme="cartoon"] .appbar-actions__btn,
+:root:root[data-theme="cartoon"] .search-trigger {
     border:     3px solid #171717 !important;
     box-shadow: 3px 3px 0 #171717 !important;
     border-radius: var(--origam-radius---btn, 14px) !important;
 }
 
-:root:root[data-theme="cartoon"][data-mode="dark"] .appbar-actions__btn {
+:root:root[data-theme="cartoon"][data-mode="dark"] .appbar-actions__btn,
+:root:root[data-theme="cartoon"][data-mode="dark"] .search-trigger {
     border:     3px solid #fffefb !important;
     box-shadow: 3px 3px 0 #fffefb !important;
+}/* ── CARTOON — Field border radius: the field resets --origam-field---border-radius
+   to a small value on itself (scoped), overriding the theme :root token, so the
+   visible __outline border stays barely-rounded while the box follows rounded='lg'.
+   Force the token on the field element so the border matches the box (lg) — fixes
+   text-field, select and every field type at once. */
+:root:root[data-theme="cartoon"] .origam-field {
+    --origam-field---border-radius: var(--origam-radius---lg, 20px) !important;
 }/* ── CARTOON — Showcase / feature widget cards 3 px border ──────────────── *//*
  * The DS OrigamCard "flat" variant has no border. Cartoon shows all cards with
  * a 3 px solid near-black border (measured: 3px solid #171717 in light,
@@ -236,12 +201,6 @@
  */
 
 :root:root[data-theme="cartoon"] {
-    --origam-card---border-color:        var(--origam-color__border---default);
-    --origam-card---border-style:        solid;
-    --origam-card---border-top-width:    3px;
-    --origam-card---border-right-width:  3px;
-    --origam-card---border-bottom-width: 3px;
-    --origam-card---border-left-width:   3px;
 }/* ── CARTOON — button 3 px border override ─────────────────────────────── *//*
  * HomeHero / HomeCta scoped CSS writes `border: 1px solid …` on secondary
  * buttons. The Cartoon design requires 3 px. We override with higher specificity
@@ -403,7 +362,7 @@
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-playground__frame {
     border-width: 3px !important;
     border-color: #fffefb !important;
-    box-shadow:   9px 9px 0 #171717 !important;
+    box-shadow:   9px 9px 0 #fffefb !important;
 }/* ── CARTOON — Playground toolbar: 3px bottom border ────────────────────── *//*
  * Maquette m-winbar measured: 3px solid #171717 on all sides (full outline).
  * In the live, .home-playground__toolbar only has border-block-end.
@@ -416,7 +375,7 @@
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-playground__toolbar {
     background-color: #3d2e0a;
-    border-block-end: 3px solid #171717 !important;
+    border-block-end: 3px solid #fffefb !important;
 }/* ── CARTOON — Playground preview area: near-white dot-grid + transparent bg (dark) ── *//*
  * Maquette preview dotgrid measured:
  *   background-color: transparent
@@ -442,7 +401,7 @@
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-playground__preview-card {
     border-width: 3px !important;
     border-color: #fffefb !important;
-    box-shadow:   6px 6px 0 #171717 !important;
+    box-shadow:   6px 6px 0 #fffefb !important;
 }/* ── CARTOON — Playground code panel: no border ────────────────────────── *//*
  * Maquette: the code editor area (m-code-line) has no border.
  * Live origam-code renders with border: 1px solid (from DS default).
@@ -617,6 +576,7 @@
     --origam-gradient---hero-glow:
         radial-gradient(circle at 10% 14%, rgba(252, 211, 77, 0.50) 0%, transparent 38%),
         radial-gradient(circle at 90% 14%, rgba(251, 207, 232, 0.42) 0%, transparent 38%);
+
 }/* Showcase data table: 1px cell rule + 3px top outer border (point 6).
    Row dividers remain 1px for readability; the table outer top border is 3px. */
 :root:root[data-theme="cartoon"] .home-showcase__th,

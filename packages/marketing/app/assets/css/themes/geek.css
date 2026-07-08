@@ -13,19 +13,9 @@
 
 :root:root[data-theme="geek"],
 :root:root[data-theme="geek"][data-mode="light"] {/* Heading font override — monospace terminal aesthetic */
-    --origam-font-family---heading: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
-    --origam-title---font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;/* Radii — sharp/angular for geek aesthetic *//* Surfaces *//* Text *//* Actions / primary *//* Actions / secondary *//* Actions / ghost *//* Borders *//* Feedback *//* Appbar */
-    --origam-appbar---bg: rgba(251, 245, 255, 0.80);/* Menu — appbar dropdowns */
-    --origam-menu---background: var(--origam-color__surface---default);
-    --origam-menu---color: var(--origam-color__text---primary);
-    --origam-menu---border-radius: 4px;
-    --origam-menu---box-shadow: 0 4px 16px -4px rgba(124, 58, 237, 0.14), 0 1px 4px -1px rgba(124, 58, 237, 0.08), 0 0 0 1px var(--origam-color__border---default);
-    --origam-menu__content---padding: 4px;
-    --origam-list---background: transparent;
-    --origam-list---padding-block-start: 0;
-    --origam-list---padding-block-end: 0;
-    --origam-list-item---padding-inline-start: 12px;
-    --origam-list-item---padding-inline-end: 12px;/* Shadows *//* Gradients — marketing display (cyan→magenta cyberpunk) */
+/* Radii — sharp/angular for geek aesthetic *//* Surfaces *//* Text *//* Actions / primary *//* Actions / secondary *//* Actions / ghost *//* Borders *//* Feedback *//* Appbar */
+/* Menu — appbar dropdowns */
+/* Shadows *//* Gradients — marketing display (cyan→magenta cyberpunk) */
     --origam-gradient---hero-glow: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(124, 58, 237, 0.18), transparent 65%);
     --origam-gradient---cta-glow: radial-gradient(ellipse 80% 60% at 80% 30%, rgba(139, 92, 246, 0.12), transparent 70%);
     --origam-gradient---cta-glow-top: radial-gradient(ellipse 70% 55% at 50% 0%, rgba(162, 28, 175, 0.14), transparent 65%);
@@ -39,37 +29,22 @@
      * generic shadow). Geek light: violet-tinted subtle borders + soft glow.
      * border-color matches the ghost/outlined secondary intent (fuchsia 55%).
      */
-    --origam-btn---border-color:          rgba(217, 70, 239, 0.55);
-    --origam-btn---border-width-outlined: 1px;
-    --origam-btn---border-width-ghost:    1px;
-    --origam-btn---box-shadow-elevated:   0 4px 14px -4px rgba(124, 58, 237, 0.30), 0 1px 3px -1px rgba(124, 58, 237, 0.15);
-    --origam-btn---box-shadow-ghost:      rgba(217, 70, 239, 0.35) 0px 0px 10px -4px;/*
+/*
      * OrigamCard component-level box-shadow (light).
      * Geek light: violet-tinted depth shadow, matching --origam-shadow---card-elevated
      * which is the bespoke marketing token. OrigamCard reads ---box-shadow instead.
      */
-    --origam-card---box-shadow: 0 1px 3px rgba(124, 58, 237, 0.06), 0 8px 24px -16px rgba(124, 58, 237, 0.20);/*
+/*
      * OrigamCode component-level border (light).
      * Geek: subtle violet-tinted border, 1px (keeps clean terminal look).
      */
-    --origam-code---border-color: rgba(168, 85, 247, 0.28);
-    --origam-code---border-width: 1px;
+
 }/* ── GEEK DARK ───────────────────────────────────────────────────────────── */
 
 :root:root[data-theme="geek"][data-mode="dark"] {/* Heading font override — monospace terminal aesthetic */
-    --origam-font-family---heading: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
-    --origam-title---font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;/* Radii — slightly softer in dark mode per maquette *//* Surfaces — deep violet-black *//* Text — lavender-white *//* Actions / primary — cyan/purple neon *//* Actions / secondary *//* Actions / ghost *//* Borders — cyan/purple neon *//* Feedback *//* Appbar */
-    --origam-appbar---bg: rgba(10, 6, 18, 0.85);/* Menu — appbar dropdowns */
-    --origam-menu---background: var(--origam-color__surface---default);
-    --origam-menu---color: var(--origam-color__text---primary);
-    --origam-menu---border-radius: 8px;
-    --origam-menu---box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.70), 0 1px 4px -1px rgba(0, 0, 0, 0.40), 0 0 0 1px var(--origam-color__border---default), 0 0 20px -8px rgba(0, 240, 255, 0.20);
-    --origam-menu__content---padding: 4px;
-    --origam-list---background: transparent;
-    --origam-list---padding-block-start: 0;
-    --origam-list---padding-block-end: 0;
-    --origam-list-item---padding-inline-start: 12px;
-    --origam-list-item---padding-inline-end: 12px;/* Shadows *//* Gradients — marketing display (cyan→violet→pink neon) */
+/* Radii — slightly softer in dark mode per maquette *//* Surfaces — deep violet-black *//* Text — lavender-white *//* Actions / primary — cyan/purple neon *//* Actions / secondary *//* Actions / ghost *//* Borders — cyan/purple neon *//* Feedback *//* Appbar */
+/* Menu — appbar dropdowns */
+/* Shadows *//* Gradients — marketing display (cyan→violet→pink neon) */
     --origam-gradient---hero-glow: radial-gradient(ellipse 65% 45% at 50% 0%, rgba(0, 240, 255, 0.18), transparent 65%);
     --origam-gradient---cta-glow: radial-gradient(ellipse 80% 60% at 80% 30%, rgba(199, 125, 255, 0.15), transparent 70%);
     --origam-gradient---cta-glow-top: radial-gradient(ellipse 70% 55% at 50% 0%, rgba(0, 240, 255, 0.14), transparent 65%);
@@ -82,20 +57,15 @@
      * Geek dark: cyan-tinted neon borders + glow shadow.
      * border-color: cyan at 40% for ghost/outlined style.
      */
-    --origam-btn---border-color:          rgba(0, 240, 255, 0.40);
-    --origam-btn---border-width-outlined: 1px;
-    --origam-btn---border-width-ghost:    1px;
-    --origam-btn---box-shadow-elevated:   0 8px 24px -8px rgba(0, 240, 255, 0.50), 0 0 32px -8px rgba(199, 125, 255, 0.35);
-    --origam-btn---box-shadow-ghost:      rgba(0, 240, 255, 0.25) 0px 0px 12px -4px;/*
+/*
      * OrigamCard component-level box-shadow (dark).
      * Geek dark: deep shadow with faint cyan/purple tint for depth.
      */
-    --origam-card---box-shadow: inset 0 1px 0 rgba(199, 125, 255, 0.08), 0 8px 28px -12px rgba(0, 0, 0, 0.80), 0 0 0 1px rgba(0, 240, 255, 0.04);/*
+/*
      * OrigamCode component-level border (dark).
      * Geek dark: subtle cyan-tinted border (keeps terminal/code aesthetic).
      */
-    --origam-code---border-color: rgba(124, 77, 255, 0.28);
-    --origam-code---border-width: 1px;
+
 }/* ── GEEK — Marketing heading font override ──────────────────────────────── *//*
  * The .home-*__title elements are <h1>/<h2> with scoped CSS — they inherit
  * font-family from the body (Inter). OrigamTitle reads --origam-title---font-family

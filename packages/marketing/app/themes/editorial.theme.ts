@@ -64,32 +64,32 @@ export const editorialLightTheme: IOrigamTheme = {
             },
             feedback: {
                 success: {
-                    bg: '#16a34a',
-                    bgSubtle: 'rgba(22, 163, 74, 0.10)',
+                    bg: '#15803d',
+                    bgSubtle: 'rgba(21, 128, 61, 0.08)',
                     fg: '#ffffff',
                     fgSubtle: '#166534',
-                    border: '#166534'
+                    border: '#15803d'
                 },
                 warning: {
-                    bg: '#d97706',
-                    bgSubtle: 'rgba(217, 119, 6, 0.10)',
+                    bg: '#b45309',
+                    bgSubtle: 'rgba(180, 83, 9, 0.08)',
                     fg: '#ffffff',
                     fgSubtle: '#92400e',
-                    border: '#92400e'
+                    border: '#b45309'
                 },
                 danger: {
-                    bg: '#dc2626',
-                    bgSubtle: 'rgba(220, 38, 38, 0.10)',
+                    bg: '#b91c1c',
+                    bgSubtle: 'rgba(185, 28, 28, 0.08)',
                     fg: '#ffffff',
                     fgSubtle: '#991b1b',
-                    border: '#991b1b'
+                    border: '#b91c1c'
                 },
                 info: {
-                    bg: '#2563eb',
-                    bgSubtle: 'rgba(37, 99, 235, 0.10)',
+                    bg: '#1d4ed8',
+                    bgSubtle: 'rgba(29, 78, 216, 0.08)',
                     fg: '#ffffff',
-                    fgSubtle: '#1d4ed8',
-                    border: '#2563eb'
+                    fgSubtle: '#1e40af',
+                    border: '#1d4ed8'
                 }
             },
             'btn-primary-bg': '#5b21b6',
@@ -98,14 +98,91 @@ export const editorialLightTheme: IOrigamTheme = {
             'btn-secondary-border': 'rgba(26, 23, 20, 0.40)',
             'btn-secondary-text': '#1a1714'
         },
+        // ⛔ ELEVATION = le tier `shadow` sémantique. Editorial = flat (pas d'ombre).
+        // Rampe TRÈS discrète sur xs/sm (séparateurs à peine perceptibles) ;
+        // md/lg/xl = none pour conserver l'identité magazine plat + carré.
         shadow: {
-            'card-elevated': 'none',
-            'glow-primary': 'none',
-            'btn-primary': 'none',
-            'btn-secondary': 'none'
+            none: 'none',
+            xs: '0 1px 2px rgba(0, 0, 0, 0.04)',
+            sm: '0 1px 4px rgba(0, 0, 0, 0.06)',
+            md: 'none',
+            lg: 'none',
+            xl: 'none'
         }
     },
-    cssVars: {}
+    // ⛔ PROPS D'ABORD (logique DS). Identité éditoriale = coins carrés (rounded
+    // 'none'), surfaces plates (flat + elevation 0), variant outlined pour les champs
+    // interactifs. Sobre comme un magazine : structure visible, sans ornementation.
+    components: {
+        'origam-btn': { variant: 'outlined', rounded: 'none', border: true, elevation: 0 },
+        'origam-btn-group': { variant: 'outlined', rounded: 'none', border: true },
+        'origam-btn-toggle': { variant: 'outlined', rounded: 'none', border: true },
+        'origam-card': { rounded: 'none', border: true, flat: true },
+        'origam-chip': { variant: 'outlined', rounded: 'none', border: true, pill: false },
+        'origam-alert': { rounded: 'none', border: true, elevation: 0 },
+        'origam-field': { variant: 'outlined', rounded: 'none', border: true },
+        'origam-text-field': { variant: 'outlined', rounded: 'none', border: true },
+        'origam-textarea-field': { variant: 'outlined', rounded: 'none', border: true },
+        'origam-number-field': { variant: 'outlined', rounded: 'none', border: true },
+        'origam-password-field': { variant: 'outlined', rounded: 'none', border: true },
+        'origam-select': { variant: 'outlined', rounded: 'none', border: true },
+        'origam-date-picker-field': { rounded: 'none', border: true },
+        'origam-file-field': { rounded: 'none', border: true },
+        'origam-color-picker-field': { rounded: 'none', border: true },
+        'origam-code': { rounded: 'none', border: true, elevation: 0 },
+        'origam-menu': { rounded: 'none', border: true, elevation: 0 },
+        'origam-table': { rounded: 'none', border: true },
+        'origam-avatar': { rounded: 'none', border: true },
+        'origam-checkbox': { rounded: 'none' },
+        'origam-snackbar': { rounded: 'none', border: true, elevation: 0 }
+    },
+    cssVars: {
+        "--origam-font-family---heading": "'Fraunces', 'Playfair Display', Georgia, serif",
+        "--origam-title---font-family": "'Fraunces', 'Playfair Display', Georgia, serif",
+        '--origam-font-weight---extrabold': '400',
+        '--origam-letter-spacing---hero': '-0.04em',
+        '--origam-line-height---hero': '0.9',
+        '--origam-letter-spacing---tight': '-0.03em',
+        '--origam-appbar---backdrop-filter': 'saturate(140%) blur(16px)',
+        '--origam-menu---background': 'var(--origam-color__surface---default)',
+        '--origam-menu---color': 'var(--origam-color__text---primary)',
+        '--origam-menu---border-radius': '0px',
+        '--origam-menu__content---padding': '4px',
+        '--origam-list---background': 'transparent',
+        '--origam-list---padding-block-start': '0',
+        '--origam-list---padding-block-end': '0',
+        '--origam-list-item---padding-inline-start': '12px',
+        '--origam-list-item---padding-inline-end': '12px',
+        '--origam-btn---border-width-outlined': '1px',
+        '--origam-btn---border-width-ghost': '1px',
+        '--origam-btn---box-shadow-elevated': 'none',
+        '--origam-btn---box-shadow-ghost': 'none',
+        '--origam-btn---border-radius': '0px',
+        '--origam-card---background': 'var(--origam-color__surface---raised)',
+        '--origam-card---border-color': 'var(--origam-color__border---default)',
+        '--origam-card---border-style': 'solid',
+        '--origam-card---border-top-width': '1px',
+        '--origam-card---border-right-width': '1px',
+        '--origam-card---border-bottom-width': '1px',
+        '--origam-card---border-left-width': '1px',
+        '--origam-card---box-shadow': 'none',
+        '--origam-chip---border-radius': '0px',
+        '--origam-chip---background-color': 'var(--origam-color__surface---raised)',
+        '--origam-chip---border-color': 'var(--origam-color__border---default)',
+        '--origam-chip---border-width': '1px',
+        '--origam-chip---border-style': 'solid',
+        '--origam-code---border-radius': '0px',
+        '--origam-code---border-color': 'var(--origam-color__border---default)',
+        '--origam-code---border-width': '1px',
+        '--origam-field---border-radius': '0px',
+        '--origam-field---border-opacity': '1',
+        '--origam-alert---border-radius': '0px',
+        '--origam-appbar---bg': 'color-mix(in srgb, #fbf7ee 72%, transparent)',
+        '--origam-menu---box-shadow': '0 4px 16px -4px rgba(0, 0, 0, 0.12), 0 0 0 1px var(--origam-color__border---default)',
+        '--origam-btn---border-color': 'rgba(26, 23, 20, 0.40)',
+        '--origam-code---background-color': 'var(--origam-color__surface---sunken, #f3ecdd)',
+        '--origam-field---border-color': 'rgba(26, 23, 20, 0.40)'
+    }
 }
 
 export const editorialDarkTheme: IOrigamTheme = {
@@ -206,14 +283,64 @@ export const editorialDarkTheme: IOrigamTheme = {
             'btn-secondary-border': 'rgba(255, 255, 255, 0.30)',
             'btn-secondary-text': '#ffffff'
         },
+        // ELEVATION (dark) : editorial = plat, pas d'ombre. Toute l'échelle à none
+        // — sur fond sombre une ombre serait de toute façon imperceptible.
         shadow: {
-            'card-elevated': 'none',
-            'glow-primary': 'none',
-            'btn-primary': 'none',
-            'btn-secondary': 'none'
+            none: 'none',
+            xs: 'none',
+            sm: 'none',
+            md: 'none',
+            lg: 'none',
+            xl: 'none'
         }
     },
-    cssVars: {}
+    cssVars: {
+        "--origam-font-family---heading": "'Fraunces', 'Playfair Display', Georgia, serif",
+        "--origam-title---font-family": "'Fraunces', 'Playfair Display', Georgia, serif",
+        '--origam-font-weight---extrabold': '400',
+        '--origam-letter-spacing---hero': '-0.04em',
+        '--origam-line-height---hero': '0.9',
+        '--origam-letter-spacing---tight': '-0.03em',
+        '--origam-appbar---backdrop-filter': 'saturate(140%) blur(16px)',
+        '--origam-menu---background': 'var(--origam-color__surface---default)',
+        '--origam-menu---color': 'var(--origam-color__text---primary)',
+        '--origam-menu---border-radius': '0px',
+        '--origam-menu__content---padding': '4px',
+        '--origam-list---background': 'transparent',
+        '--origam-list---padding-block-start': '0',
+        '--origam-list---padding-block-end': '0',
+        '--origam-list-item---padding-inline-start': '12px',
+        '--origam-list-item---padding-inline-end': '12px',
+        '--origam-btn---border-width-outlined': '1px',
+        '--origam-btn---border-width-ghost': '1px',
+        '--origam-btn---box-shadow-elevated': 'none',
+        '--origam-btn---box-shadow-ghost': 'none',
+        '--origam-btn---border-radius': '0px',
+        '--origam-card---background': 'var(--origam-color__surface---raised)',
+        '--origam-card---border-color': 'var(--origam-color__border---default)',
+        '--origam-card---border-style': 'solid',
+        '--origam-card---border-top-width': '1px',
+        '--origam-card---border-right-width': '1px',
+        '--origam-card---border-bottom-width': '1px',
+        '--origam-card---border-left-width': '1px',
+        '--origam-card---box-shadow': 'none',
+        '--origam-chip---border-radius': '0px',
+        '--origam-chip---background-color': 'var(--origam-color__surface---raised)',
+        '--origam-chip---border-color': 'var(--origam-color__border---default)',
+        '--origam-chip---border-width': '1px',
+        '--origam-chip---border-style': 'solid',
+        '--origam-code---border-radius': '0px',
+        '--origam-code---border-color': 'var(--origam-color__border---default)',
+        '--origam-code---border-width': '1px',
+        '--origam-field---border-radius': '0px',
+        '--origam-field---border-opacity': '1',
+        '--origam-alert---border-radius': '0px',
+        '--origam-appbar---bg': 'color-mix(in srgb, #0a0a0a 72%, transparent)',
+        '--origam-menu---box-shadow': '0 4px 24px -4px rgba(0, 0, 0, 0.50), 0 0 0 1px var(--origam-color__border---default)',
+        '--origam-btn---border-color': 'rgba(255, 255, 255, 0.20)',
+        '--origam-code---background-color': 'var(--origam-color__surface---sunken, #131313)',
+        '--origam-field---border-color': 'rgba(255, 255, 255, 0.30)'
+    }
 }
 
 export const editorialThemes: IOrigamTheme[] = [editorialLightTheme, editorialDarkTheme]

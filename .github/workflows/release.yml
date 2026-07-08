@@ -31,13 +31,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -71,14 +71,16 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         working-directory: packages/ds
         run: |
-          # setup-node writes an .npmrc containing the literal string
-          # `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}`. npm expands that
-          # env placeholder at publish time; pnpm does NOT always — so the PUT went
-          # out unauthenticated and npm answered E404 (releases 2.5.0/2.5.1/2.6.0 all
-          # failed here). Write the RESOLVED token value into the config pnpm reads.
+          # Publish with `npm` (not `pnpm`): `pnpm publish --provenance` fails
+          # here with E404 (the PUT to the registry — auth + provenance handling
+          # differs), which is why 2.5.x/2.6.x all failed the CI publish and had
+          # to be published manually. `origam` has NO `workspace:*` deps, so `npm`
+          # publishes cleanly and its provenance implementation is mature/reliable.
+          # setup-node's .npmrc (registry-url) supplies NODE_AUTH_TOKEN natively;
+          # we also write the resolved token explicitly as a belt-and-suspenders.
           npmrc="${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
           echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" >> "$npmrc"
-          pnpm publish --access public --provenance --no-git-checks
+          npm publish --access public --provenance
 
       - name: Extract release notes from CHANGELOG.md
         id: notes

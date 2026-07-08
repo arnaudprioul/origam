@@ -11,6 +11,7 @@ import { editorialThemes } from './app/themes/editorial.theme'
 import { materialThemes } from './app/themes/material.theme'
 import { ecomThemes } from './app/themes/ecom.theme'
 import { appleThemes } from './app/themes/apple.theme'
+import { origamThemes } from './app/themes/origam.theme'
 
 // Single source of truth for the displayed version: the published `origam`
 // package version. Read at build time so badges/translations never need a
@@ -23,6 +24,16 @@ export default defineNuxtConfig({
     compatibilityDate: '2026-05-27',
     devtools: { enabled: true },
     ssr: true,
+
+    // Production build only needs runnable output, not source maps. Nuxt emits
+    // SERVER source maps by default in prod (~570 .mjs.map / ~67 MB here); rollup
+    // holds them in memory during the Nitro bundle step, which is exactly where
+    // the RAM-constrained deploy container OOM-kills the build. Disabling both
+    // channels removes that memory spike with zero runtime impact.
+    sourcemap: {
+        server: false,
+        client: false
+    },
 
     typescript: {
         strict: true,
@@ -51,7 +62,10 @@ export default defineNuxtConfig({
             ...editorialThemes,
             ...materialThemes,
             ...ecomThemes,
-            ...appleThemes
+            ...appleThemes,
+            // Thème neutre de base (identité DS par défaut) — enregistré pour que le
+            // playground /theming puisse RESET son sous-arbre via theme="origam".
+            ...origamThemes
         ]
     },
 
@@ -184,7 +198,8 @@ export default defineNuxtConfig({
                 'origam/utils': resolve(__dirname, '../ds/src/utils'),
                 'origam/types': resolve(__dirname, '../ds/src/types'),
                 'origam/interfaces': resolve(__dirname, '../ds/src/interfaces'),
-                'origam/services': resolve(__dirname, '../ds/src/services')
+                'origam/services': resolve(__dirname, '../ds/src/services'),
+                'origam/themes': resolve(__dirname, '../ds/src/themes')
             }
         }
     }

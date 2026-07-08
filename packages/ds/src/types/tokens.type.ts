@@ -2,6 +2,7 @@
 
 export type TTokenName =
   | '--origam-alert---accent-width'
+  | '--origam-alert---backdrop-filter'
   | '--origam-alert---background-color'
   | '--origam-alert---border-bottom-width'
   | '--origam-alert---border-color'
@@ -1347,8 +1348,10 @@ export type TTokenName =
   | '--origam-field---background-color'
   | '--origam-field---border-color'
   | '--origam-field---border-opacity'
+  | '--origam-field---border-opacity-outlined'
   | '--origam-field---border-radius'
   | '--origam-field---border-width'
+  | '--origam-field---border-width-outlined'
   | '--origam-field---color'
   | '--origam-field---font-size'
   | '--origam-field---letter-spacing'

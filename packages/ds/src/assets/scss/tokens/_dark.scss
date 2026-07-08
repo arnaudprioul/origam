@@ -402,6 +402,7 @@
   --origam-badge--error---background-color: var(--origam-color__feedback--danger---bg);
   --origam-badge--error---color: var(--origam-color__feedback--danger---fg);
   --origam-alert---background-color: var(--origam-color__surface---disabled);
+  --origam-alert---backdrop-filter: none;
   --origam-alert---color: var(--origam-color__text---primary);
   --origam-alert---border-color: rgba(0, 0, 0, 0);
   --origam-alert---border-style: solid;
@@ -846,7 +847,9 @@
   --origam-field---border-radius: var(--origam-radius---sm);
   --origam-field---border-color: var(--origam-color__border---default);
   --origam-field---border-width: var(--origam-border__width---thin);
+  --origam-field---border-width-outlined: var(--origam-border__width---thin);
   --origam-field---border-opacity: 0.38;
+  --origam-field---border-opacity-outlined: 0.38;
   --origam-field---background-color: rgba(0, 0, 0, 0);
   --origam-field---color: var(--origam-color__text---primary);
   --origam-field---opacity-disabled: var(--origam-opacity---50);

@@ -15,6 +15,45 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [2.7.0] — 2026-07-08
+
+### Added
+
+- `OrigamThemeProvider` now applies the active theme's **component default
+  props** to its sub-tree (props-first theming cascades into sub-trees via
+  `provideDefaults`), not just the `data-theme` / `data-mode` attributes. A
+  `<origam-theme-provider theme="brand-x">` wrapper therefore gives every
+  descendant that brand's per-component defaults.
+- Glass theme: `OrigamAlert` glassmorphism (transparency + blur).
+
+### Changed
+
+- **`shiki` is now an OPTIONAL peer dependency** (removed from `dependencies`).
+  `OrigamCode` degrades gracefully to plain, un-highlighted code when `shiki`
+  is not installed (a one-time console warning is emitted; line numbers,
+  highlight-lines and copy keep working). **Migration:** add `shiki` (`^4.3.1`)
+  to your app's dependencies to keep syntax highlighting. This drops a heavy
+  (~3 MB) hard dependency from apps that don't render code blocks.
+
+### Fixed
+
+- `OrigamPagination` colored mode (`color` / `bgColor`) now fills the page
+  buttons. The theme's default `text` btn variant
+  (`background-color: transparent !important`) was swallowing the intent fill,
+  leaving resting buttons transparent; the row now forces the `flat` variant
+  when a colour is set.
+- Cartoon dark `/theming`: fields adopt the theme and the primary btn contrast
+  is corrected.
+
+### Internal
+
+- Restored the green `vue-tsc` type-check gate under TypeScript 6.
+- E2E suite stabilised: sharded CI plus deterministic fixture-drift fixes
+  (variant-index / navigation realignment) — the "flaky" bucket was
+  deterministic drift, not timing.
+
+---
+
 ## [2.6.3] — 2026-07-03
 
 ### Changed

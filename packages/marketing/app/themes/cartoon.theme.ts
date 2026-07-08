@@ -64,32 +64,32 @@ export const cartoonLightTheme: IOrigamTheme = {
             },
             feedback: {
                 success: {
-                    bg: '#15803d',
-                    bgSubtle: 'rgba(21, 128, 61, 0.10)',
-                    fg: '#ffffff',
-                    fgSubtle: '#15803d',
-                    border: '#15803d'
+                    bg: '#16a34a',
+                    bgSubtle: '#bbf7d0',
+                    fg: '#000000',
+                    fgSubtle: '#166534',
+                    border: '#171717'
                 },
                 warning: {
-                    bg: '#b45309',
-                    bgSubtle: 'rgba(180, 83, 9, 0.10)',
-                    fg: '#ffffff',
+                    bg: '#fbbf24',
+                    bgSubtle: '#fef3c7',
+                    fg: '#171717',
                     fgSubtle: '#b45309',
-                    border: '#b45309'
+                    border: '#171717'
                 },
                 danger: {
-                    bg: '#dc2626',
-                    bgSubtle: 'rgba(220, 38, 38, 0.10)',
-                    fg: '#ffffff',
-                    fgSubtle: '#dc2626',
-                    border: '#dc2626'
+                    bg: '#ef4444',
+                    bgSubtle: '#fecdd3',
+                    fg: '#000000',
+                    fgSubtle: '#b91c1c',
+                    border: '#171717'
                 },
                 info: {
-                    bg: '#0891b2',
-                    bgSubtle: 'rgba(8, 145, 178, 0.10)',
-                    fg: '#ffffff',
-                    fgSubtle: '#0891b2',
-                    border: '#0891b2'
+                    bg: '#60a5fa',
+                    bgSubtle: '#dbeafe',
+                    fg: '#171717',
+                    fgSubtle: '#1d4ed8',
+                    border: '#171717'
                 }
             },
             'btn-primary-bg': '#ff8fa3',
@@ -98,14 +98,86 @@ export const cartoonLightTheme: IOrigamTheme = {
             'btn-secondary-border': '#171717',
             'btn-secondary-text': '#2b2b2b'
         },
+        // ⛔ ELEVATION = le tier `shadow` sémantique. On surcharge TOUTE l'échelle
+        // (dégradé dérivé du défaut) en hard-shadows cartoon. Les composants
+        // consomment via la prop `elevation` (ci-dessous), jamais de shadow inline.
         shadow: {
-            'card-elevated': '6px 6px 0 #171717',
-            'glow-primary': '4px 4px 0 #171717',
-            'btn-primary': '4px 4px 0 #171717',
-            'btn-secondary': '4px 4px 0 #171717'
+            none: 'none',
+            xs: '2px 2px 0 #171717',
+            sm: '3px 3px 0 #171717',
+            md: '4px 4px 0 #171717',
+            lg: '6px 6px 0 #171717',
+            xl: '8px 8px 0 #171717'
         }
     },
-    cssVars: {}
+    // ⛔ PROPS D'ABORD (logique DS). Overrides cartoon superposés sur la baseline
+    // `origam` (deep-merge). Identité cartoon = bordures visibles + coins arrondis
+    // + hard-shadows via la prop `elevation`. Seuls l'épaisseur 3px + la couleur
+    // de bordure #171717 (non exprimables en props) restent dans `vars`.
+    components: {
+        'origam-btn': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
+        'origam-btn-group': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-btn-toggle': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-card': { rounded: 'lg', border: true, flat: false, elevation: 4 },
+        'origam-chip': { variant: 'outlined', rounded: 'lg', border: true, pill: false },
+        'origam-alert': { rounded: 'lg', border: true, elevation: 2 },
+        'origam-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
+        'origam-text-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
+        'origam-textarea-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
+        'origam-number-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
+        'origam-password-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
+        'origam-select': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
+        'origam-date-picker-field': { rounded: 'lg', border: true, elevation: 2 },
+        'origam-file-field': { rounded: 'lg', border: true, elevation: 2 },
+        'origam-color-picker-field': { rounded: 'lg', border: true, elevation: 2 },
+        'origam-code': { rounded: 'lg', border: true, elevation: 2 },
+        'origam-menu': { rounded: 'lg', border: true, elevation: 4 },
+        'origam-table': { rounded: 'lg', border: true },
+        'origam-avatar': { rounded: 'lg', border: true },
+        'origam-checkbox': { rounded: 'md' },
+        'origam-snackbar': { rounded: 'lg', border: true, elevation: 4 }
+    },
+    // Overrides bruts non exprimables en props (couleur + épaisseur de bordure,
+    // hard-shadow de bouton). Migrés depuis cartoon.css → appliqués par le DS via
+    // `[data-theme="cartoon"]` (sous-arbre-capable).
+    cssVars: {
+        '--origam-btn---border-color': '#171717',
+        '--origam-btn---border-width-outlined': '3px',
+        '--origam-btn---border-width-ghost': '3px',
+        '--origam-btn---box-shadow-elevated': '4px 4px 0 #171717',
+        '--origam-btn---box-shadow-ghost': '4px 4px 0 #171717',
+        '--origam-card---border-color': 'var(--origam-color__border---default)',
+        '--origam-card---border-style': 'solid',
+        '--origam-card---border-top-width': '3px',
+        '--origam-card---border-right-width': '3px',
+        '--origam-card---border-bottom-width': '3px',
+        '--origam-card---border-left-width': '3px',
+        '--origam-card---box-shadow': '6px 6px 0 #171717',
+        '--origam-appbar---bg': '#fff9f0',
+        '--origam-chip---border-color': '#171717',
+        '--origam-chip---border-style': 'solid',
+        '--origam-chip---border-width': '3px',
+        '--origam-chip---border-width-outlined': '3px',
+        '--origam-code---border-width': '3px',
+        '--origam-code---border-color': '#171717',
+        '--origam-menu---background': 'var(--origam-color__surface---default)',
+        '--origam-menu---color': 'var(--origam-color__text---primary)',
+        '--origam-menu---border-radius': '14px',
+        '--origam-menu---box-shadow': '4px 4px 0 #171717, 0 0 0 3px #171717',
+        '--origam-menu__content---padding': '6px',
+        '--origam-list---background': 'transparent',
+        '--origam-list---padding-block-start': '0',
+        '--origam-list---padding-block-end': '0',
+        '--origam-list-item---padding-inline-start': '12px',
+        '--origam-list-item---padding-inline-end': '12px',
+        '--origam-field---border-width': '3px',
+        '--origam-field---border-width-outlined': '3px',
+        '--origam-field---border-opacity': '1',
+        '--origam-field---border-opacity-outlined': '1',
+        '--origam-field---border-color': 'var(--origam-color__border---default)',
+        '--origam-font-family---heading': "Inter, -apple-system, 'system-ui', sans-serif",
+        '--origam-title---font-family': "Inter, -apple-system, 'system-ui', sans-serif"
+    }
 }
 
 export const cartoonDarkTheme: IOrigamTheme = {
@@ -144,7 +216,7 @@ export const cartoonDarkTheme: IOrigamTheme = {
                     bgSubtle: 'rgba(255, 143, 163, 0.14)',
                     bgDisabled: '#404040',
                     fg: '#3a2a2e',
-                    fgSubtle: '#5b21b6',
+                    fgSubtle: '#ff8fa3',
                     fgDisabled: '#737373'
                 },
                 secondary: {
@@ -163,9 +235,9 @@ export const cartoonDarkTheme: IOrigamTheme = {
                 }
             },
             border: {
-                default: '#171717',
-                subtle: '#171717',
-                strong: '#000000',
+                default: '#fffefb',
+                subtle: '#fffefb',
+                strong: '#ffffff',
                 focus: '#ff8fa3',
                 'subtle-alpha': 'rgba(255, 254, 251, 0.60)',
                 ghost: 'rgba(255, 254, 251, 0.40)'
@@ -206,14 +278,55 @@ export const cartoonDarkTheme: IOrigamTheme = {
             'btn-secondary-border': '#fffefb',
             'btn-secondary-text': '#fffefb'
         },
+        // ELEVATION (dark) : même échelle hard-shadow, offset clair #fffefb pour
+        // rester visible sur fond sombre. Consommée via la prop `elevation`.
         shadow: {
-            'card-elevated': '6px 6px 0 #171717',
-            'glow-primary': '4px 4px 0 #fffefb',
-            'btn-primary': '4px 4px 0 #fffefb',
-            'btn-secondary': '4px 4px 0 #fffefb'
+            none: 'none',
+            xs: '2px 2px 0 #fffefb',
+            sm: '3px 3px 0 #fffefb',
+            md: '4px 4px 0 #fffefb',
+            lg: '6px 6px 0 #fffefb',
+            xl: '8px 8px 0 #fffefb'
         }
     },
-    cssVars: {}
+    cssVars: {
+        '--origam-btn---border-color': '#fffefb',
+        '--origam-btn---border-width-outlined': '3px',
+        '--origam-btn---border-width-ghost': '3px',
+        '--origam-btn---box-shadow-elevated': '4px 4px 0 #fffefb',
+        '--origam-btn---box-shadow-ghost': '4px 4px 0 #fffefb',
+        '--origam-card---border-color': 'var(--origam-color__border---default)',
+        '--origam-card---border-style': 'solid',
+        '--origam-card---border-top-width': '3px',
+        '--origam-card---border-right-width': '3px',
+        '--origam-card---border-bottom-width': '3px',
+        '--origam-card---border-left-width': '3px',
+        '--origam-card---box-shadow': '6px 6px 0 #fffefb',
+        '--origam-appbar---bg': '#1a1a1a',
+        '--origam-chip---border-color': '#fffefb',
+        '--origam-chip---border-style': 'solid',
+        '--origam-chip---border-width': '3px',
+        '--origam-chip---border-width-outlined': '3px',
+        '--origam-code---border-width': '3px',
+        '--origam-code---border-color': '#fffefb',
+        '--origam-menu---background': 'var(--origam-color__surface---default)',
+        '--origam-menu---color': 'var(--origam-color__text---primary)',
+        '--origam-menu---border-radius': '14px',
+        '--origam-menu---box-shadow': '4px 4px 0 #fffefb, 0 0 0 3px #fffefb',
+        '--origam-menu__content---padding': '6px',
+        '--origam-list---background': 'transparent',
+        '--origam-list---padding-block-start': '0',
+        '--origam-list---padding-block-end': '0',
+        '--origam-list-item---padding-inline-start': '12px',
+        '--origam-list-item---padding-inline-end': '12px',
+        '--origam-field---border-width': '3px',
+        '--origam-field---border-width-outlined': '3px',
+        '--origam-field---border-opacity': '1',
+        '--origam-field---border-opacity-outlined': '1',
+        '--origam-field---border-color': 'var(--origam-color__border---default)',
+        '--origam-font-family---heading': "Inter, -apple-system, 'system-ui', sans-serif",
+        '--origam-title---font-family': "Inter, -apple-system, 'system-ui', sans-serif"
+    }
 }
 
 export const cartoonThemes: IOrigamTheme[] = [cartoonLightTheme, cartoonDarkTheme]

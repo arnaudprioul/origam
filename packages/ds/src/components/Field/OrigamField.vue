@@ -1002,8 +1002,8 @@
 			}
 
 			&-outlined {
-				--origam-field---border-width: 1px;
-				--origam-field---border-opacity: .38;
+				--origam-field---border-width: var(--origam-field---border-width-outlined, 1px);
+				--origam-field---border-opacity: var(--origam-field---border-opacity-outlined, .38);
 				background: var(--origam-field---background-color, transparent);
 
 				#{$this}__outline {

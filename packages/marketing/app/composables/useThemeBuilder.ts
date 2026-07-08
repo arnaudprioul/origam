@@ -171,6 +171,17 @@ export function useThemeBuilder () {
             if (value === '' || value === false || value === undefined) continue
             out[ctrl.prop] = value
         }
+        // Preview-only default: any component exposing a `variant` prop renders
+        // with `outlined` so preset/token changes (borders, colours) are visible
+        // out of the box — unless the user explicitly picked another variant.
+        // Never serialised (previewProps only).
+        const variantCtrl = entry.controls.find(
+            c => c.prop === 'variant' && c.kind === 'select' && (c.options?.length ?? 0) > 0
+        )
+        if (variantCtrl && !isPropEdited(slug, 'variant')) {
+            const outlined = variantCtrl.options?.find(o => o.value === 'outlined')
+            if (outlined) out.variant = outlined.value
+        }
         return out
     }
 
@@ -399,8 +410,23 @@ export function useThemeBuilder () {
         Object.keys(state.cssVars.dark).forEach(k => delete state.cssVars.dark[k])
         state.mode = 'light'
         state.activeMode = 'light'
-        for (const [k, v] of Object.entries(preset.light)) setToken('light', k, v)
-        for (const [k, v] of Object.entries(preset.dark)) setToken('dark', k, v)
+        // Write all preset values directly — bypass setToken's "equals default" filter
+        // so the full preset config appears in the generated code.
+        // setToken would silently drop any token whose value happens to match
+        // the registered THEME_BUILDER_TOKENS default, producing an incomplete
+        // or empty generated theme (e.g. the origam preset would produce nothing).
+        for (const [k, v] of Object.entries(preset.light)) {
+            state.cssVars.light[k] = v
+        }
+        for (const [k, v] of Object.entries(preset.dark)) {
+            state.cssVars.dark[k] = v
+        }
+        // PROPS D'ABORD : applique les props de composant du thème dans
+        // state.defaults (ré-émises en `component` à l'export). Clé = `origam-{slug}`
+        // ou `global`, comme IOrigamTheme.components.
+        for (const [compKey, props] of Object.entries(preset.components ?? {})) {
+            state.defaults[compKey] = { ...props }
+        }
     }
 
     const presets: IThemeBuilderPreset[] = THEME_BUILDER_PRESETS

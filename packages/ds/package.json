@@ -1,6 +1,6 @@
 {
   "name": "origam",
-  "version": "2.6.3",
+  "version": "2.7.0",
   "type": "module",
   "description": "origam — a Vue 3 design system with multi-theme design tokens, CSS-first components and TypeScript types.",
   "keywords": [
@@ -76,6 +76,7 @@
     "./components": "./dist/src/components/index.js",
     "./components/*": "./dist/src/components/*/index.js",
     "./composables": "./dist/src/composables/index.js",
+    "./themes": "./dist/src/themes/index.js",
     "./directives": "./dist/src/directives/index.js",
     "./enums": "./dist/src/enums/index.js",
     "./consts": "./dist/src/consts/index.js",
@@ -96,6 +97,7 @@
     "build": "pnpm run tokens:build && unbuild",
     "lib:build": "pnpm run build",
     "type-check": "vue-tsc --noEmit -p tsconfig.json",
+    "type-check:canary": "node scripts/nounusedlocals-canary.mjs",
     "tokens:build": "node scripts/build-tokens.mjs",
     "tokens:watch": "node scripts/build-tokens.mjs --watch",
     "tokens:lint": "node scripts/build-tokens.mjs --dry-run --strict",
@@ -103,15 +105,18 @@
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
-    "qrcode-generator": "^2.0.4",
-    "shiki": "^4.3.0"
+    "qrcode-generator": "^2.0.4"
   },
   "peerDependencies": {
+    "shiki": "^4.3.1",
     "vue": "^3.5.0",
     "vue-i18n": "^11.0.0",
     "vue-router": "^4.5.0"
   },
   "peerDependenciesMeta": {
+    "shiki": {
+      "optional": true
+    },
     "vue-i18n": {
       "optional": true
     },
@@ -121,9 +126,9 @@
   },
   "devDependencies": {
     "@nuxt/kit": "^4.4.5",
-    "@types/node": "^26.1.0",
     "@tokens-studio/sd-transforms": "^2.0.3",
-    "@vitejs/plugin-vue": "^6.0.0",
+    "@types/node": "^26.1.0",
+    "@vitejs/plugin-vue": "^6.0.7",
     "sass": "^1.89.2",
     "style-dictionary": "^5.5.0",
     "ts-transformer-keys": "^0.4.4",
@@ -133,8 +138,8 @@
     "vite": "^7.0.5",
     "vite-plugin-commonjs": "^0.10.4",
     "vite-tsconfig-paths": "^5.1.4",
-    "vue": "^3.5.17",
+    "vue": "3.5.39",
     "vue-sfc-transformer": "^0.1.16",
-    "vue-tsc": "^3.0.2"
+    "vue-tsc": "^3.3.6"
   }
 }

@@ -39,12 +39,9 @@
        H2: weight 400, tracking -.03em (italic per maquette --m-h2-style)
        H3: weight 600, tracking normal (features cards, card titles)
        KPI stat: weight 400, tracking -.04em — same display font */
-    --origam-font-family---heading: 'Fraunces', 'Playfair Display', Georgia, serif;
-    --origam-title---font-family: 'Fraunces', 'Playfair Display', Georgia, serif;/* Hero: Fraunces at 400 weight (not 800), tracking -.04em, ratio .9 */
-    --origam-font-weight---extrabold: 400;
-    --origam-letter-spacing---hero: -0.04em;
-    --origam-line-height---hero: 0.9;/* Section H2: same Fraunces, tracking -.03em */
-    --origam-letter-spacing---tight: -0.03em;/* ── Radii ─────────────────────────────────────────────────────────────
+/* Hero: Fraunces at 400 weight (not 800), tracking -.04em, ratio .9 */
+/* Section H2: same Fraunces, tracking -.03em */
+/* ── Radii ─────────────────────────────────────────────────────────────
        --m-radius=0px, --m-radius-sm=0px, --m-radius-lg=0px, --m-radius-pill=0px
        Editorial uses 0px everywhere — sharp typographic aesthetic *//* ── Surfaces ──────────────────────────────────────────────────────────
        --m-bg = #FBF7EE → warm parchment page default surface
@@ -73,19 +70,9 @@
        Measured: bg=color(srgb 0.984 0.969 0.933 / 0.72) ≈ #FBF7EE @ 72%
        border-block-end: 1px solid rgba(26,23,20,0.16)
        backdrop-filter: saturate(1.4) blur(16px) */
-    --origam-appbar---bg: color-mix(in srgb, #fbf7ee 72%, transparent);
-    --origam-appbar---backdrop-filter: saturate(140%) blur(16px);/* ── Menu — appbar dropdowns ───────────────────────────────────────────
+/* ── Menu — appbar dropdowns ───────────────────────────────────────────
        Editorial: sharp radius 0px, ink border, flat shadow */
-    --origam-menu---background: var(--origam-color__surface---default);
-    --origam-menu---color: var(--origam-color__text---primary);
-    --origam-menu---border-radius: 0px;
-    --origam-menu---box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.12), 0 0 0 1px var(--origam-color__border---default);
-    --origam-menu__content---padding: 4px;
-    --origam-list---background: transparent;
-    --origam-list---padding-block-start: 0;
-    --origam-list---padding-block-end: 0;
-    --origam-list-item---padding-inline-start: 12px;
-    --origam-list-item---padding-inline-end: 12px;/* ── Shadows ───────────────────────────────────────────────────────────
+/* ── Shadows ───────────────────────────────────────────────────────────
        --m-shadow-card: none (print aesthetic, no depth)
        --m-shadow-btn: none *//* ── Gradients — marketing display ────────────────────────────────────
        Hero glow: --m-bg-decor-1 = radial lavender ellipse at 50% 0% (section-scoped)
@@ -109,7 +96,6 @@
                  The DS variant="text" blocks background-color, use degenerate gradient.
        Secondary = transparent ghost, border 1px ink rgba(26,23,20,.16), dark text.
        Note: m-btn--xl has padding 16px 32px, height 57.5px, font-size 12px → DS mapping:
-             --origam-btn---height=57.5px is set per-component in HomeHero.vue.
     */
     --origam-gradient---btn-primary: linear-gradient(#5b21b6, #5b21b6);
 
@@ -119,43 +105,21 @@
      * back to DS base defaults (1px currentColor outlined, soft elevated shadow).
      * Editorial: ink translucent border, no shadow, 0px radius.
      */
-    --origam-btn---border-color:          rgba(26, 23, 20, 0.40);
-    --origam-btn---border-width-outlined: 1px;
-    --origam-btn---border-width-ghost:    1px;
-    --origam-btn---box-shadow-elevated:   none;
-    --origam-btn---box-shadow-ghost:      none;
-    --origam-btn---border-radius:         0px;/* ── Card / chip / showcase tokens ────────────────────────────────────
+/* ── Card / chip / showcase tokens ────────────────────────────────────
        Cards: bg=#FFFDF7 (raised), border=1px rgba(26,23,20,.16), radius=0px, shadow=none
        Measured: m-card--hover bg=rgb(255,253,247), all borders solid 1px rgba(26,23,20,0.16)
        Chips: radius=0px, bg=surface, border=default */
-    --origam-card---background:          var(--origam-color__surface---raised);
-    --origam-card---border-color:        var(--origam-color__border---default);
-    --origam-card---border-style:        solid;
-    --origam-card---border-top-width:    1px;
-    --origam-card---border-right-width:  1px;
-    --origam-card---border-bottom-width: 1px;
-    --origam-card---border-left-width:   1px;
-    --origam-card---box-shadow:          none;
 
-    --origam-chip---border-radius:    0px;
-    --origam-chip---background-color: var(--origam-color__surface---raised);
-    --origam-chip---border-color:     var(--origam-color__border---default);
-    --origam-chip---border-width:     1px;
-    --origam-chip---border-style:     solid;/*
+/*
      * OrigamCode component-level defaults (light) — editorial: 0px radius, ink border.
      */
-    --origam-code---border-radius:    0px;
-    --origam-code---border-color:     var(--origam-color__border---default);
-    --origam-code---border-width:     1px;
-    --origam-code---background-color: var(--origam-color__surface---sunken, #f3ecdd);/*
+/*
      * OrigamField component-level defaults (light) — editorial: 0px radius, ink border.
      */
-    --origam-field---border-radius:  0px;
-    --origam-field---border-color:   rgba(26, 23, 20, 0.40);
-    --origam-field---border-opacity: 1;/*
+/*
      * OrigamAlert component-level defaults (light) — editorial: 0px radius.
      */
-    --origam-alert---border-radius: 0px;
+
 }/* ── EDITORIAL LIGHT — appbar: border-block-end ink ─────────────────────── *//* Measured: nav border-bottom: 1px solid rgba(26,23,20,0.16)               */
 
 :root:root[data-theme="editorial"] .home-appbar,
@@ -245,7 +209,6 @@
     font-weight: 400;
     letter-spacing: -0.04em;
 }/* Section H2 titles (Features, Showcase, Themes) — OrigamTitle uses
-   --origam-title---font-family which we set. But scoped override is a safety net. */
 
 :root:root[data-theme="editorial"] .home-features__title,
 :root:root[data-theme="editorial"] .home-showcase__title,
@@ -294,12 +257,8 @@
 }/* ── EDITORIAL DARK ──────────────────────────────────────────────────────── */
 
 :root:root[data-theme="editorial"][data-mode="dark"] {/* ── Heading font — same Fraunces stack ───────────────────────────────── */
-    --origam-font-family---heading: 'Fraunces', 'Playfair Display', Georgia, serif;
-    --origam-title---font-family: 'Fraunces', 'Playfair Display', Georgia, serif;/* Hero: Fraunces 400, tracking -.04em, ratio .9 (same as light) */
-    --origam-font-weight---extrabold: 400;
-    --origam-letter-spacing---hero: -0.04em;
-    --origam-line-height---hero: 0.9;
-    --origam-letter-spacing---tight: -0.03em;/* ── Radii — identical to light (0px everywhere) ──────────────────────── *//* ── Surfaces ──────────────────────────────────────────────────────────
+/* Hero: Fraunces 400, tracking -.04em, ratio .9 (same as light) */
+/* ── Radii — identical to light (0px everywhere) ──────────────────────── *//* ── Surfaces ──────────────────────────────────────────────────────────
        --m-bg = #0A0A0A → near-black carbon (dark editorial)
        --m-surface = #0E0E0E → raised (cards, widgets) measured=rgb(14,14,14)
        --m-surface-2 = #131313 → sunken (code pill, inputs) measured=rgb(19,19,19) winbar
@@ -320,19 +279,9 @@
        Measured: nav bg=color(srgb 0.0392 0.0392 0.0392 / 0.72) ≈ #0A0A0A @ 72%
        border-block-end: 1px solid rgba(255,255,255,0.10)
        backdrop-filter: saturate(1.4) blur(16px) */
-    --origam-appbar---bg: color-mix(in srgb, #0a0a0a 72%, transparent);
-    --origam-appbar---backdrop-filter: saturate(140%) blur(16px);/* ── Menu — appbar dropdowns ───────────────────────────────────────────
+/* ── Menu — appbar dropdowns ───────────────────────────────────────────
        Dark editorial: sharp 0px, translucent white border, deeper shadow */
-    --origam-menu---background: var(--origam-color__surface---default);
-    --origam-menu---color: var(--origam-color__text---primary);
-    --origam-menu---border-radius: 0px;
-    --origam-menu---box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.50), 0 0 0 1px var(--origam-color__border---default);
-    --origam-menu__content---padding: 4px;
-    --origam-list---background: transparent;
-    --origam-list---padding-block-start: 0;
-    --origam-list---padding-block-end: 0;
-    --origam-list-item---padding-inline-start: 12px;
-    --origam-list-item---padding-inline-end: 12px;/* ── Shadows — none (same print aesthetic as light) ─────────────────── *//* ── Gradients — marketing display ────────────────────────────────────
+/* ── Shadows — none (same print aesthetic as light) ─────────────────── *//* ── Gradients — marketing display ────────────────────────────────────
        Hero glow dark: same lavender radial (slightly brighter on dark)
        Measured: same m-bg-decor-1 (maquette dark uses same gradient)
        Hero title dark: solid white (Fraunces, no gradient clip)
@@ -350,37 +299,15 @@
     --origam-gradient---btn-primary: linear-gradient(#a78bfa, #a78bfa);
 
     --origam-gradient---btn-secondary: none;/* OrigamBtn component-level defaults (dark) — see light-mode note. */
-    --origam-btn---border-color:          rgba(255, 255, 255, 0.20);
-    --origam-btn---border-width-outlined: 1px;
-    --origam-btn---border-width-ghost:    1px;
-    --origam-btn---box-shadow-elevated:   none;
-    --origam-btn---box-shadow-ghost:      none;
-    --origam-btn---border-radius:         0px;/* ── Card / chip / showcase tokens ────────────────────────────────────
+/* ── Card / chip / showcase tokens ────────────────────────────────────
        Cards dark: bg=#0E0E0E, border=1px rgba(255,255,255,.10), radius=0px
        Measured: m-card--hover dark bg=rgb(14,14,14), border=rgba(255,255,255,0.10)
        Chips: radius=0px */
-    --origam-card---background:          var(--origam-color__surface---raised);
-    --origam-card---border-color:        var(--origam-color__border---default);
-    --origam-card---border-style:        solid;
-    --origam-card---border-top-width:    1px;
-    --origam-card---border-right-width:  1px;
-    --origam-card---border-bottom-width: 1px;
-    --origam-card---border-left-width:   1px;
-    --origam-card---box-shadow:          none;
 
-    --origam-chip---border-radius:    0px;
-    --origam-chip---background-color: var(--origam-color__surface---raised);
-    --origam-chip---border-color:     var(--origam-color__border---default);
-    --origam-chip---border-width:     1px;
-    --origam-chip---border-style:     solid;/* OrigamCode component-level defaults (dark) — editorial: 0px radius, white translucent border. */
-    --origam-code---border-radius:    0px;
-    --origam-code---border-color:     var(--origam-color__border---default);
-    --origam-code---border-width:     1px;
-    --origam-code---background-color: var(--origam-color__surface---sunken, #131313);/* OrigamField component-level defaults (dark) — editorial: 0px radius, translucent border. */
-    --origam-field---border-radius:  0px;
-    --origam-field---border-color:   rgba(255, 255, 255, 0.30);
-    --origam-field---border-opacity: 1;/* OrigamAlert component-level defaults (dark) — editorial: 0px radius. */
-    --origam-alert---border-radius: 0px;
+/* OrigamCode component-level defaults (dark) — editorial: 0px radius, white translucent border. */
+/* OrigamField component-level defaults (dark) — editorial: 0px radius, translucent border. */
+/* OrigamAlert component-level defaults (dark) — editorial: 0px radius. */
+
 }/* ── EDITORIAL DARK — appbar: border-block-end white translucent ─────────── *//* Measured: nav border-bottom: 1px solid rgba(255,255,255,0.10)             */
 
 :root:root[data-theme="editorial"][data-mode="dark"] .home-appbar,

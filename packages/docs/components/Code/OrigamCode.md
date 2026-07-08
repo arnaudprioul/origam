@@ -1,8 +1,25 @@
 # OrigamCode
 
-`<OrigamCode>` renders a block of source code with shiki-powered syntax
-highlighting, optional line numbers, line highlighting, a copy button and
+`<OrigamCode>` renders a block of source code with (optional) shiki-powered
+syntax highlighting, optional line numbers, line highlighting, a copy button and
 automatic theme integration with the origam design system.
+
+## Syntax highlighting requires `shiki` (optional peer dependency)
+
+`shiki` is an **optional peer dependency** of origam — it is _not_ pulled in by
+default (it is heavy: WASM grammars + themes). Install it in your app to enable
+syntax colouring:
+
+```bash
+pnpm add shiki
+```
+
+When `shiki` is present, `OrigamCode` lazy-loads it on first render and paints
+dual-theme (`--shiki-light` / `--shiki-dark`) tokens. When it is **absent** (or
+cannot be loaded — e.g. a purely static bundle with no module resolver),
+`OrigamCode` degrades gracefully to **plain, un-highlighted rows**: line numbers,
+line-highlighting, the copy button and layout all keep working — only the colours
+are missing. A one-time console warning points to this section.
 
 ## Quick start
 

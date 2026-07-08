@@ -744,6 +744,10 @@
       "overlay": "Overlay & Surface",
       "media": "Média",
       "utilities": "Utilitaires & Providers"
+    },
+    "dev_banner": {
+      "title": "Fonctionnalité en cours de développement",
+      "text": "Le Theme Builder est en cours de développement — certaines fonctionnalités peuvent être incomplètes ou évoluer."
     }
   },
   "changelog": {

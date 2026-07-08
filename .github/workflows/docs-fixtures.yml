@@ -66,14 +66,18 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          # create-pull-request manages its own token for the push. Leaving the
+          # checkout-persisted credential header in place makes git send TWO
+          # `Authorization` headers → "Duplicate header" → push fails (exit 128).
+          persist-credentials: false
 
       - uses: pnpm/action-setup@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -113,7 +117,7 @@ jobs:
       # Open / refresh a PR to develop. create-pull-request no-ops when there is
       # no diff, so it is the single change gate.
       - name: Open PR with regenerated fixtures
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: chore/regenerate-fixtures

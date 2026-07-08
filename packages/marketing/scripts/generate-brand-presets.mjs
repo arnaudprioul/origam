@@ -172,15 +172,15 @@ function loadAllowedKeys() {
  * Returns { filtered: Record<string,string>, missing: string[] }.
  */
 function filterVars(vars, allowedKeys) {
-    const filtered = {}
-    const missing = []
-    for (const key of allowedKeys) {
-        if (key in vars) {
-            filtered[key] = vars[key]
-        } else {
-            missing.push(key)
-        }
-    }
+    // Keep EVERY token the theme defines so a preset faithfully reproduces the
+    // FULL brand theme (borders, gradients, list/menu/code/font/page tokens…),
+    // not just the builder-surfaced component subset. Previously this filtered
+    // down to `allowedKeys` (the ~246 surfaced tokens), which silently dropped
+    // most of each theme's identity (e.g. cartoon lost gradient/list/menu/code).
+    // `allowedKeys` is now used only to report which surfaced tokens a theme
+    // leaves at their default (informational).
+    const filtered = { ...vars }
+    const missing = [...allowedKeys].filter(key => !(key in vars))
     return { filtered, missing }
 }
 
@@ -189,10 +189,17 @@ function serializeRecord(record, indent = '    ') {
     const entries = Object.entries(record)
     if (entries.length === 0) return '{}'
     const lines = entries.map(([k, v]) => {
-        // Values are wrapped in double quotes, so escape backslashes and
-        // double-quotes only (single quotes need no escaping here — escaping
-        // them triggers eslint no-useless-escape).
-        const escapedVal = v.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+        // Multi-line CSS values (e.g. layered `radial-gradient(...)` on
+        // background-image) span several source lines — collapse whitespace runs
+        // to single spaces so the value fits a single-line TS string literal
+        // (CSS treats any whitespace run as one, so this is lossless).
+        // Then escape backslashes and double-quotes only (single quotes need no
+        // escaping — escaping them triggers eslint no-useless-escape).
+        const escapedVal = v
+            .replace(/\s+/g, ' ')
+            .trim()
+            .replace(/\\/g, '\\\\')
+            .replace(/"/g, '\\"')
         return `${indent}    "${k}": "${escapedVal}"`
     })
     return `{\n${lines.join(',\n')}\n${indent}}`

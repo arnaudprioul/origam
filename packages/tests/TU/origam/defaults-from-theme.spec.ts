@@ -12,6 +12,7 @@ import { mount } from '@vue/test-utils'
 
 import { createOrigam, activeDefaultsFor } from '@origam/origam'
 import { useDefaults } from '@origam/composables/Commons/defaults.composable'
+import OrigamThemeProvider from '@origam/components/ThemeProvider/OrigamThemeProvider.vue'
 import type { IOrigamTheme } from '@origam/interfaces'
 
 afterEach(() => {
@@ -90,6 +91,53 @@ describe('createOrigam — component defaults from theme.components', () => {
         // explicit `density` prop — making the control appear non-functional.
         // Bare components therefore resolve their own 'default' density.
         expect(origam._defaultsRef.value.global?.density).toBeUndefined()
+    })
+})
+
+// Path 1 — `<OrigamThemeProvider theme="brand">` re-applies that brand's
+// per-component DEFAULT PROPS to its SUB-TREE (not only the CSS-var re-scoping
+// done by `data-theme`). It injects the resolver `createOrigam` provides under
+// `ORIGAM_THEME_DEFAULTS_KEY` and calls `provideDefaults(..., { scoped: true })`.
+describe('OrigamThemeProvider — scoped component defaults (sub-tree props-first)', () => {
+    const themeA: IOrigamTheme = {
+        name: 'a', mode: 'light', components: { 'origam-btn': { color: 'primary' } }, vars: {}
+    }
+    const themeB: IOrigamTheme = {
+        name: 'b', mode: 'light', components: { 'origam-btn': { color: 'danger' } }, vars: {}
+    }
+
+    const Tree = defineComponent({
+        props: { theme: { type: String, default: 'auto' } },
+        setup (props) {
+            return () => h('div', [
+                h(FakeBtn, { class: 'root-btn' }),
+                h(OrigamThemeProvider, { theme: props.theme }, {
+                    default: () => h(FakeBtn, { class: 'scoped-btn' })
+                })
+            ])
+        }
+    })
+
+    it('applies the named brand defaults inside the provider, leaving the root sub-tree on the active brand', () => {
+        const origam = createOrigam({ themes: [themeA, themeB] })
+        // Document-active brand = 'a'.
+        origam._defaultsRef.value = origam._activeDefaultsFor('a', 'light')
+
+        const wrapper = mount(Tree, { props: { theme: 'b' }, global: { plugins: [origam] } })
+
+        // Root stays on brand 'a'; the `theme="b"` sub-tree flips to brand 'b'.
+        expect(wrapper.find('.root-btn').text()).toBe('primary')
+        expect(wrapper.find('.scoped-btn').text()).toBe('danger')
+    })
+
+    it('theme="auto" inherits the parent defaults (no override)', () => {
+        const origam = createOrigam({ themes: [themeA, themeB] })
+        origam._defaultsRef.value = origam._activeDefaultsFor('a', 'light')
+
+        const wrapper = mount(Tree, { props: { theme: 'auto' }, global: { plugins: [origam] } })
+
+        expect(wrapper.find('.root-btn').text()).toBe('primary')
+        expect(wrapper.find('.scoped-btn').text()).toBe('primary')
     })
 })
 

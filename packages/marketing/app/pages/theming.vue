@@ -131,6 +131,17 @@
     class="theming"
     data-cy="page-theming"
   >
+    <origam-alert
+      status="warning"
+      border
+      rounded="lg"
+      :elevation="2"
+      class="theming__dev-banner"
+      data-cy="theming-dev-banner"
+      :title="t('theming.dev_banner.title', 'Feature under development')"
+      :text="t('theming.dev_banner.text', 'The Theme Builder is under active development — some features may be incomplete or change.')"
+    />
+
     <header
       class="theming__topbar"
       :aria-label="t('theming.topbar.label', 'Theme builder toolbar')"
@@ -212,7 +223,7 @@
 
       <div class="theming__actions">
         <origam-btn
-          variant="text"
+          variant="outlined"
           size="small"
           prepend-icon="mdi-restore"
           data-cy="theming-reset"
@@ -240,7 +251,7 @@
         </origam-btn>
         <origam-btn
           color="primary"
-          variant="elevated"
+          variant="outlined"
           size="small"
           prepend-icon="mdi-download"
           data-cy="theming-export-ts"
@@ -373,13 +384,20 @@
     min-height: 0;
     height: calc(100vh - var(--origam-app-bar---height, 4rem));
 
+    &__dev-banner {
+      flex: none;
+      margin: var(--origam-space---4, 1rem);
+      margin-block-end: 0;
+    }
+
     &__topbar {
       display: flex;
       align-items: center;
-      gap: var(--origam-spacing-3, 0.75rem);
+      gap: var(--origam-spacing-4, 1rem);
       flex: 0 0 auto;
-      padding: var(--origam-spacing-2, 0.5rem) var(--origam-spacing-5, 1.25rem);
-      min-height: 3.25rem;
+      margin-block-start: var(--origam-spacing-4, 1rem);
+      padding: var(--origam-spacing-4, 1rem) var(--origam-spacing-5, 1.25rem);
+      min-height: 4rem;
       background-color: var(--origam-color-surface-default);
       border-block-end: 1px solid var(--origam-color-border-default);
       overflow-x: auto;
