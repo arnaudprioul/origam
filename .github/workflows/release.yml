@@ -8,13 +8,13 @@ on:
   push:
     tags:
       - "v*"
+      - "[0-9]+.[0-9]+.[0-9]+"
+      - "[0-9]+.[0-9]+.[0-9]+-*"
   # Manual auth check: verifies the NPM_TOKEN secret can authenticate against
   # the registry WITHOUT tagging/publishing. Use after rotating the secret —
   # a failing check here explains an E404 on the real publish (npm answers
   # 404 instead of 403 on PUT when the token lacks publish rights).
   workflow_dispatch:
-      - "[0-9]+.[0-9]+.[0-9]+"
-      - "[0-9]+.[0-9]+.[0-9]+-*"
 
 # `id-token: write` is required for npm provenance (sigstore).
 # `contents: write` is required to create the GitHub Release.
