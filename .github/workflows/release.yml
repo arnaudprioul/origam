@@ -73,13 +73,16 @@ jobs:
         run: |
           # Publish with `npm` (not `pnpm`): `pnpm publish --provenance` fails
           # here with E404 (the PUT to the registry — auth + provenance handling
-          # differs), which is why 2.5.x/2.6.x all failed the CI publish and had
-          # to be published manually. `origam` has NO `workspace:*` deps, so `npm`
-          # publishes cleanly and its provenance implementation is mature/reliable.
-          # setup-node's .npmrc (registry-url) supplies NODE_AUTH_TOKEN natively;
-          # we also write the resolved token explicitly as a belt-and-suspenders.
-          npmrc="${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
-          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" >> "$npmrc"
+          # differs). `origam` has NO `workspace:*` deps, so `npm` publishes
+          # cleanly with a mature/reliable provenance implementation.
+          #
+          # Auth is supplied ENTIRELY by setup-node's registry-url .npmrc plus
+          # NODE_AUTH_TOKEN in this step's env — the canonical Actions↔npm
+          # pattern. Do NOT append to .npmrc by hand: setup-node writes its last
+          # line without a trailing newline, so a prior `echo … >> .npmrc`
+          # concatenated onto it and produced a malformed
+          # `registry.npmjs.org///registry.npmjs.org/:_authToken` → ENEEDAUTH,
+          # which broke every CI publish (2.6.1, 2.7.0). See #181.
           npm publish --access public --provenance
 
       - name: Extract release notes from CHANGELOG.md

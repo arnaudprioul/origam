@@ -1,7 +1,7 @@
 {
   "kind": "type",
-  "exportedAt": "2026-06-29T20:16:02.673Z",
-  "sourceCommit": "b2d959c7",
+  "exportedAt": "2026-07-09T09:58:03.523Z",
+  "sourceCommit": "efdb492c",
   "entryCount": 79,
   "entries": [
     {
@@ -6198,87 +6198,6 @@
     {
       "entry": {
         "kind": "type",
-        "slug": "text-mask-animation",
-        "name": "TTextMaskAnimation",
-        "category": "Data Display",
-        "domain": null,
-        "icon": null,
-        "description_key": "types.catalog.text_mask_animation.description",
-        "description_fallback": "Animation strategy applied to the background painted under the background-clip: text mask in OrigamTextMask. Every strategy respects prefers-reduced-motion.",
-        "definition": "export type TTextMaskAnimation =\n    | 'pan'\n    | 'rotate'\n    | 'pulse'\n    | 'zoom'",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/types/TextMask/text-mask-animation.type.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": {
-          "typeKind": "type"
-        },
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [
-        {
-          "value": "pan",
-          "position": 0,
-          "description_key": "types.detail.text_mask_animation.pan",
-          "description_fallback": "Translates the gradient horizontally in a continuous loop. Default. Best fit for long horizontal linear-gradient ramps."
-        },
-        {
-          "value": "rotate",
-          "position": 1,
-          "description_key": "types.detail.text_mask_animation.rotate",
-          "description_fallback": "Rotates the background-image continuously. Best fit for conic gradients where every angle is meaningful."
-        },
-        {
-          "value": "pulse",
-          "position": 2,
-          "description_key": "types.detail.text_mask_animation.pulse",
-          "description_fallback": "Scales 1 to 1.2 and back to 1 — a subtle breathing effect that keeps the gradient visible throughout."
-        },
-        {
-          "value": "zoom",
-          "position": 3,
-          "description_key": "types.detail.text_mask_animation.zoom",
-          "description_fallback": "Continuous scale from 1 to 2 — a cinematic moving-forward feel that progressively reveals finer gradient detail."
-        }
-      ],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "types.detail.text_mask_animation.example",
-          "title_fallback": "TextMask with rotating conic gradient",
-          "code": "<origam-text-mask\n  text=\"Origam\"\n  background=\"conic-gradient(from 0deg, #7c3aed, #2563eb, #7c3aed)\"\n  animation\n  animation-type=\"rotate\"\n/>",
-          "lang": "html"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "used_by",
-          "to_kind": "component",
-          "to_slug": "text-mask",
-          "to_name": "TextMask",
-          "prop_name": "animationType",
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "type",
         "slug": "textarea-mode",
         "name": "TTextareaMode",
         "category": "Form & Input",
@@ -6621,6 +6540,87 @@
     {
       "entry": {
         "kind": "type",
+        "slug": "text-mask-animation",
+        "name": "TTextMaskAnimation",
+        "category": "Data Display",
+        "domain": null,
+        "icon": null,
+        "description_key": "types.catalog.text_mask_animation.description",
+        "description_fallback": "Animation strategy applied to the background painted under the background-clip: text mask in OrigamTextMask. Every strategy respects prefers-reduced-motion.",
+        "definition": "export type TTextMaskAnimation =\n    | 'pan'\n    | 'rotate'\n    | 'pulse'\n    | 'zoom'",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/types/TextMask/text-mask-animation.type.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "typeKind": "type"
+        },
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "pan",
+          "position": 0,
+          "description_key": "types.detail.text_mask_animation.pan",
+          "description_fallback": "Translates the gradient horizontally in a continuous loop. Default. Best fit for long horizontal linear-gradient ramps."
+        },
+        {
+          "value": "rotate",
+          "position": 1,
+          "description_key": "types.detail.text_mask_animation.rotate",
+          "description_fallback": "Rotates the background-image continuously. Best fit for conic gradients where every angle is meaningful."
+        },
+        {
+          "value": "pulse",
+          "position": 2,
+          "description_key": "types.detail.text_mask_animation.pulse",
+          "description_fallback": "Scales 1 to 1.2 and back to 1 — a subtle breathing effect that keeps the gradient visible throughout."
+        },
+        {
+          "value": "zoom",
+          "position": 3,
+          "description_key": "types.detail.text_mask_animation.zoom",
+          "description_fallback": "Continuous scale from 1 to 2 — a cinematic moving-forward feel that progressively reveals finer gradient detail."
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "types.detail.text_mask_animation.example",
+          "title_fallback": "TextMask with rotating conic gradient",
+          "code": "<origam-text-mask\n  text=\"Origam\"\n  background=\"conic-gradient(from 0deg, #7c3aed, #2563eb, #7c3aed)\"\n  animation\n  animation-type=\"rotate\"\n/>",
+          "lang": "html"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "used_by",
+          "to_kind": "component",
+          "to_slug": "text-mask",
+          "to_name": "TextMask",
+          "prop_name": "animationType",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "type",
         "slug": "theme",
         "name": "TTheme",
         "category": "Theme & Tokens",
@@ -6941,6 +6941,75 @@
     {
       "entry": {
         "kind": "type",
+        "slug": "treeview-selectable-nodes",
+        "name": "TTreeviewSelectableNodes",
+        "category": "Data Display",
+        "domain": null,
+        "icon": null,
+        "description_key": "types.catalog.treeview_selectable_nodes.description",
+        "description_fallback": "Which nodes in the OrigamTreeview can receive a selected state — only leaf nodes or every node in the tree.",
+        "definition": "export type TTreeviewSelectableNodes = 'leaf' | 'all'",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/types/Treeview/treeview.type.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "typeKind": "type"
+        },
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "leaf",
+          "position": 0,
+          "description_key": "types.detail.treeview_selectable_nodes.leaf",
+          "description_fallback": "Only leaf nodes (nodes with no children) can be selected. Parent nodes act solely as expand/collapse toggles."
+        },
+        {
+          "value": "all",
+          "position": 1,
+          "description_key": "types.detail.treeview_selectable_nodes.all",
+          "description_fallback": "Both parent and leaf nodes can be selected. Selecting a parent in multiple mode propagates the state to its children (cascade)."
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "types.detail.treeview_selectable_nodes.example",
+          "title_fallback": "Leaf-only selection",
+          "code": "<origam-treeview\n  select-mode=\"multiple\"\n  selectable-nodes=\"leaf\"\n  :items=\"fileTree\"\n  v-model:selected=\"selectedFiles\"\n/>",
+          "lang": "html"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "used_by",
+          "to_kind": "component",
+          "to_slug": "treeview",
+          "to_name": "Treeview",
+          "prop_name": "selectableNodes",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "type",
         "slug": "treeview-select-mode",
         "name": "TTreeviewSelectMode",
         "category": "Data Display",
@@ -7007,75 +7076,6 @@
           "to_slug": "treeview",
           "to_name": "Treeview",
           "prop_name": "selectMode",
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "type",
-        "slug": "treeview-selectable-nodes",
-        "name": "TTreeviewSelectableNodes",
-        "category": "Data Display",
-        "domain": null,
-        "icon": null,
-        "description_key": "types.catalog.treeview_selectable_nodes.description",
-        "description_fallback": "Which nodes in the OrigamTreeview can receive a selected state — only leaf nodes or every node in the tree.",
-        "definition": "export type TTreeviewSelectableNodes = 'leaf' | 'all'",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/types/Treeview/treeview.type.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": {
-          "typeKind": "type"
-        },
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [
-        {
-          "value": "leaf",
-          "position": 0,
-          "description_key": "types.detail.treeview_selectable_nodes.leaf",
-          "description_fallback": "Only leaf nodes (nodes with no children) can be selected. Parent nodes act solely as expand/collapse toggles."
-        },
-        {
-          "value": "all",
-          "position": 1,
-          "description_key": "types.detail.treeview_selectable_nodes.all",
-          "description_fallback": "Both parent and leaf nodes can be selected. Selecting a parent in multiple mode propagates the state to its children (cascade)."
-        }
-      ],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "types.detail.treeview_selectable_nodes.example",
-          "title_fallback": "Leaf-only selection",
-          "code": "<origam-treeview\n  select-mode=\"multiple\"\n  selectable-nodes=\"leaf\"\n  :items=\"fileTree\"\n  v-model:selected=\"selectedFiles\"\n/>",
-          "lang": "html"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "used_by",
-          "to_kind": "component",
-          "to_slug": "treeview",
-          "to_name": "Treeview",
-          "prop_name": "selectableNodes",
           "position": 0,
           "description_key": null,
           "description_fallback": null

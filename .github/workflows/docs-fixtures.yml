@@ -93,6 +93,15 @@ jobs:
       - name: Apply migrations
         run: pnpm -F @origam/marketing db:migrate
 
+      # CRITICAL: seed the ephemeral DB from the committed fixtures BEFORE the
+      # sync. The curated kinds (component catalog, composables, directives,
+      # types) are NOT source-extracted — without this step the DB only holds
+      # what docs:sync extracts (enums/interfaces/consts/utils) and docs:dump
+      # then exports fixtures with the curated kinds EMPTIED (a destructive
+      # auto-PR — this actually happened: PR #186 wiped component.json).
+      - name: Seed DB from committed fixtures
+        run: pnpm -F @origam/marketing docs:seed
+
       # Re-extract structural [SRC] facts from packages/ds/src → UPSERT [SRC] only.
       # Capture the drift summary for the PR body.
       - name: Re-sync [SRC] from DS source
@@ -107,12 +116,19 @@ jobs:
       - name: Dump JSON fixtures
         run: pnpm -F @origam/marketing docs:dump
 
-      # Generate any missing component playgrounds, then re-dump component.json
-      # AND regenerate server/assets/db-seed.sql (pg_dump, filtered clean — no
-      # \restrict / set_config('search_path' / CREATE EXTENSION) from the FINAL
-      # DB state. Runs last so db-seed.sql reflects everything above.
-      - name: Generate playgrounds + regenerate db-seed.sql
+      # Generate any missing component playgrounds (re-dumps component.json and
+      # db-seed.sql itself ONLY when it created new playgrounds).
+      - name: Generate playgrounds
         run: pnpm -F @origam/marketing docs:playgrounds
+
+      # Regenerate server/assets/db-seed.sql UNCONDITIONALLY from the final DB
+      # state (pg_dump, filtered clean — no \restrict / set_config('search_path'
+      # / CREATE EXTENSION). Before #191 this only happened inside
+      # docs:playgrounds when NEW playgrounds were generated, so drift-only
+      # re-syncs updated the JSON fixtures while db-seed.sql silently lagged.
+      # Runs last so db-seed.sql reflects everything above.
+      - name: Regenerate db-seed.sql
+        run: pnpm -F @origam/marketing docs:dump:sql
 
       # Open / refresh a PR to develop. create-pull-request no-ops when there is
       # no diff, so it is the single change gate.
