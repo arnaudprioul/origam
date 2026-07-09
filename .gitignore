@@ -90,3 +90,8 @@ yarn.lock
 
 # Test coverage output (generated; consumed by SonarQube in CI)
 coverage/
+# design-sync (artefacts régénérés — la config/notes/scripts dans .design-sync/ SONT committés)
+ds-bundle/
+.design-sync/.cache/
+.design-sync/learnings/
+.design-sync/node_modules
