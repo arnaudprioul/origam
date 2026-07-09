@@ -50,3 +50,16 @@
 - docs:sync:check est rouge indépendamment (drift DS↔docs accumulé pendant que
   le workflow docs-fixtures était cassé) — hors scope, à résorber par un run
   docs:sync dédié.
+
+## 2026-07-09 — cartes v2 « artboard » (feedback utilisateur : v1 dégueux)
+- Référence visuelle = le canvas « Origam Components.html » du projet claude.ai/design
+  CLASSIQUE de l'utilisateur (019df9de-…) : artboards denses, light+dark côte à côte.
+- Pipeline v7 (build-cards.mjs) : capture du conteneur `.histoire-generic-render-story`
+  visible restylé (fit-content + padding + bg du mode), deviceScaleFactor 2,
+  attente fonts/images, dark réel via data-mode="dark" (PAS data-theme),
+  fallbacks : largeur fixe 640 (full-width collapse), scène 240px (origam-app absolu),
+  iframe entière (position:fixed) ; variantes non-visuelles écartées (bbox contenu).
+- ⚠️ Depuis #189 les cartes vivent sous les catégories LONGUES — les anciens chemins
+  courts ont été supprimés du projet (64 deletes) à ce push.
+- Findings DS gratuits : OrigamIcon ne suit pas le dark (glyphe noir sur fond sombre) ;
+  description Btn = « test camel » (reliquat éditorial /admin à corriger).

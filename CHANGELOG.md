@@ -15,6 +15,23 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [2.7.2] — 2026-07-09
+
+### Fixed
+
+- **Default text (and every `currentColor` icon) rendered browser-black in
+  dark mode.** The semantic text token flips correctly
+  (`neutral-900 → neutral-50`) and `app.json` has declared
+  `app.color` / `app.background-color` all along — but nothing consumed
+  them. `OrigamApp` now paints the base pair
+  (`color: var(--origam-app---color)`,
+  `background-color: var(--origam-app---background-color)`), and
+  `OrigamThemeProvider` (`display: contents`) sets the inherited `color`
+  so a local `data-mode="dark"` sub-tree gets readable defaults too.
+  Verified in both modes (computed styles) with no light-mode change.
+
+---
+
 ## [2.7.1] — 2026-07-09
 
 ### Fixed

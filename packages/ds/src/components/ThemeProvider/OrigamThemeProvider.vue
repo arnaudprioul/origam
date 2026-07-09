@@ -85,5 +85,10 @@
 >
 	.origam-theme-provider {
 		display: contents;
+		// Base text color for the sub-tree (#201): `color` is inherited and passes
+		// through `display: contents`, so a local `data-mode="dark"` sub-tree gets
+		// readable default text (and currentColor icons) without painting a box.
+		// No background here — a provider is not a surface.
+		color: var(--origam-color__text---primary);
 	}
 </style>

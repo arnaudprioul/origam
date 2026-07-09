@@ -81,3 +81,13 @@
 		isLoaded
 	})
 </script>
+
+<style
+		lang="scss"
+		scoped
+>
+	.origam-app {
+		color: var(--origam-app---color, var(--origam-color__text---primary));
+		background-color: var(--origam-app---background-color, var(--origam-color__surface---default));
+	}
+</style>
