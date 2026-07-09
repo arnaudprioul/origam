@@ -40,3 +40,13 @@
 - component.json (seed) évolue avec le catalogue : catégories/descriptions re-lues à chaque run.
 - Si le converter design-sync devient Vue-compatible (ou si origam publie un build
   custom-elements), basculer vers le pipeline canonique.
+
+## 2026-07-09 — catalogue nettoyé (#188)
+- Les catégories composants du catalogue sont désormais la taxonomie OFFICIELLE
+  (8 longues du Theme Builder/i18n + Typography, Surface, Data Visualization = 11).
+- La map CANON de build-cards.mjs a été retirée (no-op). ⚠️ Au prochain re-sync
+  claude.ai/design, les groupes seront RENOMMÉS (courts → longs) : les anciens
+  chemins components/<court>/ doivent partir via les delete globs du plan.
+- docs:sync:check est rouge indépendamment (drift DS↔docs accumulé pendant que
+  le workflow docs-fixtures était cassé) — hors scope, à résorber par un run
+  docs:sync dédié.

@@ -29,20 +29,12 @@ function inventory () {
         if (entry.kind !== 'component') continue
         byName.set(entry.name.toLowerCase(), entry)
     }
-    // Le catalogue contient des variantes d'orthographe de la MÊME catégorie
-    // (incohérence de données signalée à l'utilisateur — voir NOTES.md).
-    // Canonicalisation minimale, aucune sémantique inventée :
-    const CANON = {
-        'Feedback & Status': 'Feedback',
-        'Layout & Structure': 'Layout',
-        'Overlay & Surface': 'Overlay',
-        'Utility': 'Utilities',
-        'Utilities & Providers': 'Utilities',
-        'Media & Display': 'Media',
-        'Display': 'Data Display',
-        'Data & List': 'Data Display'
-    }
-    const canon = c => CANON[c] || c
+    // Catalogue nettoyé (#188) : les catégories sont désormais la taxonomie
+    // officielle (celle du Theme Builder / i18n theming.category.*) — on les
+    // utilise telles quelles. NB au prochain re-sync : les groupes du projet
+    // claude.ai/design seront renommés (les anciens chemins courts partent
+    // via les delete globs du plan).
+    const canon = c => c
     // 1 dossier peut contenir plusieurs stories (Grids → Col/Container/Row/Spacer).
     // On énumère les FICHIERS Origam<X>.story.vue réels (hors .emits/.slots).
     // Stories de DÉMO de capacités (pas des composants — pas de tag réel) : exclues des cartes.
