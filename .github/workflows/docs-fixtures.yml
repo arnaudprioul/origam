@@ -93,6 +93,15 @@ jobs:
       - name: Apply migrations
         run: pnpm -F @origam/marketing db:migrate
 
+      # CRITICAL: seed the ephemeral DB from the committed fixtures BEFORE the
+      # sync. The curated kinds (component catalog, composables, directives,
+      # types) are NOT source-extracted — without this step the DB only holds
+      # what docs:sync extracts (enums/interfaces/consts/utils) and docs:dump
+      # then exports fixtures with the curated kinds EMPTIED (a destructive
+      # auto-PR — this actually happened: PR #186 wiped component.json).
+      - name: Seed DB from committed fixtures
+        run: pnpm -F @origam/marketing docs:seed
+
       # Re-extract structural [SRC] facts from packages/ds/src → UPSERT [SRC] only.
       # Capture the drift summary for the PR body.
       - name: Re-sync [SRC] from DS source
