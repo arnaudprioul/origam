@@ -47,7 +47,9 @@ LABEL org.opencontainers.image.licenses="MIT"
 RUN rm /etc/nginx/conf.d/default.conf
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 
-COPY --from=build /app/packages/stories/dist /usr/share/nginx/html
+# histoire.config.js sets outDir to ../marketing/public/stories (the site embeds
+# the stories build) — packages/stories/dist is a stale legacy path (#195).
+COPY --from=build /app/packages/marketing/public/stories /usr/share/nginx/html
 
 EXPOSE 80
 
