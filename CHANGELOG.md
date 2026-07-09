@@ -15,6 +15,28 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [2.7.1] — 2026-07-09
+
+### Fixed
+
+- **`origam/styles` CSS entry shipped empty.** `src/assets/css/main.css` was
+  0 bytes in every published version (2.6.x, 2.7.0), so
+  `import 'origam/styles'` (the `style`/`import`/`require` conditions)
+  delivered no tokens and no utility classes — only the SCSS path
+  (`@use 'origam/styles'`) worked. `main.css` is now compiled from
+  `main.scss` at build time (`styles:build`): the full aggregate
+  (primitives + light + dark + utilities + reset, ~366 KB) ships in the
+  package.
+
+### Internal
+
+- New brand identity: the "cube sonobe" logo (modular origami — identical
+  folded units assembling into a structure) replaces the legacy mark across
+  the repo (docs/stories/marketing assets; not part of the npm tarball).
+- npm publishing is handled by CI again (release workflow auth fixed).
+
+---
+
 ## [2.7.0] — 2026-07-08
 
 ### Added
