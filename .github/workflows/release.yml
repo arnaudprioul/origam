@@ -8,6 +8,11 @@ on:
   push:
     tags:
       - "v*"
+  # Manual auth check: verifies the NPM_TOKEN secret can authenticate against
+  # the registry WITHOUT tagging/publishing. Use after rotating the secret —
+  # a failing check here explains an E404 on the real publish (npm answers
+  # 404 instead of 403 on PUT when the token lacks publish rights).
+  workflow_dispatch:
       - "[0-9]+.[0-9]+.[0-9]+"
       - "[0-9]+.[0-9]+.[0-9]+-*"
 
@@ -26,8 +31,28 @@ env:
   CI: true
 
 jobs:
+  npm-auth-check:
+    name: npm auth check (manual)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          registry-url: "https://registry.npmjs.org"
+          always-auth: true
+      - name: whoami (proves the token authenticates)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm whoami
+      - name: token can see the package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm access list packages 2>/dev/null || npm view origam version
+
   publish:
     name: Build, test & publish to npm
+    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
