@@ -510,10 +510,26 @@
 	const {variantClasses} = useVariant(props)
 	const {sizeClasses} = useSize(props, 'origam-field')
 
+	// The `rounded` prop rounds the OUTER box (inline `border-radius` via
+	// useStyle), but the field's inner chrome (outline legs, per-corner radii)
+	// reads `--origam-field---border-radius` — which the prop never touched, so
+	// the outline corners stayed at the default and mismatched the box (themes
+	// had to force the var with `!important` hacks). Mirror the radius already
+	// resolved by `roundedStyles` into the component var so both stay in sync.
+	// (`shaped`/`shaped-invert` emit nothing here and stay SCSS-owned.)
+	const fieldRadiusVarStyles = computed(() => {
+		const declarations = roundedStyles.value as string[]
+		if (!Array.isArray(declarations)) return []
+		const radius = declarations.find(declaration => declaration.startsWith('border-radius:'))
+		if (!radius) return []
+		return [`--origam-field---border-radius: ${radius.slice('border-radius:'.length).trim()}`]
+	})
+
 	const fieldStyles = computed(() => {
 		return [
 			colorStyles.value,
 			roundedStyles.value,
+			fieldRadiusVarStyles.value,
 			elevationStyles.value,
 			props.style
 		] as StyleValue
