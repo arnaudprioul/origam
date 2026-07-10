@@ -25,6 +25,7 @@
     "docs:sync:check": "tsx --tsconfig ./tsconfig.typeorm.json scripts/generate-api-docs.mjs --check",
     "presets:generate": "node scripts/generate-brand-presets.mjs",
     "presets:generate:check": "node scripts/generate-brand-presets.mjs --check",
+    "theme:reset:generate": "node scripts/generate-origam-reset.mjs",
     "db:migrate": "tsx --tsconfig ./tsconfig.typeorm.json ./node_modules/typeorm/cli.js migration:run -d ./server/db/data-source.cli.ts",
     "db:rollback": "tsx --tsconfig ./tsconfig.typeorm.json ./node_modules/typeorm/cli.js migration:revert -d ./server/db/data-source.cli.ts",
     "db:migrate:status": "tsx --tsconfig ./tsconfig.typeorm.json ./node_modules/typeorm/cli.js migration:show -d ./server/db/data-source.cli.ts",
