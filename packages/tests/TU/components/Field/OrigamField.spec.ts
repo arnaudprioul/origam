@@ -66,3 +66,33 @@ describe('OrigamField — fontSize prop (BEM child __label)', () => {
         expect(labelStyleOf({ fontSize: 'xs' })).toContain('--origam-field__label---font-size: var(--origam-font__size---xs)')
     })
 })
+
+// ---------------------------------------------------------------------------
+// rounded — mirrors the resolved radius into --origam-field---border-radius
+// (the inner outline chrome reads the component var; before this the prop
+// only rounded the outer box and themes had to force the var via !important)
+// ---------------------------------------------------------------------------
+
+function injectedCssFor (props: Record<string, unknown> = {}): string {
+    document.head.querySelectorAll('style').forEach(tag => tag.remove())
+    mountField(props)
+    return Array.from(document.head.querySelectorAll('style'))
+        .map(tag => tag.textContent || '')
+        .join('\n')
+}
+
+describe('OrigamField — rounded prop drives --origam-field---border-radius', () => {
+    it('emits no component var when rounded is unset', () => {
+        expect(injectedCssFor()).not.toContain('--origam-field---border-radius:')
+    })
+
+    it('rounded="lg" mirrors the lg radius token into the component var', () => {
+        const css = injectedCssFor({ rounded: 'lg' })
+        expect(css).toContain('--origam-field---border-radius: var(--origam-radius---lg')
+    })
+
+    it('rounded="none" mirrors the zero radius into the component var', () => {
+        const css = injectedCssFor({ rounded: 'none' })
+        expect(css).toContain('--origam-field---border-radius: var(--origam-radius---none, 0)')
+    })
+})

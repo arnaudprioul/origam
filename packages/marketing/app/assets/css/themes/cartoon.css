@@ -185,13 +185,6 @@
 :root:root[data-theme="cartoon"][data-mode="dark"] .search-trigger {
     border:     3px solid #fffefb !important;
     box-shadow: 3px 3px 0 #fffefb !important;
-}/* ── CARTOON — Field border radius: the field resets --origam-field---border-radius
-   to a small value on itself (scoped), overriding the theme :root token, so the
-   visible __outline border stays barely-rounded while the box follows rounded='lg'.
-   Force the token on the field element so the border matches the box (lg) — fixes
-   text-field, select and every field type at once. */
-:root:root[data-theme="cartoon"] .origam-field {
-    --origam-field---border-radius: var(--origam-radius---lg, 20px) !important;
 }/* ── CARTOON — Showcase / feature widget cards 3 px border ──────────────── *//*
  * The DS OrigamCard "flat" variant has no border. Cartoon shows all cards with
  * a 3 px solid near-black border (measured: 3px solid #171717 in light,
@@ -529,15 +522,8 @@
  * DS gap note: origam-avatar may not support border prop — override directly.
  */
 
-:root:root[data-theme="cartoon"] .origam-avatar {
-    border:     2px solid var(--origam-color__surface---default, #fff9f0) !important;
-    box-shadow: none !important;
-}
 
-:root:root[data-theme="cartoon"][data-mode="dark"] .origam-avatar {
-    border:     2px solid #1a1a1a !important;
-    box-shadow: none !important;
-}/* ── CARTOON — Footer top border: 3 px ─────────────────────────────────── *//*
+/* ── CARTOON — Footer top border: 3 px ─────────────────────────────────── *//*
  * Maquette footer measured:
  *   light: border-top: 3px solid #171717
  *   dark:  border-top: 3px solid #fffefb

@@ -59,8 +59,6 @@ const features = computed(() => FEATURES)
                         :icon="feature.icon"
                         color="primary"
                         :style="FEATURE_ICON_TILE_VARS"
-                        border
-                        border-color="var(--origam-color__action--primary---bg)"
                         :size="44"
                         class="home-features__icon-tile"
                         aria-hidden="true"
@@ -152,6 +150,8 @@ const features = computed(() => FEATURES)
 
     &__icon-tile {
         --origam-avatar---background-color: var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.1));
+        --origam-avatar---border-width: thin;
+        --origam-avatar---border-style: solid;
         --origam-avatar---border-color: var(--origam-color__action--primary---bg, #7c3aed);
         --origam-avatar---icon-color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
         display: inline-flex;

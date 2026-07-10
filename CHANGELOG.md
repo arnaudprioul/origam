@@ -15,6 +15,23 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [2.7.3] — 2026-07-10
+
+### Fixed
+
+- **`OrigamField`: the `rounded` prop now drives the whole field chrome.**
+  The prop used to round the outer box only (inline `border-radius`), while
+  the inner chrome (outline legs, per-corner radii) reads
+  `--origam-field---border-radius` — which the prop never touched, so the
+  outline corners stayed at the default and mismatched the box (themes had
+  to force the var with `!important` hacks). The field now mirrors the
+  radius resolved from the `rounded` prop into its component var, keeping
+  box and outline in sync for every field type (text, select, textarea,
+  number, password, date, file, color). `shaped` / `shaped-invert` are
+  unaffected and stay SCSS-owned.
+
+---
+
 ## [2.7.2] — 2026-07-09
 
 ### Fixed
