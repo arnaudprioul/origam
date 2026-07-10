@@ -522,15 +522,8 @@
  * DS gap note: origam-avatar may not support border prop — override directly.
  */
 
-:root:root[data-theme="cartoon"] .origam-avatar {
-    border:     2px solid var(--origam-color__surface---default, #fff9f0) !important;
-    box-shadow: none !important;
-}
 
-:root:root[data-theme="cartoon"][data-mode="dark"] .origam-avatar {
-    border:     2px solid #1a1a1a !important;
-    box-shadow: none !important;
-}/* ── CARTOON — Footer top border: 3 px ─────────────────────────────────── *//*
+/* ── CARTOON — Footer top border: 3 px ─────────────────────────────────── *//*
  * Maquette footer measured:
  *   light: border-top: 3px solid #171717
  *   dark:  border-top: 3px solid #fffefb
