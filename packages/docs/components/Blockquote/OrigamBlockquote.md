@@ -26,19 +26,24 @@ contrast with each other:
   source** label. Default `text-primary` (body) / `text-secondary`
   (source). An intent resolves to its readable shade (`fgSubtle`); when
   `color` is left empty the source keeps its subdued default.
-- **`bgColor`** paints the **accent**: the decorative bar / pull rules
+- **`accentColor`** paints the **accent**: the decorative bar / pull rules
   (the "borders"), the big background quote glyph (`variant="quoted"`) and
   the author label. Default `primary`. It does **not** fill the surface —
   the blockquote stays transparent.
 
 ```vue
 <!-- dark body text, success-green accent bar + author -->
-<origam-blockquote color="neutral" bg-color="success" author="…">…</origam-blockquote>
+<origam-blockquote color="neutral" accent-color="success" author="…">…</origam-blockquote>
 ```
 
-> The `bgColor`-as-accent naming is a known wart — a future major will
-> rename it to `accentColor` (see ROADMAP). `bgColor` keeps painting a real
-> fill on every other component.
+> **`bgColor` is deprecated on `OrigamBlockquote`** — renamed to
+> `accentColor` (see `ROADMAP.md`, "Renommer `bgColor` → `accentColor`").
+> `bgColor` keeps working as an alias (`accentColor` wins when both are
+> set) and logs a console warning once. Removal targeted for **v3.0.0**.
+> `bgColor` stays the canonical, non-deprecated name everywhere else in
+> the DS (Btn, Card, Chip, Badge, Alert, Pagination, …), where it paints a
+> real surface fill — `accentColor` is reserved for accent-only
+> components.
 
 ## Props
 
@@ -51,7 +56,8 @@ contrast with each other:
 | `lang`    | `'auto' \| 'fr' \| 'en' \| 'es' \| 'de'`                              | `'auto'`       | Locale for decorative quote marks (only consumed by `variant="quoted"`).               |
 | `align`   | `'left' \| 'center' \| 'right'`                                        | per-variant    | `'pull'` defaults to `'center'`; every other variant defaults to `'left'`.             |
 | `color`   | `TColor` (`TIntent` \| custom)                                         | `text-primary` | Colour of the citation **text** — body **and source**. An intent resolves to its readable-on-light shade (`fgSubtle`); a custom value is applied verbatim. The source keeps its subdued default when `color` is empty. |
-| `bgColor` | `TColor` (`TIntent` \| custom)                                         | `primary`      | **Accent** colour — drives the accent bar / pull rules ("borders"), the background quote glyph and the author label. Does **not** paint a surface fill (the blockquote stays transparent). See [Colour model](#colour-model). |
+| `accentColor` | `TColor` (`TIntent` \| custom)                                     | `primary`      | **Accent** colour — drives the accent bar / pull rules ("borders"), the background quote glyph and the author label. Does **not** paint a surface fill (the blockquote stays transparent). See [Colour model](#colour-model). |
+| `bgColor` | `TColor` (`TIntent` \| custom)                                         | `undefined`    | **Deprecated** — alias for `accentColor` (kept for backward compat, warns once, removed in v3.0.0). Ignored when `accentColor` is also set. |
 | `rounded` / `elevation` / `border` (+ `borderColor`, `borderStyle`) / `padding` / `margin` | Commons surfaces | `undefined` | Standard cross-cutting props, consumed via the matching composables (`useRounded`, `useElevation`, `useBorder`, `usePadding`, `useMargin`). |
 | `fontFamily`  | `'sans' \| 'mono' \| 'serif'`                                       | `undefined`    | Overrides `--origam-blockquote---font-family` with the matching primitive token. Leave unset to let the theme or variant drive the font family. |
 | `fontSize`    | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl' \| '3xl' \| '4xl' \| '5xl'` | `undefined` | Overrides `--origam-blockquote---font-size` with the matching primitive token.    |
@@ -133,7 +139,7 @@ swap is visually unobtrusive — no layout shift.
 
 <origam-blockquote
         variant="pull"
-        bg-color="primary"
+        accent-color="primary"
 >
     The best way to predict the future is to invent it.
 </origam-blockquote>

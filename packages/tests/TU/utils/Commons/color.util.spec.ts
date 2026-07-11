@@ -44,6 +44,7 @@ import {
     rawBgExprWithState,
     tokenForegroundForIntent,
     warnLegacyColor,
+    warnDeprecatedProp,
 } from '@origam/utils/Commons/color.util'
 
 // ─── isCssColor ──────────────────────────────────────────────────────────────
@@ -728,5 +729,49 @@ describe('warnLegacyColor', () => {
         warnLegacyColor('bgColor', '#dedup-sentinel-xyz')
         warnLegacyColor('bgColor', '#dedup-sentinel-xyz')
         expect(console.warn).toHaveBeenCalledTimes(1)
+    })
+})
+
+// ─── warnDeprecatedProp ─────────────────────────────────────────────────────
+// Same once-per-key cache strategy as `warnLegacyColor`, but keyed by
+// `component::oldProp->newProp` (not by value) — first consumer is the
+// `bgColor` → `accentColor` migration on OrigamBlockquote. Each test uses a
+// distinct (component, oldProp) pair as its own cache key so tests stay
+// order-independent without needing to reset the module (mirrors the
+// `warnLegacyColor` spec's "unique sentinel value" strategy above).
+
+describe('warnDeprecatedProp', () => {
+    beforeEach(() => {
+        vi.spyOn(console, 'warn').mockImplementation(() => {})
+    })
+
+    it('emits a console.warn naming the component, old prop and new prop', () => {
+        warnDeprecatedProp('TestCompA', 'oldPropA', 'newPropA')
+        expect(console.warn).toHaveBeenCalledWith(
+            expect.stringMatching(/TestCompA.*prop "oldPropA" is deprecated.*"newPropA"/)
+        )
+    })
+
+    it('mentions the default removal version v3.0.0', () => {
+        warnDeprecatedProp('TestCompB', 'oldPropB', 'newPropB')
+        expect(console.warn).toHaveBeenCalledWith(expect.stringContaining('v3.0.0'))
+    })
+
+    it('accepts a custom removal version', () => {
+        warnDeprecatedProp('TestCompC', 'oldPropC', 'newPropC', 'v4.0.0')
+        expect(console.warn).toHaveBeenCalledWith(expect.stringContaining('v4.0.0'))
+        expect(console.warn).not.toHaveBeenCalledWith(expect.stringContaining('v3.0.0'))
+    })
+
+    it('does not warn a second time for the same (component, oldProp, newProp)', () => {
+        warnDeprecatedProp('TestCompD', 'oldPropD', 'newPropD')
+        warnDeprecatedProp('TestCompD', 'oldPropD', 'newPropD')
+        expect(console.warn).toHaveBeenCalledTimes(1)
+    })
+
+    it('warns again for the same oldProp on a DIFFERENT component (key includes component)', () => {
+        warnDeprecatedProp('TestCompE1', 'oldPropE', 'newPropE')
+        warnDeprecatedProp('TestCompE2', 'oldPropE', 'newPropE')
+        expect(console.warn).toHaveBeenCalledTimes(2)
     })
 })

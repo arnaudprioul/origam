@@ -9,7 +9,7 @@
 				:init-state="() => useStoryInitState<Partial<IBlockquoteProps>>({
 					variant: 'default',
 					color: undefined,
-					bgColor: 'primary',
+					accentColor: 'primary',
 					align: 'left',
 					lang: 'auto'
 				})"
@@ -18,7 +18,7 @@
 				<origam-blockquote
 						:variant="state.variant"
 						:color="state.color"
-						:bg-color="state.bgColor"
+						:accent-color="state.accentColor"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
 						:border="state.border"
@@ -46,8 +46,8 @@
 					<HstSelect v-model="state.lang"    title="Lang"    :options="BLOCKQUOTE_LANG_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Color">
-					<HstSelect v-model="state.color"   title="Color (text)"      :options="INTENT_OPTIONS"/>
-					<HstSelect v-model="state.bgColor" title="Bg Color (accent)" :options="INTENT_OPTIONS"/>
+					<HstSelect v-model="state.color"       title="Color (text)" :options="INTENT_OPTIONS"/>
+					<HstSelect v-model="state.accentColor" title="Accent Color" :options="INTENT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
 					<HstSelect v-model="state.fontFamily" title="Font Family" :options="FONT_FAMILY_OPTIONS"/>
@@ -149,7 +149,7 @@
 				:init-state="() => useStoryInitState<IBlockquoteProps>({
 					variant: 'default',
 					color: undefined,
-					bgColor: 'primary',
+					accentColor: 'primary',
 					align: 'left',
 					lang: 'auto',
 					author: 'Linus Torvalds',
@@ -170,14 +170,14 @@
 					<HstText v-model="state.cite"   title="Cite (URL)"/>
 				</StoryGroup>
 				<StoryGroup title="Design">
-					<HstSelect v-model="state.variant"   title="Variant"           :options="BLOCKQUOTE_VARIANT_OPTIONS"/>
-					<HstSelect v-model="state.color"     title="Color (text)"      :options="INTENT_OPTIONS"/>
-					<HstSelect v-model="state.bgColor"   title="Bg Color (accent)" :options="INTENT_OPTIONS"/>
-					<HstSelect v-model="state.rounded"   title="Rounded"           :options="ROUNDED_OPTIONS"/>
-					<HstSelect v-model="state.elevation" title="Elevation"         :options="ELEVATION_OPTIONS"/>
-					<HstSelect v-model="state.border"    title="Border"            :options="BORDER_OPTIONS"/>
-					<HstSelect v-model="state.align"     title="Align"             :options="BLOCKQUOTE_ALIGN_OPTIONS"/>
-					<HstSelect v-model="state.lang"      title="Lang"              :options="BLOCKQUOTE_LANG_OPTIONS"/>
+					<HstSelect v-model="state.variant"     title="Variant"      :options="BLOCKQUOTE_VARIANT_OPTIONS"/>
+					<HstSelect v-model="state.color"       title="Color (text)" :options="INTENT_OPTIONS"/>
+					<HstSelect v-model="state.accentColor" title="Accent Color" :options="INTENT_OPTIONS"/>
+					<HstSelect v-model="state.rounded"     title="Rounded"      :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation"   title="Elevation"    :options="ELEVATION_OPTIONS"/>
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstSelect v-model="state.align"       title="Align"        :options="BLOCKQUOTE_ALIGN_OPTIONS"/>
+					<HstSelect v-model="state.lang"        title="Lang"         :options="BLOCKQUOTE_LANG_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
 					<HstSelect v-model="state.fontFamily" title="Font Family" :options="FONT_FAMILY_OPTIONS"/>

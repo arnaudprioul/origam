@@ -49,3 +49,28 @@ export interface IColorProps {
 export interface IBgColorProps {
     bgColor?: TColor
 }
+
+/**
+ * Accent-only color contract.
+ *
+ * Combine with {@link IColorProps} on components that paint a
+ * **decorative accent** — a border bar, a background glyph, a pull-rule
+ * — rather than their own surface fill. `accentColor` is the canonical
+ * name for that axis (see ROADMAP.md — "Renommer `bgColor` →
+ * `accentColor`"). Do NOT reach for this on surface-fill components
+ * (Btn, Card, Chip, Badge, Alert, Pagination, …) — those keep
+ * {@link IBgColorProps}, whose `bgColor` paints a real
+ * `background-color`. Mixing the two meanings under the same prop name
+ * is exactly the confusion this interface exists to avoid.
+ *
+ *   // Blockquote paints text (color) + a decorative accent (accentColor).
+ *   interface IBlockquoteProps extends IColorProps, IAccentColorProps { … }
+ *
+ * `bgColor` remains a **deprecated alias** on components that migrate to
+ * `accentColor` — resolve it as `accentColor ?? bgColor` (accentColor
+ * wins) and warn once via `warnDeprecatedProp` from
+ * `src/utils/Commons/color.util.ts`. Removal targeted for v3.0.0.
+ */
+export interface IAccentColorProps {
+    accentColor?: TColor
+}

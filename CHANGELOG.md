@@ -13,6 +13,20 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed
+
+- **`OrigamBlockquote`: `bgColor` renamed to `accentColor` (non-breaking).**
+  `bgColor` never painted a surface fill on Blockquote — it drove the
+  decorative accent (bar, background quote glyph, author label), which the
+  `bgColor` name misrepresented. `accentColor` is now the canonical prop;
+  `bgColor` keeps working as a deprecated alias (`accentColor` wins when
+  both are set) and logs a console warning once per session. Scope: this
+  pass only touches Blockquote — `bgColor` stays canonical and
+  non-deprecated on surface-fill components (Btn, Card, Chip, Badge,
+  Alert, Pagination, …). Removal of the `bgColor` alias on Blockquote is
+  targeted for v3.0.0. See `ROADMAP.md` — "Renommer `bgColor` →
+  `accentColor`".
+
 ---
 
 ## [2.7.3] — 2026-07-10
