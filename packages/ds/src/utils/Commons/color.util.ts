@@ -742,3 +742,34 @@ export function warnLegacyColor (
         `or use a :style binding for one-off custom colors. Raw color support is deprecated and will be removed in v3.0.0.`
     )
 }
+
+// ── Deprecated prop-name alias warning ──────────────────────────────────────
+// Same once-per-key cache strategy as `warnLegacyColor` above, but for a
+// prop that got RENAMED (not a raw-value deprecation). First user: the
+// `bgColor` → `accentColor` migration on accent-only components (see
+// ROADMAP.md — "Renommer `bgColor` → `accentColor`"). Reused by any future
+// prop rename that needs a non-breaking, warn-once alias.
+
+const _warnedDeprecatedPropKeys = new Set<string>()
+
+/**
+ * Warn (once per component / old-prop) that the consumer passed a
+ * deprecated prop name where the design system now expects the renamed
+ * one. The deprecated prop keeps working (alias) until the removal
+ * version.
+ */
+export function warnDeprecatedProp (
+    component: string,
+    oldProp: string,
+    newProp: string,
+    removalVersion = 'v3.0.0',
+): void {
+    if (typeof console === 'undefined') return
+    const key = `${component}::${oldProp}->${newProp}`
+    if (_warnedDeprecatedPropKeys.has(key)) return
+    _warnedDeprecatedPropKeys.add(key)
+    console.warn(
+        `[origam] <${component}> prop "${oldProp}" is deprecated — use "${newProp}" instead. ` +
+        `"${oldProp}" keeps working as an alias and will be removed in ${removalVersion}.`
+    )
+}

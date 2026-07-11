@@ -66,9 +66,9 @@
 
 	import type { IBlockquoteProps } from '../../interfaces'
 
-	import type { TBlockquoteLang } from '../../types'
+	import type { TBlockquoteLang, TColor } from '../../types'
 
-	import { isIntent } from '../../utils'
+	import { isIntent, warnDeprecatedProp } from '../../utils'
 
 	/*********************************************************
 	 * Global
@@ -164,17 +164,38 @@
 	const {typographyStyles} = useTypography(props, 'blockquote')
 
 	/*********************************************************
-	 * Colour axes — `color` = text, `bgColor` = accent
+	 * Colour axes — `color` = text, `accentColor` = accent
 	 *
 	 * @description
 	 * Two independent intents. Tokenised values resolve through static
 	 * `--color-{intent}` (text) / `--accent-{intent}` (bar, glyph, author)
 	 * modifier classes; custom values fall back to inline CSS-var overrides
-	 * (classes-first, style-as-escape-hatch). `bgColor` never paints a
+	 * (classes-first, style-as-escape-hatch). `accentColor` never paints a
 	 * surface fill — it only drives the accent vars.
+	 *
+	 * `bgColor` is a deprecated alias (see `IBlockquoteProps` JSDoc) — read
+	 * only when `accentColor` is unset, and warns once via
+	 * `warnDeprecatedProp`.
 	 ********************************************************/
 	const colorIsIntent = computed(() => typeof props.color === 'string' && isIntent(props.color))
-	const accentIsIntent = computed(() => typeof props.bgColor === 'string' && isIntent(props.bgColor))
+
+	const resolvedAccentColor = computed<TColor>(() => {
+		// Truthy checks, not `!== undefined`: Vue's runtime prop defaults
+		// coalesce an unset `TColor` prop to `false` (the type includes
+		// `false` in its union, so the compiler-generated default mirrors
+		// plain `boolean` props) — `!== undefined` would therefore always
+		// be true and permanently short-circuit the `bgColor` fallback.
+		// Same idiom as `useColorEffect`'s `hoverColor`/`hoverBgColor`
+		// resolution (`props.hoverBgColor ? props.hoverBgColor : props.bgColor`).
+		if (props.accentColor) return props.accentColor
+		if (props.bgColor) {
+			warnDeprecatedProp('OrigamBlockquote', 'bgColor', 'accentColor')
+			return props.bgColor
+		}
+		return undefined
+	})
+
+	const accentIsIntent = computed(() => typeof resolvedAccentColor.value === 'string' && isIntent(resolvedAccentColor.value))
 
 	const customColorStyles = computed<Record<string, string>>(() => {
 		const styles: Record<string, string> = {}
@@ -184,8 +205,8 @@
 			styles['--origam-blockquote__source---color'] = String(props.color)
 		}
 
-		if (props.bgColor && !accentIsIntent.value) {
-			const accent = String(props.bgColor)
+		if (resolvedAccentColor.value && !accentIsIntent.value) {
+			const accent = String(resolvedAccentColor.value)
 			styles['--origam-blockquote---resolved-accent-color'] = accent
 			styles['--origam-blockquote---resolved-quote-mark-color'] = accent
 			styles['--origam-blockquote---resolved-author-color'] = accent
@@ -204,7 +225,7 @@
 			`origam-blockquote--align-${effectiveAlign.value}`,
 			{
 				[`origam-blockquote--color-${props.color}`]: colorIsIntent.value,
-				[`origam-blockquote--accent-${props.bgColor}`]: accentIsIntent.value,
+				[`origam-blockquote--accent-${resolvedAccentColor.value}`]: accentIsIntent.value,
 				'origam-blockquote--has-attribution': hasAttribution.value
 			},
 			roundedClasses.value,
