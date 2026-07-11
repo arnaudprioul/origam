@@ -4,7 +4,7 @@
  * theme cssVars that the builder actually exposes (the keys in
  * THEME_BUILDER_PRESET_LIGHT_VARS from theme-builder-presets.const.ts).
  *
- * GÉNÉRÉ depuis packages/marketing/app/assets/css/themes/*.css
+ * GÉNÉRÉ depuis packages/marketing/src/assets/css/themes/*.css
  * par scripts/generate-brand-presets.mjs. Valeurs RÉELLES extraites des CSS
  * de marque — ne PAS éditer à la main. Régénérer via:
  *   node scripts/generate-brand-presets.mjs

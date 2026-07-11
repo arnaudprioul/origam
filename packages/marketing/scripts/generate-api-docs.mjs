@@ -7,7 +7,7 @@
  * PostgreSQL doc store. Three pipelines share the same libs (extract / merge /
  * read-existing) — no logic is duplicated:
  *
- *   --seed     First load. Reads the 1758 existing app/consts/**.const.ts `_DOC`
+ *   --seed     First load. Reads the 1758 existing src/consts/**.const.ts `_DOC`
  *              objects (curated prose, all 8 families) and UPSERTs them into the
  *              DB without loss. Idempotent; respects the editorial lock.
  *
@@ -57,7 +57,7 @@ const NEW_ONLY = ARGS.includes('--new-only')
 const DOMAIN_ARG = (ARGS.find(a => a.startsWith('--domain=')) || '').split('=')[1]
 const LIMIT = Number((ARGS.find(a => a.startsWith('--limit=')) || '').split('=')[1]) || 0
 
-const MKT_CONSTS = path.join(REPO_ROOT, 'packages', 'marketing', 'app', 'consts')
+const MKT_CONSTS = path.join(REPO_ROOT, 'packages', 'marketing', 'src', 'consts')
 const MKT_SEED   = path.join(REPO_ROOT, 'packages', 'marketing', 'server', 'db', 'seed')
 const ROLLBACK = '__ROLLBACK_CHECK__'
 
@@ -67,7 +67,7 @@ const add = (a, b) => { a.created += b.created; a.updated += b.updated; a.unchan
 // ─── DB seed: ingest the existing curated files (all 8 families) ────────────
 //
 // Strategy:
-//   1. If the legacy app/consts/<dir>/ directory exists, read the .const.ts
+//   1. If the legacy src/consts/<dir>/ directory exists, read the .const.ts
 //      files as before (backward-compatible path, used before ticket F).
 //   2. If the directory is gone (ticket F removed it), fall back to the JSON
 //      fixture at server/db/seed/<kind>.json produced by dump-db-fixture.mjs.

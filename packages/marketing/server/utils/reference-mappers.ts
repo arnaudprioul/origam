@@ -5,8 +5,8 @@
  * entity objects (snake_case property names matching the entity column keys)
  * and pre-fetched child collections ordered by `position`.
  *
- * Import paths to app/interfaces use relative paths from server/utils/ because
- * the `~` alias resolves to the Nuxt project root in server context, not to app/.
+ * Import paths to src/interfaces use relative paths from server/utils/ because
+ * the `~` alias resolves to the Nuxt project root in server context, not to src/.
  */
 
 import type {
@@ -18,55 +18,55 @@ import type {
     IComponentExample,
     IComponentFamilyMember,
     IComponentRelated,
-} from '../../app/interfaces/components-catalog.interface'
+} from '../../src/interfaces/components-catalog.interface'
 import type {
     IComposableDoc,
     IComposableEntry,
     IComposableParam,
     IComposableReturn,
     IComposableExample,
-} from '../../app/interfaces/composables-catalog.interface'
+} from '../../src/interfaces/composables-catalog.interface'
 import type {
     IConstDoc,
     IConstEntry,
     IConstValue,
     IConstUsedByEntry,
     IConstExample,
-} from '../../app/interfaces/consts-catalog.interface'
+} from '../../src/interfaces/consts-catalog.interface'
 import type {
     IDirectiveDoc,
     IDirectiveArgRow,
     IDirectiveModifierRow,
     IDirectiveExample,
-} from '../../app/interfaces/directive-doc.interface'
+} from '../../src/interfaces/directive-doc.interface'
 import type {
     IEnumDoc,
     IEnumEntry,
     IEnumDocValue,
     IEnumUsedByEntry,
     IEnumExample,
-} from '../../app/interfaces/enums-catalog.interface'
+} from '../../src/interfaces/enums-catalog.interface'
 import type {
     IInterfaceDoc,
     IInterfaceEntry,
     IInterfacePropRow,
     IInterfaceUsedByEntry,
     IInterfaceExample,
-} from '../../app/interfaces/interfaces-catalog.interface'
+} from '../../src/interfaces/interfaces-catalog.interface'
 import type {
     ITypeDoc,
     ITypeEntry,
     ITypeDocValue,
     ITypeUsedByEntry,
     ITypeExample,
-} from '../../app/interfaces/types-catalog.interface'
+} from '../../src/interfaces/types-catalog.interface'
 import type {
     IUtilDoc,
     IUtilEntry,
     IUtilParam,
     IUtilReturn,
     IUtilExample,
-} from '../../app/interfaces/utils-catalog.interface'
+} from '../../src/interfaces/utils-catalog.interface'
 
 // ─── Shared child-row mappers ──────────────────────────────────────────────
 

@@ -2,7 +2,7 @@
 /**
  * generate-brand-presets.mjs — Generate brand-theme preset entries for the
  * /theming Theme Builder from the brand CSS files in
- * packages/marketing/app/assets/css/themes/{name}.css.
+ * packages/marketing/src/assets/css/themes/{name}.css.
  *
  * WHAT IT DOES
  *   1. Reads each brand CSS file (cartoon, apple, geek, glass, editorial,
@@ -13,7 +13,7 @@
  *   3. FILTERS the extracted map so only the keys present in
  *      THEME_BUILDER_PRESET_LIGHT_VARS are kept — these are the tokens the
  *      builder actually exposes.
- *   4. Writes (or --check diffs) packages/marketing/app/consts/theme-builder-brand-presets.const.ts
+ *   4. Writes (or --check diffs) packages/marketing/src/consts/theme-builder-brand-presets.const.ts
  *      with one Record<string, string> per (theme × mode) and the
  *      THEME_BUILDER_BRAND_PRESETS array in IThemeBuilderPreset format.
  *   5. Reports, per theme, how many builder-exposed keys were found vs missing.
@@ -35,9 +35,9 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = path.resolve(__dirname, '..', '..', '..')
-const THEMES_DIR = path.join(REPO_ROOT, 'packages', 'marketing', 'app', 'assets', 'css', 'themes')
-const OUT_FILE = path.join(REPO_ROOT, 'packages', 'marketing', 'app', 'consts', 'theme-builder-brand-presets.const.ts')
-const PRESETS_CONST_FILE = path.join(REPO_ROOT, 'packages', 'marketing', 'app', 'consts', 'theme-builder-presets.const.ts')
+const THEMES_DIR = path.join(REPO_ROOT, 'packages', 'marketing', 'src', 'assets', 'css', 'themes')
+const OUT_FILE = path.join(REPO_ROOT, 'packages', 'marketing', 'src', 'consts', 'theme-builder-brand-presets.const.ts')
+const PRESETS_CONST_FILE = path.join(REPO_ROOT, 'packages', 'marketing', 'src', 'consts', 'theme-builder-presets.const.ts')
 
 const ARGS = process.argv.slice(2)
 const CHECK = ARGS.includes('--check')
@@ -269,7 +269,7 @@ async function run() {
  * theme cssVars that the builder actually exposes (the keys in
  * THEME_BUILDER_PRESET_LIGHT_VARS from theme-builder-presets.const.ts).
  *
- * GÉNÉRÉ depuis packages/marketing/app/assets/css/themes/*.css
+ * GÉNÉRÉ depuis packages/marketing/src/assets/css/themes/*.css
  * par scripts/generate-brand-presets.mjs. Valeurs RÉELLES extraites des CSS
  * de marque — ne PAS éditer à la main. Régénérer via:
  *   node scripts/generate-brand-presets.mjs

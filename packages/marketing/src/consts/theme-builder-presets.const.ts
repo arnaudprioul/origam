@@ -4,7 +4,7 @@
  * apple, geek, glass, editorial, material, ecom, sobre) × 2 modes = 18 total.
  *
  * Origam presets: GÉNÉRÉ depuis packages/ds/src/themes/origam.theme.ts.
- * Brand presets: GÉNÉRÉS depuis packages/marketing/app/assets/css/themes/*.css
+ * Brand presets: GÉNÉRÉS depuis packages/marketing/src/assets/css/themes/*.css
  * via scripts/generate-brand-presets.mjs — ne PAS éditer à la main.
  */
 import type { IOrigamTheme } from 'origam/interfaces'
@@ -22,7 +22,7 @@ import { ecomThemes } from '~/themes/ecom.theme'
 
 /**
  * PROPS-FIRST (logique DS) : un preset est sourcé depuis l'objet `IOrigamTheme`
- * canonique (`app/themes/*.theme.ts`). On résout `vars → --origam-*` via le DS
+ * canonique (`src/themes/*.theme.ts`). On résout `vars → --origam-*` via le DS
  * (`resolveThemeVars`) et on prend `theme.components` (props par composant). Ça
  * remplace la génération CSS fragile, thème par thème.
  */

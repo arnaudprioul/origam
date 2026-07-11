@@ -1,6 +1,6 @@
 /**
  * generate-origam-reset.mjs — regenerate the FULL component-var reset for the
- * `origam` playground theme (`app/themes/origam-reset.generated.ts`).
+ * `origam` playground theme (`src/themes/origam-reset.generated.ts`).
  *
  * Why (playground isolation bug, 2026-07-10): the /theming preview is wrapped
  * in `<origam-theme-provider theme="origam">`. A `[data-theme="origam"]`
@@ -28,7 +28,7 @@ import { fileURLToPath } from 'node:url'
 
 const MARKETING_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const DS_TOKENS = path.resolve(MARKETING_DIR, '..', 'ds', 'src', 'assets', 'css', 'tokens')
-const OUT = path.join(MARKETING_DIR, 'app', 'themes', 'origam-reset.generated.ts')
+const OUT = path.join(MARKETING_DIR, 'src', 'themes', 'origam-reset.generated.ts')
 
 /** Extract `--origam-*` declarations from the first `selector { … }` block. */
 function extractBlock (cssPath, selectorStart) {
