@@ -2,8 +2,8 @@ import { computed, isRef, ref, Ref } from 'vue'
 
 import { ORIGAM_SHADOW_RUNGS, UTILITY_SHADOW_RUNGS } from '../../consts/Commons/elevation.const'
 import type { IElevationProps } from '../../interfaces'
-import { TColor } from "../../types"
-import { getCurrentInstanceName } from "../../utils"
+import { TColor, TElevation } from "../../types"
+import { getCurrentInstanceName, isCustomBoxShadow } from "../../utils"
 
 /**
  * Map a numeric Material-style elevation (0..24) to a token rung in the
@@ -25,11 +25,17 @@ function elevationToToken (level: number): string {
 // `ORIGAM_SHADOW_RUNGS` + `UTILITY_SHADOW_RUNGS` live in
 // `src/consts/Commons/elevation.const.ts`.
 
-function isOrigamRung (value: unknown): value is string {
+// Plain `boolean` return (not a `value is string` type predicate) on
+// purpose: `elevation` is typed `TElevation = number | string`, and a
+// positive type-predicate here would make TS negatively narrow `elevation`
+// to `number` in the `else` branch below — which then makes the later
+// `typeof elevation === 'string'` custom-box-shadow check unreachable
+// (`elevation.trim()` on a narrowed `never`).
+function isOrigamRung (value: unknown): boolean {
     return typeof value === 'string' && ORIGAM_SHADOW_RUNGS.has(value)
 }
 
-function isUtilityRung (value: unknown): value is string {
+function isUtilityRung (value: unknown): boolean {
     return typeof value === 'string' && UTILITY_SHADOW_RUNGS.has(value)
 }
 
@@ -50,18 +56,29 @@ function warnBgColorUsage (bgColor: TColor) {
 /**
  * `useElevation` — refactored to consume design tokens (Lot 1).
  *
+ * Accepts three shapes for `elevation` (see `TElevation`):
+ *   - an origam-native rung name (`'none'|'xs'|'sm'|'md'|'lg'|'xl'|'2xl'|'3xl'`),
+ *   - a Material-style number `0..24` (as a `number` or numeric `string`),
+ *   - a free-form custom `box-shadow` value (`'0 4px 12px rgba(0,0,0,.24)'`,
+ *     `'var(--origam-shadow---card)'`, `'inset 0 0 0 2px #fff'`, …) —
+ *     emitted verbatim via `elevationStyles`. Detected by `isCustomBoxShadow`
+ *     (permissive signal-based check, same approach as `useRounded`'s
+ *     `isCustomBorderRadius`), so genuinely invalid input keeps the
+ *     pre-existing silent-drop behaviour (no regression).
+ *
  * Backward-compat:
  *   - The signature is preserved (`bgColor` accepted but ignored).
  *   - Returns the same shape: `{ elevationClasses, elevationStyles }`.
  *   - `elevationStyles` is still a string array — emits a single `box-shadow:`
- *     declaration that references the appropriate `--origam-shadow-*` token.
+ *     declaration that references the appropriate `--origam-shadow-*` token,
+ *     or the custom value verbatim.
  */
 
 /*********************************************************
  * useElevation
  ********************************************************/
 export function useElevation (
-    props: IElevationProps | Ref<number | string | undefined>,
+    props: IElevationProps | Ref<TElevation | undefined>,
     flat: Ref<boolean> = ref(false),
     bgColor: Ref<TColor> = ref('rgb(0,0,0)'),
     name = getCurrentInstanceName()
@@ -86,13 +103,17 @@ export function useElevation (
         // through to the inline-style path below.
         if (isUtilityRung(elevation)) {
             classes.push(`origam--shadow-${elevation}`)
-        } else if (!isOrigamRung(elevation)) {
+        } else if (!isOrigamRung(elevation) && !(typeof elevation === 'string' && isCustomBoxShadow(elevation))) {
             // Material 0..24 number (string or number) — bridge to the
             // utility ladder via the same token mapping as the inline
             // style path. We deliberately skip this branch for origam
             // rungs not in the utility set (`2xl`, `3xl`) so authors who
             // pass `elevation="2xl"` get the inline-style path instead
-            // of a wrong utility class via `parseInt('2xl') === 2`.
+            // of a wrong utility class via `parseInt('2xl') === 2`. We
+            // also skip it for a free-form custom `box-shadow` string —
+            // `parseInt('0 4px 12px rgba(0,0,0,.24)', 10)` silently reads
+            // as `0` (leading digit) and would otherwise wrongly resolve
+            // to the `none` rung, dropping the custom shadow entirely.
             const numeric = typeof elevation === 'string' ? parseInt(elevation, 10) : elevation
             if (typeof numeric === 'number' && !Number.isNaN(numeric)) {
                 const tokenName = elevationToToken(numeric)
@@ -117,6 +138,19 @@ export function useElevation (
         // intent ("medium shadow") rather than an opaque number.
         if (isOrigamRung(elevation)) {
             styles.push(`box-shadow: var(--origam-shadow---${elevation})`)
+            return styles
+        }
+
+        // Free-form custom `box-shadow` — e.g. `'0 4px 12px rgba(0,0,0,.24)'`,
+        // `'var(--origam-shadow---card)'`, `'inset 0 0 0 2px #fff'`, multiple
+        // comma-separated layers. Checked BEFORE the `parseInt` fallback
+        // below: `parseInt` reads the leading digits of a shadow string
+        // (`parseInt('0 4px 12px rgba(...)', 10) === 0`) and would silently
+        // resolve to the `none` rung — no shadow, no warning. Emitted
+        // verbatim, same passthrough contract as `useRounded`'s
+        // `isCustomBorderRadius` escape hatch.
+        if (typeof elevation === 'string' && isCustomBoxShadow(elevation)) {
+            styles.push(`box-shadow: ${elevation.trim()}`)
             return styles
         }
 

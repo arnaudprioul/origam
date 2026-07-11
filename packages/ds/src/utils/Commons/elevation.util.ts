@@ -1,5 +1,19 @@
+import { CUSTOM_BOX_SHADOW_REGEX } from '../../consts'
 import type { TColor, THSLA } from "../../types"
 import { convertToUnit, HSVtoHSL, isParsableColor, normalize, parseColor, RGBtoHSV, roundTo } from "../../utils"
+
+/**
+ * Whether a string is a free-form custom `box-shadow` value (not an
+ * origam-native rung name, not a Material 0..24 number) that should be
+ * emitted verbatim as an inline `box-shadow` declaration. Mirrors
+ * `isCustomBorderRadius` (`rounded.util.ts`) — same permissive,
+ * signal-based detection instead of a strict grammar parser.
+ *
+ * @param value …
+ */
+export function isCustomBoxShadow (value: string): boolean {
+    return CUSTOM_BOX_SHADOW_REGEX.test(value.trim())
+}
 
 /**
  * @deprecated Since v0.4 — replaced by the `--origam-shadow-{xs|sm|md|lg|xl}`
