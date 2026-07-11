@@ -91,11 +91,28 @@ Remove shadow with `flat`.
 
 ## Elevation
 
+`elevation` accepts three shapes:
+
+- An **origam-native rung name** — `'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'` —
+  resolves to `var(--origam-shadow---{rung})`.
+- A **Material-style number** — `0..24` — bucketised onto the origam shadow ladder.
+- A **free-form custom `box-shadow` value** — `var(...)`, `calc(...)`, a literal shadow list,
+  multiple comma-separated layers, `inset`, … — emitted verbatim.
+
 ```vue
 <template>
     <OrigamCard :elevation="8" title="Elevated card" />
+    <OrigamCard elevation="lg" title="Elevated card (named rung)" />
+    <OrigamCard elevation="0 4px 12px rgba(0,0,0,.24)" title="Custom box-shadow" />
 </template>
 ```
+
+The custom form is detected permissively (same approach as the `rounded` free-form escape
+hatch): any string that isn't a named rung and doesn't parse as `0..24` is treated as a custom
+`box-shadow` if it carries at least one shadow-like signal — a CSS function call (`var(`,
+`calc(`, `rgba(`, …), a hex color, a length with a unit, or `inset`. Anything else falls
+through to the pre-existing behaviour (no shadow emitted). See `useElevation`
+(`src/composables/Commons/elevation.composable.ts`) for the full resolution order.
 
 ## Rounded
 

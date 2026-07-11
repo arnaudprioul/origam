@@ -27,7 +27,8 @@ import type { Page } from '@playwright/test'
  *  16  → Slots - Header.subtitle
  *  17  → Slots - Header.content
  *  18  → Slots - Text
- *  19  → Default (playground)
+ *  19  → Prop — elevation custom (static demo of the free-form box-shadow escape hatch)
+ *  20  → Default (playground)
  *
  * NE PAS utiliser waitForLoadState('networkidle') — Histoire garde un websocket
  * HMR ouvert → networkidle ne résout jamais → timeout garanti.
@@ -388,33 +389,68 @@ test.describe('OrigamCard', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // DEFAULT / PLAYGROUND (index 19)                                      //
+    // PROP — ELEVATION CUSTOM (index 19)                                   //
+    // Static demo: elevation="0 4px 12px rgba(0,0,0,.24)" — DS #14, free-  //
+    // form box-shadow escape hatch (Theme Builder "Autre" configuration).  //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Prop — elevation custom', () => {
+        test('custom box-shadow string is emitted verbatim on the card root', async ({ page }) => {
+            await page.goto(variantUrl(19))
+            const sandbox = await expectCardVisible(page)
+            const card = sandbox.locator('.origam-card').first()
+            await expect(card).toBeVisible({ timeout: 8000 })
+
+            const boxShadow = await card.evaluate(el => getComputedStyle(el).boxShadow)
+
+            // Computed box-shadow serializes rgba(0,0,0,.24) as "rgba(0, 0, 0, 0.24)"
+            // and lengths as "0px 4px 12px" — assert on the individually meaningful
+            // tokens rather than a brittle full-string match.
+            expect(boxShadow).not.toBe('none')
+            expect(boxShadow).toContain('4px')
+            expect(boxShadow).toContain('12px')
+            expect(boxShadow).toMatch(/rgba\(0,\s*0,\s*0,\s*0\.24\)/)
+        })
+
+        test('custom box-shadow does NOT resolve to a --origam-shadow-* token (regression guard)', async ({ page }) => {
+            // Before the fix, `parseInt('0 4px 12px rgba(...)', 10)` read the
+            // leading `0` and silently resolved to the `none` rung — no shadow.
+            await page.goto(variantUrl(19))
+            const sandbox = await expectCardVisible(page)
+            const card = sandbox.locator('.origam-card').first()
+            const styleAttr = await card.getAttribute('style')
+            expect(styleAttr ?? '').not.toContain('--origam-shadow---')
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // DEFAULT / PLAYGROUND (index 20)                                     //
     // init: { title: 'Card title', subtitle: 'Subtitle',                  //
     //         text: 'Body text.', bgColor: 'primary' }                    //
     // ------------------------------------------------------------------ //
 
     test.describe('Default (Playground)', () => {
         test('playground renders card root with origam-card class', async ({ page }) => {
-            await page.goto(variantUrl(19))
+            await page.goto(variantUrl(20))
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam-card/)
         })
 
         test('playground bgColor=primary applies utility class', async ({ page }) => {
-            await page.goto(variantUrl(19))
+            await page.goto(variantUrl(20))
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam--bg-primary/)
         })
 
         test('playground renders title and text', async ({ page }) => {
-            await page.goto(variantUrl(19))
+            await page.goto(variantUrl(20))
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__header')).toContainText('Card title')
             await expect(sandbox.locator('.origam-card__text')).toContainText('Body text.')
         })
 
         test('playground has density-default modifier class', async ({ page }) => {
-            await page.goto(variantUrl(19))
+            await page.goto(variantUrl(20))
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam-card--density-default/)
         })

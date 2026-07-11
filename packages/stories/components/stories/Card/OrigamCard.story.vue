@@ -287,6 +287,15 @@
 			</origam-card>
 		</Variant>
 
+		<Variant title="Prop — elevation custom">
+			<origam-card
+					elevation="0 4px 12px rgba(0,0,0,.24)"
+					title="Custom elevation"
+					text="elevation accepts a free-form box-shadow value (var(...), calc(...), multiple comma-separated layers, inset, …) — emitted verbatim instead of being bucketised onto the origam shadow ladder."
+					style="width: 280px;"
+			/>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ICardProps>({
