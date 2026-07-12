@@ -55,6 +55,17 @@ describe('formatPaddingStylesVar', () => {
         expect(inlineEnd).toContain('d')
     })
 
+    // ── order lock: Haut/Gauche/Bas/Droite, NOT CSS clockwise (issue #216) ───
+    it('4-value: LOCKS the H/G/B/D convention — values[1] maps to LEFT (inline-start), not RIGHT', () => {
+        // '8px 16px 24px 32px' → top=8px, LEFT=16px, bottom=24px, RIGHT=32px
+        // Native CSS `padding: 8px 16px 24px 32px` would mean top=8/RIGHT=16/bottom=24/LEFT=32 — different!
+        const result = formatPaddingStylesVar(['8px', '16px', '24px', '32px'])
+        expect(result).toContain('padding-block-start: 8px')   // top
+        expect(result).toContain('padding-inline-start: 16px') // left (NOT right)
+        expect(result).toContain('padding-block-end: 24px')    // bottom
+        expect(result).toContain('padding-inline-end: 32px')   // right (NOT left)
+    })
+
     // ── edge cases ────────────────────────────────────────────────────────────
     it('returns empty array for 0 values', () => {
         expect(formatPaddingStylesVar([])).toEqual([])
