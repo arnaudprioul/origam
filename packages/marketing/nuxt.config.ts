@@ -2,16 +2,16 @@ import { resolve } from 'node:path'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
-import { MARKETING_DEFAULTS } from './app/consts/marketing.const'
-import { I18N_LOCALES, I18N_COOKIE_KEY } from './app/consts/i18n.const'
-import { geekThemes } from './app/themes/geek.theme'
-import { glassThemes } from './app/themes/glass.theme'
-import { cartoonThemes } from './app/themes/cartoon.theme'
-import { editorialThemes } from './app/themes/editorial.theme'
-import { materialThemes } from './app/themes/material.theme'
-import { ecomThemes } from './app/themes/ecom.theme'
-import { appleThemes } from './app/themes/apple.theme'
-import { origamThemes } from './app/themes/origam.theme'
+import { MARKETING_DEFAULTS } from './src/consts/marketing.const'
+import { I18N_LOCALES, I18N_COOKIE_KEY } from './src/consts/i18n.const'
+import { geekThemes } from './src/themes/geek.theme'
+import { glassThemes } from './src/themes/glass.theme'
+import { cartoonThemes } from './src/themes/cartoon.theme'
+import { editorialThemes } from './src/themes/editorial.theme'
+import { materialThemes } from './src/themes/material.theme'
+import { ecomThemes } from './src/themes/ecom.theme'
+import { appleThemes } from './src/themes/apple.theme'
+import { origamThemes } from './src/themes/origam.theme'
 
 // Single source of truth for the displayed version: the published `origam`
 // package version. Read at build time so badges/translations never need a
@@ -24,6 +24,11 @@ export default defineNuxtConfig({
     compatibilityDate: '2026-05-27',
     devtools: { enabled: true },
     ssr: true,
+
+    // Project convention (cf. CLAUDE.md) — srcDir is `src/`, not Nuxt 4's
+    // default `app/`. Internal structure (app.vue, layouts, pages, …) is
+    // unchanged, only the root folder name.
+    srcDir: 'src/',
 
     // Production build only needs runnable output, not source maps. Nuxt emits
     // SERVER source maps by default in prod (~570 .mjs.map / ~67 MB here); rollup
@@ -161,8 +166,11 @@ export default defineNuxtConfig({
         locales: I18N_LOCALES,
         defaultLocale: 'en',
         strategy: 'prefix_except_default',
-        // langDir is resolved relative to restructureDir ('i18n/' by default in v10).
-        // Locale files live at i18n/locales/ in the project root.
+        // restructureDir is resolved relative to <rootDir> (v10 default: 'i18n/').
+        // Project convention puts locales under <srcDir>/assets/locales/ (cf.
+        // CLAUDE.md), so restructureDir points at src/assets and langDir stays
+        // the default 'locales' — resolved path: src/assets/locales/.
+        restructureDir: 'src/assets',
         langDir: 'locales',
         compilation: { strictMessage: false },
         detectBrowserLanguage: {

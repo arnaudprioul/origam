@@ -58,7 +58,7 @@ export interface IComponentRelated {
 
 /**
  * Per-component documentation data — drives the /components/[slug].vue template.
- * One file per component under app/consts/components/{slug}.const.ts.
+ * One file per component under src/consts/components/{slug}.const.ts.
  */
 export interface IComponentDoc {
     /** Must match the catalog entry slug exactly */

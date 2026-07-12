@@ -28,7 +28,7 @@ export const THEMES_TOOLING_TEXT: IThemeChip[] = [
  * Four preview tiles, each a REAL registered theme applied via
  * `<OrigamThemeProvider theme mode>`. The tile surface, button and skeleton
  * bars all come from that theme's tokens — no hardcoded hex, no per-tile CSS
- * overrides. (Brand themes are clean IOrigamTheme objects in app/themes/.)
+ * overrides. (Brand themes are clean IOrigamTheme objects in src/themes/.)
  */
 export const THEME_PREVIEW_TILES: IThemePreviewTile[] = [
     { key: 'light', labelKey: 'home.themes.preview_light', labelFallback: 'light', theme: 'light', mode: 'light' },

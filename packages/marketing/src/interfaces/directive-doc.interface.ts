@@ -1,6 +1,6 @@
 /**
  * Per-directive documentation data — drives the /directives/[slug].vue template.
- * One file per directive under app/consts/directives/{slug}.const.ts.
+ * One file per directive under src/consts/directives/{slug}.const.ts.
  *
  * Terminology:
  * - value:     the expression passed to the directive (v-foo="VALUE")

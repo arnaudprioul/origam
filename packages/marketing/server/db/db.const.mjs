@@ -24,7 +24,7 @@ export const DOC_KINDS = Object.freeze([
 ])
 
 /**
- * Folder under app/consts/<dir>/ holding the legacy `_DOC` files, per kind.
+ * Folder under src/consts/<dir>/ holding the legacy `_DOC` files, per kind.
  * Used by the first seed (ticket B) to read the curated prose without loss.
  */
 export const DOC_KIND_DIRS = Object.freeze({

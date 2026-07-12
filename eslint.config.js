@@ -139,7 +139,7 @@ export default typescriptEslint.config(
 		// `/about`). Nuxt forbids multi-word file names for routes — so
 		// the Vue rule that requires multi-word *component* names
 		// doesn't apply here. Demote to off for the marketing pages.
-		files: ['packages/marketing/app/pages/**/*.vue', 'packages/marketing/app/layouts/**/*.vue'],
+		files: ['packages/marketing/src/pages/**/*.vue', 'packages/marketing/src/layouts/**/*.vue'],
 		rules: {
 			"vue/multi-word-component-names": "off"
 		}
@@ -152,7 +152,7 @@ export default typescriptEslint.config(
 		// the components/ pages dir so the XSS guard stays on everywhere else.
 		// (Glob targets the dir, not `[slug].vue` literally — the brackets are
 		// a minimatch character class.)
-		files: ['packages/marketing/app/pages/components/*.vue'],
+		files: ['packages/marketing/src/pages/components/*.vue'],
 		rules: {
 			"vue/no-v-html": "off"
 		}
