@@ -125,3 +125,77 @@ describe('useBorder — standalone borderColor / borderStyle props', () => {
         expect(styles).toEqual(['border-width: 2px', 'border-style: solid', 'border-color: currentColor'])
     })
 })
+
+describe('useBorder — per-side props (issue #215)', () => {
+    it('numeric borderTop emits physical border-top-* declarations with solid/currentColor defaults', () => {
+        const { api } = mountWithProps({ borderTop: 4 })
+        const styles = api().borderStyles.value
+        expect(styles).toContain('border-top-width: 4px')
+        expect(styles).toContain('border-top-style: solid')
+        expect(styles).toContain('border-top-color: currentColor')
+    })
+
+    it('boolean borderRight true falls back to the "thin" design-token width', () => {
+        const { api } = mountWithProps({ borderRight: true })
+        const styles = api().borderStyles.value
+        expect(styles).toContain('border-right-width: var(--origam-border__width---thin)')
+        expect(styles).toContain('border-right-style: solid')
+    })
+
+    it('free-form string borderBottom parses width/style/color for that side only', () => {
+        const { api } = mountWithProps({ borderBottom: '2px dashed red' })
+        const styles = api().borderStyles.value
+        expect(styles).toContain('border-bottom-width: 2px')
+        expect(styles).toContain('border-bottom-style: dashed')
+        expect(styles).toContain('border-bottom-color: red')
+        expect(styles.some(d => d.startsWith('border-top-') || d.startsWith('border-left-') || d.startsWith('border-right-'))).toBe(false)
+    })
+
+    it('borderLeft unset emits nothing for that side', () => {
+        const { api } = mountWithProps({ borderTop: 2 })
+        const styles = api().borderStyles.value
+        expect(styles.some(d => d.startsWith('border-left-'))).toBe(false)
+    })
+
+    it('all four sides can be set independently to different values', () => {
+        const { api } = mountWithProps({
+            borderTop: 1,
+            borderRight: 2,
+            borderBottom: 3,
+            borderLeft: 4,
+        })
+        const styles = api().borderStyles.value
+        expect(styles).toContain('border-top-width: 1px')
+        expect(styles).toContain('border-right-width: 2px')
+        expect(styles).toContain('border-bottom-width: 3px')
+        expect(styles).toContain('border-left-width: 4px')
+    })
+
+    it('borderTopColor wins over the color embedded in borderTop (push-order precedence)', () => {
+        const { api } = mountWithProps({ borderTop: '2px dashed red', borderTopColor: 'blue' })
+        const styles = api().borderStyles.value
+        const topColorDeclarations = styles.filter(d => d.startsWith('border-top-color'))
+        expect(topColorDeclarations.at(-1)).toBe('border-top-color: blue')
+    })
+
+    it('borderTopColor accepts a semantic intent and resolves to a foreground token', () => {
+        const { api } = mountWithProps({ borderTop: 2, borderTopColor: 'primary' })
+        const styles = api().borderStyles.value
+        const topColorDeclarations = styles.filter(d => d.startsWith('border-top-color'))
+        expect(topColorDeclarations.at(-1)).toContain('var(--origam-color')
+    })
+
+    it('global border shorthand + per-side borderTop → borderTop wins for the top side only', () => {
+        const { api } = mountWithProps({ border: '1px solid black', borderTop: '4px dashed red' })
+        const styles = api().borderStyles.value
+        expect(styles.filter(d => d.startsWith('border-top-')).at(-3)).toBe('border-top-width: 4px')
+    })
+
+    it('a gradient borderTopColor is silently ignored (no border-color for that side)', () => {
+        const { api } = mountWithProps({ borderTop: 2, borderTopColor: 'linear-gradient(red, blue)' })
+        const styles = api().borderStyles.value
+        const topColorDeclarations = styles.filter(d => d.startsWith('border-top-color'))
+        // Only the default `currentColor` from the numeric borderTop remains.
+        expect(topColorDeclarations).toEqual(['border-top-color: currentColor'])
+    })
+})

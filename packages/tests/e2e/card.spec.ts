@@ -28,7 +28,8 @@ import type { Page } from '@playwright/test'
  *  17  → Slots - Header.content
  *  18  → Slots - Text
  *  19  → Prop — elevation custom (static demo of the free-form box-shadow escape hatch)
- *  20  → Default (playground)
+ *  20  → Prop — border per-side (static demo of borderTop/Right/Bottom/Left + *Color, issue #215)
+ *  21  → Default (playground)
  *
  * NE PAS utiliser waitForLoadState('networkidle') — Histoire garde un websocket
  * HMR ouvert → networkidle ne résout jamais → timeout garanti.
@@ -424,33 +425,104 @@ test.describe('OrigamCard', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // DEFAULT / PLAYGROUND (index 20)                                     //
+    // PROP — BORDER PER-SIDE (index 20)                                    //
+    // Static demo: borderTop=4/borderRight=2/borderBottom=4/borderLeft=2 + //
+    // per-side *Color props — DS #215.                                    //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Prop — border per-side', () => {
+        test('emits independent border-{side}-width declarations per side', async ({ page }) => {
+            await page.goto(variantUrl(20))
+            const sandbox = await expectCardVisible(page)
+            const card = sandbox.locator('.origam-card').first()
+            await expect(card).toBeVisible({ timeout: 8000 })
+
+            const style = await card.evaluate(el => {
+                const computed = getComputedStyle(el)
+                return {
+                    top: computed.borderTopWidth,
+                    right: computed.borderRightWidth,
+                    bottom: computed.borderBottomWidth,
+                    left: computed.borderLeftWidth,
+                }
+            })
+
+            expect(style.top).toBe('4px')
+            expect(style.right).toBe('2px')
+            expect(style.bottom).toBe('4px')
+            expect(style.left).toBe('2px')
+        })
+
+        test('resolves a distinct border-{side}-color per side from semantic intents', async ({ page }) => {
+            await page.goto(variantUrl(20))
+            const sandbox = await expectCardVisible(page)
+            const card = sandbox.locator('.origam-card').first()
+
+            const colors = await card.evaluate(el => {
+                const computed = getComputedStyle(el)
+                return {
+                    top: computed.borderTopColor,
+                    right: computed.borderRightColor,
+                    bottom: computed.borderBottomColor,
+                    left: computed.borderLeftColor,
+                }
+            })
+
+            // 4 distinct intents (danger/primary/success/info) → 4 distinct resolved colors.
+            const distinct = new Set(Object.values(colors))
+            expect(distinct.size).toBe(4)
+        })
+
+        test('inline style attribute carries physical (not logical) border-{side}-color declarations', async ({ page }) => {
+            // Widths are asserted via computed style above (browsers are free to
+            // collapse equal-pair longhands like border-{top,right,bottom,left}-width
+            // back into the `border-width: <v> <h>` shorthand when serializing the
+            // `style` attribute string — that's a harmless DOM quirk, not a bug).
+            // The four per-side colors are all distinct, so they cannot collapse
+            // into a shorthand: their presence as literal physical longhands proves
+            // useBorder emits `border-{side}-color`, never a logical property.
+            await page.goto(variantUrl(20))
+            const sandbox = await expectCardVisible(page)
+            const card = sandbox.locator('.origam-card').first()
+            const styleAttr = await card.getAttribute('style')
+
+            expect(styleAttr ?? '').toContain('border-top-color')
+            expect(styleAttr ?? '').toContain('border-right-color')
+            expect(styleAttr ?? '').toContain('border-bottom-color')
+            expect(styleAttr ?? '').toContain('border-left-color')
+            expect(styleAttr ?? '').not.toContain('border-block')
+            expect(styleAttr ?? '').not.toContain('border-inline')
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // DEFAULT / PLAYGROUND (index 21)                                     //
     // init: { title: 'Card title', subtitle: 'Subtitle',                  //
     //         text: 'Body text.', bgColor: 'primary' }                    //
     // ------------------------------------------------------------------ //
 
     test.describe('Default (Playground)', () => {
         test('playground renders card root with origam-card class', async ({ page }) => {
-            await page.goto(variantUrl(20))
+            await page.goto(variantUrl(21))
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam-card/)
         })
 
         test('playground bgColor=primary applies utility class', async ({ page }) => {
-            await page.goto(variantUrl(20))
+            await page.goto(variantUrl(21))
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam--bg-primary/)
         })
 
         test('playground renders title and text', async ({ page }) => {
-            await page.goto(variantUrl(20))
+            await page.goto(variantUrl(21))
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__header')).toContainText('Card title')
             await expect(sandbox.locator('.origam-card__text')).toContainText('Body text.')
         })
 
         test('playground has density-default modifier class', async ({ page }) => {
-            await page.goto(variantUrl(20))
+            await page.goto(variantUrl(21))
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam-card--density-default/)
         })

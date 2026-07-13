@@ -270,13 +270,27 @@ export function useStateEffect (
     // the standalone `borderColor` / `borderStyle` props are honoured in
     // addition to the state-resolved `border` shorthand. The shorthand
     // stays state-aware via the reactive getter (same pattern as
-    // padding / margin); `borderColor` / `borderStyle` are not
-    // state-swappable, so they read straight from the base props.
+    // padding / margin); `borderColor` / `borderStyle` — and the per-side
+    // `borderTop`/`borderRight`/`borderBottom`/`borderLeft` (+ `*Color`)
+    // props from issue #215 — are not state-swappable, so they read
+    // straight from the base props. Forwarding these was the same "declared
+    // but never read" bug the ticket fixes at the `useBorder` level: without
+    // this explicit pass-through, any consumer of `useStateEffect` (Card,
+    // Sheet, …) would have the props typed on `IBorderProps` yet silently
+    // dropped before reaching `useBorder`.
     const { borderClasses, borderStyles }       = useBorder(
         reactive({
             get border () { return border.value },
             get borderColor () { return props.borderColor },
             get borderStyle () { return props.borderStyle },
+            get borderTop () { return props.borderTop },
+            get borderRight () { return props.borderRight },
+            get borderBottom () { return props.borderBottom },
+            get borderLeft () { return props.borderLeft },
+            get borderTopColor () { return props.borderTopColor },
+            get borderRightColor () { return props.borderRightColor },
+            get borderBottomColor () { return props.borderBottomColor },
+            get borderLeftColor () { return props.borderLeftColor },
         }) as IBorderProps,
     )
     const { roundedClasses, roundedStyles }     = useRounded(rounded)
