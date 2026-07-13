@@ -1,7 +1,12 @@
 // TU — border.util.ts
 
 import { describe, expect, it } from 'vitest'
-import { formatBorderStylesVar } from '@origam/utils/Commons/border.util'
+import {
+    formatBorderPositionStylesVar,
+    formatBorderStylesVar,
+    parseBorderPositionValue,
+    resolveBorderSideColor
+} from '@origam/utils/Commons/border.util'
 
 describe('formatBorderStylesVar', () => {
     // ── 1 value: shorthand ────────────────────────────────────────────────────
@@ -75,5 +80,92 @@ describe('formatBorderStylesVar', () => {
     it('handles CSS custom-property values without modification', () => {
         const result = formatBorderStylesVar(['var(--my-border-width)'], 'width')
         expect(result[0]).toContain('var(--my-border-width)')
+    })
+})
+
+// ── parseBorderPositionValue (issue #215) ─────────────────────────────────
+describe('parseBorderPositionValue', () => {
+    it('parses a full "width style color" string into its three facets', () => {
+        expect(parseBorderPositionValue('2px dashed red')).toEqual({
+            width: '2px',
+            style: 'dashed',
+            color: 'red',
+        })
+    })
+
+    it('defaults style to "solid" when omitted', () => {
+        expect(parseBorderPositionValue('2px')).toEqual({
+            width: '2px',
+            style: 'solid',
+            color: 'currentColor',
+        })
+    })
+
+    it('defaults color to "currentColor" when omitted', () => {
+        expect(parseBorderPositionValue('2px dashed')).toEqual({
+            width: '2px',
+            style: 'dashed',
+            color: 'currentColor',
+        })
+    })
+
+    it('accepts a var(--...) custom-property color untouched', () => {
+        const result = parseBorderPositionValue('2px solid var(--origam-color__action--primary---bg)')
+        expect(result?.color).toBe('var(--origam-color__action--primary---bg)')
+    })
+
+    it('returns null for an unparsable / empty string', () => {
+        expect(parseBorderPositionValue('')).toBeNull()
+        expect(parseBorderPositionValue('not-a-border-value-!!!')).toBeNull()
+    })
+})
+
+// ── formatBorderPositionStylesVar (issue #215) ────────────────────────────
+describe('formatBorderPositionStylesVar', () => {
+    it('emits physical border-{position}-{type} declarations for width/style/color', () => {
+        const result = formatBorderPositionStylesVar('top', { width: '2px', style: 'dashed', color: 'red' })
+        expect(result).toEqual([
+            'border-top-width: 2px',
+            'border-top-style: dashed',
+            'border-top-color: red',
+        ])
+    })
+
+    it('honours the requested physical position (not a logical property)', () => {
+        const result = formatBorderPositionStylesVar('left', { width: '1px', style: 'solid', color: 'blue' })
+        expect(result).toContain('border-left-width: 1px')
+        expect(result.some(d => d.includes('inline'))).toBe(false)
+    })
+
+    it('omits a facet when absent', () => {
+        const result = formatBorderPositionStylesVar('right', { width: '2px' })
+        expect(result).toEqual(['border-right-width: 2px'])
+    })
+
+    it('returns an empty array when no facet is provided', () => {
+        expect(formatBorderPositionStylesVar('bottom', {})).toEqual([])
+    })
+})
+
+// ── resolveBorderSideColor (issue #215) ───────────────────────────────────
+describe('resolveBorderSideColor', () => {
+    it('resolves a semantic intent to its foreground token', () => {
+        const result = resolveBorderSideColor('primary')
+        expect(result).toContain('var(--origam-color')
+    })
+
+    it('passes through a raw CSS color untouched', () => {
+        expect(resolveBorderSideColor('#ff0000')).toBe('#ff0000')
+        expect(resolveBorderSideColor('rgb(1, 2, 3)')).toBe('rgb(1, 2, 3)')
+    })
+
+    it('returns null for a gradient value (unsupported on border-color)', () => {
+        expect(resolveBorderSideColor('linear-gradient(red, blue)')).toBeNull()
+    })
+
+    it('returns null for a falsy / empty value', () => {
+        expect(resolveBorderSideColor(undefined)).toBeNull()
+        expect(resolveBorderSideColor('')).toBeNull()
+        expect(resolveBorderSideColor(false as unknown as string)).toBeNull()
     })
 })
