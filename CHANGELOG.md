@@ -15,6 +15,20 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [2.8.1] — 2026-07-15
+
+### Fixed
+
+- **The npm tarball now ships `README.md` and `LICENSE`.** The publish runs
+  from `packages/ds/` exclusively, but the package dir contained neither
+  file — both listed in the `files` array yet silently absent from every
+  published version (the npm page showed no readme at all). The new
+  npm-facing README covers install, quick start (plugin + token sheets +
+  Nuxt module), the theming model and the granular exports, and links to
+  the upcoming documentation site (https://origam.dev).
+
+---
+
 ## [2.8.0] — 2026-07-15
 
 ### Added
