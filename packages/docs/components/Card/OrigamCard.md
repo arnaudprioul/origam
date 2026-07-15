@@ -130,6 +130,38 @@ through to the pre-existing behaviour (no shadow emitted). See `useElevation`
 </template>
 ```
 
+### Border — per side
+
+`borderTop` / `borderRight` / `borderBottom` / `borderLeft` set an independent width
+(and optionally style/color, via a free-form string like `"2px dashed red"`) for a
+single physical side, and `borderTopColor` / `borderRightColor` / `borderBottomColor` /
+`borderLeftColor` set an independent color for that side (accepts a semantic intent —
+`'primary'`, `'danger'`, … — or a raw CSS color; gradients are not supported on border
+colors and are silently ignored).
+
+```vue
+<template>
+    <OrigamCard
+        :border-top="4"
+        :border-right="2"
+        :border-bottom="4"
+        :border-left="2"
+        border-top-color="danger"
+        border-right-color="primary"
+        border-bottom-color="success"
+        border-left-color="info"
+        title="Per-side border"
+    />
+</template>
+```
+
+Precedence (specific beats global, per physical side): the global `border` shorthand
+resolves first, then the standalone `borderColor` / `borderStyle`, then the per-side
+`borderTop` / `borderRight` / `borderBottom` / `borderLeft`, and finally the per-side
+`*Color` props win last. Each rung only overrides the side(s) it actually targets —
+e.g. `border="1px solid black"` with `borderTop="4px dashed red"` renders a 4px dashed
+red top edge while the other three sides stay 1px solid black.
+
 ## Density
 
 ```vue
