@@ -214,6 +214,11 @@ const navLabel = computed(() => t('theming.nav.label', 'Components'))
         min-height: 0;
         overflow-y: auto;
         padding-block: var(--origam-spacing-1, 0.25rem) var(--origam-spacing-3, 0.75rem);
+
+        @media (max-height: 50rem) {
+            min-height: 14rem;
+            overflow-y: visible;
+        }
     }
 
     &__empty {

@@ -630,6 +630,11 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
         flex: 1 1 auto;
         min-height: 0;
         overflow-y: auto;
+
+        @media (max-height: 50rem) {
+            min-height: 14rem;
+            overflow-y: visible;
+        }
     }
 
     &__form {

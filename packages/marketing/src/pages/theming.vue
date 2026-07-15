@@ -384,6 +384,11 @@
     min-height: 0;
     height: calc(100vh - var(--origam-app-bar---height, 4rem));
 
+    @media (max-height: 50rem) {
+      height: auto;
+      min-height: calc(100vh - var(--origam-app-bar---height, 4rem));
+    }
+
     &__dev-banner {
       flex: none;
       margin: var(--origam-space---4, 1rem);
@@ -538,12 +543,21 @@
         height: auto;
         overflow-y: auto;
       }
+
+      @media (max-height: 50rem) {
+        grid-auto-rows: min-content;
+        height: auto;
+      }
     }
 
     &__col {
       min-height: 0;
 
       @media (max-width: 48rem) {
+        min-height: auto;
+      }
+
+      @media (max-height: 50rem) {
         min-height: auto;
       }
     }
@@ -562,6 +576,10 @@
         border-inline: none;
         border-block: 1px solid var(--origam-color-border-default);
       }
+
+      @media (max-height: 50rem) {
+        overflow: visible;
+      }
     }
 
     &__output {
@@ -574,6 +592,11 @@
       background-color: var(--origam-color-surface-default);
       border-block-start: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
       overflow: hidden;
+
+      @media (max-height: 50rem) {
+        max-height: none;
+        overflow: visible;
+      }
     }
 
     &__output-head {
@@ -599,6 +622,11 @@
       flex: 1 1 auto;
       min-height: 0;
       overflow: hidden;
+
+      @media (max-height: 50rem) {
+        min-height: 12rem;
+        overflow: visible;
+      }
 
       :deep(.origam-code) {
         flex: 1 1 auto;
