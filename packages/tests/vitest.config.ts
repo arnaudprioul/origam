@@ -61,6 +61,16 @@ export default defineConfig({
          * (sanitize-html string normalisation, ssr-smoke class shape).
          */
         setupFiles: ['./TU/vitest.setup.ts'],
+        /*
+         * Runs once, before Vite starts transforming any file — see
+         * global-setup.ts for why: `packages/marketing/tsconfig.json`
+         * extends a git-ignored, Nuxt-generated file that a fresh CI
+         * runner never produces (marketing's own `postinstall` script
+         * deliberately no-ops `nuxt prepare` in CI), which crashes
+         * Vite's built-in per-file tsconfig lookup for every TU/marketing
+         * spec with a hard TSConfckParseError.
+         */
+        globalSetup: ['./global-setup.ts'],
         coverage: {
             provider: 'v8',
             /*
