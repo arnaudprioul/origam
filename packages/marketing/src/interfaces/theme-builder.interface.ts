@@ -124,23 +124,78 @@ export interface IThemeBuilderCategoryMeta {
 }
 
 /**
+ * Input kind for a themable prop control.
+ *
+ * The first five (`select` | `switch` | `number` | `text` | `color`) are the
+ * GENERIC kinds, unchanged since round 1 — derived straight from a prop's
+ * type label (see `buildControl` in `useThemeBuilderCatalog.ts`).
+ *
+ * The last five are the RICH controls validated in
+ * `packages/marketing/wireframes/theming-controls/*.html` (round 2):
+ *  - `color-intent` — palette of the 8 real `TIntent` values + free color.
+ *    Used for `color`, `accentColor` (Blockquote only, #212) and, when it
+ *    isn't folded into a `border` composite, `borderColor` alone.
+ *  - `rounded`      — named rungs (`ROUNDED` enum) + "Autre" 4-corner editor.
+ *  - `elevation`    — named shadow rungs + "Autre" (depth OR full box-shadow
+ *    composer, both write straight into `elevation`, PR #210).
+ *  - `border`       — COMPOSITE: width (`border`) + style (`borderStyle`) +
+ *    color (`borderColor`) in one popover. See `props` below.
+ *  - `box-model`    — devtools-style box editor for EITHER `padding` OR
+ *    `margin` (see `boxModelAxis`). Always writes the single CSS-string prop,
+ *    never the discrete `paddingTop`/`marginLeft`/… props (verified dead —
+ *    no composable reads them, see `padding-margin-field.html` Constat 1).
+ */
+export type TThemeBuilderControlKind =
+    | 'select'
+    | 'switch'
+    | 'number'
+    | 'text'
+    | 'color'
+    | 'color-intent'
+    | 'rounded'
+    | 'elevation'
+    | 'border'
+    | 'box-model'
+
+/**
  * A single themable prop control derived from a component's `_DOC.props` row.
  * `kind` drives which input renders. Options are resolved from the playground
  * block when available, otherwise parsed from the prop type's union literals.
+ *
+ * MULTI-PROP CONTROLS (round 2): a control can drive more than one DS prop
+ * at once — today only `kind: 'border'` does (`border` + `borderStyle` +
+ * `borderColor`). `prop` stays the PRIMARY/identifying prop (used as the
+ * React-key-equivalent and the historic single-prop call sites); `props`
+ * lists EVERY prop the control reads/writes and drives edit-count/reset.
+ * Simple (single-prop) controls always have `props: [prop]`.
  */
 export interface IThemeBuilderPropControl {
-    /** Prop name (camelCase) as the consumer writes it. */
+    /** Prop name (camelCase) as the consumer writes it. Primary/id prop. */
     prop: string
+    /**
+     * Every prop this control reads/writes. `[prop]` for every simple
+     * control; `['border', 'borderStyle', 'borderColor']` for the Border
+     * composite. Drives `groupEditCount` (edited-dot) and per-control reset.
+     */
+    props: string[]
     /** Input kind. `color` renders a swatch + hex; the rest are self-explanatory. */
-    kind: 'select' | 'switch' | 'number' | 'text' | 'color'
+    kind: TThemeBuilderControlKind
     /** Group this control belongs to. */
     group: TThemeBuilderGroupId
     /** Human label (the prop name is shown as code; this is the long-form label). */
     label: string
     /** Select options (only for kind === 'select'). */
     options?: Array<{ label: string; value: string | number | boolean }>
-    /** DS default value (used to compute the diff and seed the control). */
+    /** DS default value for the PRIMARY prop (used to compute the diff and seed the control). */
     defaultValue: string | number | boolean
+    /**
+     * Per-prop DS defaults for a multi-prop control (`props.length > 1`).
+     * Keyed by prop name — e.g. `{ border: 'none', borderStyle: 'solid',
+     * borderColor: 'currentColor' }`. Used to reset every facet at once.
+     */
+    defaultValues?: Record<string, string | number | boolean>
+    /** Discriminates the two `box-model` controls (Padding vs Margin). */
+    boxModelAxis?: 'padding' | 'margin'
 }
 
 /** A prop group section: meta + the controls that fell into it. */

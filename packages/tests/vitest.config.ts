@@ -16,6 +16,16 @@ export default defineConfig({
             projects: [resolve(REPO_ROOT, 'tsconfig.json')]
         })
     ],
+    resolve: {
+        alias: {
+            // `~` is the Nuxt-managed alias for `@origam/marketing`'s own
+            // `src/` (defined per-app in packages/marketing/nuxt.config.ts,
+            // not visible outside the Nuxt build). Registered here so pure
+            // (non-Nuxt-runtime) marketing utils under TU/marketing/ can be
+            // unit tested without duplicating their import paths.
+            '~': resolve(REPO_ROOT, 'packages/marketing/src')
+        }
+    },
     test: {
         /*
          * The vitest root is pinned to the monorepo root so coverage can

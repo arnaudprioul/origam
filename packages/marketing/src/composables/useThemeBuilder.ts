@@ -244,7 +244,7 @@ export function useThemeBuilder () {
         if (defaultEntries.length) {
             const component: Record<string, Record<string, unknown>> = {}
             defaultEntries.forEach(([compKey, props]) => { component[compKey] = { ...props } })
-            theme.component = component
+            theme.components = component
         }
         return theme
     }
@@ -291,7 +291,7 @@ export function useThemeBuilder () {
             }
 
             if (defaultEntries.length) {
-                lines.push('        component: {')
+                lines.push('        components: {')
                 defaultEntries.forEach(([compKey, props], ci) => {
                     lines.push(`            ${JSON.stringify(compKey)}: {`)
                     const propEntries = Object.entries(props)
@@ -357,8 +357,8 @@ export function useThemeBuilder () {
             }
         }
 
-        if (theme.component && typeof theme.component === 'object') {
-            for (const [compKey, props] of Object.entries(theme.component as Record<string, unknown>)) {
+        if (theme.components && typeof theme.components === 'object') {
+            for (const [compKey, props] of Object.entries(theme.components as Record<string, unknown>)) {
                 if (!props || typeof props !== 'object') continue
                 const slug = compKey.replace(/^origam-/, '')
                 for (const [prop, value] of Object.entries(props as Record<string, unknown>)) {
