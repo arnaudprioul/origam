@@ -119,10 +119,25 @@ export function useThemeBuilder () {
         return edited !== undefined ? edited : defaultProp(slug, prop)
     }
 
+    /**
+     * `undefined`/`null`/`''`/`false` are all "nothing set" from a control's
+     * point of view — every control's "clear"/"inherit"/"unlink" action
+     * writes plain `undefined`, regardless of what the DS default happens
+     * to parse to (`parseDefault` in `useThemeBuilderCatalog.ts` turns the
+     * literal string `'undefined'` into `''`, a real `false` default stays
+     * `false`, …). Without this equivalence, clearing a prop whose default
+     * isn't literally `undefined` left a stray `prop: undefined` entry in
+     * `state.defaults` — functionally harmless (`propValue` already treats
+     * a stored `undefined` as "not edited"), but it polluted the exported
+     * theme with dead entries every time a per-side border editor relinked.
+     */
+    const isUnset = (v: unknown): boolean => v === undefined || v === null || v === '' || v === false
+
     /** Set a prop value, storing only when it differs from the DS default. */
     const setProp = (slug: string, prop: string, value: unknown): void => {
         const key = `origam-${slug}`
-        const isDefault = value === defaultProp(slug, prop)
+        const def = defaultProp(slug, prop)
+        const isDefault = value === def || (isUnset(value) && isUnset(def))
         if (isDefault) {
             if (state.defaults[key]) {
                 delete state.defaults[key][prop]
@@ -244,7 +259,7 @@ export function useThemeBuilder () {
         if (defaultEntries.length) {
             const component: Record<string, Record<string, unknown>> = {}
             defaultEntries.forEach(([compKey, props]) => { component[compKey] = { ...props } })
-            theme.component = component
+            theme.components = component
         }
         return theme
     }
@@ -291,7 +306,7 @@ export function useThemeBuilder () {
             }
 
             if (defaultEntries.length) {
-                lines.push('        component: {')
+                lines.push('        components: {')
                 defaultEntries.forEach(([compKey, props], ci) => {
                     lines.push(`            ${JSON.stringify(compKey)}: {`)
                     const propEntries = Object.entries(props)
@@ -357,8 +372,8 @@ export function useThemeBuilder () {
             }
         }
 
-        if (theme.component && typeof theme.component === 'object') {
-            for (const [compKey, props] of Object.entries(theme.component as Record<string, unknown>)) {
+        if (theme.components && typeof theme.components === 'object') {
+            for (const [compKey, props] of Object.entries(theme.components as Record<string, unknown>)) {
                 if (!props || typeof props !== 'object') continue
                 const slug = compKey.replace(/^origam-/, '')
                 for (const [prop, value] of Object.entries(props as Record<string, unknown>)) {

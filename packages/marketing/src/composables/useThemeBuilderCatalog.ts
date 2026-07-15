@@ -130,6 +130,7 @@ function buildControl (
     if (playground) {
         return {
             prop: row.name,
+            props: [row.name],
             kind: playground.kind === 'select' ? 'select' : playground.kind,
             group,
             label: humanise(row.name),
@@ -141,6 +142,7 @@ function buildControl (
     if (typeLabel === 'boolean') {
         return {
             prop: row.name,
+            props: [row.name],
             kind: 'switch',
             group,
             label: humanise(row.name),
@@ -151,6 +153,7 @@ function buildControl (
     if (isColorType(typeLabel)) {
         return {
             prop: row.name,
+            props: [row.name],
             kind: 'color',
             group,
             label: humanise(row.name),
@@ -162,6 +165,7 @@ function buildControl (
     if (unionOptions) {
         return {
             prop: row.name,
+            props: [row.name],
             kind: 'select',
             group,
             label: humanise(row.name),
@@ -173,6 +177,7 @@ function buildControl (
     if (typeLabel === 'number') {
         return {
             prop: row.name,
+            props: [row.name],
             kind: 'number',
             group,
             label: humanise(row.name),
@@ -183,6 +188,7 @@ function buildControl (
     if (typeLabel === 'string' || typeLabel.includes('TSize') || typeLabel.includes('number | string') || typeLabel.includes('string | number')) {
         return {
             prop: row.name,
+            props: [row.name],
             kind: 'text',
             group,
             label: humanise(row.name),
@@ -194,11 +200,124 @@ function buildControl (
 
     return {
         prop: row.name,
+        props: [row.name],
         kind: 'text',
         group,
         label: humanise(row.name),
         defaultValue: parseDefault(row.defaultValue)
     }
+}
+
+/**
+ * Prop names that resolve to the rich `color-intent` control when a control
+ * for them exists — `color` / `accentColor` (both, see #212) always; a
+ * standalone `borderColor` too, but ONLY when there's no `border` control to
+ * fold it into (see `composePropGroups`).
+ */
+const INTENT_COLOR_PROPS = new Set(['color', 'accentColor'])
+
+/**
+ * Every prop the `border` composite can fold in, beyond `border` itself —
+ * global `borderStyle`/`borderColor` (round 2) plus the 8 per-side props
+ * wired by DS issue #215 (PR #227): `borderTop`/`Right`/`Bottom`/`Left`
+ * (width, `boolean | number | string`) and `borderTopColor`/`RightColor`/
+ * `BottomColor`/`LeftColor` (`TColor`). Order matters for tab order in the
+ * popover — width facets first, colours last, matching the wireframe.
+ */
+const BORDER_FOLD_PROPS = [
+    'borderStyle', 'borderColor',
+    'borderTop', 'borderRight', 'borderBottom', 'borderLeft',
+    'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor'
+] as const
+
+/**
+ * Compose the FLAT per-prop control list into the grouped, RICH-CONTROL
+ * sections rendered by the panel (`IThemeBuilderComponentEntry.propGroups`).
+ *
+ * This is a rendering-only transform — it NEVER mutates or drops entries
+ * from the flat `controls` list (still 1 row per real DS prop), which stays
+ * the single source of truth for `defaultProp`/`previewProps` lookups in
+ * `useThemeBuilder.ts`. Only the grouped/visual bucket is affected:
+ *  - `color` / `accentColor` → relabelled `kind: 'color-intent'` (still 1 prop each).
+ *  - `rounded` → relabelled `kind: 'rounded'` (still 1 prop — see the
+ *    correction documented in `theme-builder-rounded.util.ts`).
+ *  - `elevation` → relabelled `kind: 'elevation'` (still 1 prop).
+ *  - `padding` / `margin` → relabelled `kind: 'box-model'` (still 1 prop
+ *    each, rendered as 2 SEPARATE rows — never merged, per the wireframe).
+ *  - `border` + every prop in `BORDER_FOLD_PROPS` the component actually
+ *    exposes → MERGED into ONE composite row (`kind: 'border'`). Folded
+ *    props are dropped from the GROUPED list (shown inside the composite's
+ *    popover) but stay in the flat `controls` list untouched.
+ */
+function composePropGroups (flatControls: IThemeBuilderPropControl[]): IThemeBuilderPropGroup[] {
+    const byProp = new Map(flatControls.map(c => [c.prop, c]))
+    const consumed = new Set<string>()
+    const composed: IThemeBuilderPropControl[] = []
+
+    for (const ctrl of flatControls) {
+        if (consumed.has(ctrl.prop)) continue
+
+        if (INTENT_COLOR_PROPS.has(ctrl.prop)) {
+            composed.push({ ...ctrl, kind: 'color-intent', props: [ctrl.prop] })
+            continue
+        }
+
+        if (ctrl.prop === 'rounded') {
+            composed.push({ ...ctrl, kind: 'rounded', props: ['rounded'] })
+            continue
+        }
+
+        if (ctrl.prop === 'elevation') {
+            composed.push({ ...ctrl, kind: 'elevation', props: ['elevation'] })
+            continue
+        }
+
+        if (ctrl.prop === 'padding') {
+            composed.push({ ...ctrl, kind: 'box-model', props: ['padding'], boxModelAxis: 'padding' })
+            continue
+        }
+
+        if (ctrl.prop === 'margin') {
+            composed.push({ ...ctrl, kind: 'box-model', props: ['margin'], boxModelAxis: 'margin' })
+            continue
+        }
+
+        if (ctrl.prop === 'border') {
+            const props = ['border']
+            const defaultValues: Record<string, string | number | boolean> = { border: ctrl.defaultValue }
+            for (const foldProp of BORDER_FOLD_PROPS) {
+                const foldCtrl = byProp.get(foldProp)
+                if (!foldCtrl) continue
+                props.push(foldProp)
+                defaultValues[foldProp] = foldCtrl.defaultValue
+                consumed.add(foldProp)
+            }
+            composed.push({ ...ctrl, kind: 'border', props, defaultValues })
+            continue
+        }
+
+        if ((BORDER_FOLD_PROPS as readonly string[]).includes(ctrl.prop)) {
+            // Folded into the `border` composite above when a `border`
+            // control exists for this component (handled by that branch,
+            // regardless of iteration order — `consumed` is populated from
+            // `byProp` lookups, not from visiting order). Re-added below as
+            // a standalone row ONLY when no `border` control exists at all.
+            continue
+        }
+
+        composed.push(ctrl)
+    }
+
+    // Orphan border-family props — a component that exposes one of them
+    // without a `border` prop at all (unlikely, but never silently dropped).
+    const ORPHAN_COLOR_PROPS = new Set(['borderColor', 'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor'])
+    for (const ctrl of flatControls) {
+        if ((BORDER_FOLD_PROPS as readonly string[]).includes(ctrl.prop) && !consumed.has(ctrl.prop) && !byProp.has('border')) {
+            composed.push(ORPHAN_COLOR_PROPS.has(ctrl.prop) ? { ...ctrl, kind: 'color-intent', props: [ctrl.prop] } : ctrl)
+        }
+    }
+
+    return groupControls(composed)
 }
 
 /** Bucket controls into their groups, in the canonical group order. */
@@ -282,7 +401,7 @@ function buildEntry (component: IComponentThemeSurface): IThemeBuilderComponentE
         name: component.name,
         icon: component.icon,
         category: component.category,
-        propGroups: groupControls(controls),
+        propGroups: composePropGroups(controls),
         tokenGroups: groupTokens(tokens),
         controls,
         tokens,

@@ -78,6 +78,7 @@ export const THEME_BUILDER_CATEGORY_META: IThemeBuilderCategoryMeta[] = [
 const PROP_GROUP_EXACT: Record<string, TThemeBuilderGroupId> = {
     // Color
     color: 'color',
+    accentColor: 'color',
     bgColor: 'color',
     backgroundColor: 'color',
     variant: 'color',

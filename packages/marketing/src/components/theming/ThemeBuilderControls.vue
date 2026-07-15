@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue'
+import { MDI_ICONS } from 'origam/enums'
 
 import { useT } from '~/composables/useT'
 import type {
@@ -83,6 +84,38 @@ const onNumber = (prop: string, value: unknown): void => {
 const onColor = (prop: string, value: string): void => {
     emit('set-prop', props.entry.slug, prop, value)
 }
+
+/** Generic per-prop setter used by the rich multi-prop controls (round 2). */
+const onProp = (prop: string, value: unknown): void => {
+    emit('set-prop', props.entry.slug, prop, value)
+}
+
+/** Border per-side width — maps 'top'/'right'/'bottom'/'left' to the real DS prop name. */
+const onBorderSideWidth = (side: 'top' | 'right' | 'bottom' | 'left', value: number | undefined): void => {
+    const prop = `border${side.charAt(0).toUpperCase()}${side.slice(1)}`
+    onProp(prop, value)
+}
+
+/** Border per-side colour — maps 'top'/'right'/'bottom'/'left' to the real DS prop name. */
+const onBorderSideColor = (side: 'top' | 'right' | 'bottom' | 'left', value: string | undefined): void => {
+    const prop = `border${side.charAt(0).toUpperCase()}${side.slice(1)}Color`
+    onProp(prop, value)
+}
+
+/** A rich control is "edited" when ANY of the real DS props it drives differs from the default. */
+const isControlEdited = (ctrl: IThemeBuilderPropControl): boolean =>
+    ctrl.props.some(p => props.isPropEdited(props.entry.slug, p))
+
+/** Reset every real DS prop a rich control drives back to its DS default. */
+const onResetControl = (ctrl: IThemeBuilderPropControl): void => {
+    for (const p of ctrl.props) {
+        const defaultValue = ctrl.defaultValues?.[p] ?? (p === ctrl.prop ? ctrl.defaultValue : undefined)
+        emit('set-prop', props.entry.slug, p, defaultValue)
+    }
+}
+
+const RICH_CONTROL_KINDS = new Set(['color-intent', 'rounded', 'elevation', 'border', 'box-model'])
+const isRichControl = (ctrl: IThemeBuilderPropControl): boolean => RICH_CONTROL_KINDS.has(ctrl.kind)
 
 const onToken = (cssVar: string, value: string): void => {
     emit('set-token', props.activeMode, cssVar, value)
@@ -216,14 +249,89 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
                             v-for="ctrl in group.controls"
                             :key="ctrl.prop"
                             class="tb-row"
-                            :class="{ 'tb-row--edited': isPropEdited(entry.slug, ctrl.prop) }"
+                            :class="{ 'tb-row--edited': isRichControl(ctrl) ? isControlEdited(ctrl) : isPropEdited(entry.slug, ctrl.prop) }"
                             :data-cy="`theming-prop-${ctrl.prop}`"
                         >
                             <code class="tb-row__code">{{ ctrl.prop }}</code>
 
                             <div class="tb-row__control">
+                                <div
+                                    v-if="ctrl.kind === 'color-intent'"
+                                    class="tb-row__rich"
+                                >
+                                    <theme-builder-color-field
+                                        :model-value="propValue(entry.slug, ctrl.prop)"
+                                        :label="ctrl.label"
+                                        :data-cy="`theming-prop-${ctrl.prop}`"
+                                        @update:model-value="onProp(ctrl.prop, $event)"
+                                    />
+                                </div>
+
+                                <div
+                                    v-else-if="ctrl.kind === 'rounded'"
+                                    class="tb-row__rich"
+                                >
+                                    <theme-builder-rounded-field
+                                        :model-value="propValue(entry.slug, ctrl.prop)"
+                                        :label="ctrl.label"
+                                        :data-cy="`theming-prop-${ctrl.prop}`"
+                                        @update:model-value="onProp(ctrl.prop, $event)"
+                                    />
+                                </div>
+
+                                <div
+                                    v-else-if="ctrl.kind === 'elevation'"
+                                    class="tb-row__rich"
+                                >
+                                    <theme-builder-elevation-field
+                                        :model-value="propValue(entry.slug, ctrl.prop)"
+                                        :label="ctrl.label"
+                                        :data-cy="`theming-prop-${ctrl.prop}`"
+                                        @update:model-value="onProp(ctrl.prop, $event)"
+                                    />
+                                </div>
+
+                                <div
+                                    v-else-if="ctrl.kind === 'border'"
+                                    class="tb-row__rich"
+                                >
+                                    <theme-builder-border-field
+                                        :width-value="propValue(entry.slug, 'border')"
+                                        :style-value="ctrl.props.includes('borderStyle') ? propValue(entry.slug, 'borderStyle') : undefined"
+                                        :color-value="ctrl.props.includes('borderColor') ? propValue(entry.slug, 'borderColor') : undefined"
+                                        :top-width-value="ctrl.props.includes('borderTop') ? propValue(entry.slug, 'borderTop') : undefined"
+                                        :right-width-value="ctrl.props.includes('borderRight') ? propValue(entry.slug, 'borderRight') : undefined"
+                                        :bottom-width-value="ctrl.props.includes('borderBottom') ? propValue(entry.slug, 'borderBottom') : undefined"
+                                        :left-width-value="ctrl.props.includes('borderLeft') ? propValue(entry.slug, 'borderLeft') : undefined"
+                                        :top-color-value="ctrl.props.includes('borderTopColor') ? propValue(entry.slug, 'borderTopColor') : undefined"
+                                        :right-color-value="ctrl.props.includes('borderRightColor') ? propValue(entry.slug, 'borderRightColor') : undefined"
+                                        :bottom-color-value="ctrl.props.includes('borderBottomColor') ? propValue(entry.slug, 'borderBottomColor') : undefined"
+                                        :left-color-value="ctrl.props.includes('borderLeftColor') ? propValue(entry.slug, 'borderLeftColor') : undefined"
+                                        :label="ctrl.label"
+                                        :data-cy="`theming-prop-${ctrl.prop}`"
+                                        @update:width="onProp('border', $event)"
+                                        @update:style="onProp('borderStyle', $event)"
+                                        @update:color="onProp('borderColor', $event)"
+                                        @update:side-width="onBorderSideWidth"
+                                        @update:side-color="onBorderSideColor"
+                                    />
+                                </div>
+
+                                <div
+                                    v-else-if="ctrl.kind === 'box-model'"
+                                    class="tb-row__rich"
+                                >
+                                    <theme-builder-box-model-field
+                                        :model-value="propValue(entry.slug, ctrl.prop)"
+                                        :axis="ctrl.boxModelAxis ?? 'padding'"
+                                        :label="ctrl.label"
+                                        :data-cy="`theming-prop-${ctrl.prop}`"
+                                        @update:model-value="onProp(ctrl.prop, $event)"
+                                    />
+                                </div>
+
                                 <origam-select
-                                    v-if="ctrl.kind === 'select'"
+                                    v-else-if="ctrl.kind === 'select'"
                                     :model-value="propValue(entry.slug, ctrl.prop)"
                                     :items="selectItems(ctrl)"
                                     :label="ctrl.label"
@@ -285,6 +393,18 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
                                     @update:model-value="onText(ctrl.prop, $event)"
                                 />
                             </div>
+
+                            <origam-btn
+                                v-if="isRichControl(ctrl) && isControlEdited(ctrl)"
+                                variant="text"
+                                size="x-small"
+                                density="compact"
+                                :icon="MDI_ICONS.RESTORE"
+                                class="tb-row__reset"
+                                :aria-label="t('theming.controls.reset_prop', 'Reset {label}', { label: ctrl.label })"
+                                :data-cy="`theming-prop-${ctrl.prop}-reset`"
+                                @click="onResetControl(ctrl)"
+                            />
                         </div>
                     </div>
                 </details>
@@ -633,6 +753,14 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
 
     &__input {
         inline-size: 6rem;
+    }
+
+    &__rich {
+        inline-size: 9rem;
+    }
+
+    &__reset {
+        flex: 0 0 auto;
     }
 
     &__color {

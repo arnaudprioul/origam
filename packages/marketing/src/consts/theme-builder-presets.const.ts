@@ -21,13 +21,37 @@ import { materialThemes } from '~/themes/material.theme'
 import { ecomThemes } from '~/themes/ecom.theme'
 
 /**
+ * Merge two `IOrigamTheme.components` maps (light + dark) into the
+ * `Record<string, Record<string, unknown>>` shape `IThemeBuilderPreset`
+ * expects. `IDefault` (the DS type) carries an index signature that allows
+ * `undefined` per key — a real theme never actually sets a key to
+ * `undefined`, but the type must be narrowed explicitly for TS, so any such
+ * entry is dropped defensively rather than cast away.
+ */
+function mergeThemeComponents (
+    light: IOrigamTheme['components'],
+    dark: IOrigamTheme['components']
+): Record<string, Record<string, unknown>> {
+    const merged: Record<string, Record<string, unknown>> = {}
+    for (const source of [light, dark]) {
+        if (!source) continue
+        for (const [key, value] of Object.entries(source)) {
+            if (value) merged[key] = value
+        }
+    }
+    return merged
+}
+
+/**
  * PROPS-FIRST (logique DS) : un preset est sourcé depuis l'objet `IOrigamTheme`
  * canonique (`src/themes/*.theme.ts`). On résout `vars → --origam-*` via le DS
  * (`resolveThemeVars`) et on prend `theme.components` (props par composant). Ça
  * remplace la génération CSS fragile, thème par thème.
  */
 function presetFromThemes (key: string, labelFallback: string, themes: IOrigamTheme[]): IThemeBuilderPreset {
-    const light = themes.find(t => t.mode !== 'dark') ?? themes[0]
+    const [firstTheme] = themes
+    if (!firstTheme) throw new Error(`presetFromThemes(${key}): themes array is empty — every brand theme module must export at least one IOrigamTheme entry.`)
+    const light = themes.find(t => t.mode !== 'dark') ?? firstTheme
     const dark = themes.find(t => t.mode === 'dark') ?? light
     const lightVars = resolveThemeVars(light) as Record<string, string>
     return {
@@ -36,7 +60,7 @@ function presetFromThemes (key: string, labelFallback: string, themes: IOrigamTh
         labelFallback,
         light: lightVars,
         dark: { ...lightVars, ...(resolveThemeVars(dark) as Record<string, string>) },
-        components: { ...(light.components ?? {}), ...(dark.components ?? {}) }
+        components: mergeThemeComponents(light.components, dark.components)
     }
 }
 
