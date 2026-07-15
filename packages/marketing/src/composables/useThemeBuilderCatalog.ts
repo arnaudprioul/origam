@@ -217,6 +217,20 @@ function buildControl (
 const INTENT_COLOR_PROPS = new Set(['color', 'accentColor'])
 
 /**
+ * Every prop the `border` composite can fold in, beyond `border` itself —
+ * global `borderStyle`/`borderColor` (round 2) plus the 8 per-side props
+ * wired by DS issue #215 (PR #227): `borderTop`/`Right`/`Bottom`/`Left`
+ * (width, `boolean | number | string`) and `borderTopColor`/`RightColor`/
+ * `BottomColor`/`LeftColor` (`TColor`). Order matters for tab order in the
+ * popover — width facets first, colours last, matching the wireframe.
+ */
+const BORDER_FOLD_PROPS = [
+    'borderStyle', 'borderColor',
+    'borderTop', 'borderRight', 'borderBottom', 'borderLeft',
+    'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor'
+] as const
+
+/**
  * Compose the FLAT per-prop control list into the grouped, RICH-CONTROL
  * sections rendered by the panel (`IThemeBuilderComponentEntry.propGroups`).
  *
@@ -230,10 +244,10 @@ const INTENT_COLOR_PROPS = new Set(['color', 'accentColor'])
  *  - `elevation` → relabelled `kind: 'elevation'` (still 1 prop).
  *  - `padding` / `margin` → relabelled `kind: 'box-model'` (still 1 prop
  *    each, rendered as 2 SEPARATE rows — never merged, per the wireframe).
- *  - `border` + `borderStyle` + `borderColor` → MERGED into ONE composite
- *    row (`kind: 'border'`, `props: ['border','borderStyle','borderColor']`).
- *    `borderStyle`/`borderColor` are dropped from the GROUPED list (folded
- *    into the composite) but stay in the flat `controls` list untouched.
+ *  - `border` + every prop in `BORDER_FOLD_PROPS` the component actually
+ *    exposes → MERGED into ONE composite row (`kind: 'border'`). Folded
+ *    props are dropped from the GROUPED list (shown inside the composite's
+ *    popover) but stay in the flat `controls` list untouched.
  */
 function composePropGroups (flatControls: IThemeBuilderPropControl[]): IThemeBuilderPropGroup[] {
     const byProp = new Map(flatControls.map(c => [c.prop, c]))
@@ -269,17 +283,20 @@ function composePropGroups (flatControls: IThemeBuilderPropControl[]): IThemeBui
         }
 
         if (ctrl.prop === 'border') {
-            const styleCtrl = byProp.get('borderStyle')
-            const colorCtrl = byProp.get('borderColor')
             const props = ['border']
             const defaultValues: Record<string, string | number | boolean> = { border: ctrl.defaultValue }
-            if (styleCtrl) { props.push('borderStyle'); defaultValues.borderStyle = styleCtrl.defaultValue; consumed.add('borderStyle') }
-            if (colorCtrl) { props.push('borderColor'); defaultValues.borderColor = colorCtrl.defaultValue; consumed.add('borderColor') }
+            for (const foldProp of BORDER_FOLD_PROPS) {
+                const foldCtrl = byProp.get(foldProp)
+                if (!foldCtrl) continue
+                props.push(foldProp)
+                defaultValues[foldProp] = foldCtrl.defaultValue
+                consumed.add(foldProp)
+            }
             composed.push({ ...ctrl, kind: 'border', props, defaultValues })
             continue
         }
 
-        if (ctrl.prop === 'borderStyle' || ctrl.prop === 'borderColor') {
+        if ((BORDER_FOLD_PROPS as readonly string[]).includes(ctrl.prop)) {
             // Folded into the `border` composite above when a `border`
             // control exists for this component (handled by that branch,
             // regardless of iteration order — `consumed` is populated from
@@ -291,11 +308,12 @@ function composePropGroups (flatControls: IThemeBuilderPropControl[]): IThemeBui
         composed.push(ctrl)
     }
 
-    // Orphan borderStyle/borderColor — a component that exposes one of them
+    // Orphan border-family props — a component that exposes one of them
     // without a `border` prop at all (unlikely, but never silently dropped).
+    const ORPHAN_COLOR_PROPS = new Set(['borderColor', 'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor'])
     for (const ctrl of flatControls) {
-        if ((ctrl.prop === 'borderStyle' || ctrl.prop === 'borderColor') && !consumed.has(ctrl.prop) && !byProp.has('border')) {
-            composed.push(ctrl.prop === 'borderColor' ? { ...ctrl, kind: 'color-intent', props: [ctrl.prop] } : ctrl)
+        if ((BORDER_FOLD_PROPS as readonly string[]).includes(ctrl.prop) && !consumed.has(ctrl.prop) && !byProp.has('border')) {
+            composed.push(ORPHAN_COLOR_PROPS.has(ctrl.prop) ? { ...ctrl, kind: 'color-intent', props: [ctrl.prop] } : ctrl)
         }
     }
 

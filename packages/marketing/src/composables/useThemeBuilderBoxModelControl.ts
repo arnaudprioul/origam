@@ -15,12 +15,16 @@ import type { TThemeBuilderBoxModelEdge, TThemeBuilderBoxModelMode } from '~/typ
  * `margin` (never both) — the composite is deliberately kept as two separate
  * single-prop controls (see `theme-builder.interface.ts` doc on `box-model`).
  *
- * `axis === 'margin'` disables the "Vertical / Horizontal" link mode (DS
- * gap — `formatMarginStylesVar` has no `case 2`, see the util's module doc).
+ * The "Vertical / Horizontal" (axis) mode used to be disabled for `margin`
+ * — `formatMarginStylesVar` had no `case 2`. Fixed by DS issue #216 (PR
+ * #217, merged): `margin-block`/`margin-inline` now resolve from a 2-value
+ * string exactly like `padding`. Both axes are available for both props.
  */
 export function useThemeBuilderBoxModelControl (
     modelValue: ComputedRef<unknown> | Ref<unknown>,
-    axis: 'padding' | 'margin',
+    // Kept for call-site clarity (padding vs margin instance) even though
+    // both axes now behave identically since DS #216 — not read internally.
+    _axis: 'padding' | 'margin',
     onChange: (value: string | undefined) => void
 ) {
     const scaleValue = computed<string>(() => {
@@ -34,9 +38,6 @@ export function useThemeBuilderBoxModelControl (
 
     const mode = ref<TThemeBuilderBoxModelMode>('linked')
     const edges = ref<IThemeBuilderBoxModelEdges>({ top: 0, left: 0, bottom: 0, right: 0 })
-
-    /** Margin can't use axis mode (DS gap) — force it back to unlinked if selected before the switch. */
-    const axisModeDisabled = computed(() => axis === 'margin')
 
     watch(modelValue, (raw) => {
         if (typeof raw !== 'string' || isThemeBuilderSpacingScale(raw)) return
@@ -55,7 +56,6 @@ export function useThemeBuilderBoxModelControl (
     }
 
     const setMode = (next: TThemeBuilderBoxModelMode): void => {
-        if (next === 'axis' && axisModeDisabled.value) return
         mode.value = next
         onChange(serializeBoxModelState({ mode: next, edges: edges.value }))
     }
@@ -78,7 +78,6 @@ export function useThemeBuilderBoxModelControl (
         isCustom,
         mode,
         edges,
-        axisModeDisabled,
         selectScale,
         setMode,
         setEdge

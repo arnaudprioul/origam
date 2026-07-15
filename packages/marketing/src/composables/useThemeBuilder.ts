@@ -119,10 +119,25 @@ export function useThemeBuilder () {
         return edited !== undefined ? edited : defaultProp(slug, prop)
     }
 
+    /**
+     * `undefined`/`null`/`''`/`false` are all "nothing set" from a control's
+     * point of view — every control's "clear"/"inherit"/"unlink" action
+     * writes plain `undefined`, regardless of what the DS default happens
+     * to parse to (`parseDefault` in `useThemeBuilderCatalog.ts` turns the
+     * literal string `'undefined'` into `''`, a real `false` default stays
+     * `false`, …). Without this equivalence, clearing a prop whose default
+     * isn't literally `undefined` left a stray `prop: undefined` entry in
+     * `state.defaults` — functionally harmless (`propValue` already treats
+     * a stored `undefined` as "not edited"), but it polluted the exported
+     * theme with dead entries every time a per-side border editor relinked.
+     */
+    const isUnset = (v: unknown): boolean => v === undefined || v === null || v === '' || v === false
+
     /** Set a prop value, storing only when it differs from the DS default. */
     const setProp = (slug: string, prop: string, value: unknown): void => {
         const key = `origam-${slug}`
-        const isDefault = value === defaultProp(slug, prop)
+        const def = defaultProp(slug, prop)
+        const isDefault = value === def || (isUnset(value) && isUnset(def))
         if (isDefault) {
             if (state.defaults[key]) {
                 delete state.defaults[key][prop]

@@ -14,3 +14,6 @@ export type TThemeBuilderBoxModelEdge = 'top' | 'left' | 'bottom' | 'right'
 
 /** One corner of the Rounded 4-corner editor. */
 export type TThemeBuilderCorner = 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight'
+
+/** One side of the Border per-side width/colour editor. */
+export type TThemeBuilderBorderSide = 'top' | 'right' | 'bottom' | 'left'

@@ -90,6 +90,18 @@ const onProp = (prop: string, value: unknown): void => {
     emit('set-prop', props.entry.slug, prop, value)
 }
 
+/** Border per-side width — maps 'top'/'right'/'bottom'/'left' to the real DS prop name. */
+const onBorderSideWidth = (side: 'top' | 'right' | 'bottom' | 'left', value: number | undefined): void => {
+    const prop = `border${side.charAt(0).toUpperCase()}${side.slice(1)}`
+    onProp(prop, value)
+}
+
+/** Border per-side colour — maps 'top'/'right'/'bottom'/'left' to the real DS prop name. */
+const onBorderSideColor = (side: 'top' | 'right' | 'bottom' | 'left', value: string | undefined): void => {
+    const prop = `border${side.charAt(0).toUpperCase()}${side.slice(1)}Color`
+    onProp(prop, value)
+}
+
 /** A rich control is "edited" when ANY of the real DS props it drives differs from the default. */
 const isControlEdited = (ctrl: IThemeBuilderPropControl): boolean =>
     ctrl.props.some(p => props.isPropEdited(props.entry.slug, p))
@@ -287,11 +299,21 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
                                         :width-value="propValue(entry.slug, 'border')"
                                         :style-value="ctrl.props.includes('borderStyle') ? propValue(entry.slug, 'borderStyle') : undefined"
                                         :color-value="ctrl.props.includes('borderColor') ? propValue(entry.slug, 'borderColor') : undefined"
+                                        :top-width-value="ctrl.props.includes('borderTop') ? propValue(entry.slug, 'borderTop') : undefined"
+                                        :right-width-value="ctrl.props.includes('borderRight') ? propValue(entry.slug, 'borderRight') : undefined"
+                                        :bottom-width-value="ctrl.props.includes('borderBottom') ? propValue(entry.slug, 'borderBottom') : undefined"
+                                        :left-width-value="ctrl.props.includes('borderLeft') ? propValue(entry.slug, 'borderLeft') : undefined"
+                                        :top-color-value="ctrl.props.includes('borderTopColor') ? propValue(entry.slug, 'borderTopColor') : undefined"
+                                        :right-color-value="ctrl.props.includes('borderRightColor') ? propValue(entry.slug, 'borderRightColor') : undefined"
+                                        :bottom-color-value="ctrl.props.includes('borderBottomColor') ? propValue(entry.slug, 'borderBottomColor') : undefined"
+                                        :left-color-value="ctrl.props.includes('borderLeftColor') ? propValue(entry.slug, 'borderLeftColor') : undefined"
                                         :label="ctrl.label"
                                         :data-cy="`theming-prop-${ctrl.prop}`"
                                         @update:width="onProp('border', $event)"
                                         @update:style="onProp('borderStyle', $event)"
                                         @update:color="onProp('borderColor', $event)"
+                                        @update:side-width="onBorderSideWidth"
+                                        @update:side-color="onBorderSideColor"
                                     />
                                 </div>
 

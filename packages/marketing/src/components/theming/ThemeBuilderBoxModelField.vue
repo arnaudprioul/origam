@@ -11,8 +11,8 @@ import type { TThemeBuilderBoxModelMode } from '~/types/theme-builder-controls.t
  * devtools-style box-model editor for EITHER `padding` OR `margin` (one
  * instance per axis — see `theme-builder.interface.ts` doc on `box-model`).
  * Scale chips write the utility-class string form (`padding="4"`); "Autre…"
- * reveals the linked/axis/unlinked editor. Axis (Vertical/Horizontal) mode
- * is unavailable for `margin` — `formatMarginStylesVar` has no `case 2`.
+ * reveals the linked/axis/unlinked editor — all 3 modes available for both
+ * props since DS issue #216 (PR #217).
  */
 const props = defineProps<{
     modelValue: unknown
@@ -30,7 +30,7 @@ const open = ref(false)
 
 const modelValueRef = computed(() => props.modelValue)
 const {
-    scaleOptions, scaleValue, isCustom, mode, edges, axisModeDisabled,
+    scaleOptions, scaleValue, isCustom, mode, edges,
     selectScale, setMode, setEdge
 } = useThemeBuilderBoxModelControl(modelValueRef, props.axis, (value) => emit('update:modelValue', value))
 
@@ -126,10 +126,6 @@ const onEdge = (key: 'top' | 'left' | 'bottom' | 'right', value: unknown): void 
                     density="compact"
                     :active="mode === modeOption.value"
                     :aria-pressed="mode === modeOption.value"
-                    :disabled="modeOption.value === 'axis' && axisModeDisabled"
-                    :title="modeOption.value === 'axis' && axisModeDisabled
-                        ? t('theming.control.box_model.axis_disabled', 'Not supported today for margin — see DS issue #216.')
-                        : undefined"
                     :data-cy="`${dataCy}-mode-${modeOption.value}`"
                     @click="setMode(modeOption.value)"
                 >

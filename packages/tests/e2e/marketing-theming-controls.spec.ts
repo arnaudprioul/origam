@@ -221,14 +221,66 @@ test.describe('Theme Builder · Border composite control (Btn)', () => {
         await expect(liveBtn).toHaveCSS('border-style', 'dashed')
     })
 
-    test('per-side width editor is disabled with an explanatory tooltip (DS #215 gap)', async ({ page }) => {
+    test('per-side width: unlinking reveals 4 independent fields, stays unlinked after a write, and paints the live preview (DS #215)', async ({ page }) => {
         const trigger = page.locator('[data-cy="theming-prop-border-trigger"]')
         await ensureOpen(trigger)
         await page.locator('[data-cy="theming-prop-border-width-select"]').click()
         await page.locator('.origam-list-item', { hasText: 'Other' }).first().click()
 
-        const sideInput = page.locator('[data-cy="theming-prop-border-side-top"] input')
-        await expect(sideInput).toBeDisabled()
+        const linkBtn = page.locator('[data-cy="theming-prop-border-width-link"]')
+        await expect(linkBtn).toHaveAttribute('aria-pressed', 'true')
+
+        await linkBtn.click()
+        await expect(linkBtn).toHaveAttribute('aria-pressed', 'false')
+
+        const fill = async (cy: string, value: string): Promise<void> => {
+            const input = page.locator(`[data-cy="${cy}"] input`)
+            await input.fill(value)
+            await input.blur()
+        }
+        await fill('theming-prop-border-side-top', '4')
+        await fill('theming-prop-border-side-right', '8')
+
+        // Guards the exact bug class fixed in useThemeBuilderRoundedControl:
+        // writing a per-side value must NOT re-infer "linked" from the echo
+        // of that same write.
+        await expect(linkBtn).toHaveAttribute('aria-pressed', 'false')
+
+        const liveBtn = page.locator('[data-cy="theming-live-btn-light"]')
+        await expect(liveBtn).toHaveCSS('border-top-width', '4px')
+        await expect(liveBtn).toHaveCSS('border-right-width', '8px')
+
+        const code = await generatedCode(page)
+        expect(code).toMatch(/borderTop:\s*4/)
+        expect(code).toMatch(/borderRight:\s*8/)
+
+        // Re-linking clears the per-side props and restores a uniform width.
+        await linkBtn.click()
+        await expect(linkBtn).toHaveAttribute('aria-pressed', 'true')
+        const codeAfterRelink = await generatedCode(page)
+        expect(codeAfterRelink).not.toMatch(/borderTop:/)
+        expect(codeAfterRelink).not.toMatch(/borderRight:/)
+    })
+
+    test('per-side colour: toggling reveals 4 independent colour pickers and paints the live preview (DS #215)', async ({ page }) => {
+        const trigger = page.locator('[data-cy="theming-prop-border-trigger"]')
+        await ensureOpen(trigger)
+
+        const colorToggle = page.locator('[data-cy="theming-prop-border-color-toggle"]')
+        await expect(colorToggle).toBeVisible()
+        await colorToggle.click()
+
+        const topColorTrigger = page.locator('[data-cy="theming-prop-border-side-color-top-trigger"]')
+        await expect(topColorTrigger).toBeVisible()
+        await topColorTrigger.click()
+        await page.locator('label:has([data-cy="theming-prop-border-side-color-top-intent-success"])').click()
+
+        const code = await generatedCode(page)
+        expect(code).toMatch(/borderTopColor:\s*"success"/)
+
+        const liveBtn = page.locator('[data-cy="theming-live-btn-light"]')
+        const computed = await liveBtn.evaluate(el => getComputedStyle(el).borderTopColor)
+        expect(computed).not.toBe('rgb(0, 0, 0)')
     })
 })
 
@@ -282,13 +334,28 @@ test.describe('Theme Builder · Padding / Margin box-model control (Blockquote)'
         expect(code).toContain('1px 2px 3px 4px')
     })
 
-    test('margin\'s Vertical/Horizontal mode is disabled — formatMarginStylesVar has no case 2 (DS #216 gap)', async ({ page }) => {
+    test('margin\'s Vertical/Horizontal mode is enabled and serialises [vertical, horizontal] (DS #216, PR #217)', async ({ page }) => {
         const trigger = page.locator('[data-cy="theming-prop-margin-trigger"]')
         await ensureOpen(trigger)
         await page.locator('[data-cy="theming-prop-margin-custom-trigger"]').click()
 
-        await expect(page.locator('[data-cy="theming-prop-margin-mode-axis"]')).toBeDisabled()
-        await expect(page.locator('[data-cy="theming-prop-margin-mode-linked"]')).toBeEnabled()
-        await expect(page.locator('[data-cy="theming-prop-margin-mode-unlinked"]')).toBeEnabled()
+        const axisBtn = page.locator('[data-cy="theming-prop-margin-mode-axis"]')
+        await expect(axisBtn).toBeEnabled()
+        await axisBtn.click()
+        await expect(axisBtn).toHaveAttribute('aria-pressed', 'true')
+
+        const vertical = page.locator('[data-cy="theming-prop-margin-vertical"] input')
+        const horizontal = page.locator('[data-cy="theming-prop-margin-horizontal"] input')
+        await vertical.fill('12')
+        await vertical.blur()
+        await horizontal.fill('24')
+        await horizontal.blur()
+
+        const code = await generatedCode(page)
+        expect(code).toContain('12px 24px')
+
+        const preview = page.locator('[data-cy="theming-live-blockquote-light"]')
+        await expect(preview).toHaveCSS('margin-top', '12px')
+        await expect(preview).toHaveCSS('margin-left', '24px')
     })
 })
