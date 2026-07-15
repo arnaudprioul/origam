@@ -1,10 +1,18 @@
 import { computed, isRef, Ref } from 'vue'
-import { BORDER_REGEX, DIRECTION_ARRAY } from '../../consts'
+import { BORDER_POSITION_MAP, BORDER_REGEX, DIRECTION_ARRAY } from '../../consts'
 
 import type { IBorderProps } from '../../interfaces'
 import { TDirectionBoth } from "../../types"
 
-import { convertToUnit, formatBorderStylesVar, getCurrentInstanceName, isEmpty } from '../../utils'
+import {
+    convertToUnit,
+    formatBorderPositionStylesVar,
+    formatBorderStylesVar,
+    getCurrentInstanceName,
+    isEmpty,
+    parseBorderPositionValue,
+    resolveBorderSideColor
+} from '../../utils'
 
 /**
  * Set of border values for which a global utility class exists in
@@ -19,10 +27,27 @@ function isUtilityBorder (value: unknown): value is string {
     return typeof value === 'string' && UTILITY_BORDER.has(value)
 }
 
-// TODO Create composable for border position
-
 /*********************************************************
  * useBorder
+ *
+ * @description
+ * Precedence rule (issue #215) — SPECIFIC beats GLOBAL, always in this
+ * order, enforced purely by PUSH ORDER onto the `styles` array (later
+ * declarations win within the same inline `style` attribute — this holds
+ * even across logical vs physical property syntax for the same box edge):
+ *
+ *   1. global `border` shorthand (1/2/4-value, logical properties)
+ *   2. global standalone `borderColor` / `borderStyle`
+ *   3. per-side `borderTop` / `borderRight` / `borderBottom` / `borderLeft`
+ *      (physical properties — width, and style/color when a full string
+ *      like `"2px dashed red"` is given)
+ *   4. per-side `borderTopColor` / `borderRightColor` /
+ *      `borderBottomColor` / `borderLeftColor`
+ *
+ * So `borderTop` beats `border` for the top side, and `borderTopColor`
+ * beats both the color embedded in `borderTop` and the global
+ * `borderColor` — each rung only overrides the physical side(s) it
+ * actually targets, everything else keeps cascading from the rung below.
  ********************************************************/
 export function useBorder (props: IBorderProps | Ref<boolean | number | string | TDirectionBoth | Array<TDirectionBoth> | null | undefined>, name = getCurrentInstanceName()) {
     const borderClasses = computed(() => {
@@ -92,6 +117,46 @@ export function useBorder (props: IBorderProps | Ref<boolean | number | string |
 
             if (!isEmpty(borderColor)) styles.push(`border-color: ${borderColor}`)
             if (!isEmpty(borderStyle)) styles.push(`border-style: ${borderStyle}`)
+
+            // Per-side width/style/color (issue #215) — `borderTop` /
+            // `borderRight` / `borderBottom` / `borderLeft` were declared
+            // on `IBorderProps` but never read here. Pushed AFTER the
+            // global `border` / `borderColor` / `borderStyle` declarations
+            // above so a side-specific value always wins for that physical
+            // side (see the precedence note in the JSDoc above `useBorder`).
+            BORDER_POSITION_MAP.forEach(({side, widthProp, colorProp}) => {
+                const sideValue = props[widthProp]
+                const sideColor = props[colorProp]
+
+                if (typeof sideValue === 'number') {
+                    // Mirrors the global numeric-border defaulting above: a
+                    // bare width alone paints nothing (`border-style`
+                    // defaults to `none`), so default to solid/currentColor.
+                    styles.push(`border-${side}-width: ${convertToUnit(sideValue)}`)
+                    styles.push(`border-${side}-style: solid`)
+                    styles.push(`border-${side}-color: currentColor`)
+                } else if (sideValue === true) {
+                    // Legacy boolean opt-in — no per-side utility class
+                    // family exists (only the global `.origam--border-*`
+                    // trio), so fall back to the same design-token width
+                    // the 'thin' utility resolves to.
+                    styles.push(`border-${side}-width: var(--origam-border__width---thin)`)
+                    styles.push(`border-${side}-style: solid`)
+                    styles.push(`border-${side}-color: currentColor`)
+                } else if (typeof sideValue === 'string' && sideValue !== '') {
+                    const parsed = parseBorderPositionValue(sideValue)
+                    if (parsed) styles.push(...formatBorderPositionStylesVar(side, parsed))
+                }
+
+                // `borderTopColor` etc. — additive, TColor-typed. Wins over
+                // any color already pushed above for this side (embedded in
+                // `borderTop`, or inherited from the global `borderColor` /
+                // `border`), same "push last" precedence rule. Gradients
+                // are unsupported on `border-color` and resolve to `null`
+                // (silently skipped — documented on `IBorderProps`).
+                const resolvedSideColor = resolveBorderSideColor(sideColor)
+                if (resolvedSideColor) styles.push(`border-${side}-color: ${resolvedSideColor}`)
+            })
         }
 
         return styles

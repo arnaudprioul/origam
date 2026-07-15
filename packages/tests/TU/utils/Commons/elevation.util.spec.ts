@@ -5,7 +5,7 @@
 // without testing internal constants.
 
 import { describe, expect, it } from 'vitest'
-import { formatElevationStyle } from '@origam/utils/Commons/elevation.util'
+import { formatElevationStyle, isCustomBoxShadow } from '@origam/utils/Commons/elevation.util'
 
 describe('formatElevationStyle', () => {
     // ── output shape ────────────────────────────────────────────────────────
@@ -75,5 +75,34 @@ describe('formatElevationStyle', () => {
                 expect(Math.round(num * 10) / 10).toBeCloseTo(num, 5)
             }
         })
+    })
+})
+
+describe('isCustomBoxShadow', () => {
+    it.each([
+        '0 4px 12px rgba(0,0,0,.24)',
+        'var(--origam-shadow---card)',
+        'calc(1px + 1px) 0 0 0 #000',
+        'inset 0 0 0 2px #fff',
+        '0 1px 2px #000, 0 2px 8px #000',
+        '0 0 0 1px hsl(0deg 0% 0% / 50%)',
+        '0.5rem 0.5rem 1rem color-mix(in srgb, red, blue)',
+    ])('detects %s as a custom box-shadow value', (value) => {
+        expect(isCustomBoxShadow(value)).toBe(true)
+    })
+
+    it.each([
+        '',
+        'not-a-shadow',
+        '8',
+        'md',
+        '2xl',
+        '   ',
+    ])('rejects %s as NOT a custom box-shadow value', (value) => {
+        expect(isCustomBoxShadow(value)).toBe(false)
+    })
+
+    it('trims surrounding whitespace before testing', () => {
+        expect(isCustomBoxShadow('   0 4px 12px rgba(0,0,0,.24)   ')).toBe(true)
     })
 })

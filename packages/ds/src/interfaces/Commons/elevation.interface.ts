@@ -1,3 +1,5 @@
+import type { TElevation } from '../../types'
+
 export interface IElevationProps {
-    elevation?: number | string
+    elevation?: TElevation
 }

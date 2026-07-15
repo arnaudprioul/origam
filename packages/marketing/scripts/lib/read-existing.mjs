@@ -1,6 +1,6 @@
 /**
  * read-existing.mjs — load the curated object out of an existing
- * app/consts/<domain>/<slug>.const.ts file WITHOUT executing project code.
+ * src/consts/<domain>/<slug>.const.ts file WITHOUT executing project code.
  *
  * The files are pure data modules. Their only real imports are TYPE-ONLY
  * `import type { IXxxDoc } from '~/...'` (the '~' alias node cannot resolve),

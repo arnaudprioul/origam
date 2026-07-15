@@ -2,7 +2,7 @@
  * doc-to-rows.ts — map a family `*_DOC` object onto the normalised DB shape.
  *
  * One mapper per kind translates the curated `_DOC` (8 different shapes, see
- * app/interfaces/*-catalog.interface.ts) into a uniform internal record:
+ * src/interfaces/*-catalog.interface.ts) into a uniform internal record:
  *
  *   { entry, props, values, params, returns, emits, slots, examples,
  *     directiveArgs, directiveModifiers, relations }

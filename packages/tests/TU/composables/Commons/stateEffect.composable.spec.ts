@@ -316,3 +316,47 @@ describe('useStateEffect — reactive prop changes', () => {
         expect(api.colorClasses.value).not.toContain('origam--bg-primary')
     })
 })
+
+// ---------------------------------------------------------------------------
+// Per-side border pass-through (issue #215)
+// ---------------------------------------------------------------------------
+
+describe('useStateEffect — per-side border props pass-through', () => {
+    it('forwards borderTop / borderTopColor to the underlying useBorder call', () => {
+        const props = reactive<StateEffectProps>({ borderTop: 2, borderTopColor: 'primary' })
+        const { api } = mountStateEffect(props)
+        const styles = api().borderStyles.value
+        expect(styles).toContain('border-top-width: 2px')
+        expect(styles.some(d => d.startsWith('border-top-color') && d.includes('var(--origam-color'))).toBe(true)
+    })
+
+    it('forwards all four discrete sides + their color overrides', () => {
+        const props = reactive<StateEffectProps>({
+            borderTop: 1,
+            borderRight: 2,
+            borderBottom: 3,
+            borderLeft: 4,
+            borderTopColor: 'red',
+            borderRightColor: 'blue',
+            borderBottomColor: 'green',
+            borderLeftColor: 'yellow',
+        })
+        const { api } = mountStateEffect(props)
+        const styles = api().borderStyles.value
+        expect(styles).toContain('border-top-width: 1px')
+        expect(styles).toContain('border-right-width: 2px')
+        expect(styles).toContain('border-bottom-width: 3px')
+        expect(styles).toContain('border-left-width: 4px')
+        expect(styles.filter(d => d.startsWith('border-top-color')).at(-1)).toBe('border-top-color: red')
+        expect(styles.filter(d => d.startsWith('border-right-color')).at(-1)).toBe('border-right-color: blue')
+        expect(styles.filter(d => d.startsWith('border-bottom-color')).at(-1)).toBe('border-bottom-color: green')
+        expect(styles.filter(d => d.startsWith('border-left-color')).at(-1)).toBe('border-left-color: yellow')
+    })
+
+    it('unset per-side props emit nothing (additive, non-breaking)', () => {
+        const props = reactive<StateEffectProps>({ border: 2 })
+        const { api } = mountStateEffect(props)
+        const styles = api().borderStyles.value
+        expect(styles.some(d => /border-(top|right|bottom|left)-/.test(d))).toBe(false)
+    })
+})

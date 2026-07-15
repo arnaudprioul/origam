@@ -5,7 +5,7 @@
  *
  * Run ONCE before removing the 1758 .const.ts source files (ticket F). The
  * resulting fixture files become the new canonical seed source: `docs:seed`
- * reads them automatically when the legacy app/consts/ directories are absent.
+ * reads them automatically when the legacy src/consts/ directories are absent.
  *
  * Only non-orphaned rows are exported. The editorial lock flag (edited_by_user)
  * is preserved on entry records so that `docs:seed --fixture` can re-apply it.

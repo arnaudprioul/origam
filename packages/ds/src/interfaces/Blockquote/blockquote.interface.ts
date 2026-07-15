@@ -1,4 +1,5 @@
 import type {
+    IAccentColorProps,
     IBgColorProps,
     IBorderProps,
     IColorProps,
@@ -29,21 +30,28 @@ import type {
  * - **`color`** drives the **citation text** itself (the body). Defaults
  *   to `text-primary`. An intent resolves to its readable-on-light shade
  *   (`fgSubtle`); a custom value is applied verbatim.
- * - **`bgColor`** drives the **accent**: the decorative bar / pull rules
- *   (the "borders"), the big background quote glyph and the author label.
- *   Defaults to `primary`. It does NOT paint a surface fill — the
- *   blockquote stays transparent (see ROADMAP: future rename to
- *   `accentColor`).
+ * - **`accentColor`** drives the **accent**: the decorative bar / pull
+ *   rules (the "borders"), the big background quote glyph and the author
+ *   label. Defaults to `primary`. It does NOT paint a surface fill — the
+ *   blockquote stays transparent.
  *
  * The two axes are meant to contrast: a dark body (`color`) reads against
- * a coloured accent (`bgColor`).
+ * a coloured accent (`accentColor`).
+ *
+ * @deprecated `bgColor` — renamed to `accentColor` (see ROADMAP.md,
+ * "Renommer `bgColor` → `accentColor`"). `bgColor` keeps working as an
+ * alias (`accentColor ?? bgColor`, `accentColor` wins) and warns once via
+ * `warnDeprecatedProp`. Removal targeted for v3.0.0. Only Blockquote
+ * migrates in this pass — `bgColor` stays the canonical, non-deprecated
+ * name on surface-fill components (Btn, Card, Chip, Badge, Alert,
+ * Pagination, …), where "accent" would misrepresent a full fill.
  *
  * Standard cross-cutting surfaces (`rounded`, `elevation`, `border`,
  * `padding`, `margin`) are inherited from the Commons interfaces and
  * consumed via the matching composables. The component never imposes an
  * outer margin unless `margin` is passed.
  */
-export interface IBlockquoteProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IRoundedProps, IElevationProps, IBorderProps, IPaddingProps, IMarginProps, ITypographyProps {
+export interface IBlockquoteProps extends ICommonsComponentProps, ITagProps, IColorProps, IAccentColorProps, IBgColorProps, IRoundedProps, IElevationProps, IBorderProps, IPaddingProps, IMarginProps, ITypographyProps {
     /**
      * Visual variant. See `TBlockquoteVariant` for the per-variant
      * typographic contract.

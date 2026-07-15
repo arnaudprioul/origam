@@ -15,6 +15,73 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [2.8.0] — 2026-07-15
+
+### Added
+
+- **Border per-side props are now wired** (`useBorder`). The discrete
+  `borderTop` / `borderRight` / `borderBottom` / `borderLeft` props on
+  `IBorderProps` — declared but never read until now — each accept a
+  number (px), a boolean (legacy thin opt-in) or a free-form
+  `"width style color"` string (same grammar as the global `border`
+  shorthand). New per-side color overrides ship alongside:
+  `borderTopColor` / `borderRightColor` / `borderBottomColor` /
+  `borderLeftColor` (`TColor` — semantic intent or raw CSS color).
+  Precedence is specific-over-global (global `border`, then standalone
+  `borderColor` / `borderStyle`, then per-side width/style, then per-side
+  color) and documented on `useBorder`. Emitted declarations are physical
+  (`border-top-width`, …). `useStateEffect` forwards the 8 new props, so
+  Card, Sheet and every other consumer gets them for free. Pilot
+  component: Card (story + doc + e2e).
+- **`useElevation` accepts a free-form custom `box-shadow` value.**
+  `elevation` (new `TElevation` type) still takes a named origam rung or
+  a Material 0–24 number, and now also any shadow-like CSS string
+  (`var()` / `calc()` / `rgba()` / hex / length / `inset` signals),
+  emitted verbatim as `box-shadow`. Previously a custom string silently
+  produced NO shadow (`parseInt` read a leading `0` and resolved to the
+  `none` rung). Pilot component: Card (story + doc + e2e).
+
+### Changed
+
+- **`OrigamBlockquote`: `bgColor` renamed to `accentColor` (non-breaking).**
+  `bgColor` never painted a surface fill on Blockquote — it drove the
+  decorative accent (bar, background quote glyph, author label), which the
+  `bgColor` name misrepresented. `accentColor` is now the canonical prop;
+  `bgColor` keeps working as a deprecated alias (`accentColor` wins when
+  both are set) and logs a console warning once per session. Scope: this
+  pass only touches Blockquote — `bgColor` stays canonical and
+  non-deprecated on surface-fill components (Btn, Card, Chip, Badge,
+  Alert, Pagination, …). Removal of the `bgColor` alias on Blockquote is
+  targeted for v3.0.0. See `ROADMAP.md` — "Renommer `bgColor` →
+  `accentColor`".
+
+### Fixed
+
+- **`useMargin`: 2-value strings work again.** `margin="8px 16px"` silently
+  produced no styles (the 2-value case was missing from
+  `formatMarginStylesVar`; padding already had it). Both utils now document
+  the intentional 4-value order convention: values are grouped by logical
+  axis — `block-start`, `inline-start`, `block-end`, `inline-end`
+  (top / left / bottom / right) — NOT the native CSS clockwise shorthand.
+  RTL-safe by design, arbitrated in #216.
+
+### Internal
+
+- Marketing `/theming` — the Theme Builder ships six rich, validated
+  controls built from origam components (color/accentColor with intents +
+  custom picker, density, rounded with per-corner link/unlink, elevation
+  presets + full custom box-shadow, border with per-side width AND color
+  link/unlink, padding/margin devtools-style box-model with axis linking).
+- Marketing playground isolation: the `origam` preview theme now carries a
+  complete GENERATED reset of every component var (~2700/mode, derived from
+  the DS baseline sheets) — ambient brand themes can no longer leak into
+  the playground preview.
+- Marketing package restructured to the project architecture (`src/`
+  srcDir, locales under `src/assets/locales`, wireframes under
+  `wireframes/`).
+
+---
+
 ## [2.7.3] — 2026-07-10
 
 ### Fixed

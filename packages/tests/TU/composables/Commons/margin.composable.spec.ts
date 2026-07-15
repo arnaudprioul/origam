@@ -53,6 +53,22 @@ describe('useMargin — classes-first', () => {
         expect(api().marginStyles.value).toContain('margin: 12px')
     })
 
+    it('2-value string "8px 16px" (issue #216 parity) → margin-block + margin-inline inline styles', () => {
+        const { api } = mountWith('8px 16px')
+        expect(api().marginClasses.value.some(c => /^origam--m-/.test(c))).toBe(false)
+        expect(api().marginStyles.value).toContain('margin-block: 8px')
+        expect(api().marginStyles.value).toContain('margin-inline: 16px')
+    })
+
+    it('4-value string "8px 16px 24px 32px" → logical per-side styles, H/G/B/D order (not CSS clockwise)', () => {
+        const { api } = mountWith('8px 16px 24px 32px')
+        const styles = api().marginStyles.value
+        expect(styles).toContain('margin-block-start: 8px')
+        expect(styles).toContain('margin-inline-start: 16px')
+        expect(styles).toContain('margin-block-end: 24px')
+        expect(styles).toContain('margin-inline-end: 32px')
+    })
+
     it('undefined → empty', () => {
         const { api } = mountWith(undefined)
         expect(api().marginClasses.value).toEqual([])

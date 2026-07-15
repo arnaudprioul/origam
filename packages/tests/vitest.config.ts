@@ -16,6 +16,32 @@ export default defineConfig({
             projects: [resolve(REPO_ROOT, 'tsconfig.json')]
         })
     ],
+    resolve: {
+        alias: {
+            // `~` is the Nuxt-managed alias for `@origam/marketing`'s own
+            // `src/` (defined per-app in packages/marketing/nuxt.config.ts,
+            // not visible outside the Nuxt build). Registered here so pure
+            // (non-Nuxt-runtime) marketing utils under TU/marketing/ can be
+            // unit tested without duplicating their import paths.
+            '~': resolve(REPO_ROOT, 'packages/marketing/src'),
+            // TU/marketing/*.spec.ts pull in marketing source that imports
+            // the PUBLISHED `origam/<subpath>` package names (the same way a
+            // real consumer app would), unlike the DS's own TU specs which
+            // import straight from `packages/ds/src` via the `@origam/*`
+            // tsconfig path above. `origam/<subpath>` resolves through
+            // package.json `exports` to `dist/src/<subpath>/index.js` — a
+            // build artifact `pnpm -F origam tokens:build` (the only DS
+            // prerequisite the CI unit-test job runs) never produces. Alias
+            // the plain-TS barrel subpaths straight to source so these specs
+            // don't require a full `pnpm -F origam build` just to resolve an
+            // enum import.
+            'origam/enums': resolve(REPO_ROOT, 'packages/ds/src/enums/index.ts'),
+            'origam/utils': resolve(REPO_ROOT, 'packages/ds/src/utils/index.ts'),
+            'origam/consts': resolve(REPO_ROOT, 'packages/ds/src/consts/index.ts'),
+            'origam/types': resolve(REPO_ROOT, 'packages/ds/src/types/index.ts'),
+            'origam/interfaces': resolve(REPO_ROOT, 'packages/ds/src/interfaces/index.ts')
+        }
+    },
     test: {
         /*
          * The vitest root is pinned to the monorepo root so coverage can
@@ -51,6 +77,16 @@ export default defineConfig({
          * (sanitize-html string normalisation, ssr-smoke class shape).
          */
         setupFiles: ['./TU/vitest.setup.ts'],
+        /*
+         * Runs once, before Vite starts transforming any file — see
+         * global-setup.ts for why: `packages/marketing/tsconfig.json`
+         * extends a git-ignored, Nuxt-generated file that a fresh CI
+         * runner never produces (marketing's own `postinstall` script
+         * deliberately no-ops `nuxt prepare` in CI), which crashes
+         * Vite's built-in per-file tsconfig lookup for every TU/marketing
+         * spec with a hard TSConfckParseError.
+         */
+        globalSetup: ['./global-setup.ts'],
         coverage: {
             provider: 'v8',
             /*

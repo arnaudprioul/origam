@@ -91,11 +91,28 @@ Remove shadow with `flat`.
 
 ## Elevation
 
+`elevation` accepts three shapes:
+
+- An **origam-native rung name** — `'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'` —
+  resolves to `var(--origam-shadow---{rung})`.
+- A **Material-style number** — `0..24` — bucketised onto the origam shadow ladder.
+- A **free-form custom `box-shadow` value** — `var(...)`, `calc(...)`, a literal shadow list,
+  multiple comma-separated layers, `inset`, … — emitted verbatim.
+
 ```vue
 <template>
     <OrigamCard :elevation="8" title="Elevated card" />
+    <OrigamCard elevation="lg" title="Elevated card (named rung)" />
+    <OrigamCard elevation="0 4px 12px rgba(0,0,0,.24)" title="Custom box-shadow" />
 </template>
 ```
+
+The custom form is detected permissively (same approach as the `rounded` free-form escape
+hatch): any string that isn't a named rung and doesn't parse as `0..24` is treated as a custom
+`box-shadow` if it carries at least one shadow-like signal — a CSS function call (`var(`,
+`calc(`, `rgba(`, …), a hex color, a length with a unit, or `inset`. Anything else falls
+through to the pre-existing behaviour (no shadow emitted). See `useElevation`
+(`src/composables/Commons/elevation.composable.ts`) for the full resolution order.
 
 ## Rounded
 
@@ -112,6 +129,38 @@ Remove shadow with `flat`.
     <OrigamCard border title="Bordered card" />
 </template>
 ```
+
+### Border — per side
+
+`borderTop` / `borderRight` / `borderBottom` / `borderLeft` set an independent width
+(and optionally style/color, via a free-form string like `"2px dashed red"`) for a
+single physical side, and `borderTopColor` / `borderRightColor` / `borderBottomColor` /
+`borderLeftColor` set an independent color for that side (accepts a semantic intent —
+`'primary'`, `'danger'`, … — or a raw CSS color; gradients are not supported on border
+colors and are silently ignored).
+
+```vue
+<template>
+    <OrigamCard
+        :border-top="4"
+        :border-right="2"
+        :border-bottom="4"
+        :border-left="2"
+        border-top-color="danger"
+        border-right-color="primary"
+        border-bottom-color="success"
+        border-left-color="info"
+        title="Per-side border"
+    />
+</template>
+```
+
+Precedence (specific beats global, per physical side): the global `border` shorthand
+resolves first, then the standalone `borderColor` / `borderStyle`, then the per-side
+`borderTop` / `borderRight` / `borderBottom` / `borderLeft`, and finally the per-side
+`*Color` props win last. Each rung only overrides the side(s) it actually targets —
+e.g. `border="1px solid black"` with `borderTop="4px dashed red"` renders a 4px dashed
+red top edge while the other three sides stay 1px solid black.
 
 ## Density
 

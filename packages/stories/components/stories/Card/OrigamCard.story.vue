@@ -24,6 +24,14 @@
 						:border="state.border"
 						:border-color="state.borderColor"
 						:border-style="state.borderStyle"
+						:border-top="state.borderTop"
+						:border-right="state.borderRight"
+						:border-bottom="state.borderBottom"
+						:border-left="state.borderLeft"
+						:border-top-color="state.borderTopColor"
+						:border-right-color="state.borderRightColor"
+						:border-bottom-color="state.borderBottomColor"
+						:border-left-color="state.borderLeftColor"
 						:rounded="state.rounded"
 						:density="state.density"
 						:image="state.image"
@@ -53,6 +61,16 @@
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
 					<HstText   v-model="state.borderColor" title="Border Color"/>
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border — per side (issue #215)">
+					<HstSelect v-model="state.borderTop"         title="Border Top"          :options="BORDER_OPTIONS"/>
+					<HstSelect v-model="state.borderRight"       title="Border Right"        :options="BORDER_OPTIONS"/>
+					<HstSelect v-model="state.borderBottom"      title="Border Bottom"       :options="BORDER_OPTIONS"/>
+					<HstSelect v-model="state.borderLeft"        title="Border Left"         :options="BORDER_OPTIONS"/>
+					<HstSelect v-model="state.borderTopColor"    title="Border Top Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.borderRightColor"  title="Border Right Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.borderBottomColor" title="Border Bottom Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.borderLeftColor"   title="Border Left Color"   :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Sizing">
 					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
@@ -285,6 +303,31 @@
 					<span>Custom text slot content</span>
 				</template>
 			</origam-card>
+		</Variant>
+
+		<Variant title="Prop — elevation custom">
+			<origam-card
+					elevation="0 4px 12px rgba(0,0,0,.24)"
+					title="Custom elevation"
+					text="elevation accepts a free-form box-shadow value (var(...), calc(...), multiple comma-separated layers, inset, …) — emitted verbatim instead of being bucketised onto the origam shadow ladder."
+					style="width: 280px;"
+			/>
+		</Variant>
+
+		<Variant title="Prop — border per-side">
+			<origam-card
+					:border-top="4"
+					:border-right="2"
+					:border-bottom="4"
+					:border-left="2"
+					border-top-color="danger"
+					border-right-color="primary"
+					border-bottom-color="success"
+					border-left-color="info"
+					title="Per-side border"
+					text="Each side reads its own width (borderTop/Right/Bottom/Left) and color (borderTopColor/…) — issue #215. Specific per-side props win over the global border/borderColor shorthand for the physical side they target."
+					style="width: 280px;"
+			/>
 		</Variant>
 
 		<Variant
