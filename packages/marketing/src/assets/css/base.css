@@ -40,11 +40,6 @@ svg {
     outline-offset: 2px;
 }
 
-.origam-layout--full-height .origam-layout__wrapper {
-    height: auto !important;
-    min-height: 100vh;
-}
-
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
