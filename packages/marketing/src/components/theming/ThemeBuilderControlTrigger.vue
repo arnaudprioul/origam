@@ -36,7 +36,7 @@ const open = defineModel<boolean>('open', { default: false })
             <origam-btn
                 variant="outlined"
                 density="compact"
-                size="x-small"
+                size="small"
                 block
                 class="tbc-trigger"
                 :aria-label="label"

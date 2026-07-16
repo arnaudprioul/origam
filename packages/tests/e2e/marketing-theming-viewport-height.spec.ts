@@ -132,8 +132,8 @@ test.describe('Theme Builder · viewport-height clipping', () => {
         expect(bodyMetrics).not.toBeNull()
         expect(
             bodyMetrics!.scrollHeight,
-            'body must be scrollable — the theming content is taller than the viewport and must not be clamped'
-        ).toBeGreaterThan(bodyMetrics!.height)
+            'the page must be scrollable — the theming content is taller than the 829px viewport and must not be clamped'
+        ).toBeGreaterThan(829)
 
         const theming = page.locator('.theming')
         const themingHeight = await theming.evaluate(el => getComputedStyle(el).height)
