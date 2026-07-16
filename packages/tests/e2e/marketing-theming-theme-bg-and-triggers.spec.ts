@@ -12,9 +12,9 @@
  *     was hard `height: 100vh` — not `min-height`. Content overflowing
  *     past that box still rendered (nothing clipped), but nothing painted
  *     a background under it, revealing the default marketing gradient.
- *     Fix: `packages/marketing/src/assets/css/base.css` overrides that DS
- *     class to `height: auto !important; min-height: 100vh` for the
- *     marketing site.
+ *     Fix: at the source, in the DS (PR #237) — OrigamLayout full-height
+ *     is now `min-height: 100vh` ("at least one screen", a floor, not a
+ *     ceiling). No marketing-side override.
  *
  * B — the 5 rich-control triggers (Color/Rounded/Elevation/Border/Box
  *     model, `ThemeBuilderControlTrigger.vue`) rendered as `<origam-btn
