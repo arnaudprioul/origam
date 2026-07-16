@@ -43,9 +43,10 @@ with a colon.
 
 ## Full-height
 
-`fullHeight` opts the wrapper into `100vh` — useful for shells that
-have no surrounding scroll context (Tauri windows, embedded
-dashboards…).
+`fullHeight` opts the wrapper into `min-height: 100vh` — it occupies at
+least the full viewport (useful for shells that have no surrounding
+scroll context: Tauri windows, embedded dashboards…) and grows past one
+screen if its content is taller, rather than clipping.
 
 ```vue
 <template>

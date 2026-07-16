@@ -150,8 +150,17 @@
 		}
 
 		&--full-height &__wrapper {
+			// `min-height` (not `height`) — full-height means "occupy AT
+			// LEAST the viewport", not "clip to exactly the viewport".
+			// A fixed `height: 100vh` kept the wrapper's own box capped
+			// at one screen even when its content (app-bar + main slot)
+			// grows taller — the overflow still rendered (no
+			// `overflow: hidden` here) but the wrapper's box, and
+			// anything painting a background on an ancestor sized off
+			// it, never grew to match, leaving a visible gap below the
+			// first viewport on any page taller than one screen.
 			width: 100vw;
-			height: 100vh;
+			min-height: 100vh;
 		}
 	}
 </style>

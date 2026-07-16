@@ -3,8 +3,8 @@
     "background":         { "$type": "color",     "$value": "{color.surface.raised}" },
     "color":              { "$type": "color",     "$value": "{color.text.primary}" },
     "border-radius":      { "$type": "dimension", "$value": "{radius.lg}" },
-    "max-width":          { "$type": "dimension", "$value": "calc(100% - 48px)" },
-    "max-height":         { "$type": "dimension", "$value": "calc(100% - 48px)" },
+    "max-width":          { "$type": "other",     "$value": "calc(100% - 48px)" },
+    "max-height":         { "$type": "other",     "$value": "calc(100% - 48px)" },
     "z-index":            { "$type": "number",    "$value": "{zIndex.modal}" },
     "box-shadow":         { "$type": "shadow",    "$value": "{shadow.xl}" },
 
