@@ -3,17 +3,18 @@
  *
  * `.theming` used to clamp its height to `calc(100vh - appbar)` with
  * internal `overflow: hidden` / `overflow-y: auto` zones (nav list, props
- * panel, generated-code block). On short viewports that budget squeezed
- * those zones to slivers, reading as clipped content (nav item cut off
- * mid-label, "N components" footer overlapping the list, generated code
- * cut mid-line, props panel select overflowing its edge).
+ * panel, generated-code block). A first fix (#233) only relaxed the clamp
+ * below a `@media (max-height: 50rem)` (800px) threshold — insufficient:
+ * proven broken again at the user's real viewport (1512×829, just above the
+ * threshold), where `.tb-nav__scroll` was still clamped to 222px against
+ * 1013px of content.
  *
- * Fix: a `@media (max-height: 50rem)` breakpoint switches the clamp to
- * `height: auto` / `min-height` and the internal `overflow: hidden` /
- * `overflow-y: auto` zones to `overflow: visible`, letting the page grow
- * to its natural content height and scroll as a whole below the
- * threshold, while leaving the desktop (tall-viewport) internally
- * scrolling 3-column layout untouched.
+ * Corrected fix: the height clamp and every internal `overflow: hidden` /
+ * `overflow-y: auto` zone are removed UNCONDITIONALLY — no media-height
+ * threshold. `.theming` always grows to its natural content height (only a
+ * `min-height` floor remains, so short content still fills the viewport)
+ * and the whole page scrolls. This spec asserts no-clipping at every
+ * viewport, including the ones that broke the previous threshold-based fix.
  *
  * Prérequis : serveur marketing :3000 + base docs seedée.
  * Run : cd packages/tests && node_modules/.bin/playwright test \
@@ -22,14 +23,12 @@
 
 import { expect, test, type Page } from '@playwright/test'
 
-const SHORT_VIEWPORTS = [
+const VIEWPORTS = [
+    { width: 2560, height: 1400, label: '2560x1400' },
+    { width: 1512, height: 829, label: '1512x829' },
+    { width: 1440, height: 900, label: '1440x900' },
     { width: 1280, height: 720, label: '1280x720' },
     { width: 1024, height: 640, label: '1024x640' }
-]
-
-const TALL_VIEWPORTS = [
-    { width: 1440, height: 900, label: '1440x900' },
-    { width: 2560, height: 1400, label: '2560x1400' }
 ]
 
 interface IBoxMetrics {
@@ -56,7 +55,7 @@ async function gotoTheming (page: Page): Promise<void> {
 }
 
 test.describe('Theme Builder · viewport-height clipping', () => {
-    for (const viewport of SHORT_VIEWPORTS) {
+    for (const viewport of VIEWPORTS) {
         test(`no clipped content at ${viewport.label} — nav, panel and generated code fully reachable`, async ({ page }) => {
             await page.setViewportSize({ width: viewport.width, height: viewport.height })
             await gotoTheming(page)
@@ -87,17 +86,17 @@ test.describe('Theme Builder · viewport-height clipping', () => {
             await generatedCode.scrollIntoViewIfNeeded()
             await expect(generatedCode).toBeInViewport()
 
-            const bodyMetrics = await boxMetrics(page, 'body')
-            expect(bodyMetrics).not.toBeNull()
-            expect(bodyMetrics!.scrollHeight).toBeGreaterThanOrEqual(bodyMetrics!.height)
-
-            for (const selector of ['.tb-nav__scroll', '.tb-panel__scroll', '.theming__output-code']) {
+            for (const selector of ['.tb-nav__scroll', '.tb-panel__scroll', '.theming__output-code', '.theming']) {
                 const metrics = await boxMetrics(page, selector)
                 if (!metrics) continue
                 expect(
                     metrics.height,
                     `${selector} must not clip its content at ${viewport.label} (scrollHeight=${metrics.scrollHeight}, height=${metrics.height})`
                 ).toBeGreaterThanOrEqual(metrics.scrollHeight)
+                expect(
+                    metrics.overflowY,
+                    `${selector} must never clamp with an internal scrollbar at ${viewport.label} — the page scrolls as a whole`
+                ).not.toBe('auto')
             }
         })
 
@@ -125,40 +124,19 @@ test.describe('Theme Builder · viewport-height clipping', () => {
         })
     }
 
-    for (const viewport of TALL_VIEWPORTS) {
-        test(`desktop internal-scroll layout is unchanged at ${viewport.label}`, async ({ page }) => {
-            await page.setViewportSize({ width: viewport.width, height: viewport.height })
-            await gotoTheming(page)
+    test('the page grows past a short viewport and scrolls as a whole (no fixed-height trap)', async ({ page }) => {
+        await page.setViewportSize({ width: 1512, height: 829 })
+        await gotoTheming(page)
 
-            const theming = page.locator('.theming')
-            const themingMetrics = await theming.evaluate((el) => {
-                const cs = getComputedStyle(el)
-                return { height: cs.height, overflowY: cs.overflowY }
-            })
-            expect(themingMetrics.height).not.toBe('auto')
+        const bodyMetrics = await boxMetrics(page, 'body')
+        expect(bodyMetrics).not.toBeNull()
+        expect(
+            bodyMetrics!.scrollHeight,
+            'body must be scrollable — the theming content is taller than the viewport and must not be clamped'
+        ).toBeGreaterThan(bodyMetrics!.height)
 
-            const navScroll = await boxMetrics(page, '.tb-nav__scroll')
-            expect(navScroll).not.toBeNull()
-            expect(navScroll!.overflowY).toBe('auto')
-            expect(
-                navScroll!.height,
-                'the component nav must keep scrolling internally on tall viewports, not grow to full content height'
-            ).toBeLessThan(navScroll!.scrollHeight)
-
-            const panelScroll = await boxMetrics(page, '.tb-panel__scroll')
-            expect(panelScroll).not.toBeNull()
-            expect(panelScroll!.overflowY).toBe('auto')
-
-            const outputCode = page.locator('.theming__output-code')
-            const outputCodeOverflow = await outputCode.evaluate(el => getComputedStyle(el).overflowY)
-            expect(outputCodeOverflow).toBe('hidden')
-
-            const themingBox = await theming.boundingBox()
-            expect(themingBox).not.toBeNull()
-            expect(
-                themingBox!.y + themingBox!.height,
-                'the vh-clamped .theming root must still end at (roughly) the viewport bottom on tall screens'
-            ).toBeLessThanOrEqual(viewport.height + 4)
-        })
-    }
+        const theming = page.locator('.theming')
+        const themingHeight = await theming.evaluate(el => getComputedStyle(el).height)
+        expect(themingHeight).not.toBe('auto')
+    })
 })

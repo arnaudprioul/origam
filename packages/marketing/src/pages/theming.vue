@@ -381,13 +381,7 @@
   .theming {
     display: flex;
     flex-direction: column;
-    min-height: 0;
-    height: calc(100vh - var(--origam-app-bar---height, 4rem));
-
-    @media (max-height: 50rem) {
-      height: auto;
-      min-height: calc(100vh - var(--origam-app-bar---height, 4rem));
-    }
+    min-height: calc(100vh - var(--origam-app-bar---height, 4rem));
 
     &__dev-banner {
       flex: none;
@@ -530,8 +524,11 @@
     &__body {
       display: grid;
       grid-template-columns: 14rem 1fr 20rem;
+      grid-auto-rows: min-content;
+      align-items: start;
       flex: 1 1 auto;
       min-height: 0;
+      height: auto;
 
       @media (max-width: 64rem) {
         grid-template-columns: 12rem 1fr 17rem;
@@ -539,27 +536,12 @@
 
       @media (max-width: 48rem) {
         grid-template-columns: 1fr;
-        grid-auto-rows: min-content;
-        height: auto;
         overflow-y: auto;
-      }
-
-      @media (max-height: 50rem) {
-        grid-auto-rows: min-content;
-        height: auto;
       }
     }
 
     &__col {
-      min-height: 0;
-
-      @media (max-width: 48rem) {
-        min-height: auto;
-      }
-
-      @media (max-height: 50rem) {
-        min-height: auto;
-      }
+      min-height: auto;
     }
 
     &__col--center {
@@ -567,7 +549,7 @@
       flex-direction: column;
       min-width: 0;
       min-height: 0;
-      overflow: hidden;
+      overflow: visible;
       padding: var(--origam-spacing-4, 1rem);
       background-color: var(--origam-color-surface-sunken, var(--origam-color-surface-subtle));
       border-inline: 1px solid var(--origam-color-border-default);
@@ -576,27 +558,17 @@
         border-inline: none;
         border-block: 1px solid var(--origam-color-border-default);
       }
-
-      @media (max-height: 50rem) {
-        overflow: visible;
-      }
     }
 
     &__output {
       flex: 0 0 auto;
-      max-height: 38%;
       display: flex;
       flex-direction: column;
       gap: var(--origam-spacing-2, 0.5rem);
       padding: var(--origam-spacing-4, 1rem);
       background-color: var(--origam-color-surface-default);
       border-block-start: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
-      overflow: hidden;
-
-      @media (max-height: 50rem) {
-        max-height: none;
-        overflow: visible;
-      }
+      overflow: visible;
     }
 
     &__output-head {
@@ -620,13 +592,8 @@
     &__output-code {
       display: flex;
       flex: 1 1 auto;
-      min-height: 0;
-      overflow: hidden;
-
-      @media (max-height: 50rem) {
-        min-height: 12rem;
-        overflow: visible;
-      }
+      min-height: 12rem;
+      overflow: visible;
 
       :deep(.origam-code) {
         flex: 1 1 auto;

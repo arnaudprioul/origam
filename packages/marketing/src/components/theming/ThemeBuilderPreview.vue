@@ -170,18 +170,11 @@ const modeLabel = (mode: TEditMode): string =>
 .tb-preview {
     display: flex;
     flex-direction: column;
-    min-height: 0;
-    height: 100%;
-    overflow: hidden;
+    min-height: 20rem;
+    overflow: visible;
     border-width: 1px;
     border-style: solid;
     border-color: var(--origam-color-border-default);
-
-    @media (max-height: 50rem) {
-        height: auto;
-        min-height: 20rem;
-        overflow: visible;
-    }
     border-radius: var(--origam-radius-lg, 0.5rem);
     background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
 
