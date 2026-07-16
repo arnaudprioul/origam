@@ -4,7 +4,7 @@
     "color":         { "$type": "color",     "$value": "{color.text.primary}" },
     "border-radius": { "$type": "dimension", "$value": "{radius.md}" },
     "box-shadow":    { "$type": "shadow",    "$value": "{shadow.lg}" },
-    "max-height":    { "$type": "dimension", "$value": "calc(100vh - 32px)" },
+    "max-height":    { "$type": "other",     "$value": "calc(100vh - 32px)" },
     "z-index":       { "$type": "number",    "$value": "{zIndex.dropdown}" },
 
     "transition-duration":        { "$type": "duration",    "$value": "{motion.duration.fast}" },

@@ -53,7 +53,10 @@ app-wide default without per-component overrides.
 
 ## Full height
 
-`fullHeight` defaults to `true`. The root element fills the viewport vertically.
+`fullHeight` defaults to `true`. The root element occupies *at least* the
+full viewport height (`min-height: 100vh`) — content taller than one
+screen grows the element past the viewport rather than clipping; a page
+that fits in one screen still fills it exactly.
 
 ## RTL support
 

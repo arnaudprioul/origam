@@ -7,7 +7,7 @@
     "box-shadow":              { "$type": "shadow",     "$value": "{shadow.lg}" },
     "z-index":                 { "$type": "number",     "$value": "{zIndex.dropdown}",
                                  "$description": "= 1000. Contextual menus appear above content but below modal-level surfaces." },
-    "max-height":              { "$type": "dimension",  "$value": "calc(100vh - 32px)" },
+    "max-height":              { "$type": "other",      "$value": "calc(100vh - 32px)" },
     "position":                { "$type": "other",      "$value": "fixed",
                                  "$description": "Target 'cursor' — the overlay positions this element at cursor coordinates via the connected locationStrategy." },
 

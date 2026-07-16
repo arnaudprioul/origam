@@ -81,7 +81,7 @@
       },
 
       "append": {
-        "margin-inline-start": { "$type": "dimension", "$value": "auto" },
+        "margin-inline-start": { "$type": "other",     "$value": "auto" },
         "margin-block":        { "$type": "dimension", "$value": "-4px",
                                  "$description": "Negative margin to vertically align icons with the wrapper." }
       }
@@ -104,13 +104,13 @@
     },
 
     "popout": {
-      "max-width":             { "$type": "dimension", "$value": "calc(100% - 32px)" },
-      "max-width-active":      { "$type": "dimension", "$value": "calc(100% + 16px)" }
+      "max-width":             { "$type": "other",     "$value": "calc(100% - 32px)" },
+      "max-width-active":      { "$type": "other",     "$value": "calc(100% + 16px)" }
     },
 
     "inset": {
       "max-width":             { "$type": "other",     "$value": "100%" },
-      "max-width-active":      { "$type": "dimension", "$value": "calc(100% - 32px)" }
+      "max-width-active":      { "$type": "other",     "$value": "calc(100% - 32px)" }
     }
   }
 }
