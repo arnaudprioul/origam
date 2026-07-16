@@ -553,10 +553,17 @@
       padding: var(--origam-spacing-4, 1rem);
       background-color: var(--origam-color-surface-sunken, var(--origam-color-surface-subtle));
       border-inline: 1px solid var(--origam-color-border-default);
+      position: sticky;
+      top: var(--origam-app-bar---height, 4rem);
+      max-height: calc(100vh - var(--origam-app-bar---height, 4rem));
+      overflow-y: auto;
 
       @media (max-width: 48rem) {
         border-inline: none;
         border-block: 1px solid var(--origam-color-border-default);
+        position: static;
+        max-height: none;
+        overflow-y: visible;
       }
     }
 
