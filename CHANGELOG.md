@@ -13,6 +13,29 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed
+
+- **`OrigamLayout` / `OrigamApp` `full-height` no longer clamps content
+  taller than one screen.** The full-height wrapper was `height: 100vh`
+  (a hard clamp) instead of `min-height: 100vh` ("occupy at least the
+  viewport"). Content overflowing past one screen still rendered (nothing
+  was clipped — no `overflow: hidden` on that element), but the wrapper's
+  own box never grew to match, so any ancestor sizing itself off that box
+  (e.g. a themed page background) stopped short of the actual page height.
+  `full-height` pages now grow naturally past one screen and the
+  background/box always matches the true content height.
+- Fixed a handful of pre-existing `$type: "dimension"` component tokens
+  with non-numeric values (`auto`, `calc(...)`) that crashed the
+  `size/rem` Style Dictionary transform and silently blocked
+  `tokens:build` / the full package build (`btn.width`, `dialog.max-width`,
+  `dialog.max-height`, `contextual-menu.max-height`, `menu.max-height`,
+  `expansion-panel.header.append.margin-inline-start`,
+  `expansion-panel.popout.max-width(-active)`,
+  `expansion-panel.inset.max-width-active`) — retyped to `"other"`,
+  matching the established pattern already used for equivalent tokens
+  elsewhere in the same files. No visual/behavioural change; this only
+  unblocks the build pipeline.
+
 ---
 
 ## [2.8.1] — 2026-07-15
