@@ -22,7 +22,7 @@ import * as url from 'node:url'
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 const REPO_ROOT = path.resolve(__dirname, '..', '..', '..')
-const PRESETS_FILE = path.join(REPO_ROOT, 'packages', 'marketing', 'app', 'consts', 'theme-builder-brand-presets.const.ts')
+const PRESETS_FILE = path.join(REPO_ROOT, 'packages', 'marketing', 'src', 'consts', 'theme-builder-brand-presets.const.ts')
 
 type FeedbackCheck = { token: string; expected: string }
 
