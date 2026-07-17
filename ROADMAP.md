@@ -612,6 +612,42 @@ pour ajouter une nouvelle occurrence, et la possibilité de **supprimer un group
 - Livrable : composant + interface (`IAddMoreProps`) + types + story (format unifié) +
   doc + e2e (ajout, suppression, bornes min/max) — **test-as-you-build**.
 
+### `OrigamBtn` — prop `contentJustify` **(S, spec)**
+
+> Identifié lot 4 theming (juillet 2026), pendant le fix du trigger
+> `ThemeBuilderControlTrigger.vue`. **Statut : planifié, non implémenté.**
+
+Audit props-first (cf. règle CLAUDE.md) confirmé : `OrigamBtn` n'expose
+aujourd'hui aucune prop pour contrôler l'alignement de son contenu interne
+dans le grid `__loader` (`prepend | content | append`, `justify-content:
+center` par défaut, figé en dur dans la SCSS). `IJustifyProps`/`IAlignProps`
+existent bien dans `interfaces/Commons/` mais ne sont consommées que par les
+composants de layout grille (`Grids/col`, `Grids/row`, `DataTable/footer`),
+jamais par Btn — donc aucun chemin props-first disponible aujourd'hui pour
+ce besoin, qui a dû être résolu par un `:deep()` marketing ciblé et documenté
+(cf. `ThemeBuilderControlTrigger.vue`) en attendant cette prop.
+
+**Pourquoi pas un simple retrait de `justify-content: center`** : testé et
+reverté en amont — retirer le centrage par défaut casse le groupement
+visuel icône+texte des boutons `block` qui utilisent les slots `prepend`/
+`append` (l'icône reste collée à un bord, le texte-`auto` s'étire loin
+d'elle). Le comportement par défaut actuel reste correct pour l'immense
+majorité des usages réels (CTA icône+texte). Le besoin n'existe que pour
+les consommateurs qui n'utilisent PAS prepend/append (tout le contenu dans
+le slot par défaut) et veulent que ce contenu occupe toute la largeur
+disponible plutôt que de rester centré en cluster compact.
+
+**API cible (esquisse)** :
+- prop `contentJustify?: 'center' | 'start' | 'end' | 'stretch' | 'normal'`
+  (défaut `'center'` pour préserver le comportement actuel, zéro breaking
+  change), mappée directement sur `justify-content` du grid `__loader`.
+- Documenter clairement dans la story/doc que cette prop n'affecte QUE les
+  boutons sans prepend/append (sinon comportement inchangé par design —
+  ou lever un warning dev si les deux sont combinés, à trancher).
+- Livrable : prop + interface + story (nouvelle partie du groupe Design) +
+  doc + e2e couvrant bouton block avec/sans icône, sous les deux valeurs
+  extrêmes (`center` vs `stretch`) — **test-as-you-build**.
+
 ### Visual regression testing **(M)**
 - Playwright `expect(page).toHaveScreenshot()` par Variant. OU Chromatic /
   Lost-Pixel. Baseline sur main, diff bloquant sur PR.

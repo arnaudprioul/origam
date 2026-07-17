@@ -464,6 +464,31 @@
 		.origam-selection-control {
 			min-height: calc(var(--origam-switch__selection-control---min-height, 56px) + var(--origam-input---density, 0px));
 
+			/*
+			 * The base SelectionControl wrapper reserves a fixed
+			 * `calc(40px + 1.5 * density)` box sized for a checkbox/radio
+			 * input glyph. Switch instead renders a variable-width track
+			 * (36–52px depending on `--origam-switch__track---width` /
+			 * the `inset` variant, plus its own horizontal padding) as
+			 * the wrapper's only in-flow child — `__input` is forced
+			 * `position: absolute` below so it no longer participates in
+			 * the flex layout. That fixed formula was never track-aware:
+			 * under `density="compact"` (-8px) the wrapper shrinks to
+			 * 28px while the standard track needs ~46px, so the track
+			 * visually overflows into the neighbouring label ("Flat"
+			 * rendering as "lat"). Let the wrapper size to its actual
+			 * content (`max-content`) instead, keeping the original
+			 * density formula only as a floor via `min-width`/`min-height`
+			 * so the checkbox-sized footprint is preserved whenever the
+			 * track is smaller than it (never smaller than before).
+			 */
+			:deep(.origam-selection-control__wrapper) {
+				width: max-content;
+				height: max-content;
+				min-width: calc(40px + 1.5 * var(--origam-selection-control--density, 0px));
+				min-height: calc(40px + 1.5 * var(--origam-selection-control--density, 0px));
+			}
+
 			:deep(.origam-selection-control__input) {
 				border-radius: 50%;
 				transition: 0.2s transform cubic-bezier(0.4, 0, 0.2, 1);
