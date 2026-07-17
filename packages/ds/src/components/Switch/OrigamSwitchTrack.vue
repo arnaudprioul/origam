@@ -47,7 +47,10 @@
 
 	import {
 	useBackgroundColor,
+	useBorder,
+	useElevation,
 	useProps,
+	useRounded,
 	useStyle
 } from '../../composables'
 
@@ -97,6 +100,14 @@
 
 	const {backgroundColorStyles} = useBackgroundColor(trackBgColor)
 
+	// Props-first (lot 4 theming fix) — the track owns the visual surface,
+	// so `border`/`rounded`/`elevation` (declared on `ISwitchTrackProps`,
+	// forwarded from `OrigamSwitch` via `filterProps`) are consumed here,
+	// not on the outer `OrigamSwitch`/`OrigamSelectionControl` wrapper.
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {elevationClasses, elevationStyles} = useElevation(props)
+
 	const slotProps = computed(() => ({
 		model: props.modelValue,
 		isValid: props.isValid
@@ -134,6 +145,9 @@
 	const switchTrackStyles = computed(() => {
 		return [
 			backgroundColorStyles.value,
+			borderStyles.value,
+			roundedStyles.value,
+			elevationStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -147,6 +161,9 @@
 				'origam-switch-track--error': props.error,
 				'origam-switch-track--inset': props.inset
 			},
+			borderClasses.value,
+			roundedClasses.value,
+			elevationClasses.value,
 			props.class
 		]
 	})

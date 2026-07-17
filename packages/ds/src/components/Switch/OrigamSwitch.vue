@@ -39,6 +39,7 @@
 			>
 				<template #default="{bgColor: scBgColor}">
 					<origam-switch-track
+							ref="origamSwitchTrackRef"
 							:bg-color="scBgColor"
 							:disabled="isDisabled"
 							:error="isValid === false"
@@ -46,6 +47,7 @@
 							:is-valid="isValid"
 							:model-value="model"
 							:readonly="isReadonly"
+							v-bind="{ ...trackProps }"
 							@click="handleTrackClick"
 					>
 						<template
@@ -144,6 +146,7 @@
 	} from '../../components'
 
 	import {
+		useDefaults,
 		useFocus,
 		useHover,
 		useLoader,
@@ -159,7 +162,7 @@
 
 	import type { ISwitchEmits } from '../../interfaces/Switch/switch.interface'
 
-	import type { TOrigamInput, TOrigamSelectionControl } from "../../types"
+	import type { TOrigamInput, TOrigamSelectionControl, TOrigamSwitchTrack } from "../../types"
 
 	import { filterInputAttrs, getUid } from '../../utils'
 
@@ -170,10 +173,19 @@
 	 * Props, emits and composables.
 	 ********************************************************/
 
-	const props = withDefaults(defineProps<ISwitchProps>(), {
+	const _props = withDefaults(defineProps<ISwitchProps>(), {
 		density: DENSITY.DEFAULT,
 		centerAffix: true
 	})
+
+	// `useDefaults` resolves each prop against the closest
+	// `provideDefaults({ 'origam-switch': … })` (e.g. a marketing theme's
+	// `components` block). Without this hook a theme's `border`/`rounded`/
+	// `elevation` config for Switch is silently dropped — `OrigamSwitchTrack`
+	// already consumes these props correctly once they arrive (see its own
+	// `useBorder`/`useRounded`/`useElevation` wiring), this was the missing
+	// link one level up. Mirrors `OrigamBtn.vue`'s exact pattern.
+	const props = useDefaults(_props)
 
 	defineEmits<ISwitchEmits>()
 
@@ -184,6 +196,7 @@
 
 	const origamSelectionControlRef = ref<TOrigamSelectionControl>()
 	const origamInputRef = ref<TOrigamInput>()
+	const origamSwitchTrackRef = ref<TOrigamSwitchTrack>()
 
 	/*********************************************************
 	 * Value
@@ -254,6 +267,18 @@
 	})
 	const controlProps = computed(() => {
 		return origamSelectionControlRef.value?.filterProps(props, ['modelValue', 'type', 'disabled', 'readonly', 'class', 'style', 'id'])
+	})
+
+	// Props-first (lot 4 theming fix) — `border`/`rounded`/`elevation` are
+	// declared on `ISwitchProps` (Commons interfaces) AND now on
+	// `ISwitchTrackProps`; `filterProps` auto-forwards only the prop names
+	// the track actually declares, so this stays in sync automatically as
+	// the track's surface grows. Everything already bound explicitly above
+	// (`bgColor`, `disabled`, `readonly`, `error`, `inset`, `isValid`,
+	// `modelValue`) is excluded here so this generic forward can never
+	// clobber those computed (`isDisabled`/`isReadonly`) values.
+	const trackProps = computed(() => {
+		return origamSwitchTrackRef.value?.filterProps(props, ['modelValue', 'disabled', 'readonly', 'error', 'inset', 'isValid', 'bgColor', 'color', 'class', 'style', 'id'])
 	})
 
 	/*********************************************************
