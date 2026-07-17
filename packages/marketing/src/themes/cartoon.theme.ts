@@ -116,8 +116,8 @@ export const cartoonLightTheme: IOrigamTheme = {
     // de bordure #171717 (non exprimables en props) restent dans `vars`.
     components: {
         'origam-btn': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
-        'origam-btn-group': { variant: 'outlined', rounded: 'lg', border: true },
-        'origam-btn-toggle': { variant: 'outlined', rounded: 'lg', border: true },
+        'origam-btn-group': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
+        'origam-btn-toggle': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
         'origam-card': { rounded: 'lg', border: true, flat: false, elevation: 4 },
         'origam-chip': { variant: 'outlined', rounded: 'lg', border: true, pill: false },
         'origam-alert': { rounded: 'lg', border: true, elevation: 2 },

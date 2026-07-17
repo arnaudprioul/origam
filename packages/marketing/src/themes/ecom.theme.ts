@@ -115,8 +115,8 @@ export const ecomLightTheme: IOrigamTheme = {
     // arrondi modéré (sm/md), boutons flat d'action, cartes propres avec ombre légère.
     components: {
         'origam-btn': { variant: 'flat', rounded: 'sm', elevation: 1 },
-        'origam-btn-group': { variant: 'flat', rounded: 'sm' },
-        'origam-btn-toggle': { variant: 'flat', rounded: 'sm' },
+        'origam-btn-group': { variant: 'flat', rounded: 'sm', elevation: 1 },
+        'origam-btn-toggle': { variant: 'flat', rounded: 'sm', elevation: 1 },
         'origam-card': { rounded: 'md', border: true, flat: false, elevation: 1 },
         'origam-chip': { variant: 'outlined', rounded: 'sm', border: true, pill: false },
         'origam-alert': { rounded: 'sm', border: true },

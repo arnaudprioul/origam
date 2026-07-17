@@ -115,8 +115,8 @@ export const editorialLightTheme: IOrigamTheme = {
     // interactifs. Sobre comme un magazine : structure visible, sans ornementation.
     components: {
         'origam-btn': { variant: 'outlined', rounded: 'none', border: true, elevation: 0 },
-        'origam-btn-group': { variant: 'outlined', rounded: 'none', border: true },
-        'origam-btn-toggle': { variant: 'outlined', rounded: 'none', border: true },
+        'origam-btn-group': { variant: 'outlined', rounded: 'none', border: true, elevation: 0 },
+        'origam-btn-toggle': { variant: 'outlined', rounded: 'none', border: true, elevation: 0 },
         'origam-card': { rounded: 'none', border: true, flat: true },
         'origam-chip': { variant: 'outlined', rounded: 'none', border: true, pill: false },
         'origam-alert': { rounded: 'none', border: true, elevation: 0 },

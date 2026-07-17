@@ -233,16 +233,36 @@
 			}
 		}
 
-		// The GROUP owns the rounding (outer corners, via its own
-		// border-radius + overflow:hidden) and the elevation (a single
-		// shadow around the whole group). Child buttons are forced flat
-		// and shadowless so a per-child `rounded` / `elevation` (own prop
-		// or active/hover state) can't break the unified segmented look —
-		// e.g. rounded pills with the group surface bleeding through the
-		// gaps. `!important` is intentional: the group's design wins.
+		// The GROUP owns the rounding and the elevation (a single shadow
+		// around the whole group, one border-radius for the outer shape).
+		// Child buttons are forced flat and shadowless so a per-child
+		// `rounded` / `elevation` (own prop or active/hover state) can't
+		// break the unified segmented look — e.g. rounded pills with the
+		// group surface bleeding through the gaps. `!important` is
+		// intentional: the group's design wins.
+		//
+		// `overflow: hidden` alone clips the group to its own rounded
+		// shape but does NOT round the first/last child's own corners —
+		// a fully square button sitting inside a rounded clip leaves a
+		// visible gap at each of the 4 corners (the group's background
+		// showing through a "square peg in a round hole"). The first and
+		// last child must adopt the SAME radius on their outer corners so
+		// the segmented control reads as one continuous pill, matching
+		// the group's own `--origam-btn-group---border-radius` (which
+		// already resolves from the theme's `origam-btn` radius).
 		:deep(.origam-btn) {
 			border-radius: 0 !important;
 			box-shadow: none !important;
+
+			&:first-child {
+				border-start-start-radius: var(--origam-btn-group---border-radius, 4px) !important;
+				border-end-start-radius: var(--origam-btn-group---border-radius, 4px) !important;
+			}
+
+			&:last-child {
+				border-start-end-radius: var(--origam-btn-group---border-radius, 4px) !important;
+				border-end-end-radius: var(--origam-btn-group---border-radius, 4px) !important;
+			}
 		}
 
 		&--divided {
