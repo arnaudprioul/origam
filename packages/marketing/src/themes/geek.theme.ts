@@ -135,6 +135,10 @@ export const geekLightTheme: IOrigamTheme = {
         'origam-table': { rounded: 'sm', border: true },
         'origam-avatar': { rounded: 'sm', border: true },
         'origam-checkbox': { rounded: 'xs' },
+        // Switch harmony (lot 4) — mirrors `origam-text-field`'s rounded/
+        // border so the track reads as the same visual family as the
+        // theme's fields (see cartoon.theme.ts for the full rationale).
+        'origam-switch': { rounded: 'sm', border: true },
         'origam-snackbar': { rounded: 'sm', border: true, elevation: 3 }
     },
     cssVars: {

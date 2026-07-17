@@ -135,6 +135,16 @@ export const cartoonLightTheme: IOrigamTheme = {
         'origam-table': { rounded: 'lg', border: true },
         'origam-avatar': { rounded: 'lg' },
         'origam-checkbox': { rounded: 'md' },
+        // Switch harmony (lot 4) — mirrors `origam-text-field`'s rounded/
+        // border/elevation so the track reads as the same visual family as
+        // the theme's form fields, not a DS-default pill floating outside
+        // the theme. Needs `OrigamSwitch.vue` to consume `useDefaults()`
+        // for this to actually reach the component (see the DS branch's
+        // fix). `origam-checkbox`/`origam-radio` stay untouched — the
+        // glyph-based shape they render can't honour these props without a
+        // rendering-mechanism change (issue #241), AND they share the same
+        // missing-`useDefaults()` gap as 11 other components (issue #242).
+        'origam-switch': { rounded: 'lg', border: true, elevation: 2 },
         'origam-snackbar': { rounded: 'lg', border: true, elevation: 4 }
     },
     // Overrides bruts non exprimables en props (couleur + épaisseur de bordure,

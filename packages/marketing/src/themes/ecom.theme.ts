@@ -134,6 +134,10 @@ export const ecomLightTheme: IOrigamTheme = {
         'origam-table': { rounded: 'md', border: true },
         'origam-avatar': { rounded: 'sm' },
         'origam-checkbox': { rounded: 'sm' },
+        // Switch harmony (lot 4) — mirrors `origam-text-field`'s rounded/
+        // border so the track reads as the same visual family as the
+        // theme's fields (see cartoon.theme.ts for the full rationale).
+        'origam-switch': { rounded: 'sm', border: true },
         'origam-snackbar': { rounded: 'sm', border: true, elevation: 2 }
     },
     cssVars: {
