@@ -35,7 +35,8 @@
 		useDensity,
 		useProps,
 		useStateEffect,
-		useStyle
+		useStyle,
+		useVariant
 	} from '../../composables'
 
 	import { DENSITY } from '../../enums'
@@ -111,6 +112,20 @@
 	 ********************************************************/
 
 	const {densityClasses} = useDensity(props)
+
+	// The group's OWN surface must read as "the theme's btn, uncut" — a
+	// themed `origam-btn: { variant: 'tonal' }` (e.g. glass) should paint
+	// the SAME translucent surface on the group that a standalone Btn
+	// would get, not fall back to a plain/transparent default that then
+	// gets patched over by each child's own background (which is exactly
+	// what produced the "flat white toggle" bug: children individually
+	// painting their own tonal bg, unevenly, instead of one shared
+	// surface). `variantClasses` below reuses the SAME CSS custom
+	// properties `OrigamBtn` itself reads (they're theme-global tokens,
+	// not scoped to the Btn instance) via matching `--variant-*` SCSS
+	// rules further down.
+	const {variantClasses} = useVariant(props)
+
 	/*********************************************************
 	 * Color
 	 ********************************************************/
@@ -146,6 +161,7 @@
 			roundedClasses.value,
 			marginClasses.value,
 			paddingClasses.value,
+			variantClasses.value,
 			props.class
 		]
 	})
@@ -235,25 +251,51 @@
 			--origam-btn-group---density: -8px;
 		}
 
-		:deep(.origam-btn) {
-			border-color: inherit;
+		// Mirrors `OrigamBtn`'s own variant rules for the ONE cases that
+		// actually override the base background token (`tonal`/
+		// `outlined`) — `flat`/`elevated`/unset all resolve through the
+		// base `--origam-btn-group---background-color` fallback chain
+		// declared in the `:root` block below, same as Btn's own default.
+		&--variant-tonal {
+			background-color: var(
+				--origam-btn---background-color-tonal,
+				var(--origam-color__surface---overlay)
+			) !important;
+		}
 
-			&:not(:last-child) {
-				border-inline-end: none;
-			}
+		&--variant-outlined {
+			background-color: transparent !important;
+		}
 
-			&:not(:first-child) {
-				border-inline-start: none;
+		&--variant-text,
+		&--variant-plain {
+			background-color: transparent !important;
+			box-shadow: none;
+		}
+
+		&--variant-ghost {
+			background-color: var(
+				--origam-btn---background-color-ghost,
+				color-mix(in srgb, currentColor 12%, transparent)
+			) !important;
+
+			@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
+				backdrop-filter: var(--origam-btn---backdrop-filter-ghost, blur(8px));
+				-webkit-backdrop-filter: var(--origam-btn---backdrop-filter-ghost, blur(8px));
 			}
 		}
 
-		// The GROUP owns the rounding and the elevation (a single shadow
-		// around the whole group, one border-radius for the outer shape).
-		// Child buttons are forced flat and shadowless so a per-child
-		// `rounded` / `elevation` (own prop or active/hover state) can't
-		// break the unified segmented look — e.g. rounded pills with the
-		// group surface bleeding through the gaps. `!important` is
-		// intentional: the group's design wins.
+		// A btnGroup/btnToggle reads as ONE button with internal
+		// separators — not N bordered buttons glued together. The GROUP
+		// owns the ONE visible border, the ONE outer radius and the ONE
+		// elevation; every child button is rendered "naked" (zero border
+		// of its own, zero radius, zero shadow) regardless of what the
+		// theme's OWN `origam-btn` config would normally paint on a
+		// standalone button — a themed `origam-btn: { border: true }`
+		// would otherwise stack a second border directly on top of the
+		// group's, reading as a visibly doubled/thicker line. `!important`
+		// is intentional: the group's design wins over the child's own
+		// resolved theme props.
 		//
 		// `overflow: hidden` alone clips the group to its own rounded
 		// shape but does NOT round the first/last child's own corners —
@@ -265,8 +307,27 @@
 		// the group's own `--origam-btn-group---border-radius` (which
 		// already resolves from the theme's `origam-btn` radius).
 		:deep(.origam-btn) {
+			border-width: 0 !important;
+			border-style: none !important;
 			border-radius: 0 !important;
 			box-shadow: none !important;
+
+			// Resting (non-selected) segments stay fully naked — no
+			// background of their own — so the group's ONE surface
+			// (painted above via `variantClasses`) shows through evenly
+			// across the whole strip instead of each child individually
+			// re-painting its own themed variant background (that
+			// per-child repaint, at varying opacity/tint per button, is
+			// what produced the inconsistent/blank-looking group surface
+			// bug). The SELECTED segment inside an `OrigamBtnToggle`
+			// keeps its own active-state background — that fill is the
+			// documented, intentional "reads as a real filled button"
+			// affordance for the current selection (see `OrigamBtn`'s
+			// `&--variant-outlined &--active` / `&--variant-tonal
+			// &--active` rules) and is NOT the bug being fixed here.
+			&:not(.origam-btn--active) {
+				background-color: transparent !important;
+			}
 
 			&:first-child {
 				border-start-start-radius: var(--origam-btn-group---border-radius, 4px) !important;
@@ -279,12 +340,17 @@
 			}
 		}
 
+		// `divided` adds back a THIN, intentional separator between
+		// segments — NOT the child's own border reinstated (still zeroed
+		// on every other side by the block above). Colour matches the
+		// group's own resolved border color so it reads as part of the
+		// same single surface, not a second competing border.
 		&--divided {
 			:deep(.origam-btn) {
 				&:not(:last-child) {
-					border-inline-end-width: thin;
-					border-inline-end-style: solid;
-					border-inline-end-color: rgba(var(--v-border-color), var(--v-border-opacity));
+					border-inline-end-width: thin !important;
+					border-inline-end-style: solid !important;
+					border-inline-end-color: var(--origam-btn-group---border-color, currentColor) !important;
 				}
 			}
 		}
@@ -299,6 +365,13 @@
 		--origam-btn-group---border-width: var(--origam-btn---border-width, 0);
 		--origam-btn-group---border-style: var(--origam-btn---border-style, solid);
 		--origam-btn-group---border-color: var(--origam-btn---border-color, currentColor);
+		/* Base surface fallback for the `flat`/`elevated`/unset variants
+		 * (the ones that DON'T override background via their own
+		 * `--variant-*` rule above) — mirrors `OrigamBtn`'s own base
+		 * `background-color: var(--origam-btn---background-color, …)`
+		 * rule so the group's resting surface always matches the
+		 * theme's btn, never a hardcoded/transparent default. */
+		--origam-btn-group---background-color: var(--origam-btn---background-color, transparent);
 
 	}
 </style>

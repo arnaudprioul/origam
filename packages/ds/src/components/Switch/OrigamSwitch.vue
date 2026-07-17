@@ -99,6 +99,7 @@
 					/>
 					<div
 							:class="getSwitchThumbClasses(icon)"
+							:style="switchThumbStyles"
 					>
 						<origam-translate-scale>
 							<div
@@ -151,6 +152,7 @@
 		useHover,
 		useLoader,
 		useProps,
+		useRounded,
 		useStateEffect,
 		useStyle,
 		useVModel
@@ -327,6 +329,29 @@
 	const switchStyles = computed(() => {
 		return [
 			props.style
+		] as StyleValue
+	})
+
+	// The thumb follows the SAME `rounded` config as the track (lot 4
+	// fix) — a themed switch with a low-rounded track (e.g. geek's
+	// `rounded: 'sm'`) previously kept a perfect circle thumb regardless,
+	// reading as visually inconsistent ("track is square-ish, thumb is
+	// still a dot"). Reuses `useRounded` directly against `props` (the
+	// exact same source value forwarded to the track via `trackProps`),
+	// so track and thumb can never drift out of sync. Emits an inline
+	// `border-radius` declaration only when `rounded` is actually set —
+	// unset/default falls through to the existing CSS fallback
+	// (`var(--origam-switch__thumb---border-radius, 50%)`, a full
+	// circle), so this is additive and changes nothing for switches that
+	// don't configure `rounded`. Bound on the thumb's OWN `:style`, not
+	// the wrapper's — the documented Switch-thumb v2.0→v2.1 regression
+	// was about `[style*="color:"]` on `.origam-selection-control__wrapper`
+	// specifically, unaffected by an unrelated attribute on a different
+	// element.
+	const { roundedStyles: thumbRoundedStyles } = useRounded(props, 'origam-switch__thumb')
+	const switchThumbStyles = computed(() => {
+		return [
+			thumbRoundedStyles.value
 		] as StyleValue
 	})
 	const getSwitchThumbClasses = (icon: unknown) => {
