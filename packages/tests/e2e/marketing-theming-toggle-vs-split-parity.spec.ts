@@ -18,6 +18,16 @@
  * spec now also asserts the active segment is visually distinct from the
  * resting one.
  *
+ * Third criterion, added after a second follow-up rejection: a segment's
+ * fill must sit flush against the group's border on all four sides — zero
+ * gap, like a native segmented control. `align-items: center` (the group's
+ * previous cross-axis alignment) let each child keep its own shorter
+ * height and centre inside the group, leaving equal empty strips above and
+ * below every segment; the active segment's fill then read as a smaller
+ * box floating inside the pill instead of hugging it. Asserts the distance
+ * between the active segment's border-box and the group's content-box is
+ * 0px on every side.
+ *
  * Runs across the 7 REAL registered brand themes (glass, geek, cartoon,
  * editorial, material, ecom, apple) × light/dark = 14 combos.
  *
@@ -146,6 +156,40 @@ test.describe('Theme Builder — mode toggle chrome matches Split button', () =>
                     active.backgroundColor,
                     'active segment background must differ from the resting segment (visible selection)'
                 ).not.toBe(resting.backgroundColor)
+
+                // Gap == 0: the active segment's border-box must touch the
+                // group's content-box (its own border-box inset by its own
+                // border-width) on all four sides.
+                const gap = await page.evaluate(() => {
+                    const groupEl = document.querySelector('[data-cy="theming-mode-toggle"]') as HTMLElement
+                    const activeEl = document.querySelector('.origam-btn--active') as HTMLElement
+                    const groupRect = groupEl.getBoundingClientRect()
+                    const activeRect = activeEl.getBoundingClientRect()
+                    const bw = parseFloat(getComputedStyle(groupEl).borderWidth) || 0
+                    const contentBox = {
+                        left: groupRect.left + bw,
+                        top: groupRect.top + bw,
+                        right: groupRect.right - bw,
+                        bottom: groupRect.bottom - bw
+                    }
+                    const isFirst = activeEl === activeEl.parentElement!.firstElementChild
+                    const isLast = activeEl === activeEl.parentElement!.lastElementChild
+                    return {
+                        top: Math.round((activeRect.top - contentBox.top) * 100) / 100,
+                        bottom: Math.round((contentBox.bottom - activeRect.bottom) * 100) / 100,
+                        left: isFirst ? Math.round((activeRect.left - contentBox.left) * 100) / 100 : null,
+                        right: isLast ? Math.round((contentBox.right - activeRect.right) * 100) / 100 : null
+                    }
+                })
+
+                expect(gap.top, 'gap between active segment and group content-box (top)').toBe(0)
+                expect(gap.bottom, 'gap between active segment and group content-box (bottom)').toBe(0)
+                if (gap.left !== null) {
+                    expect(gap.left, 'gap between active segment and group content-box (left, first child)').toBe(0)
+                }
+                if (gap.right !== null) {
+                    expect(gap.right, 'gap between active segment and group content-box (right, last child)').toBe(0)
+                }
             })
         }
     }

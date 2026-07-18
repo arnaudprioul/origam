@@ -201,18 +201,43 @@
 	.origam-btn-group {
 		display: inline-flex;
 		flex-wrap: nowrap;
-		align-items: center;
+		// `stretch` (not `center`) is necessary but NOT sufficient on its
+		// own: a child button's OWN base CSS sets an EXPLICIT `height`
+		// (density/size driven, `calc(var(--origam-btn---height, 36px) +
+		// …)`) rather than `auto` — and per the flexbox spec, `align-items:
+		// stretch` only affects children whose cross-axis size is `auto`.
+		// It's a documented no-op against an explicit height. Kept anyway
+		// as the semantically-correct default (matches native segmented
+		// controls); the `height: 100% !important` override two rules down
+		// on `:deep(.origam-btn)` is what actually forces the match.
+		align-items: stretch;
 		overflow: hidden;
 		vertical-align: middle;
 
 		max-width: 100%;
 		min-width: 0;
+		// `height:`, not just `min-height:` — a CHILD's `height: 100%`
+		// override (below) can only resolve against a DEFINITE parent
+		// height; percentages against an `auto`-sized ancestor compute to
+		// `auto` themselves (CSS 2.1 §10.5), silently no-op-ing the child
+		// override. `min-height` alone (the previous rule) never gave the
+		// box a definite height, which is why children stayed at their own
+		// shorter default instead of filling the group.
+		height: calc(var(--origam-btn-group---height, 36px) + var(--origam-btn-group---density, 0));
 		min-height: calc(var(--origam-btn-group---height, 36px) + var(--origam-btn-group---density, 0));
 
 		border-width: var(--origam-btn-group---border-width);
 		border-style: var(--origam-btn-group---border-style);
 		border-color: var(--origam-btn-group---border-color);
 		border-radius: var(--origam-btn-group---border-radius, 4px);
+		// The radius the first/last child's own fill must curve to so it
+		// sits flush against the INSIDE of the border ring — the outer
+		// radius shrunk by the border's own width. Declared here (not in
+		// the :root fallback block) so it re-evaluates whenever a modifier
+		// class (`--rounded-*`, `--border`) reassigns either input; a
+		// `calc()` referencing custom properties stays lazy/reactive to
+		// the cascade, it isn't a one-time snapshot.
+		--origam-btn-group---inner-border-radius: calc(var(--origam-btn-group---border-radius, 4px) - var(--origam-btn-group---border-width, 0px));
 
 		background-color: var(--origam-btn-group---background-color);
 		color: var(--origam-btn-group---color);
@@ -295,7 +320,18 @@
 
 		&--variant-outlined {
 			background-color: transparent !important;
-			border-width: var(--origam-btn---border-width-outlined, var(--origam-border__width---thin));
+			// Mirror the literal border-width into the SAME custom property
+			// `--origam-btn-group---inner-border-radius` calc()s against
+			// (see the base rule above) — that calc reads the CUSTOM
+			// PROPERTY, which this rule would otherwise never touch (it
+			// only ever set the literal `border-width` property directly),
+			// leaving the calc's border-width input silently at its
+			// pre-variant fallback of 0 regardless of the REAL rendered
+			// border. `calc(20px - 0px)` still LOOKS plausible, so this
+			// class of bug doesn't throw or visibly break — it just quietly
+			// gives the child's fill the wrong inset curve.
+			--origam-btn-group---border-width: var(--origam-btn---border-width-outlined, var(--origam-border__width---thin));
+			border-width: var(--origam-btn-group---border-width);
 			border-style: solid;
 			border-color: var(--origam-btn---border-color, currentColor);
 			box-shadow: none;
@@ -306,7 +342,9 @@
 				--origam-btn---background-color-ghost,
 				color-mix(in srgb, currentColor 12%, transparent)
 			) !important;
-			border-width: var(--origam-btn---border-width-ghost, var(--origam-border__width---thin));
+			// See the matching comment in `&--variant-outlined` above.
+			--origam-btn-group---border-width: var(--origam-btn---border-width-ghost, var(--origam-border__width---thin));
+			border-width: var(--origam-btn-group---border-width);
 			border-style: solid;
 			border-color: var(
 				--origam-btn---border-color-ghost,
@@ -342,15 +380,32 @@
 		// a fully square button sitting inside a rounded clip leaves a
 		// visible gap at each of the 4 corners (the group's background
 		// showing through a "square peg in a round hole"). The first and
-		// last child must adopt the SAME radius on their outer corners so
-		// the segmented control reads as one continuous pill, matching
-		// the group's own `--origam-btn-group---border-radius` (which
-		// already resolves from the theme's `origam-btn` radius).
+		// last child must adopt the group's INNER radius — the outer
+		// radius minus the border's own width, i.e. the curve of the
+		// surface the border ring encloses, not the outer edge of the
+		// border itself. Using the outer radius here (as a previous pass
+		// did) is off by exactly `border-width`: on a thick border
+		// (cartoon's 3px) the active segment's fill corner curved too
+		// early, leaving a sliver of the group's own background visible
+		// between the fill and the inside of the border ring.
 		:deep(.origam-btn) {
 			border-width: 0 !important;
 			border-style: none !important;
 			border-radius: 0 !important;
 			box-shadow: none !important;
+			// A child button sets its OWN, FIXED `height` (density/size
+			// driven — `calc(var(--origam-btn---height, 36px) + …)`), which
+			// is a real, non-`auto` value. `align-items: stretch` on the
+			// group ONLY affects children whose cross-axis size computes to
+			// `auto` — it is a documented no-op against an explicit height,
+			// so it alone can never close a group-vs-child height mismatch
+			// (e.g. the toggle's `size="small"` children defaulting to a
+			// shorter height than the group's own). Forcing 100% here is
+			// what actually makes every segment's fill hug the group's
+			// content-box on all four sides, matching a native segmented
+			// control — same "group wins" rationale as the border/radius
+			// resets above.
+			height: 100% !important;
 
 			// Resting (non-selected) segments stay fully naked — no
 			// background of their own — so the group's ONE surface
@@ -370,13 +425,13 @@
 			}
 
 			&:first-child {
-				border-start-start-radius: var(--origam-btn-group---border-radius, 4px) !important;
-				border-end-start-radius: var(--origam-btn-group---border-radius, 4px) !important;
+				border-start-start-radius: var(--origam-btn-group---inner-border-radius, 4px) !important;
+				border-end-start-radius: var(--origam-btn-group---inner-border-radius, 4px) !important;
 			}
 
 			&:last-child {
-				border-start-end-radius: var(--origam-btn-group---border-radius, 4px) !important;
-				border-end-end-radius: var(--origam-btn-group---border-radius, 4px) !important;
+				border-start-end-radius: var(--origam-btn-group---inner-border-radius, 4px) !important;
+				border-end-end-radius: var(--origam-btn-group---inner-border-radius, 4px) !important;
 			}
 		}
 
