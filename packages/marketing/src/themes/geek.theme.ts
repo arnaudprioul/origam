@@ -116,8 +116,8 @@ export const geekLightTheme: IOrigamTheme = {
     // restent dans `vars`.
     components: {
         'origam-btn': { variant: 'outlined', rounded: 'sm', border: true, elevation: 2 },
-        'origam-btn-group': { variant: 'outlined', rounded: 'sm', border: true },
-        'origam-btn-toggle': { variant: 'outlined', rounded: 'sm', border: true },
+        'origam-btn-group': { variant: 'outlined', rounded: 'sm', border: true, elevation: 2 },
+        'origam-btn-toggle': { variant: 'outlined', rounded: 'sm', border: true, elevation: 2 },
         'origam-card': { rounded: 'sm', border: true, flat: false, elevation: 2 },
         'origam-chip': { variant: 'outlined', rounded: 'sm', border: true, pill: false },
         'origam-alert': { rounded: 'sm', border: true, elevation: 1 },

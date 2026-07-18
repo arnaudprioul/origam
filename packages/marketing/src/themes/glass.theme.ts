@@ -115,8 +115,8 @@ export const glassLightTheme: IOrigamTheme = {
     // translucides (non exprimables en props) restent dans `vars`.
     components: {
         'origam-btn': { variant: 'tonal', rounded: 'lg', pill: true, elevation: 2 },
-        'origam-btn-group': { variant: 'tonal', rounded: 'lg' },
-        'origam-btn-toggle': { variant: 'tonal', rounded: 'lg' },
+        'origam-btn-group': { variant: 'tonal', rounded: 'lg', elevation: 2 },
+        'origam-btn-toggle': { variant: 'tonal', rounded: 'lg', elevation: 2 },
         'origam-card': { rounded: 'lg', border: true, flat: false, elevation: 3 },
         'origam-chip': { variant: 'tonal', rounded: 'lg', border: true, pill: true },
         'origam-alert': { rounded: 'lg', border: true, elevation: 2 },

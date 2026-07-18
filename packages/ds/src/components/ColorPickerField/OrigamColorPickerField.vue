@@ -412,5 +412,21 @@
 			font-size: 0.875em;
 			letter-spacing: 0.03em;
 		}
+
+		// `.origam-field__input` is `display: flex; flex-wrap: wrap` by
+		// default (`OrigamField`'s base rule, meant for multi-chip inputs).
+		// This field renders BOTH the hex `colorSelection` span AND the
+		// underlying native `<input>` in that same row — in a narrow
+		// container (e.g. a dense side panel) the two don't fit on one
+		// line and wrap onto two, DOUBLING the field's height versus a
+		// plain text-field of the same density (confirmed: 55px vs 26px
+		// at compact density, identical width). The native input's own
+		// text is not meant to be visible here (the formatted
+		// `colorSelection` span is the real display value) — forcing
+		// `nowrap` lets the invisible native input shrink instead of
+		// pushing a wrap, with zero visual loss.
+		:deep(.origam-field__input) {
+			flex-wrap: nowrap;
+		}
 	}
 </style>

@@ -73,6 +73,7 @@ const modeLabel = (mode: TEditMode): string =>
                 :model-value="activeMode"
                 mandatory
                 divided
+                variant="outlined"
                 color="primary"
                 size="small"
                 class="tb-preview__mode-toggle"
