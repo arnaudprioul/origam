@@ -291,6 +291,7 @@
 	} from '../../components'
 
 	import {
+	useDefaults,
 	useFilter,
 	useItems,
 	useLocale,
@@ -335,7 +336,7 @@
 	 * @description
 	 * Props, emits and filterProps for the Select component.
 	 ********************************************************/
-	const props = withDefaults(defineProps<ISelectProps>(), {
+	const _props = withDefaults(defineProps<ISelectProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,
 		centerAffix: true,
 		direction: DIRECTION.HORIZONTAL,
@@ -360,6 +361,14 @@
 		openText: 'origam.open',
 		noDataText: 'origam.noDataText'
 	})
+
+	// `useDefaults` resolves each prop against theme.components['origam-select']
+	// (OrigamBtn pattern). Pre-fix, Select's own `rounded: true` / `border: true`
+	// legacy-boolean defaults always won — a theme's `rounded: 'lg'` never
+	// reached the text-field surface it forwards to (`textFieldProps` below),
+	// so a Select stayed on the boxed rounded-md fallback while a sibling
+	// text-field correctly resolved the theme's radius.
+	const props = useDefaults(_props)
 
 	defineEmits<ISelectEmits>()
 
