@@ -251,20 +251,18 @@
 			--origam-btn-group---density: -8px;
 		}
 
-		// Mirrors `OrigamBtn`'s own variant rules for the ONE cases that
-		// actually override the base background token (`tonal`/
-		// `outlined`) — `flat`/`elevated`/unset all resolve through the
-		// base `--origam-btn-group---background-color` fallback chain
-		// declared in the `:root` block below, same as Btn's own default.
-		&--variant-tonal {
-			background-color: var(
-				--origam-btn---background-color-tonal,
-				var(--origam-color__surface---overlay)
-			) !important;
-		}
-
-		&--variant-outlined {
-			background-color: transparent !important;
+		// Full parity with `OrigamBtn`'s own variant rules — same CSS
+		// custom properties, same literal values, one-for-one. A themed
+		// `origam-btn: { variant: 'outlined' }` (cartoon/geek/editorial)
+		// must produce the SAME border-width/border-color/background/
+		// box-shadow on the group as it does on a standalone Btn; the
+		// group is not allowed to fall back to a subset. Earlier passes
+		// only ported the `background-color` half of each rule (border/
+		// shadow were silently dropped), which is exactly what made the
+		// toggle read as "thin border, no shadow" next to a themed Btn's
+		// thick border + hard shadow under cartoon.
+		&--variant-flat {
+			box-shadow: none;
 		}
 
 		&--variant-text,
@@ -273,11 +271,43 @@
 			box-shadow: none;
 		}
 
+		&--variant-elevated {
+			box-shadow: var(--origam-btn---box-shadow-elevated, var(--origam-shadow---md));
+		}
+
+		&--variant-tonal {
+			background-color: var(
+				--origam-btn---background-color-tonal,
+				var(--origam-color__surface---overlay)
+			) !important;
+			box-shadow: none;
+		}
+
+		&--variant-outlined {
+			background-color: transparent !important;
+			border-width: var(--origam-btn---border-width-outlined, var(--origam-border__width---thin));
+			border-style: solid;
+			border-color: var(--origam-btn---border-color, currentColor);
+			box-shadow: none;
+		}
+
 		&--variant-ghost {
 			background-color: var(
 				--origam-btn---background-color-ghost,
 				color-mix(in srgb, currentColor 12%, transparent)
 			) !important;
+			border-width: var(--origam-btn---border-width-ghost, var(--origam-border__width---thin));
+			border-style: solid;
+			border-color: var(
+				--origam-btn---border-color-ghost,
+				color-mix(in srgb, currentColor 24%, transparent)
+			);
+			box-shadow: var(
+				--origam-btn---box-shadow-ghost,
+				0 0 0 1px color-mix(in srgb, currentColor 18%, transparent),
+				0 4px 18px 0 color-mix(in srgb, currentColor 28%, transparent),
+				0 1px 0 0 color-mix(in srgb, white 35%, transparent) inset
+			);
 
 			@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
 				backdrop-filter: var(--origam-btn---backdrop-filter-ghost, blur(8px));
@@ -372,6 +402,10 @@
 		 * rule so the group's resting surface always matches the
 		 * theme's btn, never a hardcoded/transparent default. */
 		--origam-btn-group---background-color: var(--origam-btn---background-color, transparent);
+		/* Same fallback chain as background-color/border-* above — without
+		 * it the group's text/currentColor (used by outlined/ghost border
+		 * fallbacks) drifted from Btn's own default instead of matching. */
+		--origam-btn-group---color: var(--origam-btn---color, rgba(30, 30, 30, 0.87));
 
 	}
 </style>

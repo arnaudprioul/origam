@@ -73,7 +73,7 @@ const modeLabel = (mode: TEditMode): string =>
                 :model-value="activeMode"
                 mandatory
                 divided
-                color="primary"
+                variant="outlined"
                 size="small"
                 class="tb-preview__mode-toggle"
                 :aria-label="t('theming.mode.label', 'Preview mode')"
