@@ -130,6 +130,10 @@ export const appleLightTheme: IOrigamTheme = {
         'origam-table': { rounded: 'md', border: true },
         'origam-avatar': { rounded: 'full' },
         'origam-checkbox': { rounded: 'sm' },
+        // Switch harmony (lot 4) — mirrors `origam-text-field`'s rounded so
+        // the track reads as the same visual family as the theme's fields
+        // (see cartoon.theme.ts for the full rationale comment).
+        'origam-switch': { rounded: 'md' },
         'origam-snackbar': { rounded: 'lg', elevation: 4 }
     },
     cssVars: {

@@ -135,6 +135,10 @@ export const materialLightTheme: IOrigamTheme = {
         'origam-table': { rounded: 'lg', border: false, elevation: 1 },
         'origam-avatar': { rounded: 'lg' },
         'origam-checkbox': { rounded: 'md' },
+        // Switch harmony (lot 4) — mirrors `origam-text-field`'s rounded so
+        // the track reads as the same visual family as the theme's fields
+        // (see cartoon.theme.ts for the full rationale comment).
+        'origam-switch': { rounded: 'lg' },
         'origam-snackbar': { rounded: 'lg', elevation: 3 }
     },
     cssVars: {

@@ -134,6 +134,10 @@ export const editorialLightTheme: IOrigamTheme = {
         'origam-table': { rounded: 'none', border: true },
         'origam-avatar': { rounded: 'none', border: true },
         'origam-checkbox': { rounded: 'none' },
+        // Switch harmony (lot 4) — mirrors `origam-text-field`'s rounded/
+        // border so the track reads as the same visual family as the
+        // theme's fields (see cartoon.theme.ts for the full rationale).
+        'origam-switch': { rounded: 'none', border: true },
         'origam-snackbar': { rounded: 'none', border: true, elevation: 0 }
     },
     cssVars: {

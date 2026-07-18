@@ -134,6 +134,10 @@ export const glassLightTheme: IOrigamTheme = {
         'origam-table': { rounded: 'lg', border: true },
         'origam-avatar': { rounded: 'lg', border: true },
         'origam-checkbox': { rounded: 'lg' },
+        // Switch harmony (lot 4) — mirrors `origam-text-field`'s rounded/
+        // border so the track reads as the same visual family as the
+        // theme's fields (see cartoon.theme.ts for the full rationale).
+        'origam-switch': { rounded: 'lg', border: true },
         'origam-snackbar': { rounded: 'lg', border: true, elevation: 3 }
     },
     // Overrides bruts glassmorphism non exprimables en props (bordures translucides,

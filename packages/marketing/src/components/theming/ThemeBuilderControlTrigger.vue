@@ -74,6 +74,29 @@ const open = defineModel<boolean>('open', { default: false })
     inline-size: 100%;
     font-size: 0.6875rem;
 
+    /*
+     * OrigamBtn's `__loader` grid (`prepend | content | append`, the
+     * DS default) centers that 3-column cluster as a unit via
+     * `justify-content: center` — the `content` track only sizes to
+     * its own `auto` content, it never absorbs the button's leftover
+     * inline space. Audited (per DS props-first rule): neither
+     * `OrigamBtn` nor its Commons interfaces expose a `justify` /
+     * `align` / `contentJustify` prop (`IJustifyProps`/`IAlignProps`
+     * are consumed only by grid layout components — Grids/col,
+     * Grids/row, DataTable/footer — never by Btn), so there is no
+     * props-first path here. This trigger never uses the
+     * `prepend`/`append` slots (the swatch + value both live in the
+     * default slot, i.e. a single `content` grid track with empty
+     * neighbours), so switching to `justify-content: normal` (let the
+     * `auto` track absorb the space) is safe for this component
+     * specifically — it does NOT reproduce the icon/text
+     * decoupling regression found and reverted at the DS level for
+     * generic block buttons that DO use a prepend/append icon.
+     */
+    :deep(.origam-btn__loader) {
+        justify-content: normal;
+    }
+
     :deep(.origam-btn__content) {
         flex: 1 1 auto;
         display: flex;

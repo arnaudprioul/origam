@@ -54,6 +54,8 @@ const onSelectCustom = (hex: unknown): void => {
 }
 
 const radioGroupName = computed(() => `${props.dataCy}-intent`)
+
+const selectedIntent = computed(() => state.value.mode === 'intent' ? state.value.intent : undefined)
 </script>
 
 <template>
@@ -75,27 +77,33 @@ const radioGroupName = computed(() => `${props.dataCy}-intent`)
                     role="radiogroup"
                     :aria-label="t('theming.control.color.intent_group', 'Colour intent')"
                 >
-                    <label
+                    <origam-radio-btn
                         v-for="opt in THEME_BUILDER_INTENT_OPTIONS"
                         :key="opt.value"
+                        :name="radioGroupName"
+                        :value="opt.value"
+                        :model-value="selectedIntent"
+                        density="compact"
                         class="tbc-color__option"
+                        :data-cy="`${dataCy}-intent-${opt.value}`"
+                        @update:model-value="onSelectIntent(opt.value)"
                     >
-                        <input
-                            type="radio"
-                            class="tbc-color__radio"
-                            :name="radioGroupName"
-                            :value="opt.value"
-                            :checked="state.mode === 'intent' && state.intent === opt.value"
-                            :data-cy="`${dataCy}-intent-${opt.value}`"
-                            @change="onSelectIntent(opt.value)"
-                        >
-                        <span
-                            class="tbc-color__swatch"
-                            :class="opt.value === 'ghost' ? 'tbc-color__swatch--ghost' : `origam--bg-${opt.value}`"
-                            aria-hidden="true"
-                        />
-                        <span class="tbc-color__option-label">{{ t(opt.labelKey, opt.labelFallback) }}</span>
-                    </label>
+                        <template #input="{ props: inputProps }">
+                            <input
+                                v-bind="inputProps"
+                                class="tbc-color__radio"
+                            >
+                            <span
+                                class="tbc-color__swatch"
+                                :class="opt.value === 'ghost' ? 'tbc-color__swatch--ghost' : `origam--bg-${opt.value}`"
+                                aria-hidden="true"
+                            />
+                        </template>
+
+                        <template #label>
+                            <span class="tbc-color__option-label">{{ t(opt.labelKey, opt.labelFallback) }}</span>
+                        </template>
+                    </origam-radio-btn>
                 </div>
             </fieldset>
 
@@ -195,6 +203,25 @@ const radioGroupName = computed(() => `${props.dataCy}-intent`)
         &:has(.tbc-color__radio:focus-visible) {
             outline: 2px solid var(--origam-color__action--primary---bg, #7c3aed);
             outline-offset: 1px;
+        }
+
+        /*
+         * `OrigamRadioBtn` reserves a fixed circular touch target
+         * (`.origam-selection-control__wrapper`/`__input`, ~28px at
+         * `density="compact"`) sized for its default radio-dot glyph.
+         * This grid renders a compact 24×24 colour swatch instead — let
+         * the wrapper/input shrink to the swatch's own footprint so the
+         * grid stays tight, matching the reference density used
+         * elsewhere in the panel.
+         */
+        :deep(.origam-selection-control__wrapper),
+        :deep(.origam-selection-control__input) {
+            inline-size: auto;
+            block-size: auto;
+        }
+
+        :deep(.origam-selection-control__label) {
+            margin-inline-start: 0;
         }
     }
 

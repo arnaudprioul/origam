@@ -85,6 +85,11 @@ const onColor = (prop: string, value: string): void => {
     emit('set-prop', props.entry.slug, prop, value)
 }
 
+/** `origam-color-picker-field` emits `unknown` (base Input v-model contract) — guard before forwarding. */
+const onColorField = (prop: string, value: unknown): void => {
+    if (typeof value === 'string') onColor(prop, value)
+}
+
 /** Generic per-prop setter used by the rich multi-prop controls (round 2). */
 const onProp = (prop: string, value: unknown): void => {
     emit('set-prop', props.entry.slug, prop, value)
@@ -119,6 +124,11 @@ const isRichControl = (ctrl: IThemeBuilderPropControl): boolean => RICH_CONTROL_
 
 const onToken = (cssVar: string, value: string): void => {
     emit('set-token', props.activeMode, cssVar, value)
+}
+
+/** `origam-color-picker-field` emits `unknown` (base Input v-model contract) — guard before forwarding. */
+const onTokenField = (cssVar: string, value: unknown): void => {
+    if (typeof value === 'string') onToken(cssVar, value)
 }
 
 const onResetComponent = (): void => {
@@ -362,25 +372,16 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
                                     @update:model-value="onNumber(ctrl.prop, $event)"
                                 />
 
-                                <span
+                                <origam-color-picker-field
                                     v-else-if="ctrl.kind === 'color'"
-                                    class="tb-row__color"
-                                >
-                                    <input
-                                        type="color"
-                                        class="tb-row__swatch"
-                                        :value="propValueStr(ctrl.prop)"
-                                        :aria-label="ctrl.label"
-                                        @input="onColor(ctrl.prop, ($event.target as HTMLInputElement).value)"
-                                    >
-                                    <input
-                                        type="text"
-                                        class="tb-row__color-hex"
-                                        :value="propValueStr(ctrl.prop)"
-                                        :aria-label="ctrl.label"
-                                        @input="onColor(ctrl.prop, ($event.target as HTMLInputElement).value)"
-                                    >
-                                </span>
+                                    :model-value="propValueStr(ctrl.prop)"
+                                    :label="ctrl.label"
+                                    variant="outlined"
+                                    density="compact"
+                                    hide-details
+                                    class="tb-row__input"
+                                    @update:model-value="onColorField(ctrl.prop, $event)"
+                                />
 
                                 <origam-text-field
                                     v-else
@@ -462,34 +463,27 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
                             >{{ tk.label }}</code>
 
                             <div class="tb-row__control">
-                                <label
+                                <origam-color-picker-field
                                     v-if="tk.kind === 'color'"
-                                    class="tb-row__color"
-                                >
-                                    <input
-                                        type="color"
-                                        class="tb-row__swatch"
-                                        :value="tokenValue(activeMode, tk.cssVar)"
-                                        :aria-label="tk.label"
-                                        @input="onToken(tk.cssVar, ($event.target as HTMLInputElement).value)"
-                                    >
-                                    <input
-                                        type="text"
-                                        class="tb-row__color-hex"
-                                        :value="tokenValue(activeMode, tk.cssVar)"
-                                        :aria-label="tk.label"
-                                        @input="onToken(tk.cssVar, ($event.target as HTMLInputElement).value)"
-                                    >
-                                </label>
+                                    :model-value="tokenValue(activeMode, tk.cssVar)"
+                                    :label="tk.label"
+                                    variant="outlined"
+                                    density="compact"
+                                    hide-details
+                                    class="tb-row__input"
+                                    @update:model-value="onTokenField(tk.cssVar, $event)"
+                                />
 
-                                <input
+                                <origam-text-field
                                     v-else
-                                    type="text"
-                                    class="tb-row__token-text"
-                                    :value="tokenValue(activeMode, tk.cssVar)"
-                                    :aria-label="tk.label"
-                                    @input="onToken(tk.cssVar, ($event.target as HTMLInputElement).value)"
-                                >
+                                    :model-value="tokenValue(activeMode, tk.cssVar)"
+                                    :label="tk.label"
+                                    variant="outlined"
+                                    density="compact"
+                                    hide-details
+                                    class="tb-row__input"
+                                    @update:model-value="onTokenField(tk.cssVar, $event)"
+                                />
                             </div>
                         </div>
                     </div>
