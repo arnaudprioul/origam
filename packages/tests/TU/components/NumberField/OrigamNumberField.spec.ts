@@ -256,3 +256,52 @@ describe('OrigamNumberField — precision display', () => {
         expect(input.element.value).toBe('3.14')
     })
 })
+
+// ---------------------------------------------------------------------------
+// useDefaults wiring (issue #242) — a theme's `components['origam-number-field']`
+// config must resolve on an un-passed prop and be forwarded to the internal
+// text-field, mirroring OrigamBtn/OrigamSelect.
+//
+// The stubs above mock `filterProps` as an unconditional `() => ({})` (they
+// only need `textFieldProps` to not crash for the class-composition/compact-
+// mode tests above) — that stub can't verify forwarding. Mount the REAL
+// component tree instead (same approach as OrigamSelect.spec.ts) so the
+// real `filterProps` -> Field chain runs, and read the rendered
+// `.origam-field` class. `textFieldProps` is gated by the
+// `origamTextFieldRef` template ref, populated one tick after first mount.
+// ---------------------------------------------------------------------------
+
+async function mountNumberFieldThemed(componentDefaults: Record<string, unknown>, props: Record<string, unknown> = {}) {
+    const theme = { name: 'brandx', mode: 'light' as const, components: { 'origam-number-field': componentDefaults }, vars: {} }
+    const origam = createOrigam({ themes: [theme] })
+    origam._defaultsRef.value = origam._activeDefaultsFor('brandx', 'light')
+    const wrapper = mount(OrigamNumberField, {
+        attachTo: document.body,
+        props,
+        global: { plugins: [origam] }
+    })
+    await nextTick()
+    await nextTick()
+    return wrapper
+}
+
+describe('OrigamNumberField — useDefaults (theme components wiring)', () => {
+    it('resolves rounded="lg" from theme.components[\'origam-number-field\'] on the forwarded field surface', async () => {
+        const wrapper = await mountNumberFieldThemed({ rounded: 'lg' })
+        const field = wrapper.find('.origam-field')
+        expect(field.classes()).toContain('origam--rounded-lg')
+    })
+
+    it('without a theme override, the field falls back to the component\'s own legacy rounded=true (rounded-md chrome)', async () => {
+        const wrapper = await mountNumberFieldThemed({})
+        const field = wrapper.find('.origam-field')
+        expect(field.classes()).toContain('origam--rounded-md')
+    })
+
+    it('an explicitly passed rounded prop overrides the theme default', async () => {
+        const wrapper = await mountNumberFieldThemed({ rounded: 'lg' }, { rounded: 'sm' })
+        const field = wrapper.find('.origam-field')
+        expect(field.classes()).toContain('origam--rounded-sm')
+        expect(field.classes()).not.toContain('origam--rounded-lg')
+    })
+})
