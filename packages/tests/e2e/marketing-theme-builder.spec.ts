@@ -418,3 +418,59 @@ test.describe('Theme Builder · modes Light/Dark + Split', () => {
         await expect(darkProvider).toHaveAttribute('data-mode', 'dark')
     })
 })
+
+// Régression #25 — sujet 2 : le catalogue du playground ne listait que les
+// composants DS "top-level" (98 doc_entry sans parent_slug), excluant 96
+// family members légitimement configurables en standalone (btn-group,
+// btn-toggle, progress-linear, progress-circular, radio-group, chip-group,
+// tabs, expansion-panels…). `THEME_BUILDER_PREVIEWABLE_SLUGS` référençait déjà
+// `progress-linear` — mort depuis le début car ce slug ne pouvait jamais
+// atteindre `entries`. Le fix (useThemeBuilderCatalog.ts) arrête de filtrer
+// sur `parentSlug` : chaque `doc_entry` de kind `component` devient une entrée
+// du playground, avec repli "preview unavailable" (déjà existant) pour les
+// sous-parties non curatées en previewable — configurable n'implique pas
+// nécessairement un rendu live.
+test.describe('Theme Builder · catalogue complet (#25)', () => {
+    test('le catalogue expose largement plus que les seuls composants top-level', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+
+        const toggles = page.locator('[data-cy^="theming-nav-cat-toggle-"]')
+        const toggleCount = await toggles.count()
+        for (let i = 0; i < toggleCount; i++) {
+            const t = toggles.nth(i)
+            if ((await t.getAttribute('aria-expanded')) !== 'true') await t.click()
+        }
+        await page.waitForTimeout(300)
+
+        const navCount = await page.locator('[data-cy^="theming-nav-item-"]').count()
+        // Avant #25 : 98 (top-level uniquement). Seuil large pour ne pas
+        // sur-coupler le test au nombre exact de doc_entry en DB (qui évolue).
+        expect(navCount, 'le catalogue doit couvrir les family members, pas seulement les top-level').toBeGreaterThan(150)
+    })
+
+    test('un family member curaté en previewable (progress-linear) rend une preview live', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+
+        await page.locator('[data-cy="theming-nav-search"] input').fill('ProgressLinear')
+        await page.waitForTimeout(300)
+        await page.locator('[data-cy="theming-nav-item-progress-linear"]').click()
+        await page.waitForTimeout(300)
+
+        await expect(page.locator('[data-cy="theming-live-progress-linear-light"]')).toBeVisible()
+    })
+
+    test('un family member non curaté (btn-group) reste sélectionnable et configurable sans crash', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+
+        await page.locator('[data-cy="theming-nav-search"] input').fill('BtnGroup')
+        await page.waitForTimeout(300)
+        await page.locator('[data-cy="theming-nav-item-btn-group"]').click()
+        await page.waitForTimeout(300)
+
+        await expect(page.locator('[data-cy="theming-preview-stage"]')).toBeVisible()
+        await expect(page.locator('[data-cy="theming-controls-panel"]')).toBeVisible()
+    })
+})

@@ -417,9 +417,36 @@ export function useThemeBuilderCatalog () {
         default: () => [] as IComponentThemeSurface[],
     })
 
+    /**
+     * EVERY documented DS component becomes a playground entry — top-level
+     * families (btn, card, …) AND their family members (btn-group, btn-toggle,
+     * progress-linear, progress-circular, …).
+     *
+     * Filtering to `!c.parentSlug` (pre-#25) silently dropped ~half the
+     * catalog (96 of 194 `doc_entry` rows): several family members are
+     * legitimate standalone DS components a theme author needs to configure
+     * independently — `origam-progress-linear`/`origam-progress-circular` are
+     * used directly in real markup (not only via the `<origam-progress>`
+     * dispatcher), same for `origam-btn-group`/`origam-btn-toggle`. The gap
+     * was already flagged as unintentional in this file's own history: the
+     * curated `THEME_BUILDER_PREVIEWABLE_SLUGS` list (theme-builder.const.ts)
+     * already carries `'progress-linear'`, and `THEME_BUILDER_TOKENS` seeds
+     * tokens for several other family slugs — both were dead code under the
+     * old filter since those slugs could never reach `entries`.
+     *
+     * Every `doc_entry` of kind `component` (in DB: 0 with a null/missing
+     * `category`, verified) carries its own `category`, so no extra grouping
+     * logic is needed here — the existing `nav` reducer below just gets more
+     * entries per bucket. A family member that isn't independently mountable
+     * still surfaces safely: `entry.previewable` (curated allowlist) stays
+     * `false` for anything not explicitly vetted, so `ThemeBuilderPreview`
+     * falls back to its existing "preview unavailable" message instead of
+     * mounting an unactivatable sub-part — the props/tokens stay editable
+     * and exportable either way, which is the actual requirement (#25):
+     * being configurable does not require a live render.
+     */
     const entries = computed<IThemeBuilderComponentEntry[]>(() => {
-        const topLevel = (data.value ?? []).filter(c => !c.parentSlug)
-        return topLevel.map(c => buildEntry(c))
+        return (data.value ?? []).map(c => buildEntry(c))
     })
 
     const nav = computed<IThemeBuilderNavCategory[]>(() => {
