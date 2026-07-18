@@ -148,6 +148,7 @@
 	import {
 		useActive,
 		useAdjacent,
+		useDefaults,
 		useDensity,
 		useDimension,
 		useHover,
@@ -176,7 +177,12 @@
 	 * @description
 	 * Props, emits and link resolution for the Card component.
 	 ********************************************************/
-	const props = withDefaults(defineProps<ICardProps>(), {ripple: true, density: DENSITY.DEFAULT, tag: 'div'})
+	const _props = withDefaults(defineProps<ICardProps>(), {ripple: true, density: DENSITY.DEFAULT, tag: 'div'})
+
+	// `useDefaults` resolves each prop against the closest theme
+	// `components['origam-card']` config (OrigamBtn pattern) — without this,
+	// theme entries like `rounded` / `border` / `flat` never took effect.
+	const props = useDefaults(_props)
 
 	defineEmits<ICardEmits>()
 
