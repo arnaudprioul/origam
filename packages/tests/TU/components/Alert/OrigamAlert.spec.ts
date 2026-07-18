@@ -324,3 +324,33 @@ describe('OrigamAlert — lineHeight prop on __title', () => {
         wrapper.unmount()
     })
 })
+
+// ---------------------------------------------------------------------------
+// useDefaults wiring (issue #242) — a theme's `components['origam-alert']`
+// config must resolve on an un-passed prop, mirroring OrigamBtn/OrigamSwitch.
+// ---------------------------------------------------------------------------
+
+describe('OrigamAlert — useDefaults (theme components wiring)', () => {
+    function mountAlertThemed(componentDefaults: Record<string, unknown>, props: Record<string, unknown> = {}) {
+        const theme = { name: 'brandx', mode: 'light' as const, components: { 'origam-alert': componentDefaults }, vars: {} }
+        const origam = createOrigam({ themes: [theme] })
+        origam._defaultsRef.value = origam._activeDefaultsFor('brandx', 'light')
+        return mount(OrigamAlert, { props: props as never, global: { plugins: [origam] } })
+    }
+
+    it('resolves rounded="lg" from theme.components[\'origam-alert\'] when not passed', () => {
+        const wrapper = mountAlertThemed({ rounded: 'lg' })
+        expect(wrapper.classes()).toContain('origam--rounded-lg')
+    })
+
+    it('an explicitly passed rounded prop overrides the theme default', () => {
+        const wrapper = mountAlertThemed({ rounded: 'lg' }, { rounded: 'sm' })
+        expect(wrapper.classes()).toContain('origam--rounded-sm')
+        expect(wrapper.classes()).not.toContain('origam--rounded-lg')
+    })
+
+    it('resolves border=true from theme.components[\'origam-alert\'] when not passed', () => {
+        const wrapper = mountAlertThemed({ border: true })
+        expect(wrapper.classes()).toContain('origam-alert--border')
+    })
+})

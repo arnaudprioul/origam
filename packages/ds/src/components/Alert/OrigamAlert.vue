@@ -124,6 +124,7 @@
 	import {
 		useActive,
 		useAdjacent,
+		useDefaults,
 		useDensity,
 		useDimension,
 		useHover,
@@ -149,7 +150,7 @@
 	 * @description
 	 * Props, emits and utilities for the Alert component.
 	 ********************************************************/
-	const props = withDefaults(defineProps<IAlertProps>(), {
+	const _props = withDefaults(defineProps<IAlertProps>(), {
 		tag: 'div',
 		density: DENSITY.DEFAULT,
 		closeIcon: MDI_ICONS.CLOSE,
@@ -157,6 +158,12 @@
 		modelValue: true,
 		hover: true
 	})
+
+	// `useDefaults` resolves each prop against the closest
+	// `<OrigamDefaultsProvider>` / theme `components['origam-alert']` config —
+	// see the pattern established in `OrigamBtn.vue`. Without this, the theme's
+	// `components: { 'origam-alert': { … } }` block was a silent no-op.
+	const props = useDefaults(_props)
 
 	const emits = defineEmits<IAlertEmits>()
 
