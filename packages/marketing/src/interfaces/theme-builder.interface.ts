@@ -56,12 +56,21 @@ export interface IThemeBuilderPreviewAdapter {
  *     Defaults are GLOBAL (mode-independent).
  *   - `cssVars` is split by mode: each sub-map holds the overridden CSS vars for
  *     that mode only. Maps to `IOrigamTheme.cssVars` per exported entry.
+ *   - `preset` is the key of the `THEME_BUILDER_PRESETS` entry currently
+ *     applied (`''` when the state holds no preset seed — either fresh, or
+ *     entirely hand-edited/imported). Single source of truth for the Preset
+ *     dropdown so it never shows a value inconsistent with `defaults`/
+ *     `cssVars` — the pre-#25 bug: the dropdown was a page-local ref that
+ *     never round-tripped through persistence, so a reload could show
+ *     "— none —" while a previously-seeded preset's overrides were still
+ *     live in `defaults`/`cssVars`.
  */
 export interface IThemeBuilderState {
     name: string
     label: string
     mode: TMode
     activeMode: TEditMode
+    preset: string
     defaults: Record<string, Record<string, unknown>>
     cssVars: Record<TEditMode, Record<string, string>>
 }

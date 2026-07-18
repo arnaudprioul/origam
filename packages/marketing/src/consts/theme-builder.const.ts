@@ -37,6 +37,21 @@ export const THEME_BUILDER_DEFAULT_MODE = 'light'
 export const THEME_BUILDER_STORAGE_KEY = 'origam_theme_builder_state'
 
 /**
+ * Persisted-state schema version, written alongside the state snapshot
+ * (`__v`). Bumped whenever a field is added whose ABSENCE would make an
+ * older payload ambiguous to replay safely.
+ *
+ * Bumped to 2 when `preset` was introduced (#25): a v1 payload has NO record
+ * of which preset (if any) produced its `defaults`/`cssVars`, so replaying
+ * it verbatim would silently resurrect a preset's overrides while the UI's
+ * preset selector shows "— none —" — the exact bug this version guard
+ * exists to prevent. `loadStorage` drops `defaults`/`cssVars` from any
+ * payload whose `__v` doesn't match (identity fields — name/label/mode —
+ * are harmless and still restored).
+ */
+export const THEME_BUILDER_STATE_VERSION = 2
+
+/**
  * Core set kept for backwards compatibility (tests / legacy references). The v2
  * builder lists EVERY component via the catalog; this curated list now only
  * marks the historically-wired components.

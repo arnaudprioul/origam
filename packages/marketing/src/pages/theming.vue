@@ -37,6 +37,7 @@
     downloadJson,
     importTheme,
     seedPreset,
+    clearPreset,
     loadStorage,
     startAutoPersist
   } = useThemeBuilder()
@@ -79,8 +80,6 @@
     }
   })
 
-  const selectedPreset = ref<string>('')
-
   const presetItems = computed(() => [
     { title: t('theming.preset.none', '— none —'), value: '' },
     ...presets.map(p => ({ title: t(p.labelKey, p.labelFallback), value: p.key }))
@@ -95,7 +94,11 @@
   const onResetComponent = (slug: string): void => resetComponent(slug)
 
   const onSeedPreset = (key: unknown): void => {
-    if (typeof key !== 'string' || !key) return
+    if (typeof key !== 'string') return
+    if (!key) {
+      clearPreset()
+      return
+    }
     seedPreset(key)
   }
 
@@ -190,7 +193,7 @@
       />
 
       <origam-select
-        v-model="selectedPreset"
+        v-model="state.preset"
         :label="t('theming.preset.label', 'Preset')"
         :items="presetItems"
         variant="outlined"

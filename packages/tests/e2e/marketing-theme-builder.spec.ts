@@ -151,6 +151,109 @@ test.describe('Theme Builder · persistance localStorage', () => {
         expect(Object.values(cssVars)).toContain('#abcdef')
     })
 
+    /** Style discriminant du bouton preview (mode light) — assez pour distinguer "défaut DS" de "preset Cartoon". */
+    async function readBtnStyle (page: Page): Promise<string> {
+        return page.locator('[data-cy="theming-live-btn-light"]').evaluate((el) => {
+            const cs = getComputedStyle(el)
+            return JSON.stringify({ borderWidth: cs.borderWidth, boxShadow: cs.boxShadow, borderRadius: cs.borderRadius })
+        })
+    }
+
+    /** Libellé actuellement affiché par le select Preset (pas l'input natif — la sélection est un span). */
+    async function readPresetLabel (page: Page): Promise<string> {
+        return page.locator('[data-cy="theming-preset"] .origam-select__selection-text').innerText()
+    }
+
+    async function selectPreset (page: Page, label: string): Promise<void> {
+        await page.locator('[data-cy="theming-preset"]').click()
+        await page.waitForTimeout(300)
+        await page.getByText(label, { exact: true }).click()
+        await page.waitForTimeout(400)
+    }
+
+    // Régression #25 — sujet 1 : au reload avec le sélecteur de preset à
+    // « none », la preview restait sur les valeurs du dernier preset choisi
+    // (ex. Cartoon) au lieu du thème par défaut. Root cause : le sélecteur de
+    // preset était un ref local jamais persisté/restauré, découplé du state
+    // (defaults/cssVars) qui, lui, survit au reload par design (continuité de
+    // brouillon). Choisir explicitement « — none — » ne faisait rien non plus
+    // (no-op) — même désync, sans même passer par un reload.
+    test('sélectionner « — none — » après un preset revient IMMÉDIATEMENT au défaut (#25)', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+        await page.evaluate(k => window.localStorage.removeItem(k), STORAGE_KEY)
+        await page.reload({ waitUntil: 'networkidle' })
+
+        const defaultStyle = await readBtnStyle(page)
+
+        await selectPreset(page, 'Cartoon')
+        expect(await readBtnStyle(page)).not.toBe(defaultStyle)
+
+        await selectPreset(page, '— none —')
+        expect(await readBtnStyle(page), 'sélectionner "none" doit effacer les overrides du preset').toBe(defaultStyle)
+    })
+
+    test('le preset choisi ET son rendu survivent au reload (continuité de brouillon)', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+        await page.evaluate(k => window.localStorage.removeItem(k), STORAGE_KEY)
+        await page.reload({ waitUntil: 'networkidle' })
+
+        await selectPreset(page, 'Cartoon')
+        const styleAfterSelect = await readBtnStyle(page)
+
+        await page.reload({ waitUntil: 'networkidle' })
+        await page.waitForTimeout(400)
+
+        expect(await readPresetLabel(page), 'le sélecteur doit refléter le vrai state persisté, pas retomber sur "none"').toBe('Cartoon')
+        expect(await readBtnStyle(page)).toBe(styleAfterSelect)
+    })
+
+    test('reload avec preset=none rend le thème par défaut, même après avoir eu un preset actif (#25)', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+        await page.evaluate(k => window.localStorage.removeItem(k), STORAGE_KEY)
+        await page.reload({ waitUntil: 'networkidle' })
+
+        const defaultStyle = await readBtnStyle(page)
+
+        await selectPreset(page, 'Cartoon')
+        await selectPreset(page, '— none —')
+
+        await page.reload({ waitUntil: 'networkidle' })
+        await page.waitForTimeout(400)
+
+        expect(await readPresetLabel(page)).toBe('— none —')
+        expect(await readBtnStyle(page)).toBe(defaultStyle)
+    })
+
+    test('un payload localStorage pré-#25 (sans marqueur de version) est traité comme ambigu et ignoré au reload', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+
+        const defaultStyle = await readBtnStyle(page)
+
+        // Simule une session écrite par le code AVANT #25 : des overrides
+        // "cartoon-like" persistés, sans `__v` ni `preset` — impossible à
+        // rejouer sans réintroduire le bug (le sélecteur afficherait "none"
+        // pendant que ces overrides repeignent la preview).
+        await page.evaluate((key) => {
+            window.localStorage.setItem(key, JSON.stringify({
+                name: 'my-theme',
+                label: 'My theme',
+                mode: 'light',
+                defaults: { 'origam-btn': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 } },
+                cssVars: { light: { '--origam-btn---border-width-outlined': '3px' }, dark: {} }
+            }))
+        }, STORAGE_KEY)
+
+        await page.reload({ waitUntil: 'networkidle' })
+        await page.waitForTimeout(400)
+
+        expect(await readPresetLabel(page)).toBe('— none —')
+        expect(await readBtnStyle(page), 'un payload ambigu ne doit jamais repeindre la preview').toBe(defaultStyle)
+    })
+
     test('reset global vide le storage', async ({ page }) => {
         await page.goto('/theming')
         await page.waitForLoadState('networkidle')
