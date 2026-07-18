@@ -110,11 +110,20 @@ test.describe('Theme Builder — mode toggle chrome matches Split button', () =>
                             borderColor: s.borderColor,
                             backgroundColor: s.backgroundColor,
                             boxShadow: s.boxShadow,
-                            borderRadius: s.borderRadius
+                            borderRadius: s.borderRadius,
+                            height: s.height
                         }
                     }
                     return { group: cs(groupEl), split: cs(splitEl) }
                 }) as { group: IChromeSnapshot, split: IChromeSnapshot }
+
+                // The group's own height must resolve to the SAME value as
+                // a standalone themed Btn of the same size (Split) — a
+                // toggle that's visibly taller than every real button
+                // beside it both looks wrong on its own AND, at a fixed
+                // border-radius, makes the SAME curve read as "less rounded"
+                // simply because the box around it is bigger.
+                expect(snapshot.group.height, 'height (must match Split — same size resolution)').toBe(snapshot.split.height)
 
                 expect(snapshot.group.borderWidth, 'border-width').toBe(snapshot.split.borderWidth)
                 expect(snapshot.group.borderColor, 'border-color').toBe(snapshot.split.borderColor)

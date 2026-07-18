@@ -34,6 +34,7 @@
 		useDefaults,
 		useDensity,
 		useProps,
+		useSize,
 		useStateEffect,
 		useStyle,
 		useVariant
@@ -89,6 +90,7 @@
 			density: props.density,
 			color: props.color,
 			bgColor: props.bgColor,
+			size: props.size,
 			// New API: `hover` / `active` accept boolean | IHoverState |
 			// IActiveState; pass-through propagates the parent's intent
 			// override to each child OrigamBtn.
@@ -122,6 +124,20 @@
 	 ********************************************************/
 
 	const {densityClasses} = useDensity(props)
+
+	// A themed `<origam-btn-toggle size="small">` must resolve to the SAME
+	// height as a standalone `size="small"` Btn (e.g. the Split button
+	// sitting next to it) — otherwise the group is visibly taller than
+	// every real themed button around it, and at a fixed radius a taller
+	// control also just reads as "less rounded" (same curve, bigger box).
+	// `--origam-btn---height` is set LOCALLY on each Btn instance by its
+	// OWN `--size-*` modifier class — it is NOT a theme-global custom
+	// property, so the group (a SIBLING of Split, not its descendant)
+	// cannot simply inherit it via CSS cascade. The group needs its OWN
+	// `size` prop and its OWN matching `--size-*` rules (below) to
+	// resolve independently to the same height. Mirrors `OrigamBtn.vue`'s
+	// exact `useSize` usage.
+	const {sizeClasses} = useSize(props)
 
 	// The group's OWN surface must read as "the theme's btn, uncut" — a
 	// themed `origam-btn: { variant: 'tonal' }` (e.g. glass) should paint
@@ -172,6 +188,7 @@
 			marginClasses.value,
 			paddingClasses.value,
 			variantClasses.value,
+			sizeClasses.value,
 			props.class
 		]
 	})
@@ -201,43 +218,36 @@
 	.origam-btn-group {
 		display: inline-flex;
 		flex-wrap: nowrap;
-		// `stretch` (not `center`) is necessary but NOT sufficient on its
-		// own: a child button's OWN base CSS sets an EXPLICIT `height`
-		// (density/size driven, `calc(var(--origam-btn---height, 36px) +
-		// …)`) rather than `auto` — and per the flexbox spec, `align-items:
-		// stretch` only affects children whose cross-axis size is `auto`.
-		// It's a documented no-op against an explicit height. Kept anyway
-		// as the semantically-correct default (matches native segmented
-		// controls); the `height: 100% !important` override two rules down
-		// on `:deep(.origam-btn)` is what actually forces the match.
 		align-items: stretch;
+		// `overflow: hidden` does the whole job of shaping the children:
+		// per CSS, the clip follows the PADDING-BOX curvature — the outer
+		// radius minus the border width — so square-cornered children are
+		// clipped flush against the inside of the border ring, on any
+		// border thickness, with the browser computing the inner radius.
 		overflow: hidden;
 		vertical-align: middle;
 
 		max-width: 100%;
 		min-width: 0;
-		// `height:`, not just `min-height:` — a CHILD's `height: 100%`
-		// override (below) can only resolve against a DEFINITE parent
-		// height; percentages against an `auto`-sized ancestor compute to
-		// `auto` themselves (CSS 2.1 §10.5), silently no-op-ing the child
-		// override. `min-height` alone (the previous rule) never gave the
-		// box a definite height, which is why children stayed at their own
-		// shorter default instead of filling the group.
-		height: calc(var(--origam-btn-group---height, 36px) + var(--origam-btn-group---density, 0));
-		min-height: calc(var(--origam-btn-group---height, 36px) + var(--origam-btn-group---density, 0));
+		// `--origam-btn-group---height` (own custom property, set by the
+		// `&--size-*` rules below) — NOT `--origam-btn---height` directly:
+		// that token is scoped LOCALLY to each Btn instance by its own
+		// size modifier class, it does not cascade from a sibling Split
+		// button down to the group. `box-sizing: border-box` makes this a
+		// TOTAL height (border included) — matching how Btn's own `height`
+		// already works — so the group's border-box height equals a themed
+		// btn's border-box height by construction, never taller by the
+		// border's own width. Children are `height: auto` + `align-items:
+		// stretch` (see :deep below): they fill the content box inside the
+		// border, exactly like a btn's own content sits inside its own
+		// border.
+		box-sizing: border-box;
+		height: calc(var(--origam-btn-group---height, 36px) + var(--origam-btn-group---density, 0px));
 
 		border-width: var(--origam-btn-group---border-width);
 		border-style: var(--origam-btn-group---border-style);
 		border-color: var(--origam-btn-group---border-color);
 		border-radius: var(--origam-btn-group---border-radius, 4px);
-		// The radius the first/last child's own fill must curve to so it
-		// sits flush against the INSIDE of the border ring — the outer
-		// radius shrunk by the border's own width. Declared here (not in
-		// the :root fallback block) so it re-evaluates whenever a modifier
-		// class (`--rounded-*`, `--border`) reassigns either input; a
-		// `calc()` referencing custom properties stays lazy/reactive to
-		// the cascade, it isn't a one-time snapshot.
-		--origam-btn-group---inner-border-radius: calc(var(--origam-btn-group---border-radius, 4px) - var(--origam-btn-group---border-width, 0px));
 
 		background-color: var(--origam-btn-group---background-color);
 		color: var(--origam-btn-group---color);
@@ -284,6 +294,29 @@
 
 		&--density-compact {
 			--origam-btn-group---density: -8px;
+		}
+
+		// Same height values as `OrigamBtn`'s own `&--size-*` rules, one for
+		// one — a themed `<origam-btn-toggle size="small">` must resolve to
+		// the exact height a standalone `size="small"` Btn does.
+		&--size-x-small {
+			--origam-btn-group---height: 20px;
+		}
+
+		&--size-small {
+			--origam-btn-group---height: 28px;
+		}
+
+		&--size-default {
+			--origam-btn-group---height: 36px;
+		}
+
+		&--size-large {
+			--origam-btn-group---height: 44px;
+		}
+
+		&--size-x-large {
+			--origam-btn-group---height: 52px;
 		}
 
 		// Full parity with `OrigamBtn`'s own variant rules — same CSS
@@ -393,19 +426,12 @@
 			border-style: none !important;
 			border-radius: 0 !important;
 			box-shadow: none !important;
-			// A child button sets its OWN, FIXED `height` (density/size
-			// driven — `calc(var(--origam-btn---height, 36px) + …)`), which
-			// is a real, non-`auto` value. `align-items: stretch` on the
-			// group ONLY affects children whose cross-axis size computes to
-			// `auto` — it is a documented no-op against an explicit height,
-			// so it alone can never close a group-vs-child height mismatch
-			// (e.g. the toggle's `size="small"` children defaulting to a
-			// shorter height than the group's own). Forcing 100% here is
-			// what actually makes every segment's fill hug the group's
-			// content-box on all four sides, matching a native segmented
-			// control — same "group wins" rationale as the border/radius
-			// resets above.
-			height: 100% !important;
+			// `auto` releases the child's own explicit height so
+			// `align-items: stretch` fills the group's content box —
+			// the child occupies the inside of the border ring exactly
+			// like a standalone btn's content sits inside its own border.
+			height: auto !important;
+			min-height: 0 !important;
 
 			// Resting (non-selected) segments stay fully naked — no
 			// background of their own — so the group's ONE surface
@@ -424,15 +450,10 @@
 				background-color: transparent !important;
 			}
 
-			&:first-child {
-				border-start-start-radius: var(--origam-btn-group---inner-border-radius, 4px) !important;
-				border-end-start-radius: var(--origam-btn-group---inner-border-radius, 4px) !important;
-			}
-
-			&:last-child {
-				border-start-end-radius: var(--origam-btn-group---inner-border-radius, 4px) !important;
-				border-end-end-radius: var(--origam-btn-group---inner-border-radius, 4px) !important;
-			}
+			// NO per-corner radius overrides: children stay square
+			// (`border-radius: 0` above) and the group's `overflow: hidden`
+			// clips them to its own inner curvature — the browser derives
+			// the inner radius (outer − border-width) natively.
 		}
 
 		// `divided` adds back a THIN, intentional separator between
