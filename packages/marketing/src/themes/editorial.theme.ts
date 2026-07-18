@@ -158,6 +158,17 @@ export const editorialLightTheme: IOrigamTheme = {
         '--origam-btn---box-shadow-elevated': 'none',
         '--origam-btn---box-shadow-ghost': 'none',
         '--origam-btn---border-radius': '0px',
+        // Editorial keeps buttons unfilled at rest (btn-secondary-bg above
+        // is 'transparent', by design — a print/minimalist surface). But
+        // OrigamBtn's outlined active-state rule paints its fill FROM that
+        // same base background token, so an active/selected button (e.g.
+        // the Light|Dark toggle's current mode) inherited the SAME
+        // transparent value and became indistinguishable from a resting
+        // one — no selection affordance at all. This dedicated token lets
+        // the active state use its own fill, independent of the resting
+        // background; every other theme leaves it unset and keeps its
+        // existing behaviour untouched (see OrigamBtn.vue's fallback chain).
+        '--origam-btn---background-color-active': 'var(--origam-color__action--primary---bgSubtle)',
         '--origam-card---background': 'var(--origam-color__surface---raised)',
         '--origam-card---border-color': 'var(--origam-color__border---default)',
         '--origam-card---border-style': 'solid',
@@ -316,6 +327,9 @@ export const editorialDarkTheme: IOrigamTheme = {
         '--origam-btn---box-shadow-elevated': 'none',
         '--origam-btn---box-shadow-ghost': 'none',
         '--origam-btn---border-radius': '0px',
+        // See the matching comment in editorialLightTheme — same rationale,
+        // dark-mode accent tint.
+        '--origam-btn---background-color-active': 'var(--origam-color__action--primary---bgSubtle)',
         '--origam-card---background': 'var(--origam-color__surface---raised)',
         '--origam-card---border-color': 'var(--origam-color__border---default)',
         '--origam-card---border-style': 'solid',

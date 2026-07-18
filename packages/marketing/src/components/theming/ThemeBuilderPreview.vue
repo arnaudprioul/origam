@@ -74,6 +74,7 @@ const modeLabel = (mode: TEditMode): string =>
                 mandatory
                 divided
                 variant="outlined"
+                color="primary"
                 size="small"
                 class="tb-preview__mode-toggle"
                 :aria-label="t('theming.mode.label', 'Preview mode')"

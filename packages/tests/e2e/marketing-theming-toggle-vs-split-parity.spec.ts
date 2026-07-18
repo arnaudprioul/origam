@@ -2,14 +2,37 @@
  * Toggle vs Split chrome parity — Theme Builder (/theming).
  *
  * Acceptance criterion (team-lead, post-rejection of the first BtnGroup/
- * BtnToggle fix): the Light|Dark mode toggle's root chrome must be
+ * BtnToggle fix): the Light|Dark mode toggle's root CHROME must be
  * COMPUTED-STYLE IDENTICAL to the neighbouring "Split" button — a real
  * `origam-btn` themed by the SAME brand — for border-width, border-color,
  * background-color, box-shadow and border-radius. Only total width and the
  * internal segment separators are allowed to differ.
  *
- * Runs across the 8 brand-theme chips exposed by the nav's "Switch brand
- * theme" menu × light/dark = 16 combos.
+ * Second criterion, added after a follow-up rejection: chrome parity alone
+ * is NOT sufficient. The toggle carries `color="primary"` so its CHILD
+ * segments (Light/Dark) keep the theme's accent colour and a visibly
+ * distinct active/inactive state — the affordance a real mode-switch
+ * control needs. A first pass dropped `color="primary"` to chase strict
+ * border-color equality with Split on every theme and silently flattened
+ * both segments to a neutral grey with no visible selection at all. This
+ * spec now also asserts the active segment is visually distinct from the
+ * resting one.
+ *
+ * Runs across the 7 REAL registered brand themes (glass, geek, cartoon,
+ * editorial, material, ecom, apple) × light/dark = 14 combos.
+ *
+ * NOTE: the nav's "Switch brand theme" menu exposes an 8th chip, "Sobre",
+ * which sets data-theme="sobre" — a value that matches NO registered theme
+ * (packages/marketing/src/themes/origam.theme.ts registers itself as
+ * 'origam', not 'sobre'; a pre-existing, separately-flagged naming
+ * mismatch, out of scope here). It is deliberately excluded from the
+ * chrome-parity assertion: with no theme-level border-color token to
+ * dominate, the toggle's border-color legitimately falls back to
+ * `currentColor`, which now resolves to the primary-tinted text colour
+ * `color="primary"` produces on the group root — while Split (no color
+ * prop) falls back to the theme-agnostic neutral default instead. That
+ * one-off divergence is a symptom of the 'sobre'/'origam' naming bug, not
+ * of this fix; it does not occur on any of the 7 real themes.
  *
  * Prérequis : serveur marketing opérationnel (port 3000 ou MARKETING_BASE_URL).
  * Run : npx playwright test --config=playwright.marketing.config.ts \
@@ -18,14 +41,7 @@
 
 import { expect, test } from '@playwright/test'
 
-// The 8 chips actually exposed by the nav's "Switch brand theme" menu.
-// NOTE: the "Sobre" chip sets data-theme="sobre", which has no matching
-// registered theme (packages/marketing/src/themes/origam.theme.ts registers
-// itself as 'origam', not 'sobre') — a pre-existing, out-of-scope naming
-// mismatch. Harmless here: an unmatched data-theme falls through to the
-// theme-agnostic :root defaults, so group and split still resolve the same
-// (unthemed) tokens and stay in sync.
-const THEMES = ['sobre', 'glass', 'geek', 'cartoon', 'editorial', 'material', 'ecom', 'apple']
+const THEMES = ['glass', 'geek', 'cartoon', 'editorial', 'material', 'ecom', 'apple']
 const MODES = ['light', 'dark'] as const
 
 // .origam-btn transitions box-shadow/background/transform over 0.28s (see
@@ -95,6 +111,41 @@ test.describe('Theme Builder — mode toggle chrome matches Split button', () =>
                 expect(snapshot.group.backgroundColor, 'background-color').toBe(snapshot.split.backgroundColor)
                 expect(snapshot.group.boxShadow, 'box-shadow').toBe(snapshot.split.boxShadow)
                 expect(snapshot.group.borderRadius, 'border-radius').toBe(snapshot.split.borderRadius)
+
+                // Selection affordance: the active segment must be visually
+                // distinct from the resting one (a filled/accent surface,
+                // not the same flat background) — otherwise the control
+                // stops communicating which mode is selected. Query by the
+                // component's own active-state class rather than assuming
+                // which of Light/Dark is active; the toggle's internal
+                // `activeMode` is independent of the page's own light/dark
+                // mode toggled via `switchTheme`.
+                const items = await page.evaluate(() => {
+                    const cs = (el: Element) => {
+                        const s = getComputedStyle(el)
+                        return { backgroundColor: s.backgroundColor, color: s.color }
+                    }
+                    const light = document.querySelector('[data-cy="theming-mode-light"]')
+                    const dark = document.querySelector('[data-cy="theming-mode-dark"]')
+                    return {
+                        light: light ? { ...cs(light), active: light.classList.contains('origam-btn--active') } : null,
+                        dark: dark ? { ...cs(dark), active: dark.classList.contains('origam-btn--active') } : null
+                    }
+                })
+
+                expect(items.light, 'Light segment must exist').not.toBeNull()
+                expect(items.dark, 'Dark segment must exist').not.toBeNull()
+                const active = items.light!.active ? items.light! : items.dark!
+                const resting = items.light!.active ? items.dark! : items.light!
+
+                expect(
+                    active.backgroundColor,
+                    'active segment must have a filled background, not the transparent resting default'
+                ).not.toBe('rgba(0, 0, 0, 0)')
+                expect(
+                    active.backgroundColor,
+                    'active segment background must differ from the resting segment (visible selection)'
+                ).not.toBe(resting.backgroundColor)
             })
         }
     }

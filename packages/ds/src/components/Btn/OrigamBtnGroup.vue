@@ -74,8 +74,18 @@
 	// `bgColor` / etc. still win (that's the contract: parent provides
 	// defaults, child overrides). Children consume this map via
 	// `useDefaults(props)` inside `OrigamBtn.vue`.
+	//
+	// `variant` matters here specifically: `--variant-text` (the group's
+	// own root default, and every child's own component default) has NO
+	// active-state background rule at all — only `outlined`/`tonal` paint
+	// a filled surface on the selected segment (see OrigamBtn.vue's
+	// `&--variant-outlined { &--active { background-color: ... } }`).
+	// Without forwarding it, a themed `<origam-btn-toggle variant="outlined">`
+	// got the right root chrome but every child silently stayed on 'text',
+	// so the active segment never filled — no visible selection at all.
 	const slotDefaults = computed(() => ({
 		'origam-btn': {
+			variant: props.variant,
 			density: props.density,
 			color: props.color,
 			bgColor: props.bgColor,
