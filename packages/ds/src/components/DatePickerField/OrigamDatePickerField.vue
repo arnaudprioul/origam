@@ -184,7 +184,7 @@
 		OrigamTranslateScale
 	} from "../../components"
 
-	import { useDate, useLocale, useProps, useTextColor, useVModel , useStyle} from "../../composables"
+	import { useDate, useDefaults, useLocale, useProps, useTextColor, useVModel , useStyle} from "../../composables"
 
 	import { ORIGAM_FORM_KEY } from "../../consts"
 
@@ -201,7 +201,7 @@
 	/*********************************************************
 	 * Global
 	 ********************************************************/
-	const props = withDefaults(defineProps<IDatePickerFieldProps>(), {
+	const _props = withDefaults(defineProps<IDatePickerFieldProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,
 		centerAffix: true,
 		direction: DIRECTION.HORIZONTAL,
@@ -216,6 +216,11 @@
 		range: false,
 		closeOnSelect: true
 	})
+
+	// `useDefaults` resolves each prop against theme.components['origam-date-picker-field']
+	// (OrigamBtn pattern). Pre-fix, the legacy `rounded: true` / `border: true`
+	// booleans always won, same forwarding-parity gap already fixed on Select.
+	const props = useDefaults(_props)
 
 	const {filterProps} = useProps<IDatePickerFieldProps>(props)
 
