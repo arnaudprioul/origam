@@ -151,6 +151,109 @@ test.describe('Theme Builder · persistance localStorage', () => {
         expect(Object.values(cssVars)).toContain('#abcdef')
     })
 
+    /** Style discriminant du bouton preview (mode light) — assez pour distinguer "défaut DS" de "preset Cartoon". */
+    async function readBtnStyle (page: Page): Promise<string> {
+        return page.locator('[data-cy="theming-live-btn-light"]').evaluate((el) => {
+            const cs = getComputedStyle(el)
+            return JSON.stringify({ borderWidth: cs.borderWidth, boxShadow: cs.boxShadow, borderRadius: cs.borderRadius })
+        })
+    }
+
+    /** Libellé actuellement affiché par le select Preset (pas l'input natif — la sélection est un span). */
+    async function readPresetLabel (page: Page): Promise<string> {
+        return page.locator('[data-cy="theming-preset"] .origam-select__selection-text').innerText()
+    }
+
+    async function selectPreset (page: Page, label: string): Promise<void> {
+        await page.locator('[data-cy="theming-preset"]').click()
+        await page.waitForTimeout(300)
+        await page.getByText(label, { exact: true }).click()
+        await page.waitForTimeout(400)
+    }
+
+    // Régression #25 — sujet 1 : au reload avec le sélecteur de preset à
+    // « none », la preview restait sur les valeurs du dernier preset choisi
+    // (ex. Cartoon) au lieu du thème par défaut. Root cause : le sélecteur de
+    // preset était un ref local jamais persisté/restauré, découplé du state
+    // (defaults/cssVars) qui, lui, survit au reload par design (continuité de
+    // brouillon). Choisir explicitement « — none — » ne faisait rien non plus
+    // (no-op) — même désync, sans même passer par un reload.
+    test('sélectionner « — none — » après un preset revient IMMÉDIATEMENT au défaut (#25)', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+        await page.evaluate(k => window.localStorage.removeItem(k), STORAGE_KEY)
+        await page.reload({ waitUntil: 'networkidle' })
+
+        const defaultStyle = await readBtnStyle(page)
+
+        await selectPreset(page, 'Cartoon')
+        expect(await readBtnStyle(page)).not.toBe(defaultStyle)
+
+        await selectPreset(page, '— none —')
+        expect(await readBtnStyle(page), 'sélectionner "none" doit effacer les overrides du preset').toBe(defaultStyle)
+    })
+
+    test('le preset choisi ET son rendu survivent au reload (continuité de brouillon)', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+        await page.evaluate(k => window.localStorage.removeItem(k), STORAGE_KEY)
+        await page.reload({ waitUntil: 'networkidle' })
+
+        await selectPreset(page, 'Cartoon')
+        const styleAfterSelect = await readBtnStyle(page)
+
+        await page.reload({ waitUntil: 'networkidle' })
+        await page.waitForTimeout(400)
+
+        expect(await readPresetLabel(page), 'le sélecteur doit refléter le vrai state persisté, pas retomber sur "none"').toBe('Cartoon')
+        expect(await readBtnStyle(page)).toBe(styleAfterSelect)
+    })
+
+    test('reload avec preset=none rend le thème par défaut, même après avoir eu un preset actif (#25)', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+        await page.evaluate(k => window.localStorage.removeItem(k), STORAGE_KEY)
+        await page.reload({ waitUntil: 'networkidle' })
+
+        const defaultStyle = await readBtnStyle(page)
+
+        await selectPreset(page, 'Cartoon')
+        await selectPreset(page, '— none —')
+
+        await page.reload({ waitUntil: 'networkidle' })
+        await page.waitForTimeout(400)
+
+        expect(await readPresetLabel(page)).toBe('— none —')
+        expect(await readBtnStyle(page)).toBe(defaultStyle)
+    })
+
+    test('un payload localStorage pré-#25 (sans marqueur de version) est traité comme ambigu et ignoré au reload', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+
+        const defaultStyle = await readBtnStyle(page)
+
+        // Simule une session écrite par le code AVANT #25 : des overrides
+        // "cartoon-like" persistés, sans `__v` ni `preset` — impossible à
+        // rejouer sans réintroduire le bug (le sélecteur afficherait "none"
+        // pendant que ces overrides repeignent la preview).
+        await page.evaluate((key) => {
+            window.localStorage.setItem(key, JSON.stringify({
+                name: 'my-theme',
+                label: 'My theme',
+                mode: 'light',
+                defaults: { 'origam-btn': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 } },
+                cssVars: { light: { '--origam-btn---border-width-outlined': '3px' }, dark: {} }
+            }))
+        }, STORAGE_KEY)
+
+        await page.reload({ waitUntil: 'networkidle' })
+        await page.waitForTimeout(400)
+
+        expect(await readPresetLabel(page)).toBe('— none —')
+        expect(await readBtnStyle(page), 'un payload ambigu ne doit jamais repeindre la preview').toBe(defaultStyle)
+    })
+
     test('reset global vide le storage', async ({ page }) => {
         await page.goto('/theming')
         await page.waitForLoadState('networkidle')
@@ -313,5 +416,61 @@ test.describe('Theme Builder · modes Light/Dark + Split', () => {
         const darkProvider = page.locator('[data-cy="theming-preview-pane-dark"] .tb-preview__provider')
         await expect(lightProvider).toHaveAttribute('data-mode', 'light')
         await expect(darkProvider).toHaveAttribute('data-mode', 'dark')
+    })
+})
+
+// Régression #25 — sujet 2 : le catalogue du playground ne listait que les
+// composants DS "top-level" (98 doc_entry sans parent_slug), excluant 96
+// family members légitimement configurables en standalone (btn-group,
+// btn-toggle, progress-linear, progress-circular, radio-group, chip-group,
+// tabs, expansion-panels…). `THEME_BUILDER_PREVIEWABLE_SLUGS` référençait déjà
+// `progress-linear` — mort depuis le début car ce slug ne pouvait jamais
+// atteindre `entries`. Le fix (useThemeBuilderCatalog.ts) arrête de filtrer
+// sur `parentSlug` : chaque `doc_entry` de kind `component` devient une entrée
+// du playground, avec repli "preview unavailable" (déjà existant) pour les
+// sous-parties non curatées en previewable — configurable n'implique pas
+// nécessairement un rendu live.
+test.describe('Theme Builder · catalogue complet (#25)', () => {
+    test('le catalogue expose largement plus que les seuls composants top-level', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+
+        const toggles = page.locator('[data-cy^="theming-nav-cat-toggle-"]')
+        const toggleCount = await toggles.count()
+        for (let i = 0; i < toggleCount; i++) {
+            const t = toggles.nth(i)
+            if ((await t.getAttribute('aria-expanded')) !== 'true') await t.click()
+        }
+        await page.waitForTimeout(300)
+
+        const navCount = await page.locator('[data-cy^="theming-nav-item-"]').count()
+        // Avant #25 : 98 (top-level uniquement). Seuil large pour ne pas
+        // sur-coupler le test au nombre exact de doc_entry en DB (qui évolue).
+        expect(navCount, 'le catalogue doit couvrir les family members, pas seulement les top-level').toBeGreaterThan(150)
+    })
+
+    test('un family member curaté en previewable (progress-linear) rend une preview live', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+
+        await page.locator('[data-cy="theming-nav-search"] input').fill('ProgressLinear')
+        await page.waitForTimeout(300)
+        await page.locator('[data-cy="theming-nav-item-progress-linear"]').click()
+        await page.waitForTimeout(300)
+
+        await expect(page.locator('[data-cy="theming-live-progress-linear-light"]')).toBeVisible()
+    })
+
+    test('un family member non curaté (btn-group) reste sélectionnable et configurable sans crash', async ({ page }) => {
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+
+        await page.locator('[data-cy="theming-nav-search"] input').fill('BtnGroup')
+        await page.waitForTimeout(300)
+        await page.locator('[data-cy="theming-nav-item-btn-group"]').click()
+        await page.waitForTimeout(300)
+
+        await expect(page.locator('[data-cy="theming-preview-stage"]')).toBeVisible()
+        await expect(page.locator('[data-cy="theming-controls-panel"]')).toBeVisible()
     })
 })

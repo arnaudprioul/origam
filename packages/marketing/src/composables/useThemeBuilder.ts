@@ -4,6 +4,7 @@ import {
     THEME_BUILDER_DEFAULT_LABEL,
     THEME_BUILDER_DEFAULT_MODE,
     THEME_BUILDER_DEFAULT_NAME,
+    THEME_BUILDER_STATE_VERSION,
     THEME_BUILDER_STORAGE_KEY
 } from '~/consts/theme-builder.const'
 import { THEME_BUILDER_PRESETS } from '~/consts/theme-builder-presets.const'
@@ -88,6 +89,7 @@ export function useThemeBuilder () {
         label: THEME_BUILDER_DEFAULT_LABEL,
         mode: THEME_BUILDER_DEFAULT_MODE,
         activeMode: 'light',
+        preset: '',
         defaults: {},
         cssVars: { light: {}, dark: {} }
     })
@@ -164,11 +166,17 @@ export function useThemeBuilder () {
         state.cssVars[mode][cssVar] = value
     }
 
-    /** Reset all edits AND the persisted storage entry. */
-    const reset = (): void => {
+    /** Wipe prop/token overrides + the active preset marker, keep name/label/mode. */
+    const clearPreset = (): void => {
         Object.keys(state.defaults).forEach(k => delete state.defaults[k])
         Object.keys(state.cssVars.light).forEach(k => delete state.cssVars.light[k])
         Object.keys(state.cssVars.dark).forEach(k => delete state.cssVars.dark[k])
+        state.preset = ''
+    }
+
+    /** Reset all edits AND the persisted storage entry. */
+    const reset = (): void => {
+        clearPreset()
         state.name = THEME_BUILDER_DEFAULT_NAME
         state.label = THEME_BUILDER_DEFAULT_LABEL
         state.mode = THEME_BUILDER_DEFAULT_MODE
@@ -396,9 +404,7 @@ export function useThemeBuilder () {
             if (!parsed || typeof parsed !== 'object') return false
 
             if (Array.isArray(parsed)) {
-                Object.keys(state.defaults).forEach(k => delete state.defaults[k])
-                Object.keys(state.cssVars.light).forEach(k => delete state.cssVars.light[k])
-                Object.keys(state.cssVars.dark).forEach(k => delete state.cssVars.dark[k])
+                clearPreset()
                 for (const entry of parsed) {
                     if (!entry || typeof entry !== 'object') continue
                     applyTheme(entry as IOrigamTheme)
@@ -406,9 +412,7 @@ export function useThemeBuilder () {
                 return true
             }
 
-            Object.keys(state.defaults).forEach(k => delete state.defaults[k])
-            Object.keys(state.cssVars.light).forEach(k => delete state.cssVars.light[k])
-            Object.keys(state.cssVars.dark).forEach(k => delete state.cssVars.dark[k])
+            clearPreset()
             applyTheme(parsed as IOrigamTheme)
             return true
         } catch {
@@ -420,9 +424,8 @@ export function useThemeBuilder () {
     const seedPreset = (key: string): void => {
         const preset = THEME_BUILDER_PRESETS.find(p => p.key === key)
         if (!preset) return
-        Object.keys(state.defaults).forEach(k => delete state.defaults[k])
-        Object.keys(state.cssVars.light).forEach(k => delete state.cssVars.light[k])
-        Object.keys(state.cssVars.dark).forEach(k => delete state.cssVars.dark[k])
+        clearPreset()
+        state.preset = key
         state.mode = 'light'
         state.activeMode = 'light'
         // Write all preset values directly — bypass setToken's "equals default" filter
@@ -449,19 +452,30 @@ export function useThemeBuilder () {
     /**
      * Load the persisted state from localStorage (client-only). Called from the
      * page in `onMounted` so SSR never touches `window`/`localStorage`.
-     * Handles both the new dual-mode format and the legacy flat `cssVars`.
+     *
+     * Identity fields (name/label/mode) are always restored — they're harmless
+     * on their own. Prop/token overrides (`defaults`/`cssVars`) and the active
+     * `preset` marker are ONLY restored from a payload stamped with the
+     * current `THEME_BUILDER_STATE_VERSION` (see the const's doc comment for
+     * why: an older payload can't be replayed without resurrecting a preset's
+     * overrides behind a Preset dropdown that shows "— none —", #25).
      */
     const loadStorage = (): void => {
         if (typeof window === 'undefined') return
         try {
             const raw = window.localStorage.getItem(THEME_BUILDER_STORAGE_KEY)
             if (!raw) return
-            const saved = JSON.parse(raw) as Partial<IThemeBuilderState & { cssVars: unknown }>
+            const saved = JSON.parse(raw) as Partial<IThemeBuilderState & { __v?: number }>
             if (typeof saved.name === 'string') state.name = saved.name
             if (typeof saved.label === 'string') state.label = saved.label
             if (saved.mode === 'light' || saved.mode === 'dark' || saved.mode === 'auto') {
                 state.mode = saved.mode
             }
+
+            if (saved.__v !== THEME_BUILDER_STATE_VERSION) return
+
+            if (typeof saved.preset === 'string') state.preset = saved.preset
+
             if (saved.defaults && typeof saved.defaults === 'object') {
                 Object.keys(state.defaults).forEach(k => delete state.defaults[k])
                 for (const [k, v] of Object.entries(saved.defaults)) {
@@ -477,13 +491,10 @@ export function useThemeBuilder () {
                     for (const [k, v] of Object.entries(rawVars.light as Record<string, unknown>)) {
                         if (typeof v === 'string') state.cssVars.light[k] = v
                     }
-                } else if (rawVars.dark && typeof rawVars.dark === 'object') {
+                }
+                if (rawVars.dark && typeof rawVars.dark === 'object') {
                     for (const [k, v] of Object.entries(rawVars.dark as Record<string, unknown>)) {
                         if (typeof v === 'string') state.cssVars.dark[k] = v
-                    }
-                } else {
-                    for (const [k, v] of Object.entries(rawVars)) {
-                        if (typeof v === 'string') state.cssVars.light[k] = v
                     }
                 }
             }
@@ -496,7 +507,7 @@ export function useThemeBuilder () {
     const startAutoPersist = (): void => {
         if (typeof window === 'undefined') return
         watch(
-            () => JSON.stringify({ ...state, activeMode: undefined }),
+            () => JSON.stringify({ ...state, activeMode: undefined, __v: THEME_BUILDER_STATE_VERSION }),
             (snapshot) => {
                 try {
                     window.localStorage.setItem(THEME_BUILDER_STORAGE_KEY, snapshot)
@@ -585,6 +596,7 @@ export function useThemeBuilder () {
         downloadJson,
         importTheme,
         seedPreset,
+        clearPreset,
         loadStorage,
         startAutoPersist
     }
