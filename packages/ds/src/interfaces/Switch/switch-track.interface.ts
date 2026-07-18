@@ -42,8 +42,14 @@ export interface ISwitchTrackProps extends ICommonsComponentProps, IColorProps, 
     disabled?: boolean
     /** Readonly state — keeps appearance interactive but blocks input. */
     readonly?: boolean
-    /** Error state — overrides the rail with the danger token. */
-    error?: boolean
+    /**
+     * Error state — overrides the rail with the danger token. Same type
+     * as the Commons `IValidationProps.error` (`string | boolean` — a
+     * string is an error message, truthy either way) so a parent
+     * forwarding its own validation surface (OrigamSwitch) stays
+     * type-compatible. Consumed by truthiness only.
+     */
+    error?: string | boolean
     /** Inset (Material) variant — taller, fully-rounded rail. */
     inset?: boolean
 }
