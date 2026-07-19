@@ -223,6 +223,25 @@
 	 * Color
 	 ********************************************************/
 
+	// `useElevation` (inside `useStateEffect` below) treats `flat` as a hard
+	// "no shadow, ever" override of `elevation` — by design, for the case
+	// where a consumer sets BOTH props explicitly on the same instance.
+	// Since useDefaults wiring (issue #242), `flat` can now also resolve
+	// from `theme.components['origam-card'].flat` (the origam base theme
+	// defaults every card to `flat: true`) — so a consumer who explicitly
+	// passes only `elevation` (e.g. the free-form custom box-shadow escape
+	// hatch) had their explicit choice silently suppressed by the THEME's
+	// flat default, even though `elevation` itself correctly resolved via
+	// useDefaults' own explicit-prop-wins precedence. `props.elevation` is
+	// non-null ONLY when a consumer explicitly sets it (the origam base
+	// theme never sets `elevation` on `origam-card`) — a reliable, low-risk
+	// signal to stop `flat` from suppressing that explicit choice, without
+	// touching the shared `useElevation`/`useStateEffect` composables used
+	// by other components. `origam-card--flat` (the visual/hover modifier
+	// class) is unaffected — only the value fed to useElevation's shadow
+	// suppression is adjusted.
+	const flatForElevation = computed(() => props.elevation != null ? false : props.flat)
+
 	// Single state-aware composable for ALL 8 visual axes
 	// (color/bgColor/border/rounded/elevation/padding/margin/gap).
 	// Hover / active object overrides (e.g. `:hover="{ border: 'thick' }"`)
@@ -243,7 +262,7 @@
 			hoverState,
 			activeState,
 			computed(() => !!props.disabled),
-			toRef(props, 'flat'),
+			flatForElevation,
 	)
 
 	/*********************************************************
