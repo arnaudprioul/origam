@@ -62,6 +62,7 @@
 	import { OrigamCheckboxBtn, OrigamInput } from '../../components'
 
 	import {
+		useDefaults,
 		useFocus,
 		useMargin,
 		usePadding,
@@ -89,9 +90,16 @@
 	 * Props, emits, slots, model binding and focus tracking.
 	 ********************************************************/
 
-	const props = withDefaults(defineProps<ICheckboxProps>(), {
+	const _props = withDefaults(defineProps<ICheckboxProps>(), {
 		density: DENSITY.DEFAULT
 	})
+
+	// `useDefaults` resolves each prop against theme.components['origam-checkbox']
+	// (OrigamBtn pattern). Note (issue #241): `rounded` now correctly forwards
+	// to the underlying control box, but the CHECK GLYPH itself is a separate,
+	// pre-existing rendering concern tracked in #241 — this fix only restores
+	// the theme-config wiring, not the glyph surface.
+	const props = useDefaults(_props)
 
 	const emits = defineEmits<ICheckboxEmits>()
 

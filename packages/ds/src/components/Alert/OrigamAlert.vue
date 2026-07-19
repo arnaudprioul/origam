@@ -1,6 +1,6 @@
 <template>
 	<component
-			:is="tag"
+			:is="props.tag"
 			:id="id"
 			v-contrast
 			:class="alertClasses"
@@ -124,6 +124,7 @@
 	import {
 		useActive,
 		useAdjacent,
+		useDefaults,
 		useDensity,
 		useDimension,
 		useHover,
@@ -149,7 +150,7 @@
 	 * @description
 	 * Props, emits and utilities for the Alert component.
 	 ********************************************************/
-	const props = withDefaults(defineProps<IAlertProps>(), {
+	const _props = withDefaults(defineProps<IAlertProps>(), {
 		tag: 'div',
 		density: DENSITY.DEFAULT,
 		closeIcon: MDI_ICONS.CLOSE,
@@ -157,6 +158,20 @@
 		modelValue: true,
 		hover: true
 	})
+
+	// `useDefaults` resolves each prop against the closest
+	// `<OrigamDefaultsProvider>` / theme `components['origam-alert']` config —
+	// see the pattern established in `OrigamBtn.vue`. Without this, the theme's
+	// `components: { 'origam-alert': { … } }` block was a silent no-op.
+	//
+	// NOTE: `<script setup>` auto-exposes every `defineProps()` key to the
+	// template as a bare binding pointing at the raw, UNRESOLVED `$props` —
+	// independent of this `props` variable. The root `<component :is="…">`
+	// below therefore reads `props.tag` explicitly (see OrigamTable.vue for
+	// the full writeup of this footgun); every other value here goes through
+	// a computed/composable that receives `props` directly, which resolves
+	// correctly.
+	const props = useDefaults(_props)
 
 	const emits = defineEmits<IAlertEmits>()
 
