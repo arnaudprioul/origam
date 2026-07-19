@@ -233,10 +233,15 @@ export const glassLightTheme: IOrigamTheme = {
         '--origam-btn---backdrop-filter-ghost': 'blur(12px) saturate(1.8) brightness(1.05)',
         '--origam-card---box-shadow': 'var(--origam-shadow---card-elevated)',
         '--origam-code---border-radius': '16px',
-        '--origam-card---backdrop-filter': 'blur(3px) saturate(1.8) brightness(1.08)',
-        '--origam-sheet---backdrop-filter': 'blur(3px) saturate(1.8) brightness(1.08)',
+        // Niveau FORT (mission de suivi #29) : blur(3px) était quasi
+        // imperceptible — hooks vérifiés (OrigamCard.vue/OrigamSheet.vue,
+        // ligne `backdrop-filter: var(--origam-card---backdrop-filter, none)`).
+        '--origam-card---backdrop-filter': 'blur(28px) saturate(2.5) brightness(1.12)',
+        '--origam-sheet---backdrop-filter': 'blur(28px) saturate(2.5) brightness(1.12)',
         '--origam-appbar---backdrop-filter': 'saturate(2) brightness(1.1) blur(26px)',
-        '--origam-menu---backdrop-filter': 'blur(20px) saturate(1.8) brightness(1.05)',
+        // Hook vérifié (OrigamMenu.vue) ; valeur FORT unique donnée pour les 2
+        // modes (contrairement à card/sheet qui ont des recettes séparées).
+        '--origam-menu---backdrop-filter': 'blur(28px) saturate(2)',
         '--origam-appbar---bg': 'rgba(255, 255, 255, 0.30)',
         '--origam-menu---background': 'rgba(255, 255, 255, 0.80)',
         '--origam-menu---color': 'var(--origam-color__text---primary)',
@@ -262,15 +267,35 @@ export const glassLightTheme: IOrigamTheme = {
         '--origam-list-item__overlay---background-color': '#7c3aed',
         '--origam-list-item---border-color': 'var(--origam-color__border---default)',
 
-        '--origam-alert---backdrop-filter': 'blur(3px) saturate(1.8) brightness(1.08)',
-        '--origam-alert---background-color': 'rgba(255, 255, 255, 0.18)',
+        // Niveau FORT (relecture design — mission de suivi #29) : blur 24px
+        // (au lieu de 3px, quasi imperceptible). Hook vérifié :
+        // `@supports (backdrop-filter…) { backdrop-filter: var(--origam-alert---backdrop-filter, none) }`
+        // dans OrigamAlert.vue — réel, appliqué.
+        '--origam-alert---backdrop-filter': 'blur(24px) saturate(2.4) brightness(1.10)',
+        // ⚠️ Hook vérifié = `background-color: var(--origam-alert---background-color)`
+        // (propriété `background-color`, PAS `background`) — un gradient y est
+        // CSS invalide (même piège que le badge, cf. commit précédent). La
+        // recette FORT demandée (linear-gradient 3 arrêts) est donc remontée
+        // en rgba plate : moyenne pondérée des 3 arrêts (.62/.34/.30 blanc)
+        // ≈ 0.42.
+        '--origam-alert---background-color': 'rgba(255, 255, 255, 0.42)',
         '--origam-alert---border-color': 'rgba(124, 58, 237, 0.20)',
+        // NOUVEAU — hook réel trouvé et jusqu'ici inutilisé : `&--elevated { box-shadow:
+        // var(--origam-alert---box-shadow-elevated, var(--origam-shadow---md)) }`.
+        // `elevation:2` (props ci-dessus) pousse déjà `--elevated` via
+        // `useStateEffect`/`elevationClasses` (vérifié en runtime) — la recette
+        // cut-glass FORT (SYNTHESE §2, light) remplace le fallback générique.
+        '--origam-alert---box-shadow-elevated': 'inset 0 2px 0 rgba(255, 255, 255, 1), inset 2px 0 4px -1px rgba(255, 255, 255, 0.75), inset -1px 0 3px -1px rgba(255, 255, 255, 0.45), inset 0 -2px 3px rgba(124, 58, 237, 0.14), 0 20px 46px -14px rgba(60, 30, 120, 0.42), 0 4px 14px -6px rgba(124, 58, 237, 0.30)',
 
         // ── Chip (fix source #3) — `variant:'tonal'` retiré des props
         // (IChipProps n'a pas de `variant`, confirmé dead) ; la translucidité
         // qu'il était censé porter passe ici, sur les vraies vars du composant.
-        '--origam-chip---background-color': 'rgba(255, 255, 255, 0.22)',
-        '--origam-chip---border-color': 'rgba(124, 58, 237, 0.35)',
+        // Valeurs FORT (mission de suivi #29). ⛔ `backdrop-filter` demandé par
+        // le design NON appliqué : OrigamChip.vue n'a AUCUN hook `backdrop-filter`
+        // (confirmé — `grep backdrop-filter` = 0 résultat) ; bloqué, même
+        // catégorie que #253 (à faire enregistrer côté DS, hors périmètre thème).
+        '--origam-chip---background-color': 'rgba(255, 255, 255, 0.28)',
+        '--origam-chip---border-color': 'rgba(124, 58, 237, 0.20)',
 
         // ── Snackbar (SYNTHESE §4) — plus opaque que l'alert (flotte au-dessus
         // du contenu). DS GAP : OrigamSnackbarItem.vue n'expose AUCUN
@@ -297,6 +322,11 @@ export const glassLightTheme: IOrigamTheme = {
         '--origam-badge__badge---background-color': '#7c3aed',
         '--origam-badge__badge---border-color': 'rgba(255, 255, 255, 0.55)',
         '--origam-badge__badge---color': '#ffffff',
+        // Mission de suivi #29 — "rim si le hook l'accepte" : `box-shadow:
+        // var(--origam-badge__badge---box-shadow)` existe et n'a jamais été
+        // renseigné (hook réel, vérifié dans OrigamBadge.vue). Glint spéculaire
+        // haut-gauche en lieu du dégradé de fond (bloqué par `background-color`).
+        '--origam-badge__badge---box-shadow': 'inset 0 1px 0 rgba(255, 255, 255, 0.65)',
 
         // ── Progress (SYNTHESE §4) — piste translucide + barre accent. Le
         // "glow" spéculaire du pouce/barre n'a pas de hook box-shadow exposé
@@ -313,6 +343,13 @@ export const glassLightTheme: IOrigamTheme = {
         // `origam-switch` (IColorProps, résolution JS — pas de cssVar requise).
         // Aucun hook box-shadow (glow/puits creux) exposé par
         // OrigamSwitchTrack/OrigamSwitch — DS GAP, non appliqué.
+        // ⛔ Mission de suivi #29 (relecture FORT) demande aussi
+        // `backdrop-filter: blur(20px) saturate(2.6)` sur le "puits" du
+        // switch/checkbox/radio — re-vérifié (grep `backdrop-filter` sur
+        // OrigamSwitch.vue/OrigamSwitchTrack.vue/OrigamCheckboxBtn.vue/
+        // OrigamRadioBtn.vue = 0 résultat) : AUCUN hook, sur AUCUN des 3.
+        // Bloqué, même catégorie que #253 (issue #253 ne les liste pas
+        // nommément mais le gap est identique — pas de var posée).
         '--origam-switch__track---background-color': 'rgba(255, 255, 255, 0.35)',
         '--origam-switch__thumb---background-color': '#ffffff',
         '--origam-switch__thumb---border-color': 'rgba(124, 58, 237, 0.35)',
@@ -320,17 +357,31 @@ export const glassLightTheme: IOrigamTheme = {
         // ── Champs (SYNTHESE §4) — contour ≥0.55 au repos (le fix source #2
         // porte le contour ≥0.8 pour les CONTRÔLES VIDES ; ici on route le
         // champ sur ce même token fixé au lieu du fallback `currentColor` par
-        // défaut). DS GAP : ni `--origam-field---backdrop-filter` ni
+        // défaut). DS GAP (#253) : ni `--origam-field---backdrop-filter` ni
         // `--origam-field--focus---box-shadow` n'existent comme var lue par
         // OrigamField.vue (le flou de champ et l'anneau de focus demandés par
         // la spec ne sont donc pas applicables sans toucher le composant DS).
+        // Re-confirmé mission #29 : `blur(24px) saturate(2.2)` demandé sur
+        // text/textarea/number/password-field + trigger select — bloqué #253,
+        // non posé.
         '--origam-field---background-color': 'rgba(255, 255, 255, 0.30)',
         '--origam-field---border-color': 'var(--origam-color__border---default)',
 
         // ── Dialog / scrim (SYNTHESE §4) — le "scrim flouté" demandé n'a pas
         // de hook `backdrop-filter` sur OrigamOverlayScrim.vue (confirmé :
         // background-color/opacity/pointer-events/transition uniquement) —
-        // DS GAP, le flou n'est pas applicable. La teinte de fond l'est.
+        // DS GAP (#253), le flou n'est pas applicable. La teinte de fond l'est
+        // (valeur re-confirmée par le design mission #29 : rgba(20,14,48,.35),
+        // inchangée). Le "verre" du dialog LUI-MÊME (pas le scrim) est hérité :
+        // OrigamDialog.vue rend un `<origam-card ref="origamCardRef" … v-bind="cardProps">`
+        // interne (lu dans le source, ligne ~22) qui reçoit donc
+        // `--origam-card---backdrop-filter` du thème comme toute autre instance
+        // `origam-card` (résolution par nom de composant, pas par position DOM —
+        // déjà vérifiée en runtime sur /components/card). ⚠️ PAS observé
+        // directement sur un dialog ouvert : la page /components/dialog n'a pas
+        // de démo interactive (seuls des exemples de code statiques avec bouton
+        // "Copy") — preuve par lecture de code + composant frère vérifié, pas
+        // par capture runtime de CETTE instance précise.
         '--origam-overlay-scrim---background-color': 'rgba(20, 14, 48, 0.35)',
 
         // ── Table (SYNTHESE §4) ──────────────────────────────────────────
@@ -370,6 +421,9 @@ export const glassLightTheme: IOrigamTheme = {
         // ── Tooltip (SYNTHESE §3/§4) — seul hook exposé par OrigamTooltip.vue.
         // Pas de `border`/`box-shadow`/`backdrop-filter` — DS GAP (voir la note
         // dans `components` ci-dessus). Le "sans caret" est acquis par défaut.
+        // Re-confirmé mission #29 : `blur(20px) saturate(2.2)` demandé — bloqué,
+        // même gap (OrigamTooltip.vue n'a aucun hook backdrop-filter, ni box-shadow,
+        // ni border ; non listé nommément dans #253 mais catégorie identique).
         '--origam-tooltip---border-radius': '10px',
         '--origam-tooltip---background-color': 'rgba(26, 21, 56, 0.90)',
         '--origam-tooltip---color': '#ffffff'
@@ -495,10 +549,10 @@ export const glassDarkTheme: IOrigamTheme = {
         '--origam-btn---backdrop-filter-ghost': 'blur(12px) saturate(1.6) brightness(1.02)',
         '--origam-card---box-shadow': 'var(--origam-shadow---card-elevated)',
         '--origam-code---border-radius': '16px',
-        '--origam-card---backdrop-filter': 'blur(3px) saturate(1.8) brightness(1.08)',
-        '--origam-sheet---backdrop-filter': 'blur(3px) saturate(1.8) brightness(1.08)',
+        '--origam-card---backdrop-filter': 'blur(28px) saturate(2.2)',
+        '--origam-sheet---backdrop-filter': 'blur(28px) saturate(2.2)',
         '--origam-appbar---backdrop-filter': 'saturate(2) brightness(1.1) blur(26px)',
-        '--origam-menu---backdrop-filter': 'blur(20px) saturate(1.6) brightness(1.02)',
+        '--origam-menu---backdrop-filter': 'blur(28px) saturate(2)',
         '--origam-appbar---bg': 'rgba(255, 255, 255, 0.06)',
         '--origam-menu---background': 'rgba(20, 18, 40, 0.85)',
         '--origam-menu---color': 'var(--origam-color__text---primary)',
@@ -517,12 +571,21 @@ export const glassDarkTheme: IOrigamTheme = {
         '--origam-list-item__overlay---background-color': '#a78bfa',
         '--origam-list-item---border-color': 'var(--origam-color__border---default)',
 
-        '--origam-alert---backdrop-filter': 'blur(3px) saturate(1.8) brightness(1.08)',
-        '--origam-alert---background-color': 'rgba(255, 255, 255, 0.06)',
+        '--origam-alert---backdrop-filter': 'blur(24px) saturate(2.1)',
+        // ⚠️ Même piège que light (background-color n'accepte pas de gradient) —
+        // recette dark linear-gradient(150deg, rgba(44,40,80,.58), rgba(12,10,28,.52))
+        // remontée en rgba plate : moyenne canal par canal des 2 arrêts
+        // (R (44+12)/2, G (40+10)/2, B (80+28)/2, alpha (.58+.52)/2).
+        '--origam-alert---background-color': 'rgba(28, 25, 54, 0.55)',
         '--origam-alert---border-color': 'rgba(255, 255, 255, 0.12)',
+        // La recette cut-glass dark de SYNTHESE §2 est partiellement elidée
+        // dans le document source ("…" entre les 2 premiers et les 2 derniers
+        // termes) — seuls les termes EXPLICITEMENT donnés sont appliqués, pas
+        // d'invention des termes manquants.
+        '--origam-alert---box-shadow-elevated': 'inset 0 1.5px 0 rgba(255, 255, 255, 0.5), 0 22px 50px -14px rgba(0, 0, 0, 0.7), 0 0 26px -6px rgba(167, 139, 250, 0.35)',
 
-        '--origam-chip---background-color': 'rgba(255, 255, 255, 0.08)',
-        '--origam-chip---border-color': 'rgba(255, 255, 255, 0.20)',
+        '--origam-chip---background-color': 'rgba(255, 255, 255, 0.07)',
+        '--origam-chip---border-color': 'rgba(255, 255, 255, 0.14)',
 
         '--origam-snackbar-item---background-color': 'rgba(24, 22, 44, 0.78)',
         '--origam-snackbar-item---border-color': 'rgba(255, 255, 255, 0.16)',
@@ -533,6 +596,7 @@ export const glassDarkTheme: IOrigamTheme = {
         '--origam-badge__badge---background-color': '#a78bfa',
         '--origam-badge__badge---border-color': 'rgba(255, 255, 255, 0.30)',
         '--origam-badge__badge---color': '#07060f',
+        '--origam-badge__badge---box-shadow': 'inset 0 1px 0 rgba(255, 255, 255, 0.35)',
 
         '--origam-progress-linear__background---color': '#ffffff',
         '--origam-progress-linear__background---opacity': '0.10',
