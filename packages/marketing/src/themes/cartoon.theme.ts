@@ -119,6 +119,10 @@ export const cartoonLightTheme: IOrigamTheme = {
         'origam-btn-group': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
         'origam-btn-toggle': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
         'origam-card': { rounded: 'lg', border: true, flat: false, elevation: 4 },
+        // ⚠️ DIVERGENCE non tranchée (Refs #30) — synthèse design demande
+        // rounded:'md' + elevation:1 ; la migration lossless #122-126 avait
+        // posé rounded:'lg' + pill:false (pas d'elevation). Valeur laissée
+        // TELLE QUELLE en attendant l'arbitrage utilisateur. Voir rapport PR.
         'origam-chip': { variant: 'outlined', rounded: 'lg', border: true, pill: false },
         'origam-alert': { rounded: 'lg', border: true, elevation: 2 },
         'origam-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
@@ -126,15 +130,31 @@ export const cartoonLightTheme: IOrigamTheme = {
         'origam-textarea-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
         'origam-number-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
         'origam-password-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
-        'origam-select': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
+        // menuProps ajouté (synthèse §3) — respiration du dropdown (nav:true)
+        // + radius propre. Vérifié: ISelectProps.menuProps?: IMenuProps existe.
+        'origam-select': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2, menuProps: { rounded: 'md', nav: true } },
         'origam-date-picker-field': { rounded: 'lg', border: true, elevation: 2 },
         'origam-file-field': { rounded: 'lg', border: true, elevation: 2 },
         'origam-color-picker-field': { rounded: 'lg', border: true, elevation: 2 },
-        'origam-code': { rounded: 'lg', border: true, elevation: 2 },
-        'origam-menu': { rounded: 'lg', border: true, elevation: 4 },
-        'origam-table': { rounded: 'lg', border: true },
+        // copyable:true ajouté (synthèse §3) — ICodeProps.copyable existe déjà.
+        'origam-code': { rounded: 'lg', border: true, elevation: 2, copyable: true },
+        // nav:true ajouté (synthèse §3, "respiration des items") — IMenuProps
+        // forwarde vers le List interne. Vérifié: IListProps.nav existe.
+        'origam-menu': { rounded: 'lg', border: true, elevation: 4, nav: true },
+        // hover:true ajouté (synthèse §3) — ITableProps extends IHoverProps, vérifié.
+        'origam-table': { rounded: 'lg', border: true, hover: true },
+        // ⚠️ DIVERGENCE non tranchée (Refs #30) — la migration lossless avait
+        // sciemment choisi un ANNEAU discret 2px `surface-default` (mesuré sur
+        // maquette, cf. cssVars ci-dessous : --origam-avatar---border-width/
+        // color/box-shadow:none) plutôt que la bordure noire 3px + hard-shadow
+        // que demande la synthèse (`border:true, elevation:1` + box-shadow
+        // override). Valeur laissée TELLE QUELLE en attendant l'arbitrage.
         'origam-avatar': { rounded: 'lg' },
         'origam-checkbox': { rounded: 'md' },
+        // origam-radio ajouté (synthèse §3) — même traitement que checkbox
+        // ([#242 + #241] : glyphe SVG ne peut pas honorer rounded tant que le
+        // rendering-mechanism n'a pas changé — prop posée quand même, pending).
+        'origam-radio': { rounded: 'md' },
         // Switch harmony (lot 4) — mirrors `origam-text-field`'s rounded/
         // border/elevation so the track reads as the same visual family as
         // the theme's form fields, not a DS-default pill floating outside
@@ -145,7 +165,36 @@ export const cartoonLightTheme: IOrigamTheme = {
         // rendering-mechanism change (issue #241), AND they share the same
         // missing-`useDefaults()` gap as 11 other components (issue #242).
         'origam-switch': { rounded: 'lg', border: true, elevation: 2 },
-        'origam-snackbar': { rounded: 'lg', border: true, elevation: 4 }
+        'origam-snackbar': { rounded: 'lg', border: true, elevation: 4 },
+        // ── Composants NOUVEAUX (synthèse §3), aucun n'était présent avant ──
+        // Badge : 'pill' n'est PAS une valeur `rounded` valide côté DS
+        // (ni PREDEFINED_ROUNDED ni UTILITY_ROUNDED — vérifié dans
+        // useRounded.composable.ts). 'full' = 9999px = la forme "pilule"
+        // demandée par le design ; substitution technique, pas un choix
+        // esthétique différent.
+        'origam-badge': { rounded: 'full', border: true, elevation: 1 },
+        'origam-progress-linear': { rounded: true, color: 'primary', thickness: 14 },
+        'origam-slider-field': { rounded: true, color: 'primary' },
+        'origam-sheet': { rounded: 'lg', border: true, elevation: 4 },
+        'origam-dialog': { rounded: 'lg', border: true, elevation: 4 },
+        // Tooltip : AUCUNE prop `rounded`/`border` sur ITooltipProps (vérifié —
+        // n'étend ni IRoundedProps ni IBorderProps). Pas d'entrée `components`
+        // possible ; le radius/bg passent par `cssVars` ci-dessous, la bordure
+        // reste un gap DS (aucun token border-* dans tooltip.json). Voir rapport.
+        //
+        // Tabs : `border` n'existe PAS sur ITabsProps (vérifié — pas
+        // IBorderProps). rounded seul est posé ici ; la bordure 3px passe par
+        // `cssVars` (--origam-tabs---border-*, les tokens existent même sans prop).
+        'origam-tabs': { variant: 'pills', rounded: 'lg' },
+        'origam-bottom-nav': { rounded: 'lg', border: true, elevation: 2 },
+        'origam-breadcrumb': { rounded: 'lg', border: true, elevation: 2 },
+        // Pagination : `rounded` n'existe PAS sur IPaginationProps (vérifié —
+        // pas IRoundedProps). Value omise (no-op silencieux sinon) ; le radius
+        // de chaque item passe par le token --origam-pagination---border-radius
+        // déjà présent (pas de cssVars nécessaire, valeur par défaut correcte).
+        'origam-pagination': { border: true, elevation: 2 },
+        'origam-list': { rounded: 'lg', nav: true },
+        'origam-blockquote': { variant: 'default', rounded: 'lg', border: true, accentColor: 'primary' }
     },
     // Overrides bruts non exprimables en props (couleur + épaisseur de bordure,
     // hard-shadow de bouton). Migrés depuis cartoon.css → appliqués par le DS via
