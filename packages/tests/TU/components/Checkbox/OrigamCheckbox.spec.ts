@@ -211,3 +211,63 @@ describe('OrigamCheckbox — reactive modelValue', () => {
         expect(btn.exists()).toBe(true)
     })
 })
+
+// ---------------------------------------------------------------------------
+// useDefaults wiring (issue #242) — a theme's `components['origam-checkbox']`
+// config must resolve on an un-passed prop. Mounts the REAL component tree
+// (the stub chain above fakes filterProps as `() => ({})`, so it can't
+// verify forwarding) — mirrors OrigamSelect.spec.ts.
+//
+// `color` is used as the probe prop because it IS consumed downstream
+// (OrigamSelectionControl's `useTextColor`) — verified via a manual
+// runtime probe: `color: 'primary'` produces `.origam--color-primary` +
+// an inline `color: var(--origam-color__action--primary---fgSubtle)` on
+// `.origam-selection-control__wrapper`.
+//
+// `rounded` is NOT used as the probe prop: `ICheckboxProps` extends
+// `IRoundedProps` (declared on the interface) but NOTHING downstream
+// (OrigamCheckboxBtn -> OrigamSelectionControl) ever calls `useRounded`
+// on it — the control's `border-radius: 50%` circles are hardcoded SCSS.
+// Confirmed via the same runtime probe: `rounded: 'lg'` produces NO class
+// and NO style anywhere in the rendered tree, with or without this fix.
+// This is the checkbox/radio glyph-rendering gap tracked in issue #241 —
+// out of scope here. useDefaults wiring alone cannot fix a prop nothing
+// downstream consumes; #241 is the ticket to wire useRounded into
+// OrigamSelectionControl.
+// ---------------------------------------------------------------------------
+
+async function mountCheckboxThemed(componentDefaults: Record<string, unknown>, props: Record<string, unknown> = {}) {
+    const theme = { name: 'brandx', mode: 'light' as const, components: { 'origam-checkbox': componentDefaults }, vars: {} }
+    const origam = createOrigam({ themes: [theme] })
+    origam._defaultsRef.value = origam._activeDefaultsFor('brandx', 'light')
+    const wrapper = mount(OrigamCheckbox, {
+        props: props as never,
+        global: { plugins: [origam] }
+    })
+    await nextTick()
+    await nextTick()
+    return wrapper
+}
+
+describe('OrigamCheckbox — useDefaults (theme components wiring)', () => {
+    it('resolves color="primary" from theme.components[\'origam-checkbox\'] on the selection-control wrapper', async () => {
+        const wrapper = await mountCheckboxThemed({ color: 'primary' })
+        const wrapperEl = wrapper.find('.origam-selection-control__wrapper')
+        expect(wrapperEl.classes()).toContain('origam--color-primary')
+        expect(wrapperEl.attributes('style') || '').toContain('color: var(--origam-color__action--primary---fgSubtle)')
+    })
+
+    it('an explicitly passed color prop overrides the theme default', async () => {
+        const wrapper = await mountCheckboxThemed({ color: 'primary' }, { color: 'danger' })
+        const wrapperEl = wrapper.find('.origam-selection-control__wrapper')
+        expect(wrapperEl.classes()).toContain('origam--color-danger')
+        expect(wrapperEl.classes()).not.toContain('origam--color-primary')
+    })
+
+    it('DIAGNOSTIC (documents issue #241, not a regression of this fix): rounded resolves via useDefaults but produces no visible effect — nothing downstream consumes it', async () => {
+        const wrapper = await mountCheckboxThemed({ rounded: 'lg' })
+        const html = wrapper.html()
+        expect(html).not.toContain('origam--rounded-lg')
+        expect(html).not.toContain('border-radius')
+    })
+})
