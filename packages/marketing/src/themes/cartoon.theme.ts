@@ -239,7 +239,46 @@ export const cartoonLightTheme: IOrigamTheme = {
         '--origam-avatar---border-color': 'var(--origam-color__surface---default)',
         '--origam-avatar---box-shadow': 'none',
         '--origam-font-family---heading': "Inter, -apple-system, 'system-ui', sans-serif",
-        '--origam-title---font-family': "Inter, -apple-system, 'system-ui', sans-serif"
+        '--origam-title---font-family': "Inter, -apple-system, 'system-ui', sans-serif",
+
+        // ── Synthèse §4 — états ajoutés par le design (Refs #30) ──────────
+        // Chaque valeur ci-dessous a été vérifiée contre les vars CSS
+        // RÉELLEMENT générées par le build DS (packages/ds/dist) ET lues par
+        // le SCSS du composant concerné — pas de nom de var inventé.
+        //
+        // NON applicable ici (gap DS constaté, PAS un oubli — voir rapport PR) :
+        //   - tab pills --active box-shadow (aucune var lue, seul bg/color a un fallback)
+        //   - bottom-nav__item --active bg/color (aucune var par item, seulement
+        //     un --active de conteneur pour le box-shadow)
+        //   - breadcrumb__item --active BACKGROUND (seule --active-color, texte, existe)
+        //   - list-item --active/--hover bg/color pleins (mécanisme = overlay
+        //     opacity teinté de currentColor, pas un swap de couleur directe)
+        //   - field --focus outline (aucune var — le focus du Field passe par
+        //     l'opacité de bordure, pas un outline)
+        //   - field --error box-shadow (aucune var — seul border-color existe)
+        //   - list gap 6px (aucune var --origam-list---gap générée)
+        //
+        // Déjà correct SANS override (le token par défaut résout déjà vers
+        // vars.color.action.primary, donc déjà rose/prune côté cartoon) :
+        //   - checkbox-btn checked (background-color-checked / color-checked)
+        //   - tabs pills --active bg/color (fallback var(--origam-color__action--primary---bg/fg))
+        //   - pagination__item active-background-color / active-color
+        //   - table__row hover-background-color (= surface.sunken = #fff3d6)
+        //   - table__cell border-color (= border.subtle = #171717)
+        //   - code syntax string / function (déjà alignées sur feedback success/info)
+        //   - divider color (= border.subtle = #171717)
+
+        '--origam-field--error---border-color': '#ef4444',
+        '--origam-list-item---border-radius': '9px',
+        '--origam-table---header-cell-background-color': 'var(--origam-color__action--primary---bg-subtle)',
+        '--origam-code---line-highlight-background-color': 'var(--origam-color__action--primary---bg-subtle)',
+        '--origam-code__syntax---keyword': '#c0174a',
+        '--origam-code__syntax---comment': '#8a7f72',
+        '--origam-overlay-scrim---background-color': 'rgba(23, 23, 23, 0.6)',
+        '--origam-overlay-scrim---opacity': '1',
+        '--origam-divider---thickness': '3px',
+        '--origam-tooltip---background-color': '#ffffff',
+        '--origam-tooltip---color': '#2b2b2b'
     }
 }
 
@@ -394,7 +433,19 @@ export const cartoonDarkTheme: IOrigamTheme = {
         '--origam-avatar---border-color': '#1a1a1a',
         '--origam-avatar---box-shadow': 'none',
         '--origam-font-family---heading': "Inter, -apple-system, 'system-ui', sans-serif",
-        '--origam-title---font-family': "Inter, -apple-system, 'system-ui', sans-serif"
+        '--origam-title---font-family': "Inter, -apple-system, 'system-ui', sans-serif",
+
+        // ── Synthèse §4 (dark) — voir le bloc light pour le détail des gaps
+        // DS non applicables et des couples déjà corrects sans override.
+        '--origam-field--error---border-color': '#ef4444',
+        '--origam-list-item---border-radius': '9px',
+        '--origam-table---header-cell-background-color': 'var(--origam-color__action--primary---bg-subtle)',
+        '--origam-code---line-highlight-background-color': 'var(--origam-color__action--primary---bg-subtle)',
+        '--origam-overlay-scrim---background-color': 'rgba(23, 23, 23, 0.6)',
+        '--origam-overlay-scrim---opacity': '1',
+        '--origam-divider---thickness': '3px',
+        '--origam-tooltip---background-color': '#262626',
+        '--origam-tooltip---color': '#fffefb'
     }
 }
 
