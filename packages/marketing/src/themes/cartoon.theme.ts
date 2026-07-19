@@ -270,13 +270,14 @@ export const cartoonLightTheme: IOrigamTheme = {
 
         '--origam-field--error---border-color': '#ef4444',
         '--origam-list-item---border-radius': '9px',
-        '--origam-table---header-cell-background-color': 'var(--origam-color__action--primary---bg-subtle)',
-        '--origam-code---line-highlight-background-color': 'var(--origam-color__action--primary---bg-subtle)',
+        '--origam-table---header-cell-background-color': 'var(--origam-color__action--primary---bgSubtle)',
+        '--origam-code---line-highlight-background-color': 'var(--origam-color__action--primary---bgSubtle)',
         '--origam-code__syntax---keyword': '#c0174a',
         '--origam-code__syntax---comment': '#8a7f72',
         '--origam-overlay-scrim---background-color': 'rgba(23, 23, 23, 0.6)',
         '--origam-overlay-scrim---opacity': '1',
-        '--origam-divider---thickness': '3px',
+        '--origam-divider---border-top-width': '3px',
+        '--origam-divider---border-right-width': '3px',
         '--origam-tooltip---background-color': '#ffffff',
         '--origam-tooltip---color': '#2b2b2b'
     }
@@ -439,11 +440,12 @@ export const cartoonDarkTheme: IOrigamTheme = {
         // DS non applicables et des couples déjà corrects sans override.
         '--origam-field--error---border-color': '#ef4444',
         '--origam-list-item---border-radius': '9px',
-        '--origam-table---header-cell-background-color': 'var(--origam-color__action--primary---bg-subtle)',
-        '--origam-code---line-highlight-background-color': 'var(--origam-color__action--primary---bg-subtle)',
+        '--origam-table---header-cell-background-color': 'var(--origam-color__action--primary---bgSubtle)',
+        '--origam-code---line-highlight-background-color': 'var(--origam-color__action--primary---bgSubtle)',
         '--origam-overlay-scrim---background-color': 'rgba(23, 23, 23, 0.6)',
         '--origam-overlay-scrim---opacity': '1',
-        '--origam-divider---thickness': '3px',
+        '--origam-divider---border-top-width': '3px',
+        '--origam-divider---border-right-width': '3px',
         '--origam-tooltip---background-color': '#262626',
         '--origam-tooltip---color': '#fffefb'
     }
