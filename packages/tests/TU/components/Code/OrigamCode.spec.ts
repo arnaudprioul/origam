@@ -240,6 +240,20 @@ describe('OrigamCode — useDefaults (theme components wiring)', () => {
         wrapper.unmount()
     })
 
+    // Regression guard: 'figure' above matches the component's OWN
+    // withDefaults() default, so it can't tell a resolved theme value
+    // apart from the unresolved fallback. Use a DIFFERING tag to prove
+    // the theme value actually reaches the root — the root
+    // `<component :is="…">` reads a bare `tag` in `<script setup>`,
+    // which resolves against Vue's raw $props, NOT this useDefaults()
+    // Proxy, unless written as `props.tag` explicitly. See
+    // OrigamTable.vue for the full writeup of this footgun.
+    it('resolves tag="section" (differing from the component\'s own "figure" default) from theme.components[\'origam-code\']', async () => {
+        const wrapper = await mountCodeThemed({ tag: 'section' })
+        expect(wrapper.find('.origam-code').element.tagName).toBe('SECTION')
+        wrapper.unmount()
+    })
+
     it('resolves compact=true from theme.components[\'origam-code\'] when not passed', async () => {
         const wrapper = await mountCodeThemed({ compact: true })
         expect(wrapper.find('.origam-code').classes()).toContain('origam-code--compact')
