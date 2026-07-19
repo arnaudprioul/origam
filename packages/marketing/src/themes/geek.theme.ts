@@ -119,33 +119,100 @@ export const geekLightTheme: IOrigamTheme = {
     // `origam` (deep-merge). Identité terminal/dev/néon : coins peu arrondis
     // (rounded sm), monospace, glow néon via la prop `elevation`. Seules la
     // couleur de bordure violette et la teinte de glow (non exprimables en props)
-    // restent dans `vars`.
+    // restent dans `vars`/`cssVars`.
+    //
+    // Source unique : SYNTHESE-geek-theme.md §3 (bloc validé, 6/6 familles).
+    // Chaque prop a été vérifiée contre l'interface DS réelle (grep sur
+    // `packages/ds/src/interfaces/**`) avant écriture — divergences trouvées
+    // vs. la synthèse littérale, corrigées ici et documentées inline :
+    //   • `origam-chip` : `variant` retiré — IChipProps N'A PAS de `variant`
+    //     (seule ITabsProps/IBtnProps en ont un) ; c'était déjà un no-op
+    //     silencieux dans l'ancien fichier (même bug que glass §3 fix #3).
+    //   • `origam-tabs` : `border` retiré — ITabsProps n'étend PAS
+    //     IBorderProps (confirmé : extends ICommonsComponentProps, ITagProps,
+    //     IDirectionProps, IDensityProps, IRoundedProps, IColorProps,
+    //     IBgColorProps, IGroupProps — aucune IBorderProps).
+    //   • `origam-pagination` : `rounded` retiré — IPaginationProps n'étend
+    //     PAS IRoundedProps (extends IBorderProps + IElevationProps oui,
+    //     IRoundedProps non) ; le radius passe par cssVar
+    //     `--origam-pagination---border-radius` (seul hook réel).
+    //   • `origam-tooltip` : absent d'ici — ITooltipProps n'a NI IRoundedProps
+    //     NI IBorderProps (extends IOverlayProps, IColorProps, IBgColorProps,
+    //     IDimensionProps, IActivatorProps, ILocationStrategyProps,
+    //     IScrollStrategyProps, ILazyProps, ITransitionComponentProps,
+    //     IScrimProps, ITypographyProps — confirmé). Le radius "coins nets"
+    //     passe par le seul hook réel du composant,
+    //     `--origam-tooltip---border-radius` (cssVars ci-dessous) ; aucun
+    //     hook border n'existe (ni cssVar ni prop) — DS GAP, non applicable.
+    //   • `origam-dialog` : `rounded`/`border`/`elevation` SONT valides —
+    //     OrigamDialog.vue enveloppe un `<origam-card v-bind="cardProps">`
+    //     interne (`cardProps = origamCardRef.value?.filterProps(props)`),
+    //     donc ces props sont forwardées et rendues par le VRAI OrigamCard
+    //     (même glow néon que `origam-card` partout ailleurs) — pas un no-op.
+    //     Vérifié runtime (Playwright, /theming, dark+light) : la card
+    //     interne rend bien rounded/border/elevation geek, ET le halo
+    //     `--origam-dialog---box-shadow` (cssVars) s'ajoute par-dessus.
+    //   • `origam-radio` : ajouté en miroir de `origam-checkbox` — types
+    //     valides (IRadioProps extends IRoundedProps confirmé) mais NON
+    //     rendus par OrigamRadioBtn.vue (glyphe mdi, aucun useRounded dans
+    //     le rendu — issue #241, même blocage que checkbox, distincte de
+    //     #242/#249 qui sont mergées). Posé quand même (prêt à s'activer le
+    //     jour où #241 est corrigé) — pending #241, voir la PR.
     components: {
         'origam-btn': { variant: 'outlined', rounded: 'sm', border: true, elevation: 2 },
         'origam-btn-group': { variant: 'outlined', rounded: 'sm', border: true, elevation: 2 },
         'origam-btn-toggle': { variant: 'outlined', rounded: 'sm', border: true, elevation: 2 },
+
+        // ── Overlay & Surface (SYNTHESE §3) ──────────────────────────────
         'origam-card': { rounded: 'sm', border: true, flat: false, elevation: 2 },
-        'origam-chip': { variant: 'outlined', rounded: 'sm', border: true, pill: false },
+        'origam-sheet': { rounded: 'sm', border: true, elevation: 3 },
+        'origam-menu': { rounded: 'sm', border: true, elevation: 3, nav: true },
+        'origam-dialog': { rounded: 'sm', border: true, elevation: 3 },
+        // Aucune entrée `origam-tooltip` — voir note ci-dessus (DS GAP).
+
+        // ── Feedback & Status (SYNTHESE §3) ──────────────────────────────
+        'origam-chip': { rounded: 'sm', border: true, pill: false },
         'origam-alert': { rounded: 'sm', border: true, elevation: 1 },
+        'origam-snackbar': { rounded: 'sm', border: true, elevation: 3 },
+        'origam-badge': { rounded: 'sm', border: false },
+        'origam-progress-linear': { rounded: 'sm', color: 'primary' },
+
+        // ── Form & Input (SYNTHESE §3) ────────────────────────────────────
         'origam-field': { variant: 'outlined', rounded: 'sm', border: true },
         'origam-text-field': { variant: 'outlined', rounded: 'sm', border: true },
         'origam-textarea-field': { variant: 'outlined', rounded: 'sm', border: true },
         'origam-number-field': { variant: 'outlined', rounded: 'sm', border: true },
         'origam-password-field': { variant: 'outlined', rounded: 'sm', border: true },
-        'origam-select': { variant: 'outlined', rounded: 'sm', border: true },
+        'origam-select': {
+            variant: 'outlined', rounded: 'sm', border: true,
+            menuProps: { rounded: 'sm', nav: true }
+        },
         'origam-date-picker-field': { rounded: 'sm', border: true },
         'origam-file-field': { rounded: 'sm', border: true },
         'origam-color-picker-field': { rounded: 'sm', border: true },
-        'origam-code': { rounded: 'sm', border: true, elevation: 2 },
-        'origam-menu': { rounded: 'sm', border: true, elevation: 3 },
-        'origam-table': { rounded: 'sm', border: true },
-        'origam-avatar': { rounded: 'sm', border: true },
-        'origam-checkbox': { rounded: 'xs' },
+        'origam-checkbox': { rounded: 'xs' }, // pending #241 (glyph render)
+        'origam-radio': { rounded: 'xs' }, // pending #241 (glyph render)
         // Switch harmony (lot 4) — mirrors `origam-text-field`'s rounded/
         // border so the track reads as the same visual family as the
         // theme's fields (see cartoon.theme.ts for the full rationale).
         'origam-switch': { rounded: 'sm', border: true },
-        'origam-snackbar': { rounded: 'sm', border: true, elevation: 3 }
+        'origam-slider-field': { rounded: 'sm', color: 'primary' },
+
+        // ── Navigation (SYNTHESE §3) ──────────────────────────────────────
+        'origam-tabs': { variant: 'pills', rounded: 'sm' },
+        'origam-bottom-nav': { rounded: 'sm', border: true, elevation: 2 },
+        'origam-breadcrumb': { rounded: 'sm', border: true },
+        'origam-pagination': { border: true, elevation: 1 },
+        'origam-list': { rounded: 'sm', nav: true },
+
+        // ── Data Display (SYNTHESE §3) ────────────────────────────────────
+        'origam-table': { rounded: 'sm', border: true, hover: true },
+        'origam-code': { rounded: 'sm', border: true, elevation: 2, copyable: true },
+        'origam-avatar': { rounded: 'sm', border: true },
+        'origam-blockquote': {
+            variant: 'default', rounded: 'sm', border: true,
+            accentColor: 'primary'
+        }
     },
     cssVars: {
         "--origam-font-family---heading": "'JetBrains Mono', 'Fira Code', ui-monospace, monospace",
