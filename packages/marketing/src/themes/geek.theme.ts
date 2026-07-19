@@ -67,14 +67,20 @@ export const geekLightTheme: IOrigamTheme = {
                     bg: '#16a34a',
                     bgSubtle: 'rgba(22, 163, 74, 0.1)',
                     fg: '#000000',
-                    fgSubtle: '#15803d',
+                    // Fix source #1 (SYNTHESE geek §5.1): #15803d measured
+                    // 4.4:1 on the lavender surface (< AA). green-800 clears
+                    // AA at ~6:1 (same fix already applied on glass theme).
+                    fgSubtle: '#166534',
                     border: '#16a34a'
                 },
                 warning: {
                     bg: '#d97706',
                     bgSubtle: 'rgba(217, 119, 6, 0.1)',
                     fg: '#000000',
-                    fgSubtle: '#b45309',
+                    // Fix source #1 (SYNTHESE geek §5.1): #b45309 measured
+                    // 4.4:1 on the lavender surface (< AA). amber-800 clears
+                    // AA at ~6.2:1.
+                    fgSubtle: '#92400e',
                     border: '#d97706'
                 },
                 danger: {
@@ -246,7 +252,11 @@ export const geekDarkTheme: IOrigamTheme = {
                 danger: {
                     bg: '#ff3864',
                     bgSubtle: 'rgba(255, 56, 100, 0.10)',
-                    fg: '#ffffff',
+                    // Fix source #2 (SYNTHESE geek §5.2): white text on the
+                    // neon danger bg #ff3864 measures 3.5:1 (fails AA).
+                    // Ink #0a0612 (same as every other dark on-neon
+                    // glyph in this theme) clears AA at 5.73:1.
+                    fg: '#0a0612',
                     fgSubtle: '#ff3864',
                     border: '#ff3864'
                 },
