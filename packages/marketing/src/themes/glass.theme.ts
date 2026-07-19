@@ -125,31 +125,87 @@ export const glassLightTheme: IOrigamTheme = {
     // + bordures subtiles + elevation diffuse. Seuls les reflets et couleurs
     // translucides (non exprimables en props) restent dans `vars`.
     components: {
-        'origam-btn': { variant: 'tonal', rounded: 'lg', pill: true, elevation: 2 },
+        // ── Btn family — hors périmètre SYNTHESE (non ré-spécifiée), conservée
+        // telle quelle. `pill` retiré : IBtnProps n'a PAS de prop `pill`
+        // (confirmé — seul IChipProps en a une) ; c'était un no-op silencieux.
+        'origam-btn': { variant: 'tonal', rounded: 'lg', elevation: 2 },
         'origam-btn-group': { variant: 'tonal', rounded: 'lg', elevation: 2 },
         'origam-btn-toggle': { variant: 'tonal', rounded: 'lg', elevation: 2 },
-        'origam-card': { rounded: 'lg', border: true, flat: false, elevation: 3 },
-        'origam-chip': { variant: 'tonal', rounded: 'lg', border: true, pill: true },
-        'origam-alert': { rounded: 'lg', border: true, elevation: 2 },
-        'origam-field': { variant: 'outlined', rounded: 'lg', border: true },
-        'origam-text-field': { variant: 'outlined', rounded: 'lg', border: true },
-        'origam-textarea-field': { variant: 'outlined', rounded: 'lg', border: true },
-        'origam-number-field': { variant: 'outlined', rounded: 'lg', border: true },
-        'origam-password-field': { variant: 'outlined', rounded: 'lg', border: true },
-        'origam-select': { variant: 'outlined', rounded: 'lg', border: true },
+        // `origam-field` — hors périmètre SYNTHESE. `border` retiré : IFieldProps
+        // n'étend PAS IBorderProps (seuls IInputProps / ITextFieldProps l'ont) ;
+        // c'était un no-op silencieux.
+        'origam-field': { variant: 'outlined', rounded: 'lg' },
         'origam-date-picker-field': { rounded: 'lg', border: true },
         'origam-file-field': { rounded: 'lg', border: true },
         'origam-color-picker-field': { rounded: 'lg', border: true },
-        'origam-code': { rounded: 'lg', border: true, elevation: 2 },
-        'origam-menu': { rounded: 'lg', border: true, elevation: 3 },
-        'origam-table': { rounded: 'lg', border: true },
-        'origam-avatar': { rounded: 'lg', border: true },
-        'origam-checkbox': { rounded: 'lg' },
-        // Switch harmony (lot 4) — mirrors `origam-text-field`'s rounded/
-        // border so the track reads as the same visual family as the
-        // theme's fields (see cartoon.theme.ts for the full rationale).
-        'origam-switch': { rounded: 'lg', border: true },
-        'origam-snackbar': { rounded: 'lg', border: true, elevation: 3 }
+
+        // ── Feedback & Status (SYNTHESE §3) ─────────────────────────────
+        'origam-alert': { rounded: 'lg', border: true, elevation: 2 },
+        'origam-snackbar': { rounded: 'lg', border: true, elevation: 3 },
+        'origam-badge': { rounded: 'lg', border: true, elevation: 1 },
+        'origam-progress-linear': { rounded: true, color: 'primary' },
+        'origam-progress-circular': { color: 'primary' },
+        // variant:'tonal' retiré (fix source #3) : IChipProps n'a pas de
+        // prop `variant` — translucidité posée via cssVars à la place.
+        'origam-chip': { rounded: 'lg', border: true, pill: true, elevation: 1 },
+
+        // ── Form & Input — sélection (SYNTHESE §3) ──────────────────────
+        // rounded/border/elevation existent bien sur ICheckboxProps /
+        // IRadioProps (types valides) mais ne sont PAS rendus par
+        // OrigamCheckboxBtn.vue / OrigamRadioBtn.vue (glyphe mdi, aucun
+        // useRounded/useBorder/useElevation dans le rendu — issue #241,
+        // distincte de #242/#249. Posées quand même (prêtes à s'activer le jour où
+        // #241 est corrigé) — marquées pending #241 dans la vérification (seul
+        // point encore non résolu de tout le thème).
+        'origam-checkbox': { rounded: 'lg', border: true, elevation: 3 }, // pending #241 (glyph render)
+        'origam-radio': { rounded: 'lg', border: true, elevation: 3 }, // pending #241 (glyph render)
+        // `color:'primary'` ajouté au-delà de la liste littérale SYNTHESE §3 :
+        // ISwitchProps extends IColorProps (vérifié) — nécessaire pour obtenir
+        // le "fill accent bombé" au ON exigé par la règle couple-actif §1.2 ;
+        // sans lui le thumb/track ON restent sur la couleur neutre par défaut.
+        'origam-switch': { rounded: 'lg', border: true, elevation: 3, inset: true, color: 'primary' },
+        'origam-slider-field': { rounded: true, color: 'primary', trackProps: { rounded: true } },
+
+        // ── Form & Input — champs (SYNTHESE §3) ─────────────────────────
+        'origam-text-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
+        'origam-textarea-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
+        'origam-number-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
+        'origam-password-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
+        'origam-select': {
+            variant: 'outlined', rounded: 'lg', border: true,
+            menuProps: { rounded: 'lg', elevation: 3, nav: true }
+        },
+
+        // ── Overlay & Surface (SYNTHESE §3) ─────────────────────────────
+        'origam-card': { rounded: 'lg', border: true, elevation: 4 },
+        'origam-sheet': { rounded: 'lg', border: true, elevation: 4 },
+        'origam-menu': { rounded: 'lg', border: true, elevation: 4, nav: true },
+        'origam-dialog': { rounded: 'lg', border: true, elevation: 5 },
+        // origam-tooltip volontairement ABSENT d'ici : ITooltipProps n'a NI
+        // `rounded`, NI `border`, NI `elevation` (confirmé — aucune de ces
+        // Commons interfaces n'est étendue). Le radius passe par le cssVar
+        // `--origam-tooltip---border-radius` (seul hook exposé par le SCSS).
+        // Le "sans caret" du §1.4 est acquis par défaut : le composant ne
+        // rend aucun triangle/pointeur, la spec n'a rien à désactiver.
+
+        // ── Navigation (SYNTHESE §3) ─────────────────────────────────────
+        'origam-tabs': { variant: 'pills', rounded: 'lg' },
+        'origam-bottom-nav': { rounded: 'lg', border: true, elevation: 4 },
+        'origam-breadcrumb': { rounded: 'lg', border: true, density: 'compact' },
+        // rounded retiré : IPaginationProps n'étend PAS IRoundedProps — le
+        // radius est 100% cssVar-driven (`--origam-pagination---border-radius`
+        // / `-rounded`), câblé plus bas dans `cssVars`.
+        'origam-pagination': { border: true, elevation: 2 },
+        'origam-list': { rounded: 'lg', nav: true },
+
+        // ── Data Display (SYNTHESE §3) ───────────────────────────────────
+        'origam-table': { rounded: 'lg', border: true, elevation: 3, hover: true },
+        'origam-code': { rounded: 'lg', border: true, elevation: 3, copyable: true },
+        'origam-avatar': { rounded: 'lg', border: true, elevation: 2 },
+        'origam-blockquote': {
+            variant: 'default', rounded: 'lg', border: true, elevation: 3,
+            accentColor: 'primary'
+        }
     },
     // Overrides bruts glassmorphism non exprimables en props (bordures translucides,
     // backdrop-filter, ombres douces à reflets internes). Migrés depuis glass.css →
