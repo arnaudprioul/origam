@@ -55,7 +55,12 @@ export const glassLightTheme: IOrigamTheme = {
                 }
             },
             border: {
-                default: 'rgba(124, 58, 237, 0.20)',
+                // Fix source #2 (SYNTHESE glass §5.2, WCAG 1.4.11 non-text
+                // contrast): the previous rgba(124,58,237,.20) resolved to
+                // ~2.1:1 — an empty control/field contour was nearly
+                // invisible on the frosted gradient. Solid #6d28d9 (6.06:1,
+                // spec-calculated) replaces it as the global default border.
+                default: '#6d28d9',
                 subtle: 'rgba(124, 58, 237, 0.10)',
                 strong: 'rgba(124, 58, 237, 0.35)',
                 focus: '#7c3aed',
@@ -67,14 +72,20 @@ export const glassLightTheme: IOrigamTheme = {
                     bg: '#16a34a',
                     bgSubtle: 'rgba(22, 163, 74, 0.1)',
                     fg: '#000000',
-                    fgSubtle: '#15803d',
+                    // Fix source #1 (SYNTHESE glass §5.1): #15803d measured
+                    // 4.4:1 on the frosted surface (< AA). green-800 clears
+                    // AA at 6.24:1.
+                    fgSubtle: '#166534',
                     border: '#16a34a'
                 },
                 warning: {
                     bg: '#d97706',
                     bgSubtle: 'rgba(217, 119, 6, 0.1)',
                     fg: '#000000',
-                    fgSubtle: '#b45309',
+                    // Fix source #1 (SYNTHESE glass §5.1): #b45309 measured
+                    // 4.4:1 on the frosted surface (< AA). amber-800 clears
+                    // AA at 6.21:1.
+                    fgSubtle: '#92400e',
                     border: '#d97706'
                 },
                 danger: {
@@ -228,7 +239,9 @@ export const glassDarkTheme: IOrigamTheme = {
                 }
             },
             border: {
-                default: 'rgba(255, 255, 255, 0.12)',
+                // Fix source #2 (SYNTHESE glass §5.2): dark contour needs
+                // white ≥0.35 opacity (3.10:1) — 0.12 was near-invisible.
+                default: 'rgba(255, 255, 255, 0.35)',
                 subtle: 'rgba(255, 255, 255, 0.06)',
                 strong: 'rgba(255, 255, 255, 0.20)',
                 focus: '#a78bfa',
