@@ -353,4 +353,13 @@ describe('OrigamAlert — useDefaults (theme components wiring)', () => {
         const wrapper = mountAlertThemed({ border: true })
         expect(wrapper.classes()).toContain('origam-alert--border')
     })
+
+    // Regression guard: the root `<component :is="…">` reads a bare `tag`
+    // in `<script setup>`, which resolves against Vue's raw $props — NOT
+    // this useDefaults() Proxy — unless written as `props.tag` explicitly.
+    // See OrigamTable.vue for the full writeup of this footgun.
+    it('resolves tag="aside" from theme.components[\'origam-alert\'] when not passed', () => {
+        const wrapper = mountAlertThemed({ tag: 'aside' })
+        expect(wrapper.element.tagName).toBe('ASIDE')
+    })
 })
