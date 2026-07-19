@@ -1,11 +1,24 @@
 <script setup lang="ts">
+import { MDI_ICONS } from 'origam/enums'
+
 /**
- * ThemeBuilderControlTrigger — shared trigger button + popover shell for the
+ * ThemeBuilderControlTrigger — shared trigger FIELD + popover shell for the
  * 5 rich theme-builder controls (Color, Rounded, Elevation, Border, Box
- * model). Owns only the open/close chrome (origam-menu + trigger button);
- * every field-specific composable/markup lives in the consuming component's
- * default slot. Matches the trigger pattern validated across every state in
- * `packages/marketing/wireframes/theming-controls/*.html`.
+ * model). These are FIELDS, not buttons: the surrounding column is a stack
+ * of `<origam-select>` / `<origam-number-field>` controls, and a rich
+ * control that opens a popover is still conceptually "pick a value" — the
+ * same job a select does. Built directly on `<origam-text-field>` (readonly,
+ * click-to-open), mirroring exactly how `OrigamColorPickerField` and
+ * `OrigamSelect` themselves compose `OrigamTextField` for a "click the
+ * field to open a rich popover" interaction: same chrome (border, radius,
+ * height, focus/hover), same prepend/append slot anatomy (swatch in
+ * `prependInner`, chevron in `appendInner`), same `activator="parent"` +
+ * `open-on-click="false"` + manual `@mousedown:control` toggle. A previous
+ * version built this on `<origam-btn variant="outlined">`, which is why it
+ * rendered as a pill next to the square-ish fields beside it — two visual
+ * families in the same column. Owns only the open/close chrome; every
+ * field-specific composable/markup lives in the consuming component's
+ * default slot.
  */
 withDefaults(defineProps<{
     label: string
@@ -23,87 +36,83 @@ withDefaults(defineProps<{
 })
 
 const open = defineModel<boolean>('open', { default: false })
+
+const handleMousedownControl = (): void => {
+    open.value = !open.value
+}
 </script>
 
 <template>
-    <origam-menu
-        v-model="open"
-        :close-on-content-click="false"
-        location="bottom"
-        class="tbc-menu"
+    <origam-text-field
+        :model-value="valueLabel"
+        :label="label"
+        variant="outlined"
+        density="compact"
+        readonly
+        hide-details
+        role="button"
+        aria-haspopup="dialog"
+        :aria-expanded="open ? 'true' : 'false'"
+        class="tbc-trigger"
+        :class="{ 'tbc-trigger--hint': hint }"
+        :aria-label="label"
+        :data-cy="`${dataCy}-trigger`"
+        @mousedown:control="handleMousedownControl"
     >
-        <template #activator="{ props: menuProps }">
-            <origam-btn
-                variant="outlined"
-                density="compact"
-                size="small"
-                block
-                class="tbc-trigger"
-                :aria-label="label"
-                :data-cy="`${dataCy}-trigger`"
-                v-bind="menuProps"
-            >
-                <span
-                    v-if="swatch"
-                    class="tbc-trigger__swatch"
-                    :class="swatchClass"
-                    :style="swatchStyle"
-                    aria-hidden="true"
-                />
-                <span
-                    class="tbc-trigger__value"
-                    :class="{ 'tbc-trigger__value--hint': hint }"
-                >{{ valueLabel }}</span>
-            </origam-btn>
+        <template
+            v-if="swatch"
+            #prependInner
+        >
+            <span
+                class="tbc-trigger__swatch"
+                :class="swatchClass"
+                :style="swatchStyle"
+                aria-hidden="true"
+            />
         </template>
 
         <template #default>
-            <div
-                class="tbc-popover"
-                :data-cy="`${dataCy}-popover`"
+            <origam-menu
+                v-model="open"
+                :close-on-content-click="false"
+                :open-on-click="false"
+                activator="parent"
+                location="bottom"
+                class="tbc-menu"
             >
-                <slot />
-            </div>
+                <template #default>
+                    <div
+                        class="tbc-popover"
+                        :data-cy="`${dataCy}-popover`"
+                    >
+                        <slot />
+                    </div>
+                </template>
+            </origam-menu>
         </template>
-    </origam-menu>
+
+        <template #appendInner>
+            <origam-icon
+                :icon="MDI_ICONS.CHEVRON_DOWN"
+                class="tbc-trigger__menu-icon"
+                aria-hidden="true"
+            />
+        </template>
+    </origam-text-field>
 </template>
 
 <style scoped lang="scss">
 .tbc-trigger {
-    justify-content: flex-start;
-    inline-size: 100%;
-    font-size: 0.6875rem;
-
-    /*
-     * OrigamBtn's `__loader` grid (`prepend | content | append`, the
-     * DS default) centers that 3-column cluster as a unit via
-     * `justify-content: center` — the `content` track only sizes to
-     * its own `auto` content, it never absorbs the button's leftover
-     * inline space. Audited (per DS props-first rule): neither
-     * `OrigamBtn` nor its Commons interfaces expose a `justify` /
-     * `align` / `contentJustify` prop (`IJustifyProps`/`IAlignProps`
-     * are consumed only by grid layout components — Grids/col,
-     * Grids/row, DataTable/footer — never by Btn), so there is no
-     * props-first path here. This trigger never uses the
-     * `prepend`/`append` slots (the swatch + value both live in the
-     * default slot, i.e. a single `content` grid track with empty
-     * neighbours), so switching to `justify-content: normal` (let the
-     * `auto` track absorb the space) is safe for this component
-     * specifically — it does NOT reproduce the icon/text
-     * decoupling regression found and reverted at the DS level for
-     * generic block buttons that DO use a prepend/append icon.
-     */
-    :deep(.origam-btn__loader) {
-        justify-content: normal;
+    :deep(input) {
+        cursor: pointer;
+        caret-color: transparent;
     }
 
-    :deep(.origam-btn__content) {
-        flex: 1 1 auto;
-        display: flex;
-        align-items: center;
-        gap: var(--origam-spacing-2, 0.5rem);
-        min-inline-size: 0;
-        justify-content: flex-start;
+    &--hint {
+        :deep(input) {
+            font-style: italic;
+            color: var(--origam-color-text-subtle);
+        }
     }
 
     &__swatch {
@@ -114,18 +123,8 @@ const open = defineModel<boolean>('open', { default: false })
         border: 1px solid var(--origam-color-border-default);
     }
 
-    &__value {
-        flex: 1 1 auto;
-        min-inline-size: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        text-align: start;
-
-        &--hint {
-            font-style: italic;
-            color: var(--origam-color-text-subtle);
-        }
+    &__menu-icon {
+        pointer-events: none;
     }
 }
 

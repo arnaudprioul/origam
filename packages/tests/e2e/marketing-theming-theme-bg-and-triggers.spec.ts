@@ -132,10 +132,122 @@ test.describe('Theme Builder · lot B — rich-control triggers match the select
 
             const colorTrigger = page.locator('[data-cy="theming-prop-color-trigger"]')
             await expect(colorTrigger).toBeVisible()
-            const valueText = colorTrigger.locator('.tbc-trigger__value')
-            await expect(valueText).toHaveText(/\S/)
+            const valueInput = colorTrigger.locator('input')
+            await expect(valueInput).not.toHaveValue('')
         })
     }
+})
+
+/**
+ * Lot D (follow-up, ticket #24) — the 5 rich-control triggers were rebuilt
+ * on `<origam-text-field>` (matching `OrigamSelect`/`OrigamColorPickerField`'s
+ * own field composition) instead of `<origam-btn>`. They must be visually
+ * IDENTICAL to each other (same trigger component, same theme resolution
+ * path — both call `useDefaults()` via `OrigamTextField`).
+ *
+ * The neighbouring generic `<origam-select>` row is DELIBERATELY excluded
+ * from this parity check: `OrigamSelect` never calls `useDefaults()` (DS
+ * issue #242, confirmed by grep — zero occurrences), so it never resolves
+ * `theme.components['origam-select']` and falls back to its own hardcoded
+ * `rounded: true` (→ generic 'md' rung, 14px) instead of the theme's
+ * configured value (e.g. cartoon's `rounded: 'lg'`, 20px) — a measured,
+ * reproducible 6px gap on cartoon specifically. This is a DS-level root
+ * cause, not a marketing/trigger bug — see the `test.fixme` below, which
+ * documents the exact measurement and activates once #242 merges.
+ */
+test.describe('Theme Builder · lot D — rich-control triggers match each other (text-field family)', () => {
+    const THEMES = ['cartoon', 'glass', 'geek', 'sobre'] as const
+    const MODES = ['light', 'dark'] as const
+
+    for (const theme of THEMES) {
+        for (const mode of MODES) {
+            test(`color trigger chrome == rounded trigger chrome — ${theme}/${mode}`, async ({ page }) => {
+                await page.setViewportSize({ width: 1512, height: 829 })
+                await page.context().addCookies([
+                    { name: 'origam-theme', value: theme, url: 'http://localhost:3000' },
+                    { name: 'origam-mode', value: mode, url: 'http://localhost:3000' }
+                ])
+                await page.goto('/theming')
+                await page.waitForLoadState('networkidle')
+                await expandControlGroups(page, ['color', 'shape'])
+                await page.waitForTimeout(300)
+
+                const chrome = await page.evaluate(() => {
+                    const measure = (sel: string) => {
+                        const el = document.querySelector(sel)
+                        if (!el) return null
+                        const cs = getComputedStyle(el)
+                        const r = el.getBoundingClientRect()
+                        return {
+                            height: Math.round(r.height),
+                            borderRadius: cs.borderRadius,
+                            borderWidth: cs.borderWidth,
+                            backgroundColor: cs.backgroundColor
+                        }
+                    }
+                    return {
+                        colorTrigger: measure('[data-cy="theming-prop-color-trigger"] .origam-field'),
+                        roundedTrigger: measure('[data-cy="theming-prop-rounded-trigger"] .origam-field')
+                    }
+                })
+
+                expect(chrome.colorTrigger, 'color trigger .origam-field not found').not.toBeNull()
+                expect(chrome.roundedTrigger, 'rounded trigger .origam-field not found').not.toBeNull()
+
+                expect(chrome.roundedTrigger!.height, `height — ${theme}/${mode}`).toBe(chrome.colorTrigger!.height)
+                expect(chrome.roundedTrigger!.borderRadius, `border-radius — ${theme}/${mode}`).toBe(chrome.colorTrigger!.borderRadius)
+                expect(chrome.roundedTrigger!.borderWidth, `border-width — ${theme}/${mode}`).toBe(chrome.colorTrigger!.borderWidth)
+                expect(chrome.roundedTrigger!.backgroundColor, `background — ${theme}/${mode}`).toBe(chrome.colorTrigger!.backgroundColor)
+            })
+        }
+    }
+
+    /**
+     * Blocked on DS #242 (`OrigamSelect` missing `useDefaults()` wiring,
+     * owned by a separate dev on `fix/ds-usedefaults-wiring-242`). Measured
+     * gap on cartoon/light: trigger border-radius resolves to 20px (theme's
+     * `rounded: 'lg'`), select resolves to 14px (hardcoded fallback). Flip
+     * to `test(...)` once #242 merges — no other change should be needed,
+     * the assertion shape is identical to the block above.
+     */
+    test.fixme('rounded trigger chrome == neighbouring select chrome (blocked on DS #242)', async ({ page }) => {
+        await page.setViewportSize({ width: 1512, height: 829 })
+        await page.context().addCookies([
+            { name: 'origam-theme', value: 'cartoon', url: 'http://localhost:3000' },
+            { name: 'origam-mode', value: 'light', url: 'http://localhost:3000' }
+        ])
+        await page.goto('/theming')
+        await page.waitForLoadState('networkidle')
+        await expandControlGroups(page, ['color', 'shape'])
+        await page.waitForTimeout(300)
+
+        const chrome = await page.evaluate(() => {
+            const measure = (sel: string) => {
+                const el = document.querySelector(sel)
+                if (!el) return null
+                const cs = getComputedStyle(el)
+                const r = el.getBoundingClientRect()
+                return {
+                    height: Math.round(r.height),
+                    borderRadius: cs.borderRadius,
+                    borderWidth: cs.borderWidth,
+                    backgroundColor: cs.backgroundColor
+                }
+            }
+            return {
+                roundedTrigger: measure('[data-cy="theming-prop-rounded-trigger"] .origam-field'),
+                select: measure('.tb-row__select .origam-field')
+            }
+        })
+
+        expect(chrome.roundedTrigger, 'rounded trigger .origam-field not found').not.toBeNull()
+        expect(chrome.select, 'neighbouring select .origam-field not found').not.toBeNull()
+
+        expect(chrome.roundedTrigger!.height).toBe(chrome.select!.height)
+        expect(chrome.roundedTrigger!.borderRadius).toBe(chrome.select!.borderRadius)
+        expect(chrome.roundedTrigger!.borderWidth).toBe(chrome.select!.borderWidth)
+        expect(chrome.roundedTrigger!.backgroundColor).toBe(chrome.select!.backgroundColor)
+    })
 })
 
 test.describe('Theme Builder · lot C — preview stays visible while scrolling the controls', () => {

@@ -48,26 +48,26 @@ test.describe('Theme Builder · Color control (Btn)', () => {
 
     test('picking a theme intent updates the trigger and marks the row edited', async ({ page }) => {
         const trigger = page.locator('[data-cy="theming-prop-color-trigger"]')
-        const initial = await trigger.locator('.tbc-trigger__value').innerText()
+        const initial = await trigger.locator('input').inputValue()
 
         await ensureOpen(trigger)
-        await page.locator('label:has([data-cy="theming-prop-color-intent-secondary"])').click()
+        await page.locator('[data-cy="theming-prop-color-intent-secondary"]').click()
 
-        await expect(trigger.locator('.tbc-trigger__value')).toHaveText(/secondary/i)
-        expect(await trigger.locator('.tbc-trigger__value').innerText()).not.toBe(initial)
+        await expect(trigger.locator('input')).toHaveValue(/secondary/i)
+        expect(await trigger.locator('input').inputValue()).not.toBe(initial)
         await expect(page.locator('[data-cy="theming-prop-color"]')).toHaveClass(/tb-row--edited/)
     })
 
     test('per-row reset restores the DS default without touching other props', async ({ page }) => {
         const trigger = page.locator('[data-cy="theming-prop-color-trigger"]')
-        const initial = await trigger.locator('.tbc-trigger__value').innerText()
+        const initial = await trigger.locator('input').inputValue()
 
         await ensureOpen(trigger)
-        await page.locator('label:has([data-cy="theming-prop-color-intent-danger"])').click()
-        await expect(trigger.locator('.tbc-trigger__value')).toHaveText(/danger/i)
+        await page.locator('[data-cy="theming-prop-color-intent-danger"]').click()
+        await expect(trigger.locator('input')).toHaveValue(/danger/i)
 
         await page.locator('[data-cy="theming-prop-color-reset"]').click()
-        await expect(trigger.locator('.tbc-trigger__value')).toHaveText(initial)
+        await expect(trigger.locator('input')).toHaveValue(initial)
         await expect(page.locator('[data-cy="theming-prop-color"]')).not.toHaveClass(/tb-row--edited/)
     })
 
@@ -104,7 +104,7 @@ test.describe('Theme Builder · Rounded control (Btn)', () => {
         await page.locator('[data-cy="theming-prop-rounded-select"]').click()
         await page.locator('.origam-list-item', { hasText: 'Large' }).first().click()
 
-        await expect(trigger.locator('.tbc-trigger__value')).toHaveText(/large/i)
+        await expect(trigger.locator('input')).toHaveValue(/large/i)
     })
 
     test('"Other…" reveals a 4-corner editor with a link toggle', async ({ page }) => {
@@ -180,7 +180,7 @@ test.describe('Theme Builder · Elevation control (Btn)', () => {
         await depthInput.fill('18')
         await depthInput.blur()
 
-        await expect(trigger.locator('.tbc-trigger__value')).toHaveText(/18/)
+        await expect(trigger.locator('input')).toHaveValue(/18/)
         const code = await generatedCode(page)
         expect(code).toMatch(/elevation:\s*(?:"18"|18)/)
     })
@@ -213,9 +213,9 @@ test.describe('Theme Builder · Border composite control (Btn)', () => {
         await page.locator('[data-cy="theming-prop-border-style-select"]').click()
         await page.locator('.origam-list-item', { hasText: 'Dashed' }).first().click()
 
-        await page.locator('label:has([data-cy="theming-prop-border-color-intent-danger"])').click()
+        await page.locator('[data-cy="theming-prop-border-color-intent-danger"]').click()
 
-        await expect(trigger.locator('.tbc-trigger__value')).toHaveText(/thick.*dashed.*danger/i)
+        await expect(trigger.locator('input')).toHaveValue(/thick.*dashed.*danger/i)
 
         const liveBtn = page.locator('[data-cy="theming-live-btn-light"]')
         await expect(liveBtn).toHaveCSS('border-style', 'dashed')
@@ -273,7 +273,7 @@ test.describe('Theme Builder · Border composite control (Btn)', () => {
         const topColorTrigger = page.locator('[data-cy="theming-prop-border-side-color-top-trigger"]')
         await expect(topColorTrigger).toBeVisible()
         await topColorTrigger.click()
-        await page.locator('label:has([data-cy="theming-prop-border-side-color-top-intent-success"])').click()
+        await page.locator('[data-cy="theming-prop-border-side-color-top-intent-success"]').click()
 
         const code = await generatedCode(page)
         expect(code).toMatch(/borderTopColor:\s*"success"/)
@@ -298,7 +298,7 @@ test.describe('Theme Builder · Padding / Margin box-model control (Blockquote)'
         await ensureOpen(trigger)
         await page.locator('[data-cy="theming-prop-padding-scale-4"]').click()
 
-        await expect(trigger.locator('.tbc-trigger__value')).toHaveText('4')
+        await expect(trigger.locator('input')).toHaveValue('4')
         const code = await generatedCode(page)
         expect(code).toMatch(/padding:\s*"4"/)
     })
