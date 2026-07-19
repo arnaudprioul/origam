@@ -274,7 +274,9 @@ export const cartoonDarkTheme: IOrigamTheme = {
                 danger: {
                     bg: '#ff6961',
                     bgSubtle: 'rgba(255, 105, 97, 0.12)',
-                    fg: '#ffffff',
+                    // #ffffff sur #ff6961 = 2.82:1 (échec AA). #1a1a1a = 6.17:1,
+                    // cohérent avec les 3 autres badges feedback dark (fg foncé).
+                    fg: '#1a1a1a',
                     fgSubtle: '#ff6961',
                     border: '#ff6961'
                 },
