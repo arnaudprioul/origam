@@ -119,6 +119,10 @@ export const cartoonLightTheme: IOrigamTheme = {
         'origam-btn-group': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
         'origam-btn-toggle': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
         'origam-card': { rounded: 'lg', border: true, flat: false, elevation: 4 },
+        // ⚠️ DIVERGENCE non tranchée (Refs #30) — synthèse design demande
+        // rounded:'md' + elevation:1 ; la migration lossless #122-126 avait
+        // posé rounded:'lg' + pill:false (pas d'elevation). Valeur laissée
+        // TELLE QUELLE en attendant l'arbitrage utilisateur. Voir rapport PR.
         'origam-chip': { variant: 'outlined', rounded: 'lg', border: true, pill: false },
         'origam-alert': { rounded: 'lg', border: true, elevation: 2 },
         'origam-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
@@ -126,15 +130,31 @@ export const cartoonLightTheme: IOrigamTheme = {
         'origam-textarea-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
         'origam-number-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
         'origam-password-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
-        'origam-select': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
+        // menuProps ajouté (synthèse §3) — respiration du dropdown (nav:true)
+        // + radius propre. Vérifié: ISelectProps.menuProps?: IMenuProps existe.
+        'origam-select': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2, menuProps: { rounded: 'md', nav: true } },
         'origam-date-picker-field': { rounded: 'lg', border: true, elevation: 2 },
         'origam-file-field': { rounded: 'lg', border: true, elevation: 2 },
         'origam-color-picker-field': { rounded: 'lg', border: true, elevation: 2 },
-        'origam-code': { rounded: 'lg', border: true, elevation: 2 },
-        'origam-menu': { rounded: 'lg', border: true, elevation: 4 },
-        'origam-table': { rounded: 'lg', border: true },
+        // copyable:true ajouté (synthèse §3) — ICodeProps.copyable existe déjà.
+        'origam-code': { rounded: 'lg', border: true, elevation: 2, copyable: true },
+        // nav:true ajouté (synthèse §3, "respiration des items") — IMenuProps
+        // forwarde vers le List interne. Vérifié: IListProps.nav existe.
+        'origam-menu': { rounded: 'lg', border: true, elevation: 4, nav: true },
+        // hover:true ajouté (synthèse §3) — ITableProps extends IHoverProps, vérifié.
+        'origam-table': { rounded: 'lg', border: true, hover: true },
+        // ⚠️ DIVERGENCE non tranchée (Refs #30) — la migration lossless avait
+        // sciemment choisi un ANNEAU discret 2px `surface-default` (mesuré sur
+        // maquette, cf. cssVars ci-dessous : --origam-avatar---border-width/
+        // color/box-shadow:none) plutôt que la bordure noire 3px + hard-shadow
+        // que demande la synthèse (`border:true, elevation:1` + box-shadow
+        // override). Valeur laissée TELLE QUELLE en attendant l'arbitrage.
         'origam-avatar': { rounded: 'lg' },
         'origam-checkbox': { rounded: 'md' },
+        // origam-radio ajouté (synthèse §3) — même traitement que checkbox
+        // ([#242 + #241] : glyphe SVG ne peut pas honorer rounded tant que le
+        // rendering-mechanism n'a pas changé — prop posée quand même, pending).
+        'origam-radio': { rounded: 'md' },
         // Switch harmony (lot 4) — mirrors `origam-text-field`'s rounded/
         // border/elevation so the track reads as the same visual family as
         // the theme's form fields, not a DS-default pill floating outside
@@ -145,7 +165,36 @@ export const cartoonLightTheme: IOrigamTheme = {
         // rendering-mechanism change (issue #241), AND they share the same
         // missing-`useDefaults()` gap as 11 other components (issue #242).
         'origam-switch': { rounded: 'lg', border: true, elevation: 2 },
-        'origam-snackbar': { rounded: 'lg', border: true, elevation: 4 }
+        'origam-snackbar': { rounded: 'lg', border: true, elevation: 4 },
+        // ── Composants NOUVEAUX (synthèse §3), aucun n'était présent avant ──
+        // Badge : 'pill' n'est PAS une valeur `rounded` valide côté DS
+        // (ni PREDEFINED_ROUNDED ni UTILITY_ROUNDED — vérifié dans
+        // useRounded.composable.ts). 'full' = 9999px = la forme "pilule"
+        // demandée par le design ; substitution technique, pas un choix
+        // esthétique différent.
+        'origam-badge': { rounded: 'full', border: true, elevation: 1 },
+        'origam-progress-linear': { rounded: true, color: 'primary', thickness: 14 },
+        'origam-slider-field': { rounded: true, color: 'primary' },
+        'origam-sheet': { rounded: 'lg', border: true, elevation: 4 },
+        'origam-dialog': { rounded: 'lg', border: true, elevation: 4 },
+        // Tooltip : AUCUNE prop `rounded`/`border` sur ITooltipProps (vérifié —
+        // n'étend ni IRoundedProps ni IBorderProps). Pas d'entrée `components`
+        // possible ; le radius/bg passent par `cssVars` ci-dessous, la bordure
+        // reste un gap DS (aucun token border-* dans tooltip.json). Voir rapport.
+        //
+        // Tabs : `border` n'existe PAS sur ITabsProps (vérifié — pas
+        // IBorderProps). rounded seul est posé ici ; la bordure 3px passe par
+        // `cssVars` (--origam-tabs---border-*, les tokens existent même sans prop).
+        'origam-tabs': { variant: 'pills', rounded: 'lg' },
+        'origam-bottom-nav': { rounded: 'lg', border: true, elevation: 2 },
+        'origam-breadcrumb': { rounded: 'lg', border: true, elevation: 2 },
+        // Pagination : `rounded` n'existe PAS sur IPaginationProps (vérifié —
+        // pas IRoundedProps). Value omise (no-op silencieux sinon) ; le radius
+        // de chaque item passe par le token --origam-pagination---border-radius
+        // déjà présent (pas de cssVars nécessaire, valeur par défaut correcte).
+        'origam-pagination': { border: true, elevation: 2 },
+        'origam-list': { rounded: 'lg', nav: true },
+        'origam-blockquote': { variant: 'default', rounded: 'lg', border: true, accentColor: 'primary' }
     },
     // Overrides bruts non exprimables en props (couleur + épaisseur de bordure,
     // hard-shadow de bouton). Migrés depuis cartoon.css → appliqués par le DS via
@@ -190,7 +239,47 @@ export const cartoonLightTheme: IOrigamTheme = {
         '--origam-avatar---border-color': 'var(--origam-color__surface---default)',
         '--origam-avatar---box-shadow': 'none',
         '--origam-font-family---heading': "Inter, -apple-system, 'system-ui', sans-serif",
-        '--origam-title---font-family': "Inter, -apple-system, 'system-ui', sans-serif"
+        '--origam-title---font-family': "Inter, -apple-system, 'system-ui', sans-serif",
+
+        // ── Synthèse §4 — états ajoutés par le design (Refs #30) ──────────
+        // Chaque valeur ci-dessous a été vérifiée contre les vars CSS
+        // RÉELLEMENT générées par le build DS (packages/ds/dist) ET lues par
+        // le SCSS du composant concerné — pas de nom de var inventé.
+        //
+        // NON applicable ici (gap DS constaté, PAS un oubli — voir rapport PR) :
+        //   - tab pills --active box-shadow (aucune var lue, seul bg/color a un fallback)
+        //   - bottom-nav__item --active bg/color (aucune var par item, seulement
+        //     un --active de conteneur pour le box-shadow)
+        //   - breadcrumb__item --active BACKGROUND (seule --active-color, texte, existe)
+        //   - list-item --active/--hover bg/color pleins (mécanisme = overlay
+        //     opacity teinté de currentColor, pas un swap de couleur directe)
+        //   - field --focus outline (aucune var — le focus du Field passe par
+        //     l'opacité de bordure, pas un outline)
+        //   - field --error box-shadow (aucune var — seul border-color existe)
+        //   - list gap 6px (aucune var --origam-list---gap générée)
+        //
+        // Déjà correct SANS override (le token par défaut résout déjà vers
+        // vars.color.action.primary, donc déjà rose/prune côté cartoon) :
+        //   - checkbox-btn checked (background-color-checked / color-checked)
+        //   - tabs pills --active bg/color (fallback var(--origam-color__action--primary---bg/fg))
+        //   - pagination__item active-background-color / active-color
+        //   - table__row hover-background-color (= surface.sunken = #fff3d6)
+        //   - table__cell border-color (= border.subtle = #171717)
+        //   - code syntax string / function (déjà alignées sur feedback success/info)
+        //   - divider color (= border.subtle = #171717)
+
+        '--origam-field--error---border-color': '#ef4444',
+        '--origam-list-item---border-radius': '9px',
+        '--origam-table---header-cell-background-color': 'var(--origam-color__action--primary---bgSubtle)',
+        '--origam-code---line-highlight-background-color': 'var(--origam-color__action--primary---bgSubtle)',
+        '--origam-code__syntax---keyword': '#c0174a',
+        '--origam-code__syntax---comment': '#8a7f72',
+        '--origam-overlay-scrim---background-color': 'rgba(23, 23, 23, 0.6)',
+        '--origam-overlay-scrim---opacity': '1',
+        '--origam-divider---border-top-width': '3px',
+        '--origam-divider---border-right-width': '3px',
+        '--origam-tooltip---background-color': '#ffffff',
+        '--origam-tooltip---color': '#2b2b2b'
     }
 }
 
@@ -274,7 +363,9 @@ export const cartoonDarkTheme: IOrigamTheme = {
                 danger: {
                     bg: '#ff6961',
                     bgSubtle: 'rgba(255, 105, 97, 0.12)',
-                    fg: '#ffffff',
+                    // #ffffff sur #ff6961 = 2.82:1 (échec AA). #1a1a1a = 6.17:1,
+                    // cohérent avec les 3 autres badges feedback dark (fg foncé).
+                    fg: '#1a1a1a',
                     fgSubtle: '#ff6961',
                     border: '#ff6961'
                 },
@@ -343,7 +434,20 @@ export const cartoonDarkTheme: IOrigamTheme = {
         '--origam-avatar---border-color': '#1a1a1a',
         '--origam-avatar---box-shadow': 'none',
         '--origam-font-family---heading': "Inter, -apple-system, 'system-ui', sans-serif",
-        '--origam-title---font-family': "Inter, -apple-system, 'system-ui', sans-serif"
+        '--origam-title---font-family': "Inter, -apple-system, 'system-ui', sans-serif",
+
+        // ── Synthèse §4 (dark) — voir le bloc light pour le détail des gaps
+        // DS non applicables et des couples déjà corrects sans override.
+        '--origam-field--error---border-color': '#ef4444',
+        '--origam-list-item---border-radius': '9px',
+        '--origam-table---header-cell-background-color': 'var(--origam-color__action--primary---bgSubtle)',
+        '--origam-code---line-highlight-background-color': 'var(--origam-color__action--primary---bgSubtle)',
+        '--origam-overlay-scrim---background-color': 'rgba(23, 23, 23, 0.6)',
+        '--origam-overlay-scrim---opacity': '1',
+        '--origam-divider---border-top-width': '3px',
+        '--origam-divider---border-right-width': '3px',
+        '--origam-tooltip---background-color': '#262626',
+        '--origam-tooltip---color': '#fffefb'
     }
 }
 
