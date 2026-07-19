@@ -119,11 +119,11 @@ export const cartoonLightTheme: IOrigamTheme = {
         'origam-btn-group': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
         'origam-btn-toggle': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
         'origam-card': { rounded: 'lg', border: true, flat: false, elevation: 4 },
-        // ⚠️ DIVERGENCE non tranchée (Refs #30) — synthèse design demande
-        // rounded:'md' + elevation:1 ; la migration lossless #122-126 avait
-        // posé rounded:'lg' + pill:false (pas d'elevation). Valeur laissée
-        // TELLE QUELLE en attendant l'arbitrage utilisateur. Voir rapport PR.
-        'origam-chip': { variant: 'outlined', rounded: 'lg', border: true, pill: false },
+        // Arbitrage utilisateur (Refs #30, PR #254) — la synthèse design
+        // GAGNE sur la migration lossless #122-126 (qui avait posé
+        // rounded:'lg' + pill:false, sans elevation). `pill:false` reste
+        // conservé (pas couvert par l'arbitrage, pas de raison de l'enlever).
+        'origam-chip': { variant: 'outlined', rounded: 'md', border: true, pill: false, elevation: 1 },
         'origam-alert': { rounded: 'lg', border: true, elevation: 2 },
         'origam-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
         'origam-text-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
@@ -143,12 +143,19 @@ export const cartoonLightTheme: IOrigamTheme = {
         'origam-menu': { rounded: 'lg', border: true, elevation: 4, nav: true },
         // hover:true ajouté (synthèse §3) — ITableProps extends IHoverProps, vérifié.
         'origam-table': { rounded: 'lg', border: true, hover: true },
-        // ⚠️ DIVERGENCE non tranchée (Refs #30) — la migration lossless avait
-        // sciemment choisi un ANNEAU discret 2px `surface-default` (mesuré sur
-        // maquette, cf. cssVars ci-dessous : --origam-avatar---border-width/
-        // color/box-shadow:none) plutôt que la bordure noire 3px + hard-shadow
-        // que demande la synthèse (`border:true, elevation:1` + box-shadow
-        // override). Valeur laissée TELLE QUELLE en attendant l'arbitrage.
+        // Arbitrage utilisateur (Refs #30, PR #254) — la synthèse design
+        // GAGNE sur la migration lossless #122-126 (anneau discret 2px
+        // `surface-default`, mesuré sur maquette). L'avatar cartoon passe à
+        // la bordure noire 3px standard + hard-shadow, cf. cssVars ci-dessous.
+        // ⚠️ PAS de prop `border`/`elevation` ici : lu le SCSS du composant
+        // (OrigamAvatar.vue) — le modifier `&--border` FORCE border-width à
+        // `thin` (~1px), ce qui écraserait le 3px voulu ; le modifier
+        // `&--elevated` route vers `--box-shadow-elevated` (rung `md`
+        // générique) au lieu de la valeur exacte demandée par la synthèse.
+        // La règle de base `.origam-avatar` applique TOUJOURS
+        // `border-width/color/box-shadow: var(--origam-avatar---*)` sans
+        // condition de prop — donc les cssVars seules suffisent, sans
+        // passer par les modifiers (plus simple, et ça évite le conflit).
         'origam-avatar': { rounded: 'lg' },
         'origam-checkbox': { rounded: 'md' },
         // origam-radio ajouté (synthèse §3) — même traitement que checkbox
@@ -234,10 +241,10 @@ export const cartoonLightTheme: IOrigamTheme = {
         '--origam-field---border-opacity': '1',
         '--origam-field---border-opacity-outlined': '1',
         '--origam-field---border-color': 'var(--origam-color__border---default)',
-        '--origam-avatar---border-width': '2px',
+        '--origam-avatar---border-width': '3px',
         '--origam-avatar---border-style': 'solid',
-        '--origam-avatar---border-color': 'var(--origam-color__surface---default)',
-        '--origam-avatar---box-shadow': 'none',
+        '--origam-avatar---border-color': 'var(--origam-color__border---default)',
+        '--origam-avatar---box-shadow': '3px 3px 0 #171717',
         '--origam-font-family---heading': "Inter, -apple-system, 'system-ui', sans-serif",
         '--origam-title---font-family': "Inter, -apple-system, 'system-ui', sans-serif",
 
@@ -429,10 +436,10 @@ export const cartoonDarkTheme: IOrigamTheme = {
         '--origam-field---border-opacity': '1',
         '--origam-field---border-opacity-outlined': '1',
         '--origam-field---border-color': 'var(--origam-color__border---default)',
-        '--origam-avatar---border-width': '2px',
+        '--origam-avatar---border-width': '3px',
         '--origam-avatar---border-style': 'solid',
-        '--origam-avatar---border-color': '#1a1a1a',
-        '--origam-avatar---box-shadow': 'none',
+        '--origam-avatar---border-color': '#fffefb',
+        '--origam-avatar---box-shadow': '3px 3px 0 #fffefb',
         '--origam-font-family---heading': "Inter, -apple-system, 'system-ui', sans-serif",
         '--origam-title---font-family': "Inter, -apple-system, 'system-ui', sans-serif",
 
