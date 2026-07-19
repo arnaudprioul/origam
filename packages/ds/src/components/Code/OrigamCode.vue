@@ -87,6 +87,7 @@
 		useDimension,
 		useElevation,
 		useLocale,
+		useDefaults,
 		useMargin,
 		usePadding,
 		useRounded,
@@ -120,7 +121,7 @@
 	 * follow `<html data-theme="…">` automatically — no JS re-render on
 	 * theme switch.
 	 ********************************************************/
-	const props = withDefaults(defineProps<ICodeProps>(), {
+	const _props = withDefaults(defineProps<ICodeProps>(), {
 		tag: 'figure',
 		lang: CODE_LANG.PLAINTEXT,
 		lineNumbers: false,
@@ -133,6 +134,11 @@
 		highlightLines: null,
 		filename: undefined
 	})
+
+	// `useDefaults` resolves each prop against theme.components['origam-code']
+	// (OrigamBtn pattern) — without this, the theme's `{ tag: 'figure',
+	// rounded: 'lg', compact: true }` config was a silent no-op.
+	const props = useDefaults(_props)
 
 	const emit = defineEmits<{
 		(e: 'copy', code: string): void
