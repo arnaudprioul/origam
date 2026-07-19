@@ -87,3 +87,38 @@ describe('OrigamTable — fontWeight prop (table__header-cell cascade from root)
         expect(wrapper.attributes('style')).toContain('--origam-table__header-cell---font-weight: var(--origam-font__weight---semibold)')
     })
 })
+
+// ---------------------------------------------------------------------------
+// useDefaults wiring (issue #242) — a theme's `components['origam-table']`
+// config must resolve on an un-passed prop, mirroring OrigamBtn/OrigamAlert.
+// ---------------------------------------------------------------------------
+
+describe('OrigamTable — useDefaults (theme components wiring)', () => {
+    function mountTableThemed(componentDefaults: Record<string, unknown>, props: Partial<ITableProps> = {}) {
+        const theme = { name: 'brandx', mode: 'light' as const, components: { 'origam-table': componentDefaults }, vars: {} }
+        const origam = createOrigam({ themes: [theme] })
+        origam._defaultsRef.value = origam._activeDefaultsFor('brandx', 'light')
+        return mount(OrigamTable, { props, global: { plugins: [origam] } })
+    }
+
+    it('resolves rounded="lg" from theme.components[\'origam-table\'] when not passed', () => {
+        const wrapper = mountTableThemed({ rounded: 'lg' })
+        expect(wrapper.classes()).toContain('origam--rounded-lg')
+    })
+
+    it('resolves tag="section" from theme.components[\'origam-table\'] when not passed', () => {
+        const wrapper = mountTableThemed({ tag: 'section' })
+        expect(wrapper.element.tagName).toBe('SECTION')
+    })
+
+    it('resolves border=true from theme.components[\'origam-table\'] when not passed', () => {
+        const wrapper = mountTableThemed({ border: true })
+        expect(wrapper.classes()).toContain('origam-table--border')
+    })
+
+    it('an explicitly passed rounded prop overrides the theme default', () => {
+        const wrapper = mountTableThemed({ rounded: 'lg' }, { rounded: 'sm' })
+        expect(wrapper.classes()).toContain('origam--rounded-sm')
+        expect(wrapper.classes()).not.toContain('origam--rounded-lg')
+    })
+})
