@@ -3,6 +3,7 @@
     "background-color": { "$type": "color",     "$value": "{color.neutral.800}",
                           "$description": "Intentionally dark (inverse surface) for contrast in both light and dark themes. In dark theme semantic/dark.json overrides neutral.800 to the correct contrasted surface." },
     "color":            { "$type": "color",     "$value": "{color.text.inverse}" },
+    "backdrop-filter":  { "$type": "other",     "$value": "none" },
     "font-size":        { "$type": "dimension", "$value": "{font.size.sm}" },
     "font-weight":      { "$type": "fontWeight", "$value": "{font.weight.medium}" },
     "line-height":      { "$type": "number",    "$value": "{font.lineHeight.normal}" },

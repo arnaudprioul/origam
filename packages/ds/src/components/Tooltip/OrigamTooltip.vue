@@ -197,6 +197,8 @@
 	.origam-tooltip__content {
 		background-color: var(--origam-tooltip---background-color, var(--origam-color__neutral---800));
 		color: var(--origam-tooltip---color, var(--origam-color__text---inverse));
+		backdrop-filter: var(--origam-tooltip---backdrop-filter, none);
+		-webkit-backdrop-filter: var(--origam-tooltip---backdrop-filter, none);
 		font-size: var(--origam-tooltip---font-size, 0.75rem);
 		font-weight: var(--origam-tooltip---font-weight, 500);
 		line-height: var(--origam-tooltip---line-height, 1.5);
