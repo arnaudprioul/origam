@@ -46,8 +46,10 @@ const handleMousedownControl = (): void => {
     <origam-text-field
         :model-value="valueLabel"
         :label="label"
+        :title="valueLabel"
         variant="outlined"
         density="compact"
+        width="100%"
         readonly
         hide-details
         role="button"
@@ -103,9 +105,36 @@ const handleMousedownControl = (): void => {
 
 <style scoped lang="scss">
 .tbc-trigger {
+    inline-size: 100%;
+
     :deep(input) {
         cursor: pointer;
         caret-color: transparent;
+        /*
+         * The value text was truncating ("Primary" → "Pr") because an
+         * ancestor's grid/flex chain sizes the control track to
+         * content rather than stretching into the row's actual
+         * available width (verified: neither `inline-size: 100%` nor
+         * the DS `width` prop on the trigger's own root reaches this
+         * far — the constraint originates deeper, in the field's
+         * internal layout). A `min-inline-size` on the input itself
+         * is the one lever that reliably forces every ancestor's
+         * min-content calculation to accommodate common intent values
+         * ("Primary", "Secondary", "Warning") without truncating. #251
+         */
+        min-inline-size: 4.5rem;
+
+        /*
+         * 4.5rem covers every common intent value (Primary, Secondary,
+         * Success, Warning, Danger, Info, Neutral, Ghost) without
+         * truncating. Longer composite labels (e.g. the border
+         * control's "None · Inherited from theme" default state)
+         * still won't fit a narrow sidebar column at any reasonable
+         * width — ellipsis + the `title` attribute above (native
+         * tooltip with the full text) is the intended fallback for
+         * those, not a further width increase. #251
+         */
+        text-overflow: ellipsis;
     }
 
     &--hint {
