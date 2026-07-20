@@ -377,6 +377,8 @@
       justify-content: center;
       position: relative;
       border-radius: 50%;
+      backdrop-filter: var(--origam-selection-control__input---backdrop-filter, none);
+      -webkit-backdrop-filter: var(--origam-selection-control__input---backdrop-filter, none);
 
       > .origam-icon {
         opacity: 0.7;
