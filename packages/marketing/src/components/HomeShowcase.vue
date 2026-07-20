@@ -79,7 +79,6 @@ const STATUS_DOT_COLOR: Record<string, string> = {
             >
                 <origam-card
                     tag="figure"
-                    flat
                     :rounded="SHOWCASE_WIDGET_RADIUS"
                     :style="SHOWCASE_WIDGET_VARS"
                     class="home-showcase__widget"
@@ -172,7 +171,6 @@ const STATUS_DOT_COLOR: Record<string, string> = {
             >
                 <origam-card
                     tag="figure"
-                    flat
                     :rounded="SHOWCASE_WIDGET_RADIUS"
                     :style="SHOWCASE_WIDGET_VARS"
                     class="home-showcase__widget"
@@ -206,7 +204,6 @@ const STATUS_DOT_COLOR: Record<string, string> = {
             >
                 <origam-card
                     tag="figure"
-                    flat
                     :rounded="SHOWCASE_WIDGET_RADIUS"
                     :style="SHOWCASE_WIDGET_VARS"
                     class="home-showcase__widget"
@@ -244,7 +241,6 @@ const STATUS_DOT_COLOR: Record<string, string> = {
             >
                 <origam-card
                     tag="figure"
-                    flat
                     :rounded="SHOWCASE_WIDGET_RADIUS"
                     :style="SHOWCASE_WIDGET_VARS"
                     class="home-showcase__widget"
@@ -286,7 +282,6 @@ const STATUS_DOT_COLOR: Record<string, string> = {
             >
                 <origam-card
                     tag="figure"
-                    flat
                     :rounded="SHOWCASE_WIDGET_RADIUS"
                     :style="SHOWCASE_WIDGET_VARS"
                     class="home-showcase__widget"
