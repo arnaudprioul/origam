@@ -126,8 +126,8 @@ interface IAvatarGroupProps extends ICommonsComponentProps,
 ```html
 <div class="origam-avatar-group origam-avatar-group--horizontal
             origam-avatar-group--expand-on-hover">
-    <div class="origam-avatar origam-avatar-group___item">…</div>
-    <div class="origam-avatar origam-avatar-group___item">…</div>
+    <div class="origam-avatar origam-avatar-group__item">…</div>
+    <div class="origam-avatar origam-avatar-group__item">…</div>
     <div class="origam-avatar origam-avatar-group__rest">+3</div>
 </div>
 ```
@@ -141,6 +141,9 @@ interface IAvatarGroupProps extends ICommonsComponentProps,
 | `--origam-avatar-group__avatar---transition` | Transition used on hover / active expansion. |
 | `--origam-avatar-group---margin-inline-start` | Negative margin between siblings (horizontal). |
 | `--origam-avatar-group---margin-block-start` | Negative margin between siblings (vertical). |
+| `--origam-avatar-group__item---outline-color` | Separation-ring color on every stacked `__item` / `__rest` chip. Default: `color.surface.default`. |
+| `--origam-avatar-group__item---outline-width` | Separation-ring width. Default: `2px`. |
+| `--origam-avatar-group__item---outline-style` | Separation-ring style. Default: `solid`. |
 
 The full list lives in `tokens/component/avatar-group.json`.
 
@@ -167,8 +170,17 @@ The full list lives in `tokens/component/avatar-group.json`.
   `components['origam-avatar']` block defines (e.g. a brand theme's
   `border: true`), instead of silently overriding it. Only a prop the
   CONSUMER actually set on the group wins over the theme (issue #263).
-- The component does not add new colour tokens. The only override
-  applied at the group level is the `box-shadow` when `elevated`.
+- The group-level override applied at the group root is the `box-shadow`
+  when `elevated`.
+- **Separation ring**: every stacked child (`__item` and the `__rest`
+  overflow chip) gets a structural `outline` — a distinct CSS property
+  from each avatar's own `box-shadow`/`border`, so the two never collide
+  or need to be layered — that keeps overlapping avatars legible against
+  whatever surface the group sits on. It is themable via the dedicated
+  `--origam-avatar-group__item---outline-*` cssVars above and defaults to
+  `color.surface.default`; only avatars rendered *inside* an
+  `<origam-avatar-group>` get it — a standalone `<origam-avatar>` never
+  does.
 
 ## Related
 

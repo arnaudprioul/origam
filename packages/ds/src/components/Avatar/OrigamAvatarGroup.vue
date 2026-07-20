@@ -317,6 +317,23 @@
 			margin-inline-end: var(--origam-avatar-group__item---margin-inline-end);
 		}
 
+		// Separation ring — a STRUCTURAL concern of the group (overlapping
+		// avatars need a visible seam to stay legible), orthogonal to each
+		// avatar's own themed `box-shadow` (elevation / cartoon hard-shadow
+		// signature / …). `outline` is used on purpose instead of layering
+		// a second `box-shadow`: it is a distinct CSS property, so it can
+		// never collide with, or need to be comma-combined with, the
+		// avatar's own `--origam-avatar---box-shadow` — the two coexist
+		// without any specificity/ordering trick. Applies to every stacked
+		// avatar (`__item`) AND the "+N" overflow chip (`__rest`), since
+		// both participate in the same overlapping stack — see #263.
+		&__item,
+		&__rest {
+			outline-color: var(--origam-avatar-group__item---outline-color);
+			outline-style: var(--origam-avatar-group__item---outline-style);
+			outline-width: var(--origam-avatar-group__item---outline-width);
+		}
+
 		&--expand-on-hover,
 		&--expand-on-click {
 			#{$this}__item:not(:first-child),
