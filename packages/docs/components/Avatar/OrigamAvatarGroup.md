@@ -159,6 +159,14 @@ The full list lives in `tokens/component/avatar-group.json`.
 
 - Theme switching propagates through every member automatically — the
   cluster does not cache anything.
+- Visual-token props (`border`, `rounded`, `elevation`, `color`, `bgColor`,
+  `density`, `size`, `borderColor`, `borderStyle`) set on
+  `<origam-avatar-group>` are forwarded to every child `<origam-avatar>` as
+  *defaults* — a prop the group never received falls through to whatever an
+  ancestor `<OrigamDefaultsProvider>` or the active theme's
+  `components['origam-avatar']` block defines (e.g. a brand theme's
+  `border: true`), instead of silently overriding it. Only a prop the
+  CONSUMER actually set on the group wins over the theme (issue #263).
 - The component does not add new colour tokens. The only override
   applied at the group level is the `box-shadow` when `elevated`.
 

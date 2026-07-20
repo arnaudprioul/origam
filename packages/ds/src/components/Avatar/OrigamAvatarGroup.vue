@@ -53,12 +53,13 @@
 >
 
 	import { OrigamAvatar, OrigamDefaultsProvider } from "../../components"
-	import { useActive, useDensity, useHover, useProps, useRtl, useStateEffect, useStyle } from "../../composables"
+	import { useActive, useDensity, useHover, usePassedProps, useProps, useRtl, useStateEffect, useStyle } from "../../composables"
 	import { vClickOutside } from "../../directives"
 	import { DIRECTION } from "../../enums"
 	import type { IAvatarGroupProps, IAvatarProps} from "../../interfaces"
 
 	import type { IAvatarGroupEmits } from '../../interfaces/Avatar/avatar-group.interface'
+	import { omitUndefined } from "../../utils"
 
 	import type { ComputedRef, StyleValue, VNodeProps } from 'vue'
 	import { computed, mergeProps, ref } from "vue"
@@ -79,18 +80,31 @@
 
 	// Push visual-token props down to every descendant `<origam-avatar>` as
 	// DEFAULTS — children that pass their own props still win.
+	//
+	// A prop the CONSUMER never passed to `<origam-avatar-group>` must NOT be
+	// forwarded — else `mergeDeep` (used by `provideDefaults`/`useDefaults`
+	// to combine this map with an ancestor/theme `'origam-avatar'` defaults
+	// entry) copies it unconditionally and silently overwrites the theme
+	// default (e.g. `origam-avatar { border: true }`) — see #263.
+	//
+	// A plain `omitUndefined` is NOT enough: `border`/`rounded` are typed
+	// `boolean | …`, so Vue resolves an UNSET prop to the concrete value
+	// `false` (its boolean-prop coercion), never to `undefined` — there is
+	// no `undefined` left to filter. `usePassedProps` reads `vnode.props`
+	// directly, so it tells the truth regardless of Vue's coercion.
+	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-avatar': {
-			density: props.density,
-			size: props.size,
-			color: props.color,
-			bgColor: props.bgColor,
-			rounded: props.rounded,
-			elevation: props.elevation,
-			border: props.border,
-			borderColor: props.borderColor,
-			borderStyle: props.borderStyle
-		}
+		'origam-avatar': omitUndefined({
+			density: wasPropPassed('density') ? props.density : undefined,
+			size: wasPropPassed('size') ? props.size : undefined,
+			color: wasPropPassed('color') ? props.color : undefined,
+			bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined,
+			rounded: wasPropPassed('rounded') ? props.rounded : undefined,
+			elevation: wasPropPassed('elevation') ? props.elevation : undefined,
+			border: wasPropPassed('border') ? props.border : undefined,
+			borderColor: wasPropPassed('borderColor') ? props.borderColor : undefined,
+			borderStyle: wasPropPassed('borderStyle') ? props.borderStyle : undefined
+		})
 	}))
 
 	defineEmits<IAvatarGroupEmits>()
