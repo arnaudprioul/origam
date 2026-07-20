@@ -614,6 +614,8 @@
 		grid-area: control;
 		position: relative;
 		padding-inline: var(--origam-field---padding-start) var(--origam-field---padding-end);
+		backdrop-filter: var(--origam-field---backdrop-filter, none);
+		-webkit-backdrop-filter: var(--origam-field---backdrop-filter, none);
 
 		&__skeleton {
 			width: 100%;
@@ -881,6 +883,11 @@
 
 			#{$this}__label {
 				opacity: 1;
+			}
+
+			&:not(#{$this}--disabled) {
+				outline: var(--origam-field---focus-ring-width, 0px) solid var(--origam-field---focus-ring-color, transparent);
+				outline-offset: var(--origam-field---focus-ring-offset, 0px);
 			}
 		}
 
