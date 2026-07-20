@@ -241,7 +241,9 @@ export const appleDarkTheme: IOrigamTheme = {
                 danger: {
                     bg: '#ff6961',
                     bgSubtle: 'rgba(255, 105, 97, 0.12)',
-                    fg: '#ffffff',
+                    // ⛔ CORRECTIF CONTRASTE (Refs #33) : #ffffff sur #ff6961 = 2.82:1
+                    // (échec WCAG AA, seuil 4.5:1 pour texte). #000000 sur #ff6961 ≈ 6.3:1.
+                    fg: '#000000',
                     fgSubtle: '#ff6961',
                     border: '#ff6961'
                 },
