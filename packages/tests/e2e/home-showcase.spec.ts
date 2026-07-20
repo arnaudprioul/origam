@@ -163,3 +163,109 @@ test.describe('HomeShowcase section', () => {
         expect(text).not.toContain('home.showcase.')
     })
 })
+
+/**
+ * AvatarGroup theming — regression coverage for issue #263.
+ *
+ * Bug A: `OrigamAvatarGroup` used to forward EVERY visual-token prop
+ * unconditionally into the `'origam-avatar'` slot defaults it provides to
+ * its children, clobbering an ancestor/theme `'origam-avatar'` default
+ * (e.g. `border: true`) with an unset `false`/`undefined` value. Fixed by
+ * only forwarding a prop when `usePassedProps()` confirms the CONSUMER
+ * actually set it.
+ *
+ * Bug B: the "+24 members" widget hardcoded
+ * `--origam-avatar---box-shadow: 0 0 0 2px surface-raised` directly in
+ * `HomeShowcase.vue`, unconditionally overriding each avatar's own themed
+ * `box-shadow` (e.g. cartoon's `3px 3px 0 #171717` hard-shadow signature).
+ * Fixed by moving the stacked-avatar separation ring into the DS itself as
+ * an `outline` (a distinct CSS property, so it never collides with
+ * `box-shadow`) driven by dedicated `--origam-avatar-group__item---outline-*`
+ * cssVars, and removing the marketing-side hack.
+ *
+ * These tests drive the theme via the `origam-theme`/`origam-mode` cookies
+ * BEFORE navigation (cold load) — the live in-page theme-switch UI does not
+ * re-run the client plugin's per-component `_defaultsRef` watcher (a
+ * separate, pre-existing bug unrelated to #263), so a post-navigation click
+ * would not reliably exercise the props-based theme defaults this ticket
+ * fixes.
+ */
+test.describe('HomeShowcase — AvatarGroup theming (#263)', () => {
+    const gotoWithTheme = async (
+        page: import('@playwright/test').Page,
+        baseURL: string | undefined,
+        theme: string,
+        mode: 'light' | 'dark'
+    ) => {
+        await page.context().addCookies([
+            { name: 'origam-theme', value: theme, url: baseURL },
+            { name: 'origam-mode', value: mode, url: baseURL }
+        ])
+        await page.goto('/', { waitUntil: 'networkidle' })
+    }
+
+    const firstGroupItem = (page: import('@playwright/test').Page) =>
+        page.locator('[data-cy="showcase-avatar-group"] .origam-avatar-group__item').first()
+
+    test('baseline theme ("sobre"): no border, but the separation ring is present (zero regression)', async ({ page, baseURL }) => {
+        await gotoWithTheme(page, baseURL, 'sobre', 'light')
+        const item = firstGroupItem(page)
+        await expect(item).toBeVisible()
+
+        const style = await item.evaluate((el) => {
+            const cs = getComputedStyle(el)
+            return { borderWidth: cs.borderWidth, outlineWidth: cs.outlineWidth, outlineStyle: cs.outlineStyle }
+        })
+        expect(style.borderWidth).toBe('0px')
+        expect(style.outlineWidth).toBe('2px')
+        expect(style.outlineStyle).toBe('solid')
+    })
+
+    test('glass theme: the theme border AND the separation ring both apply (no clobbering)', async ({ page, baseURL }) => {
+        await gotoWithTheme(page, baseURL, 'glass', 'light')
+        const item = firstGroupItem(page)
+        await expect(item).toBeVisible()
+        await expect(item).toHaveClass(/origam-avatar--border\b/)
+
+        const style = await item.evaluate((el) => {
+            const cs = getComputedStyle(el)
+            return { borderWidth: cs.borderWidth, outlineWidth: cs.outlineWidth }
+        })
+        expect(style.borderWidth).not.toBe('0px')
+        expect(style.outlineWidth).toBe('2px')
+    })
+
+    test('cartoon theme: border-width 3px / #171717 AND the hard-shadow signature both apply, ring does not erase them', async ({ page, baseURL }) => {
+        await gotoWithTheme(page, baseURL, 'cartoon', 'light')
+        const item = firstGroupItem(page)
+        await expect(item).toBeVisible()
+
+        const style = await item.evaluate((el) => {
+            const cs = getComputedStyle(el)
+            return { borderWidth: cs.borderWidth, borderColor: cs.borderColor, boxShadow: cs.boxShadow, outlineWidth: cs.outlineWidth }
+        })
+        expect(style.borderWidth).toBe('3px')
+        expect(style.borderColor).toBe('rgb(23, 23, 23)')
+        // The cartoon hard-shadow signature (3px 3px 0 #171717) must still be
+        // present on `box-shadow` — this is exactly what the old
+        // `--origam-avatar---box-shadow` hack in HomeShowcase.vue erased.
+        expect(style.boxShadow).toContain('rgb(23, 23, 23)')
+        expect(style.boxShadow).toContain('3px 3px')
+        // The ring is a SEPARATE CSS property (outline), unaffected.
+        expect(style.outlineWidth).toBe('2px')
+    })
+
+    test('geek theme: the theme border applies and the ring stays independent', async ({ page, baseURL }) => {
+        await gotoWithTheme(page, baseURL, 'geek', 'dark')
+        const item = firstGroupItem(page)
+        await expect(item).toBeVisible()
+        await expect(item).toHaveClass(/origam-avatar--border\b/)
+
+        const style = await item.evaluate((el) => {
+            const cs = getComputedStyle(el)
+            return { borderWidth: cs.borderWidth, outlineWidth: cs.outlineWidth }
+        })
+        expect(style.borderWidth).not.toBe('0px')
+        expect(style.outlineWidth).toBe('2px')
+    })
+})

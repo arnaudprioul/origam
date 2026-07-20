@@ -32,6 +32,51 @@ function camelize (str: string): string {
 }
 
 /**
+ * Was-prop-passed factory.
+ *
+ * @description
+ * Component-side primitive: for the CURRENT component instance, returns a
+ * predicate telling whether a given prop key was explicitly written by the
+ * parent template (`vnode.props`) — as opposed to resolved from a default
+ * (`withDefaults()`, or Vue's own boolean-prop coercion).
+ *
+ * This matters beyond `useDefaults()` itself: any component that FORWARDS
+ * its own props down to descendants as `<OrigamDefaultsProvider>` entries
+ * (e.g. `OrigamAvatarGroup` → `origam-avatar`, `OrigamBtnGroup` → `origam-btn`)
+ * must use this — not a plain `!== undefined` check — to decide whether to
+ * forward a value. Reason: Vue resolves an UNSET prop whose declared type
+ * *includes* `boolean` (e.g. `border?: boolean | string`, `rounded?: boolean
+ * | TRounded`) to the concrete value `false`, never to `undefined`. A naive
+ * `omitUndefined()` over the forwarded map therefore still ships an explicit
+ * `false` for `border`/`rounded` even when the consumer never set them,
+ * which then wins the `mergeDeep` against an ancestor/theme default (e.g.
+ * `origam-avatar: { border: true }`) — see #263.
+ *
+ * MUST be re-read on every resolution (not captured once), for the same
+ * reason `useDefaults()` re-reads it: a parent binding through a dynamic
+ * `v-bind` whose object starts empty (`childRef?.filterProps(...)` before
+ * mount) only fills `vnode.props` on a later render.
+ */
+
+/*********************************************************
+ * usePassedProps
+ ********************************************************/
+export function usePassedProps<T extends Record<string, any>> (
+    _props: T,
+    instanceLabel = 'usePassedProps'
+): (key: Extract<keyof T, string> | string) => boolean {
+    const vm = getCurrentInstance(instanceLabel)
+
+    return (key) => {
+        const vnodeProps = vm.vnode.props || {}
+        for (const k in vnodeProps) {
+            if (k === key || camelize(k) === key) return true
+        }
+        return false
+    }
+}
+
+/**
  * Component-side hook: resolve `props` against the closest DefaultsProvider.
  *
  * The returned object proxies the original props — every read goes through
@@ -52,29 +97,14 @@ export function useDefaults<T extends Record<string, any>> (
     name = getCurrentInstanceName()
 ): T {
     const defaults = inject(ORIGAM_DEFAULTS_KEY, ref<IDefault>({}))
-    const vm = getCurrentInstance('useDefaults')
 
     const propNames = Object.keys(props)
     if (!propNames.length) return props
 
-    // Determine which props were explicitly passed by the parent template.
-    // `vnode.props` only carries attributes the parent actually wrote.
-    //
-    // This MUST be re-read on every resolution, NOT captured once at setup:
-    // a parent that binds props through a dynamic `v-bind` whose object is
-    // empty on the first render — e.g. `v-bind="childRef?.filterProps(...)"`
-    // where `childRef` is null until mounted — fills `vnode.props` only on a
-    // later render. Capturing `passedKeys` once would permanently mark those
-    // props as "not passed", so the theme/global default would override the
-    // value the parent actually forwards (the SelectionControl density/color
-    // race). Reading `vm.vnode.props` inside the computed keeps it current.
-    const wasPropPassed = (key: string): boolean => {
-        const vnodeProps = vm.vnode.props || {}
-        for (const k in vnodeProps) {
-            if (k === key || camelize(k) === key) return true
-        }
-        return false
-    }
+    // Determine which props were explicitly passed by the parent template —
+    // see `usePassedProps()` above for why this can't be a plain
+    // `!== undefined` check.
+    const wasPropPassed = usePassedProps(props, 'useDefaults')
 
     const result = {} as Record<string, any>
 
