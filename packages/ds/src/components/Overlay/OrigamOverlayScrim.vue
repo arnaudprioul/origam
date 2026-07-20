@@ -121,6 +121,8 @@
 >
 	.origam-scrim {
 		background-color: var(--origam-overlay-scrim---background-color, var(--origam-color__overlay---scrim)); // TODO: rename to color.overlay.backdrop once #arbitration2 resolved
+		backdrop-filter: var(--origam-overlay-scrim---backdrop-filter, none);
+		-webkit-backdrop-filter: var(--origam-overlay-scrim---backdrop-filter, none);
 		pointer-events: var(--origam-overlay-scrim---pointer-events, auto);
 		border-radius: inherit;
 		inset: 0;

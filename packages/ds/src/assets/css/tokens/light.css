@@ -205,6 +205,7 @@
   --origam-card__after---box-shadow: var(--origam-shadow---lg);
   --origam-chip---background-color: var(--origam-color__surface---overlay);
   --origam-chip---color: var(--origam-color__text---primary);
+  --origam-chip---backdrop-filter: none;
   --origam-chip---border-color: currentColor;
   --origam-chip---border-style: solid;
   --origam-chip---border-width: var(--origam-border__width---0);
@@ -524,6 +525,7 @@
   --origam-snackbar--info---bg: var(--origam-color__feedback--info---bg);
   --origam-snackbar--info---fg: var(--origam-color__feedback--info---fg);
   --origam-snackbar--info---border: var(--origam-color__feedback--info---border);
+  --origam-snackbar-item---backdrop-filter: none;
   --origam-bottom-bar---border-top-width: var(--origam-border__width---0);
   --origam-bottom-bar---border-left-width: var(--origam-border__width---0);
   --origam-bottom-bar---border-bottom-width: var(--origam-border__width---0);
@@ -855,11 +857,15 @@
   --origam-field---border-opacity-outlined: 0.38;
   --origam-field---background-color: rgba(0, 0, 0, 0);
   --origam-field---color: var(--origam-color__text---primary);
+  --origam-field---backdrop-filter: none;
   --origam-field---opacity-disabled: var(--origam-opacity---50);
   --origam-field---transition-duration: var(--origam-motion__duration---normal);
   --origam-field---transition-easing: var(--origam-motion__easing---standard);
   --origam-field--error---border-color: var(--origam-color__feedback--danger---border);
   --origam-field--error---color: var(--origam-color__feedback--danger---fgSubtle);
+  --origam-field---focus-ring-color: rgba(0, 0, 0, 0);
+  --origam-field---focus-ring-width: 0px;
+  --origam-field---focus-ring-offset: 0px;
   --origam-field---variant-solo-box-shadow: var(--origam-shadow---sm);
   --origam-field---variant-outlined-background-color: rgba(0, 0, 0, 0);
   --origam-field__overlay---background-color: var(--origam-color__overlay---scrim);
@@ -1050,6 +1056,7 @@
   --origam-selection-control__input---overlay-opacity-hover: var(--origam-opacity---12);
   --origam-selection-control__input---overlay-opacity-focus: var(--origam-opacity---12);
   --origam-selection-control__input---overlay-background-color: currentColor;
+  --origam-selection-control__input---backdrop-filter: none;
   --origam-selection-control__icon---opacity: var(--origam-opacity---26);
   --origam-selection-control__icon---opacity-active: var(--origam-opacity---100);
   --origam-selection-control__label---color: var(--origam-color__text---primary);
@@ -1277,6 +1284,7 @@
   --origam-overlay__absolute---position: absolute;
   --origam-overlay__contained---scrim-position: absolute;
   --origam-overlay-scrim---background-color: var(--origam-color__overlay---scrim);
+  --origam-overlay-scrim---backdrop-filter: none;
   --origam-overlay-scrim---opacity: var(--origam-opacity---32);
   --origam-overlay-scrim---pointer-events: auto;
   --origam-overlay-scrim---border-radius: inherit;
@@ -1415,6 +1423,7 @@
   --origam-menu---offset-right: var(--origam-space---0);
   --origam-tooltip---background-color: var(--origam-color__neutral---800);
   --origam-tooltip---color: var(--origam-color__text---inverse);
+  --origam-tooltip---backdrop-filter: none;
   --origam-tooltip---font-size: var(--origam-font__size---sm);
   --origam-tooltip---font-weight: var(--origam-font__weight---medium);
   --origam-tooltip---line-height: var(--origam-font__lineHeight---normal);
@@ -2202,6 +2211,7 @@
   --origam-switch__track---background-color-error: var(--origam-color__feedback--danger---bg);
   --origam-switch__track---border-color: rgba(0, 0, 0, 0);
   --origam-switch__track---border-width: var(--origam-border__width---0);
+  --origam-switch__track---backdrop-filter: none;
   --origam-switch__thumb---size: 20px;
   --origam-switch__thumb---background-color: var(--origam-color__surface---default);
   --origam-switch__thumb---background-color-checked: var(--origam-color__surface---default);

@@ -203,6 +203,8 @@
 		border-radius: var(--origam-switch__track---border-radius, 9999px);
 		height: var(--origam-switch__track---height, 14px);
 		min-width: var(--origam-switch__track---width, 36px);
+		backdrop-filter: var(--origam-switch__track---backdrop-filter, none);
+		-webkit-backdrop-filter: var(--origam-switch__track---backdrop-filter, none);
 		cursor: pointer;
 		transition: 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
 		overflow: hidden;

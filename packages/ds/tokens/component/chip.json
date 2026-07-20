@@ -2,6 +2,7 @@
   "chip": {
     "background-color":  { "$type": "color",      "$value": "{color.surface.overlay}" },
     "color":             { "$type": "color",      "$value": "{color.text.primary}" },
+    "backdrop-filter":   { "$type": "other",      "$value": "none" },
     "border-color":      { "$type": "color",      "$value": "currentColor" },
     "border-style":      { "$type": "other",      "$value": "solid" },
     "border-width":      { "$type": "dimension",  "$value": "{border.width.0}" },
