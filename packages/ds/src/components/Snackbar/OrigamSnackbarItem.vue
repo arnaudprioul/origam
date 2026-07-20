@@ -233,6 +233,8 @@
     border-color: var(--origam-snackbar-item---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12)));
     color: var(--origam-snackbar-item---color, var(--origam-color__text---primary, #1a1a1a));
     box-shadow: var(--origam-snackbar-item---box-shadow, 0 4px 12px rgba(0, 0, 0, 0.12));
+    backdrop-filter: var(--origam-snackbar-item---backdrop-filter, none);
+    -webkit-backdrop-filter: var(--origam-snackbar-item---backdrop-filter, none);
     font-size: var(--origam-snackbar-item---font-size, 0.875rem);
     line-height: 1.4;
 
