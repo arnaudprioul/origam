@@ -134,7 +134,15 @@ export const appleLightTheme: IOrigamTheme = {
         // the track reads as the same visual family as the theme's fields
         // (see cartoon.theme.ts for the full rationale comment).
         'origam-switch': { rounded: 'md' },
-        'origam-snackbar': { rounded: 'lg', elevation: 4 }
+        'origam-snackbar': { rounded: 'lg', elevation: 4 },
+        // Breadcrumb (Refs #33) — "liens et page active bleu plein" : `color`
+        // is a foreground-only prop (IColorProps). The bare `'primary'` intent
+        // resolves to `action.primary.fgSubtle` (a derived darker/lighter rung,
+        // via `tokenForegroundForIntent`), not the pure accent — so we pass
+        // the raw `action.primary.bg` var reference directly (still through
+        // the `color` PROP, just a custom value instead of the intent
+        // keyword) to get the exact solid #0071e3 / #0a84ff swatch.
+        'origam-breadcrumb-item': { color: 'var(--origam-color__action--primary---bg)' }
     },
     cssVars: {
         "--origam-font-family---heading": "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif",
@@ -154,10 +162,71 @@ export const appleLightTheme: IOrigamTheme = {
         '--origam-card---box-shadow': 'var(--origam-shadow---card-elevated)',
         '--origam-code---border-radius': '12px',
         '--origam-appbar---bg': 'color-mix(in srgb, #ffffff 80%, transparent)',
-        '--origam-menu---background': 'color-mix(in srgb, var(--origam-color__surface---raised) 92%, transparent)',
+        // ⛔ vibrancy iOS/macOS HIG (Refs #33) — chrome flottant : saturate(180%) blur(20px).
+        // Hook vérifié : OrigamMenu.vue:390-391 consomme `--origam-menu---backdrop-filter`.
+        '--origam-menu---backdrop-filter': 'saturate(180%) blur(20px)',
+        // 92% → 80% : aligné sur la spec (background reste translucide, la vibrancy fait le reste).
+        '--origam-menu---background': 'color-mix(in srgb, var(--origam-color__surface---raised) 80%, transparent)',
         '--origam-menu---box-shadow': '0 4px 16px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.06), 0 0 0 0.5px var(--origam-color__border---default)',
         '--origam-btn---border-color': '#d2d2d7',
-        '--origam-btn---box-shadow-elevated': '0 2px 8px rgba(0, 113, 227, 0.25)'
+        '--origam-btn---box-shadow-elevated': '0 2px 8px rgba(0, 113, 227, 0.25)',
+
+        // ── Sheet (Refs #33) — vibrancy + translucent surface + top-only radius.
+        // Hooks vérifiés : OrigamSheet.vue:294-298 (background/backdrop-filter/border-radius).
+        '--origam-sheet---backdrop-filter': 'saturate(180%) blur(20px)',
+        '--origam-sheet---background': 'color-mix(in srgb, var(--origam-color__surface---raised) 78%, transparent)',
+        '--origam-sheet---border-radius': '18px 18px 0 0',
+
+        // ── Tooltip (Refs #33) — dark chip on any surface, 8px radius (caret untouched).
+        // Hooks vérifiés : OrigamTooltip.vue:198-205.
+        '--origam-tooltip---background-color': 'color-mix(in srgb, #1d1d1f 92%, transparent)',
+        '--origam-tooltip---color': '#ffffff',
+        '--origam-tooltip---border-radius': '8px',
+
+        // ── Segmented control / btn-toggle (Refs #33) — track + lifted active pill.
+        // Hooks vérifiés : OrigamBtn.vue `&--variant-tonal` / `&--variant-tonal &--active`
+        // (background-color-tonal, background-color-tonal-active, box-shadow-tonal-active).
+        // font-weight 600 sur l'état actif est déjà câblé en dur dans le SCSS (pas de var).
+        // ⚠️ Effet visible seulement si l'instance consommatrice utilise `variant="tonal"`
+        // (btn-toggle ne cascade pas `variant` vers ses boutons enfants — cf. rapport).
+        '--origam-btn---background-color-tonal': 'color-mix(in srgb, var(--origam-color__text---primary) 6%, transparent)',
+        '--origam-btn---background-color-tonal-active': '#ffffff',
+        '--origam-btn---box-shadow-tonal-active': '0 3px 8px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.04), 0 0 0 0.5px rgba(0, 0, 0, 0.04)',
+
+        // ── Tabs indicator (Refs #33) — bleu plein, 2px (2px = défaut DS déjà correct).
+        // Hook vérifié : OrigamTab.vue:280 (--origam-tabs__indicator---color, défaut currentColor).
+        '--origam-tabs__indicator---color': 'var(--origam-color__action--primary---bg)',
+
+        // ── Bottom nav (Refs #33) — vibrancy-style surface + hairline top border.
+        // ⚠️ Vrai préfixe DS = `--origam-bottom-bar---*` (pas `--origam-bottom-nav---*`,
+        // divergence de nommage vs la spec — cf. rapport). Backdrop-filter : AUCUN hook
+        // trouvé sur OrigamBottomNav.vue → bloqué #253 (pas posé).
+        // Hooks vérifiés : OrigamBottomNav.vue:293,299 (background, border-top-width).
+        '--origam-bottom-bar---background': 'color-mix(in srgb, var(--origam-color__surface---raised) 80%, transparent)',
+        '--origam-bottom-bar---border-top-width': '0.5px',
+        '--origam-bottom-bar---border-color': 'var(--origam-color__border---default)',
+
+        // ── Grouped list divider inset (Refs #33) — 52px, pour un alignement iOS
+        // (le texte du divider s'aligne avec le contenu, pas le prepend/icon).
+        // ⚠️ Nom réel du hook = `--origam-divider--inset---margin-inline-start`
+        // (le nom `--origam-list-item__divider---*` de la spec n'existe pas dans le DS
+        // — divergence de nommage, cf. rapport). Hook vérifié : OrigamDivider.vue:163.
+        '--origam-divider--inset---margin-inline-start': '52px',
+
+        // ── Table (Refs #33) — header sunken + tertiary ink ; hairline row separator.
+        // Hooks vérifiés : OrigamTable.vue:223-224 (header-cell bg/color), :235 (cell border).
+        // Uppercase header + tabular-nums : AUCUN hook (text-transform/font-variant absents
+        // du composant) → bloqué #253 (pas posé).
+        // Row "border-top" (spec) : seul un hook border-BOTTOM existe sur `__cell` → posé
+        // via ce hook (séparateur hairline visuellement équivalent) — divergence notée.
+        '--origam-table__header-cell---background-color': 'var(--origam-color__surface---sunken)',
+        '--origam-table__header-cell---color': 'var(--origam-color__text---tertiary)',
+        '--origam-table__cell---border-width': '0.5px',
+
+        // ── Avatar ring (Refs #33) — séparation nette sur fonds superposés (photo contact
+        // style iMessage/HIG). Hook vérifié : OrigamAvatar.vue:235 (--origam-avatar---box-shadow,
+        // pas de fallback par défaut dans le composant).
+        '--origam-avatar---box-shadow': '0 0 0 2px var(--origam-color__surface---default)'
     }
 }
 
@@ -285,10 +354,24 @@ export const appleDarkTheme: IOrigamTheme = {
         '--origam-card---box-shadow': 'var(--origam-shadow---card-elevated)',
         '--origam-code---border-radius': '12px',
         '--origam-appbar---bg': 'color-mix(in srgb, #000000 80%, transparent)',
-        '--origam-menu---background': 'var(--origam-color__surface---raised)',
+        // ⛔ vibrancy (Refs #33) — même traitement que light : voir commentaire détaillé
+        // dans appleLightTheme.cssVars. Overridden ici car `[data-mode="dark"]` a une
+        // spécificité supérieure au bloc mode-agnostic et écraserait sinon la valeur.
+        '--origam-menu---backdrop-filter': 'saturate(180%) blur(20px)',
+        '--origam-menu---background': 'color-mix(in srgb, var(--origam-color__surface---raised) 80%, transparent)',
         '--origam-menu---box-shadow': '0 4px 24px rgba(0, 0, 0, 0.50), 0 1px 2px rgba(0, 0, 0, 0.40), 0 0 0 0.5px var(--origam-color__border---default)',
         '--origam-btn---border-color': '#38383a',
-        '--origam-btn---box-shadow-elevated': '0 2px 8px rgba(10, 132, 255, 0.30)'
+        '--origam-btn---box-shadow-elevated': '0 2px 8px rgba(10, 132, 255, 0.30)',
+
+        // ── Tooltip (Refs #33, dark) — light chip inversé. Hooks : OrigamTooltip.vue:198-205.
+        '--origam-tooltip---background-color': 'color-mix(in srgb, #e5e5e7 94%, transparent)',
+        '--origam-tooltip---color': '#000000',
+
+        // ── Segmented control / btn-toggle (Refs #33, dark) — track identique (mode-agnostic,
+        // hérité de appleLightTheme via `color-mix(text.primary)`), active pill #636366 +
+        // ombres plus profondes (opacités .4/.3/.2 vs .12/.04/.04 en light).
+        '--origam-btn---background-color-tonal-active': '#636366',
+        '--origam-btn---box-shadow-tonal-active': '0 3px 8px rgba(0, 0, 0, 0.40), 0 1px 1px rgba(0, 0, 0, 0.30), 0 0 0 0.5px rgba(0, 0, 0, 0.20)'
     }
 }
 

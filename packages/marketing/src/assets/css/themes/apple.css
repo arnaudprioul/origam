@@ -83,3 +83,12 @@
 /* OrigamCode component-level default (dark) */
 
 }
+
+:root:root[data-theme="apple"] .origam-dialog {
+    --origam-overlay-scrim---background-color: rgba(0, 0, 0, 0.40);
+    --origam-overlay-scrim---opacity: 1;
+}
+
+:root:root[data-theme="apple"][data-mode="dark"] .origam-dialog {
+    --origam-overlay-scrim---background-color: rgba(0, 0, 0, 0.55);
+}
