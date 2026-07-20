@@ -318,7 +318,15 @@
 :root:root[data-theme="glass"] .home-themes__chip[aria-pressed="true"] {
     background-color: #7c3aed;
     border-color: #7c3aed;
-    color: #ffffff;
+    /*
+     * OrigamChip binds its resting-state `color` as an INLINE style
+     * (--origam-color__action--primary---fgSubtle, from useBothColor) —
+     * inline styles always outrank any selector, regardless of
+     * specificity. `!important` is the only way this theme overlay can
+     * repaint the selected chip's text to the full-contrast white it
+     * needs against the solid violet fill. See #28.
+     */
+    color: #ffffff !important;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
 }
@@ -333,7 +341,8 @@
 :root:root[data-theme="glass"][data-mode="dark"] .home-themes__chip[aria-pressed="true"] {
     background-color: #a78bfa;
     border-color: #a78bfa;
-    color: #07060f;
+    /* Same inline-style override need as the light-mode rule above — see #28. */
+    color: #07060f !important;
 }/* — Footer — */
 :root:root[data-theme="glass"] .site-footer {
     background-color: rgba(255, 255, 255, 0.15);
