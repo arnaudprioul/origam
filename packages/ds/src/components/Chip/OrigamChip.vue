@@ -392,6 +392,8 @@
 
 		background-color: var(--origam-chip---background-color);
 		color: var(--origam-chip---color);
+		backdrop-filter: var(--origam-chip---backdrop-filter, none);
+		-webkit-backdrop-filter: var(--origam-chip---backdrop-filter, none);
 
 		&__content {
 			align-items: center;
