@@ -103,7 +103,7 @@ jobs:
         run: pnpm -F origam tokens:build
 
       - name: Upload generated token artefacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: tokens-dist
           path: |
@@ -163,7 +163,7 @@ jobs:
             || { echo "::error::packages/ds/dist/src/origam.js missing — entry not emitted"; exit 1; }
 
       - name: Upload library dist
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: library-dist
           path: packages/ds/dist/
@@ -205,7 +205,7 @@ jobs:
             || { echo "::error::docs embed missing — public/docs/index.html not built"; exit 1; }
 
       - name: Upload marketing embeds
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: marketing-embeds
           path: |
@@ -282,7 +282,7 @@ jobs:
 
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report-shard-${{ matrix.shard }}
           path: |
