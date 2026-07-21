@@ -747,6 +747,19 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
 
     &__input {
         inline-size: 6rem;
+
+        /*
+         * The `color-intent`/`accentColor` rich control renders through
+         * `OrigamColorPickerField` (readonly `origam-text-field` root,
+         * `.tbc-trigger` nested inside), which carries the generic
+         * `tb-row__input` sizing (6rem) instead of `tb-row__rich` (9rem)
+         * — too narrow for common intent values ("Primary", "Secondary")
+         * once the swatch + chevron take their share, truncating to "Pr".
+         * Widen it specifically when it's hosting the rich trigger. #251
+         */
+        &:has(.tbc-trigger) {
+            inline-size: 9rem;
+        }
     }
 
     &__rich {
