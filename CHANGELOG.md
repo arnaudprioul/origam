@@ -13,8 +13,65 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+---
+
+## [2.9.0] — 2026-07-21
+
+Theming-enablement release. This ships the design-token **hooks** and the
+`useDefaults` **wiring** that let a consumer configure a component's
+appearance entirely from an `IOrigamTheme` object (props-first), plus the
+CSS hooks brand themes need for translucency and separation. No breaking
+changes — every addition is opt-in via a new component token with an inert
+(`none`) fallback, so existing renders are byte-identical until a theme
+sets a value.
+
+### Added
+
+- **`useDefaults()` now resolves per-component theme defaults on 11 more
+  components** that declared theme-configurable props but never read
+  `theme.components['origam-<name>']` — their theme config was silently
+  inert before this. This is the mechanism that makes props-first theming
+  actually apply. (#242)
+- **Translucency & focus hooks on 7 components.** New component tokens,
+  each consumed with an inert fallback (`var(--…, none)`):
+  `--origam-chip---backdrop-filter`, `--origam-snackbar-item---backdrop-filter`,
+  `--origam-field---backdrop-filter` (+ `--origam-field---focus-ring-*`),
+  `--origam-switch__track---backdrop-filter`,
+  `--origam-selection-control__input---backdrop-filter`,
+  `--origam-tooltip---backdrop-filter`, `--origam-overlay-scrim---backdrop-filter`.
+  These give brand themes real `backdrop-filter` translucency (glass, frosted
+  surfaces) without per-instance `:style` overrides. (#253)
+- **`OrigamAvatarGroup` separation ring.** Overlapping avatars now get a
+  legible seam via a dedicated `outline` — a CSS property distinct from
+  `box-shadow`, so it coexists with each theme's own avatar shadow with no
+  specificity or ordering tricks. Driven by new
+  `--origam-avatar-group__item---outline-{color,width,style}` tokens
+  (defaults `color.surface.default` / `2px` / `solid`). Only avatars rendered
+  inside an `<origam-avatar-group>` get it; a standalone `<origam-avatar>`
+  never does. (#263)
+- **`usePassedProps()` composable helper.** Reports which props a consumer
+  actually passed by reading `vnode.props`, distinguishing a real value from
+  Vue 3 coercing an unpassed boolean prop to `false`. Used so a
+  theme-provided value is no longer overwritten by an `undefined → false`
+  default. (#263)
+
 ### Fixed
 
+- **`useDefaults` wiring no longer collapses `<origam-code>`'s header zone.**
+  The origam base theme carried a `compact: true` default (authored in a bulk
+  pass before `useDefaults` was wired, never visually validated); once the
+  wiring landed it forced every code block without an explicit `compact` prop
+  into the condensed single-line pill layout, dropping the
+  header/filename/line-numbers/lang-badge. Removed from the base theme. (#249)
+- **`OrigamBtnGroup` renders as a single rounded surface.** The group applies
+  its `rounded`/`elevation` on the outer wrapper with `overflow: hidden`
+  clipping children to the inner curvature — no forced child heights, no
+  inner-radius tokens; group height derives from `OrigamBtn`'s own border-box
+  height calc. (#239)
+- **`OrigamSwitchTrack.error` widened from `boolean` to `string | boolean`**
+  to match the canonical Commons `IValidationProps`, so the parent's
+  validation surface is type-assignable again (was `vue-tsc` TS2345, CI red).
+  Consumed by truthiness only — behaviour unchanged. (#239)
 - **`OrigamLayout` / `OrigamApp` `full-height` no longer clamps content
   taller than one screen.** The full-height wrapper was `height: 100vh`
   (a hard clamp) instead of `min-height: 100vh` ("occupy at least the
@@ -35,6 +92,11 @@ This project follows [Semantic Versioning](https://semver.org).
   matching the established pattern already used for equivalent tokens
   elsewhere in the same files. No visual/behavioural change; this only
   unblocks the build pipeline.
+
+> The 8 marketing brand themes (glass · cartoon · geek · apple · editorial ·
+> material · ecom) that these hooks enable live in the private
+> `@origam/marketing` package and are **not** part of the npm `origam`
+> release — this changelog tracks the published library only.
 
 ---
 
