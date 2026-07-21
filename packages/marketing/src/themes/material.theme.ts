@@ -111,9 +111,18 @@ export const materialLightTheme: IOrigamTheme = {
         }
     },
     // ⛔ PROPS D'ABORD (logique DS). Overrides Material superposés sur la baseline
-    // `origam` (deep-merge). Identité M3 = très arrondi (rounded lg), elevation marquée,
-    // variantes elevated/tonal, champs filled. Seule la rampe shadow (non exprimable
-    // en props) reste dans `vars`.
+    // `origam` (deep-merge). Identité M3 = très arrondi (rounded lg → 28px via
+    // vars.rounded.lg ci-dessus), elevation TONALE, variantes elevated/tonal,
+    // CHAMPS OUTLINED (correction utilisateur — pas filled). Seule la rampe shadow
+    // (non exprimable en props) reste dans `vars`.
+    //
+    // Déclaré UNE SEULE FOIS (sur l'entrée mode-agnostic `materialLightTheme`, sans
+    // `mode`) car `components` s'applique aux deux modes indifféremment (cf.
+    // ~/.claude/origam-ds-reference.md). Les couleurs qui DIFFÈRENT entre light/dark
+    // passent soit par un intent (`'primary'`, résolu par mode), soit par une
+    // référence `var(--origam-…)` vers un token sémantique déjà dupliqué par mode
+    // (`vars.color.action.primary.*`) ou vers un token d'aide `--origam-material---*`
+    // déclaré dans les blocs `cssVars` light/dark plus bas.
     components: {
         'origam-btn': { variant: 'elevated', rounded: 'lg', elevation: 1 },
         'origam-btn-group': { variant: 'elevated', rounded: 'lg', elevation: 1 },
@@ -121,11 +130,15 @@ export const materialLightTheme: IOrigamTheme = {
         'origam-card': { rounded: 'lg', flat: false, border: false, elevation: 1 },
         'origam-chip': { variant: 'tonal', rounded: 'lg', pill: true, border: false },
         'origam-alert': { rounded: 'lg', elevation: 1 },
-        'origam-field': { variant: 'filled', rounded: 'lg' },
-        'origam-text-field': { variant: 'filled', rounded: 'lg' },
-        'origam-textarea-field': { variant: 'filled', rounded: 'lg' },
-        'origam-number-field': { variant: 'filled', rounded: 'lg' },
-        'origam-password-field': { variant: 'filled', rounded: 'lg' },
+        // CHAMPS OUTLINED (correction utilisateur) — vérifié IFieldProps / ITextFieldProps
+        // etc. acceptent `variant: 'outlined'` (TFieldVariant). `origam-select` était déjà
+        // outlined dans le thème précédent — les autres champs étaient encore `filled`,
+        // corrigé ici pour l'uniformité M3.
+        'origam-field': { variant: 'outlined', rounded: 'lg' },
+        'origam-text-field': { variant: 'outlined', rounded: 'lg' },
+        'origam-textarea-field': { variant: 'outlined', rounded: 'lg' },
+        'origam-number-field': { variant: 'outlined', rounded: 'lg' },
+        'origam-password-field': { variant: 'outlined', rounded: 'lg' },
         'origam-select': { variant: 'outlined', rounded: 'lg' },
         'origam-date-picker-field': { rounded: 'lg' },
         'origam-file-field': { rounded: 'lg' },
@@ -133,13 +146,124 @@ export const materialLightTheme: IOrigamTheme = {
         'origam-code': { rounded: 'lg', elevation: 1 },
         'origam-menu': { rounded: 'lg', elevation: 2 },
         'origam-table': { rounded: 'lg', border: false, elevation: 1 },
-        'origam-avatar': { rounded: 'lg' },
-        'origam-checkbox': { rounded: 'md' },
-        // Switch harmony (lot 4) — mirrors `origam-text-field`'s rounded so
-        // the track reads as the same visual family as the theme's fields
-        // (see cartoon.theme.ts for the full rationale comment).
-        'origam-switch': { rounded: 'lg' },
-        'origam-snackbar': { rounded: 'lg', elevation: 3 }
+        // Avatar tonal container — vérifié IAvatarProps extends IColorProps,
+        // IBgColorProps. bgSubtle/fgSubtle du token action.primary égalent déjà
+        // #eaddff/#21005d (light) et #4a4458/#eaddff (dark) — pas de nouveau hex.
+        'origam-avatar': {
+            rounded: 'lg',
+            bgColor: 'var(--origam-color__action--primary---bgSubtle)',
+            color: 'var(--origam-color__action--primary---fgSubtle)'
+        },
+        // Checkbox — vérifié ICheckboxProps extends IColorProps. La coche DS est une
+        // icône outline (mdi checkbox-marked-outline), PAS un carré plein — `color:
+        // 'primary'` colore la coche cochée en #6750a4/#d0bcff. Aucune var
+        // `--origam-checkbox--checked---color` n'est consommée par le composant (grep
+        // vérifié OrigamCheckboxBtn.vue / OrigamSelectionControl.vue) : le "#fff/#381e72"
+        // du brief supposait un carré plein M3, non applicable à cette implémentation
+        // DS. Documenté, pas bloqué — le résultat correct (coche teintée primary) est
+        // atteint via la prop existante.
+        'origam-checkbox': { rounded: 'md', color: 'primary' },
+        // Radio — NEW. IRadioProps extends IColorProps → dot #6750a4/#d0bcff.
+        'origam-radio': { color: 'primary' },
+        // Switch — track off/on M3. `activeBgColor` est le SEUL hook effectivement
+        // câblé à `model.value` dans OrigamSelectionControl.vue (`bgColor = model.value
+        // ? (activeBgColor||bgColor) : bgColor`) — le prop moderne `active:{bgColor}`
+        // n'est PAS lu par ce calcul. `activeBgColor` est @deprecated mais reste le seul
+        // chemin fonctionnel, utilisé en connaissance de cause.
+        // Thumb 16→24px à l'ON (signature M3) : BLOQUÉ — `--origam-switch__thumb---size`
+        // est un var UNIQUE (pas de state `:checked` dédié, grep vérifié OrigamSwitch.vue)
+        // → impossible de faire varier la taille par état sans toucher le composant DS.
+        // Ticket DS à ouvrir : `--origam-switch__thumb--checked---size`.
+        'origam-switch': {
+            rounded: 'lg',
+            bgColor: 'var(--origam-material---switch-track-off)',
+            activeBgColor: 'primary'
+        },
+        'origam-snackbar': { rounded: 'lg', elevation: 3 },
+        // Slider — ISliderFieldProps extends IColorProps + trackProps (color/bgColor/
+        // rounded transmis au sous-composant track). bgSubtle égale déjà #eaddff/#4a4458.
+        'origam-slider-field': {
+            rounded: true,
+            color: 'primary',
+            trackProps: { bgColor: 'var(--origam-color__action--primary---bgSubtle)', rounded: true }
+        },
+        // Progress linear — même logique tonale que le slider (IProgressTypeProps
+        // extends IColorProps, IBgColorProps ; IRoundedProps direct).
+        'origam-progress-linear': {
+            rounded: true,
+            color: 'primary',
+            bgColor: 'var(--origam-color__action--primary---bgSubtle)'
+        },
+        // Sheet — ISheetProps extends IRoundedProps. Grabber themé via cssVar dédiée
+        // plus bas (--origam-sheet__handle---color).
+        'origam-sheet': { rounded: 'lg' },
+        // Dialog — IDialogProps extends ICardProps (donc IBgColorProps/IRoundedProps/
+        // IElevationProps). Surface dialog #f3edf7 (light) diffère de card raised
+        // #ffffff → nouveau token d'aide `--origam-material---dialog-surface` (dark =
+        // #2b2930, identique à surface.raised dark, donc juste une référence).
+        'origam-dialog': {
+            rounded: 'lg',
+            elevation: 3,
+            bgColor: 'var(--origam-material---dialog-surface)'
+        },
+        // Tooltip — ITooltipProps extends IColorProps, IBgColorProps directement.
+        // Surface inverse M3 : nouveaux tokens d'aide (pas de slot `overlay`/`inverse`
+        // dans IThemeVars.color). "Pas de caret" : déjà natif — OrigamTooltip.vue n'a
+        // aucun mécanisme de flèche/caret (grep vérifié), rien à désactiver.
+        'origam-tooltip': {
+            bgColor: 'var(--origam-material---tooltip-surface)',
+            color: 'var(--origam-material---tooltip-on-surface)'
+        },
+        // Tabs — ITabsProps extends IRoundedProps, IColorProps, IBgColorProps,
+        // `variant` accepte 'underline' (TAB_VARIANT). Couleur/épaisseur 3px de
+        // l'indicateur réglées en cssVars (--origam-tabs__indicator---color/height,
+        // hooks réels).
+        'origam-tabs': { variant: 'underline' },
+        // Bottom nav — IBottomNavProps extends IRoundedProps, IElevationProps.
+        // Pastille active PAR ITEM : BLOQUÉ — les items sont des <origam-btn> bruts
+        // fournis par le consommateur (prop `items`), sans sous-composant dédié
+        // thémable indépendamment de la pagination (même conflit documenté dans
+        // editorial.theme.ts : le seul hook est `--origam-btn---background-color-active`
+        // GLOBAL, qui écraserait aussi les vars dédiées
+        // `--origam-pagination__item--is-active---*` de la pagination — vérifié : la
+        // règle `.origam-btn--active` lit `-active` en PRIORITÉ sur le
+        // `--origam-btn---background-color` local que Pagination redéclare dans son
+        // propre scope). Choix assumé : NE PAS toucher ce var global pour ne pas casser
+        // la pagination (qui a un hook propre et correct) — la pastille active du
+        // bottom-nav reste non-thémable sans ticket DS
+        // (`--origam-bottom-bar__item--active---background-color`).
+        'origam-bottom-nav': { rounded: 'lg', elevation: 2 },
+        // Breadcrumb — liens uniquement (pas le séparateur/chevron) : ciblé sur
+        // `origam-breadcrumb-item`, PAS le container `origam-breadcrumb` (qui
+        // recolorerait aussi `origam-breadcrumb-divider`).
+        'origam-breadcrumb-item': { color: 'primary' },
+        // Pagination — IPaginationProps N'EXTENDS PAS IRoundedProps (vérifié — aucune
+        // prop `rounded`) : `rounded:'pill'` du brief est INAPPLICABLE tel quel, la
+        // forme est pilotée par la cssVar dédiée `--origam-pagination---border-radius`
+        // (voir cssVars plus bas), légitime escape-hatch puisqu'aucune prop ne couvre ce
+        // besoin. Couleurs actives via les vars dédiées
+        // `--origam-pagination__item--is-active---*` (hooks propres, indépendants du
+        // `--origam-btn---background-color-active` global — voir note bottom-nav).
+        'origam-list': { nav: true },
+        // Title — ITitleProps extends ITypographyProps. `fontWeight:'regular'` (400,
+        // valeur réelle de TFontWeight). `fontFamily` NON réglé ici : le thème fixe déjà
+        // `--origam-title---font-family` / `--origam-font-family---heading` à Roboto via
+        // cssVars ; ajouter la prop `fontFamily` émettrait un style inline pointant vers
+        // le token primitif `--origam-font__family---sans` (différent), écrasant le
+        // override Roboto déjà correct — évité.
+        'origam-title': { fontWeight: 'regular' },
+        // Divider — IDividerProps extends IColorProps. outline-variant M3 = nouveau
+        // token d'aide (pas de slot existant dans IThemeVars.color pour cette teinte).
+        'origam-divider': { color: 'var(--origam-material---outline-variant)' },
+        // Blockquote — IBlockquoteProps extends IBgColorProps + IAccentColorProps
+        // directement. Conteneur tonal = bgSubtle (égale déjà #eaddff/#4a4458), accent =
+        // intent 'primary' (déjà la valeur par défaut du composant, réglé explicitement
+        // pour la lisibilité du thème).
+        'origam-blockquote': {
+            bgColor: 'var(--origam-color__action--primary---bgSubtle)',
+            accentColor: 'primary',
+            rounded: 'lg'
+        }
     },
     cssVars: {
         "--origam-font-family---heading": "'Roboto', 'Inter', -apple-system, sans-serif",
@@ -177,7 +301,99 @@ export const materialLightTheme: IOrigamTheme = {
         '--origam-alert---box-shadow-elevated': '0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)',
         '--origam-table---border-radius': '28px',
         '--origam-appbar---bg': 'color-mix(in srgb, #fef7ff 72%, transparent)',
-        '--origam-menu---box-shadow': '0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(208, 188, 255, 0.15), 0 0 0 1px var(--origam-color__border---default)'
+        '--origam-menu---box-shadow': '0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(208, 188, 255, 0.15), 0 0 0 1px var(--origam-color__border---default)',
+
+        // ── Tokens d'aide `--origam-material---*` (LIGHT) ───────────────────────
+        // Valeurs M3 sans slot existant dans IThemeVars.color — référencées depuis
+        // le bloc `components` ci-dessus (mode-agnostic) via `var(--origam-material---…)`.
+        '--origam-material---switch-track-off': '#e6e0e9',
+        '--origam-material---tooltip-surface': '#322f35',
+        '--origam-material---tooltip-on-surface': '#ffffff',
+        '--origam-material---dialog-surface': '#f3edf7',
+        '--origam-material---outline-variant': '#cac4d0',
+        '--origam-material---field-border': '#79747e',
+        '--origam-material---table-header-tint': '#f2e9fb',
+
+        // ── Champs OUTLINED (Refs #37) — hooks vérifiés OrigamField.vue (grep
+        // `var(--origam-field`) : `---background-color` (fond, défaut transparent déjà),
+        // `---border-color` (couleur unique consommée aussi bien au repos qu'en erreur
+        // via `--origam-field--error---border-color`, laissé à son défaut = déjà
+        // #b3261e/feedback.danger.border), `---border-width-outlined` /
+        // `---border-opacity-outlined` (le variant `-outlined` applique une OPACITY sur
+        // toute la bordure, défaut .38 → wash-out, mis à 1 pour un trait plein M3),
+        // `---focus-ring-*` (anneau de focus, PAS un changement de border-width — mis à
+        // 2px + offset -1px pour se superposer exactement au 1px de bordure et lire
+        // comme "bordure 2px" au focus, sans halo qui déborderait).
+        '--origam-field---background-color': 'transparent',
+        '--origam-field---border-color': 'var(--origam-material---field-border)',
+        '--origam-field---border-width-outlined': '1px',
+        '--origam-field---border-opacity-outlined': '1',
+        '--origam-field---focus-ring-width': '2px',
+        '--origam-field---focus-ring-color': 'var(--origam-color__action--primary---bg)',
+        '--origam-field---focus-ring-offset': '-1px',
+
+        // ── Scrim dialog (Refs #37) — ⚠️ PIÈGE vérifié OrigamOverlay.vue:437-441 :
+        // `opacity: var(--origam-overlay__scrim---opacity, 0.32)` est un MULTIPLICATEUR
+        // appliqué EN PLUS de `background-color`. Poser une rgba(…,0.32) sans neutraliser
+        // ce multiplicateur donnerait 0.32×0.32≈10% au lieu de 32%. Fix : couleur pleine
+        // + `---opacity: 1` pour annuler le multiplicateur. Dialog consomme le préfixe
+        // BEM `__scrim` (composant `OrigamOverlay`, pas le composant standalone
+        // `OrigamOverlayScrim` — vérifié, aucun composant du DS n'instancie ce dernier) ;
+        // les deux familles sont réglées par prudence. Pas de backdrop-filter par défaut
+        // sur `__scrim` (aucune déclaration dans le SCSS, donc déjà "sans blur" nativement).
+        '--origam-overlay__scrim---background-color': 'rgba(0, 0, 0, 0.32)',
+        '--origam-overlay__scrim---opacity': '1',
+        '--origam-overlay-scrim---background-color': 'rgba(0, 0, 0, 0.32)',
+        '--origam-overlay-scrim---opacity': '1',
+        '--origam-overlay-scrim---backdrop-filter': 'none',
+
+        // ── Sheet grabber (Refs #37) — hook vérifié OrigamSheet.vue:407
+        // (--origam-sheet__handle---color, défaut border.subtle).
+        '--origam-sheet__handle---color': 'var(--origam-material---outline-variant)',
+
+        // ── Tabs underline 3px (Refs #37) — hooks vérifiés OrigamTabs (grep) :
+        // --origam-tabs__indicator---height/---color, défauts 2px/currentColor.
+        '--origam-tabs__indicator---color': 'var(--origam-color__action--primary---bg)',
+        '--origam-tabs__indicator---height': '3px',
+
+        // ── Divider (Refs #37) — pas de hook direct dédié pour la couleur de trait ;
+        // le composant peint via `color`/`bgColor` (useBothColor), réglé côté prop dans
+        // `components` ci-dessus. Rien à ajouter ici.
+
+        // ── Pagination (Refs #37) — IPaginationProps n'a PAS de prop `rounded` (vérifié) :
+        // forme pilotée par cssVar directe. Hooks vérifiés OrigamPagination.vue:766-801 :
+        // items actifs déjà scopés indépendamment du `--origam-btn---background-color-active`
+        // global (voir commentaire bottom-nav dans `components`). Cible tactile ~44px via
+        // padding-block/inline (défauts 0/0 pour le container ; la taille réelle des items
+        // vient de `origam-btn` — density/size non touchés ici pour rester props-first,
+        // seul le rounded-pill et les couleurs actives sont des escape-hatches légitimes).
+        '--origam-pagination---border-radius': '9999px',
+        '--origam-pagination---border-radius-rounded': '9999px',
+        '--origam-pagination---background-color-hover': 'rgba(103, 80, 164, 0.08)',
+        '--origam-pagination__item--is-active---background-color': 'var(--origam-color__action--primary---bg)',
+        '--origam-pagination__item--is-active---color': 'var(--origam-color__action--primary---fg)',
+
+        // ── List / Menu state layer (Refs #37) — hook vérifié OrigamListItem.vue:497-522 :
+        // `__overlay---background-color` défaut `currentColor`, opacités 0.08 (hover) /
+        // 0.12 (active) / 0.16 (active+hover) déjà câblées en dur dans le composant (pas
+        // de var pour ces %, seul le TEINT est réglable). Menu réutilise EXACTEMENT ce
+        // même hook (items = <origam-list-item> internes, vérifié OrigamMenu.vue:32-65)
+        // → un seul override sert les deux (menu hover ≈ rgba(103,80,164,.08) demandé).
+        '--origam-list-item__overlay---background-color': 'var(--origam-color__action--primary---bg)',
+
+        // ── Table header tint (Refs #37) — hook vérifié OrigamTable.vue:223
+        // (--origam-table__header-cell---background-color, défaut surface.overlay).
+        '--origam-table__header-cell---background-color': 'var(--origam-material---table-header-tint)',
+
+        // ── Code (Refs #37) — highlight de ligne. Hook vérifié OrigamCode.vue (grep
+        // --origam-code__line-highlight---*). ⚠️ Coloration SYNTAXIQUE (kw/str/fn) NON
+        // themable via IOrigamTheme : Shiki pré-calcule ses propres couleurs light/dark
+        // par token (`--shiki-light`/`--shiki-dark` inline sur chaque span, cf.
+        // OrigamCode.vue:611-648) — aucune cssVar `--origam-*` n'intercepte cette
+        // coloration. BLOQUÉ pour le thème seul : nécessiterait un thème Shiki dédié
+        // (hors périmètre `material.theme.ts`).
+        '--origam-code__line-highlight---background-color': 'rgba(103, 80, 164, 0.09)',
+        '--origam-code__line-highlight---accent-color': 'var(--origam-color__action--primary---bg)'
     }
 }
 
@@ -326,7 +542,53 @@ export const materialDarkTheme: IOrigamTheme = {
         '--origam-alert---box-shadow-elevated': '0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)',
         '--origam-table---border-radius': '28px',
         '--origam-appbar---bg': 'color-mix(in srgb, #1c1b1f 72%, transparent)',
-        '--origam-menu---box-shadow': '0 4px 24px -4px rgba(0, 0, 0, 0.50), 0 1px 2px rgba(0, 0, 0, 0.30), 0 0 0 1px var(--origam-color__border---default)'
+        '--origam-menu---box-shadow': '0 4px 24px -4px rgba(0, 0, 0, 0.50), 0 1px 2px rgba(0, 0, 0, 0.30), 0 0 0 1px var(--origam-color__border---default)',
+
+        // ── Tokens d'aide `--origam-material---*` (DARK) — miroir du bloc light,
+        // voir commentaires détaillés dans materialLightTheme.cssVars.
+        '--origam-material---switch-track-off': '#36343b',
+        '--origam-material---tooltip-surface': '#e6e1e5',
+        '--origam-material---tooltip-on-surface': '#322f35',
+        '--origam-material---dialog-surface': '#2b2930',
+        '--origam-material---outline-variant': '#49454f',
+        '--origam-material---field-border': '#938f99',
+        '--origam-material---table-header-tint': '#3a3546',
+
+        // ── Champs OUTLINED (dark) — mêmes hooks que light, voir commentaires détaillés
+        // dans materialLightTheme.cssVars.
+        '--origam-field---background-color': 'transparent',
+        '--origam-field---border-color': 'var(--origam-material---field-border)',
+        '--origam-field---border-width-outlined': '1px',
+        '--origam-field---border-opacity-outlined': '1',
+        '--origam-field---focus-ring-width': '2px',
+        '--origam-field---focus-ring-color': 'var(--origam-color__action--primary---bg)',
+        '--origam-field---focus-ring-offset': '-1px',
+
+        // ── Scrim dialog (dark) — même piège opacity que light (cf. commentaire
+        // materialLightTheme.cssVars).
+        '--origam-overlay__scrim---background-color': 'rgba(0, 0, 0, 0.32)',
+        '--origam-overlay__scrim---opacity': '1',
+        '--origam-overlay-scrim---background-color': 'rgba(0, 0, 0, 0.32)',
+        '--origam-overlay-scrim---opacity': '1',
+        '--origam-overlay-scrim---backdrop-filter': 'none',
+
+        '--origam-sheet__handle---color': 'var(--origam-material---outline-variant)',
+
+        '--origam-tabs__indicator---color': 'var(--origam-color__action--primary---bg)',
+        '--origam-tabs__indicator---height': '3px',
+
+        '--origam-pagination---border-radius': '9999px',
+        '--origam-pagination---border-radius-rounded': '9999px',
+        '--origam-pagination---background-color-hover': 'rgba(208, 188, 255, 0.08)',
+        '--origam-pagination__item--is-active---background-color': 'var(--origam-color__action--primary---bg)',
+        '--origam-pagination__item--is-active---color': 'var(--origam-color__action--primary---fg)',
+
+        '--origam-list-item__overlay---background-color': 'var(--origam-color__action--primary---bg)',
+
+        '--origam-table__header-cell---background-color': 'var(--origam-material---table-header-tint)',
+
+        '--origam-code__line-highlight---background-color': 'rgba(208, 188, 255, 0.09)',
+        '--origam-code__line-highlight---accent-color': 'var(--origam-color__action--primary---bg)'
     }
 }
 
