@@ -111,9 +111,18 @@ export const materialLightTheme: IOrigamTheme = {
         }
     },
     // ⛔ PROPS D'ABORD (logique DS). Overrides Material superposés sur la baseline
-    // `origam` (deep-merge). Identité M3 = très arrondi (rounded lg), elevation marquée,
-    // variantes elevated/tonal, champs filled. Seule la rampe shadow (non exprimable
-    // en props) reste dans `vars`.
+    // `origam` (deep-merge). Identité M3 = très arrondi (rounded lg → 28px via
+    // vars.rounded.lg ci-dessus), elevation TONALE, variantes elevated/tonal,
+    // CHAMPS OUTLINED (correction utilisateur — pas filled). Seule la rampe shadow
+    // (non exprimable en props) reste dans `vars`.
+    //
+    // Déclaré UNE SEULE FOIS (sur l'entrée mode-agnostic `materialLightTheme`, sans
+    // `mode`) car `components` s'applique aux deux modes indifféremment (cf.
+    // ~/.claude/origam-ds-reference.md). Les couleurs qui DIFFÈRENT entre light/dark
+    // passent soit par un intent (`'primary'`, résolu par mode), soit par une
+    // référence `var(--origam-…)` vers un token sémantique déjà dupliqué par mode
+    // (`vars.color.action.primary.*`) ou vers un token d'aide `--origam-material---*`
+    // déclaré dans les blocs `cssVars` light/dark plus bas.
     components: {
         'origam-btn': { variant: 'elevated', rounded: 'lg', elevation: 1 },
         'origam-btn-group': { variant: 'elevated', rounded: 'lg', elevation: 1 },
@@ -121,11 +130,15 @@ export const materialLightTheme: IOrigamTheme = {
         'origam-card': { rounded: 'lg', flat: false, border: false, elevation: 1 },
         'origam-chip': { variant: 'tonal', rounded: 'lg', pill: true, border: false },
         'origam-alert': { rounded: 'lg', elevation: 1 },
-        'origam-field': { variant: 'filled', rounded: 'lg' },
-        'origam-text-field': { variant: 'filled', rounded: 'lg' },
-        'origam-textarea-field': { variant: 'filled', rounded: 'lg' },
-        'origam-number-field': { variant: 'filled', rounded: 'lg' },
-        'origam-password-field': { variant: 'filled', rounded: 'lg' },
+        // CHAMPS OUTLINED (correction utilisateur) — vérifié IFieldProps / ITextFieldProps
+        // etc. acceptent `variant: 'outlined'` (TFieldVariant). `origam-select` était déjà
+        // outlined dans le thème précédent — les autres champs étaient encore `filled`,
+        // corrigé ici pour l'uniformité M3.
+        'origam-field': { variant: 'outlined', rounded: 'lg' },
+        'origam-text-field': { variant: 'outlined', rounded: 'lg' },
+        'origam-textarea-field': { variant: 'outlined', rounded: 'lg' },
+        'origam-number-field': { variant: 'outlined', rounded: 'lg' },
+        'origam-password-field': { variant: 'outlined', rounded: 'lg' },
         'origam-select': { variant: 'outlined', rounded: 'lg' },
         'origam-date-picker-field': { rounded: 'lg' },
         'origam-file-field': { rounded: 'lg' },
@@ -133,13 +146,124 @@ export const materialLightTheme: IOrigamTheme = {
         'origam-code': { rounded: 'lg', elevation: 1 },
         'origam-menu': { rounded: 'lg', elevation: 2 },
         'origam-table': { rounded: 'lg', border: false, elevation: 1 },
-        'origam-avatar': { rounded: 'lg' },
-        'origam-checkbox': { rounded: 'md' },
-        // Switch harmony (lot 4) — mirrors `origam-text-field`'s rounded so
-        // the track reads as the same visual family as the theme's fields
-        // (see cartoon.theme.ts for the full rationale comment).
-        'origam-switch': { rounded: 'lg' },
-        'origam-snackbar': { rounded: 'lg', elevation: 3 }
+        // Avatar tonal container — vérifié IAvatarProps extends IColorProps,
+        // IBgColorProps. bgSubtle/fgSubtle du token action.primary égalent déjà
+        // #eaddff/#21005d (light) et #4a4458/#eaddff (dark) — pas de nouveau hex.
+        'origam-avatar': {
+            rounded: 'lg',
+            bgColor: 'var(--origam-color__action--primary---bgSubtle)',
+            color: 'var(--origam-color__action--primary---fgSubtle)'
+        },
+        // Checkbox — vérifié ICheckboxProps extends IColorProps. La coche DS est une
+        // icône outline (mdi checkbox-marked-outline), PAS un carré plein — `color:
+        // 'primary'` colore la coche cochée en #6750a4/#d0bcff. Aucune var
+        // `--origam-checkbox--checked---color` n'est consommée par le composant (grep
+        // vérifié OrigamCheckboxBtn.vue / OrigamSelectionControl.vue) : le "#fff/#381e72"
+        // du brief supposait un carré plein M3, non applicable à cette implémentation
+        // DS. Documenté, pas bloqué — le résultat correct (coche teintée primary) est
+        // atteint via la prop existante.
+        'origam-checkbox': { rounded: 'md', color: 'primary' },
+        // Radio — NEW. IRadioProps extends IColorProps → dot #6750a4/#d0bcff.
+        'origam-radio': { color: 'primary' },
+        // Switch — track off/on M3. `activeBgColor` est le SEUL hook effectivement
+        // câblé à `model.value` dans OrigamSelectionControl.vue (`bgColor = model.value
+        // ? (activeBgColor||bgColor) : bgColor`) — le prop moderne `active:{bgColor}`
+        // n'est PAS lu par ce calcul. `activeBgColor` est @deprecated mais reste le seul
+        // chemin fonctionnel, utilisé en connaissance de cause.
+        // Thumb 16→24px à l'ON (signature M3) : BLOQUÉ — `--origam-switch__thumb---size`
+        // est un var UNIQUE (pas de state `:checked` dédié, grep vérifié OrigamSwitch.vue)
+        // → impossible de faire varier la taille par état sans toucher le composant DS.
+        // Ticket DS à ouvrir : `--origam-switch__thumb--checked---size`.
+        'origam-switch': {
+            rounded: 'lg',
+            bgColor: 'var(--origam-material---switch-track-off)',
+            activeBgColor: 'primary'
+        },
+        'origam-snackbar': { rounded: 'lg', elevation: 3 },
+        // Slider — ISliderFieldProps extends IColorProps + trackProps (color/bgColor/
+        // rounded transmis au sous-composant track). bgSubtle égale déjà #eaddff/#4a4458.
+        'origam-slider-field': {
+            rounded: true,
+            color: 'primary',
+            trackProps: { bgColor: 'var(--origam-color__action--primary---bgSubtle)', rounded: true }
+        },
+        // Progress linear — même logique tonale que le slider (IProgressTypeProps
+        // extends IColorProps, IBgColorProps ; IRoundedProps direct).
+        'origam-progress-linear': {
+            rounded: true,
+            color: 'primary',
+            bgColor: 'var(--origam-color__action--primary---bgSubtle)'
+        },
+        // Sheet — ISheetProps extends IRoundedProps. Grabber themé via cssVar dédiée
+        // plus bas (--origam-sheet__handle---color).
+        'origam-sheet': { rounded: 'lg' },
+        // Dialog — IDialogProps extends ICardProps (donc IBgColorProps/IRoundedProps/
+        // IElevationProps). Surface dialog #f3edf7 (light) diffère de card raised
+        // #ffffff → nouveau token d'aide `--origam-material---dialog-surface` (dark =
+        // #2b2930, identique à surface.raised dark, donc juste une référence).
+        'origam-dialog': {
+            rounded: 'lg',
+            elevation: 3,
+            bgColor: 'var(--origam-material---dialog-surface)'
+        },
+        // Tooltip — ITooltipProps extends IColorProps, IBgColorProps directement.
+        // Surface inverse M3 : nouveaux tokens d'aide (pas de slot `overlay`/`inverse`
+        // dans IThemeVars.color). "Pas de caret" : déjà natif — OrigamTooltip.vue n'a
+        // aucun mécanisme de flèche/caret (grep vérifié), rien à désactiver.
+        'origam-tooltip': {
+            bgColor: 'var(--origam-material---tooltip-surface)',
+            color: 'var(--origam-material---tooltip-on-surface)'
+        },
+        // Tabs — ITabsProps extends IRoundedProps, IColorProps, IBgColorProps,
+        // `variant` accepte 'underline' (TAB_VARIANT). Couleur/épaisseur 3px de
+        // l'indicateur réglées en cssVars (--origam-tabs__indicator---color/height,
+        // hooks réels).
+        'origam-tabs': { variant: 'underline' },
+        // Bottom nav — IBottomNavProps extends IRoundedProps, IElevationProps.
+        // Pastille active PAR ITEM : BLOQUÉ — les items sont des <origam-btn> bruts
+        // fournis par le consommateur (prop `items`), sans sous-composant dédié
+        // thémable indépendamment de la pagination (même conflit documenté dans
+        // editorial.theme.ts : le seul hook est `--origam-btn---background-color-active`
+        // GLOBAL, qui écraserait aussi les vars dédiées
+        // `--origam-pagination__item--is-active---*` de la pagination — vérifié : la
+        // règle `.origam-btn--active` lit `-active` en PRIORITÉ sur le
+        // `--origam-btn---background-color` local que Pagination redéclare dans son
+        // propre scope). Choix assumé : NE PAS toucher ce var global pour ne pas casser
+        // la pagination (qui a un hook propre et correct) — la pastille active du
+        // bottom-nav reste non-thémable sans ticket DS
+        // (`--origam-bottom-bar__item--active---background-color`).
+        'origam-bottom-nav': { rounded: 'lg', elevation: 2 },
+        // Breadcrumb — liens uniquement (pas le séparateur/chevron) : ciblé sur
+        // `origam-breadcrumb-item`, PAS le container `origam-breadcrumb` (qui
+        // recolorerait aussi `origam-breadcrumb-divider`).
+        'origam-breadcrumb-item': { color: 'primary' },
+        // Pagination — IPaginationProps N'EXTENDS PAS IRoundedProps (vérifié — aucune
+        // prop `rounded`) : `rounded:'pill'` du brief est INAPPLICABLE tel quel, la
+        // forme est pilotée par la cssVar dédiée `--origam-pagination---border-radius`
+        // (voir cssVars plus bas), légitime escape-hatch puisqu'aucune prop ne couvre ce
+        // besoin. Couleurs actives via les vars dédiées
+        // `--origam-pagination__item--is-active---*` (hooks propres, indépendants du
+        // `--origam-btn---background-color-active` global — voir note bottom-nav).
+        'origam-list': { nav: true },
+        // Title — ITitleProps extends ITypographyProps. `fontWeight:'regular'` (400,
+        // valeur réelle de TFontWeight). `fontFamily` NON réglé ici : le thème fixe déjà
+        // `--origam-title---font-family` / `--origam-font-family---heading` à Roboto via
+        // cssVars ; ajouter la prop `fontFamily` émettrait un style inline pointant vers
+        // le token primitif `--origam-font__family---sans` (différent), écrasant le
+        // override Roboto déjà correct — évité.
+        'origam-title': { fontWeight: 'regular' },
+        // Divider — IDividerProps extends IColorProps. outline-variant M3 = nouveau
+        // token d'aide (pas de slot existant dans IThemeVars.color pour cette teinte).
+        'origam-divider': { color: 'var(--origam-material---outline-variant)' },
+        // Blockquote — IBlockquoteProps extends IBgColorProps + IAccentColorProps
+        // directement. Conteneur tonal = bgSubtle (égale déjà #eaddff/#4a4458), accent =
+        // intent 'primary' (déjà la valeur par défaut du composant, réglé explicitement
+        // pour la lisibilité du thème).
+        'origam-blockquote': {
+            bgColor: 'var(--origam-color__action--primary---bgSubtle)',
+            accentColor: 'primary',
+            rounded: 'lg'
+        }
     },
     cssVars: {
         "--origam-font-family---heading": "'Roboto', 'Inter', -apple-system, sans-serif",
