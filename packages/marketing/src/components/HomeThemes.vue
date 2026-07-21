@@ -232,8 +232,31 @@ const { theme, setTheme } = useTheme()
         &[aria-pressed="true"] {
             background-color: var(--origam-color__action--primary---bg, #7c3aed);
             border-color: var(--origam-color__action--primary---bg, #7c3aed);
-            color: var(--origam-color__action--primary---fg, #ffffff);
+            /*
+             * OrigamChip binds its resting-state `color` prop as an
+             * INLINE style (useBothColor resolves it to
+             * --origam-color__action--primary---fgSubtle) — inline
+             * styles always outrank any selector regardless of
+             * specificity. Without `!important` this rule never
+             * actually repaints the selected chip's text, leaving a
+             * near-illegible subtle-violet-on-violet pairing on every
+             * theme that doesn't declare its own override. See #28.
+             */
+            color: var(--origam-color__action--primary---fg, #ffffff) !important;
         }
+    }
+
+    /*
+     * "sobre" (no brand theme, DS defaults only, no dedicated theme CSS
+     * file) — white text on the DS's default dark-mode primary accent
+     * (#8b5cf6) measures 4.23:1, just short of WCAG AA. `:global()` is
+     * needed here because `[data-theme]` targets <html>, an ancestor
+     * outside this component's scoped tree. See #28.
+     */
+    :global(:root:root[data-theme="sobre"][data-mode="dark"] .home-themes__chip[data-active="true"]),
+    :global(:root:root[data-theme="sobre"][data-mode="dark"] .home-themes__chip[aria-pressed="true"]) {
+        background-color: #7c3aed;
+        border-color: #7c3aed;
     }
 
     &__tooling {

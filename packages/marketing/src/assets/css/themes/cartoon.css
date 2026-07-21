@@ -474,7 +474,8 @@
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-themes__chip[data-active="true"],
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-themes__chip[aria-pressed="true"] {
     background-color: #ff8fa3;
-    color:            #3a2a2e;
+    /* OrigamChip's inline `color` style outranks this without !important — see #28. */
+    color:            #3a2a2e !important;
     border-color:     #fffefb !important;
     box-shadow:       3px 3px 0 #fffefb !important;
 }/* ── CARTOON — Hero install code pill: 3px border + hard shadow ──────────── *//*

@@ -185,3 +185,80 @@ test.describe('HomeThemes section', () => {
         expect(text).not.toContain('home.themes.')
     })
 })
+
+/**
+ * Selected-chip contrast (#28) — the active theme chip (data-active="true")
+ * pairs a solid brand-colour fill with its own text colour. `OrigamChip`
+ * binds resting-state `color` as an INLINE style (useBothColor →
+ * --origam-color__action--primary---fgSubtle), which always outranks any
+ * external CSS rule regardless of specificity — so every theme's active-chip
+ * text override needed `!important` to actually take effect. Verified via
+ * WCAG contrast ratio (not just "is it white/dark") because the fix for
+ * ecom/apple/sobre dark mode required darkening the fill itself, not just
+ * swapping to white text (their brand accent is too light for white text
+ * to reach 4.5:1 even once the inline-style override works).
+ */
+test.describe('HomeThemes section · selected chip contrast (#28)', () => {
+    const COMBOS: Array<{ theme: string; mode: 'light' | 'dark' }> = [
+        { theme: 'sobre', mode: 'light' }, { theme: 'sobre', mode: 'dark' },
+        { theme: 'glass', mode: 'light' }, { theme: 'glass', mode: 'dark' },
+        { theme: 'cartoon', mode: 'light' }, { theme: 'cartoon', mode: 'dark' },
+        { theme: 'geek', mode: 'light' }, { theme: 'geek', mode: 'dark' },
+        { theme: 'ecom', mode: 'light' }, { theme: 'ecom', mode: 'dark' },
+        { theme: 'editorial', mode: 'light' }, { theme: 'editorial', mode: 'dark' },
+        { theme: 'apple', mode: 'light' }, { theme: 'apple', mode: 'dark' },
+        { theme: 'material', mode: 'light' }, { theme: 'material', mode: 'dark' }
+    ]
+
+    function relativeLuminance ({ r, g, b }: { r: number; g: number; b: number }): number {
+        const linearize = (c: number): number => {
+            const s = c / 255
+            return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4)
+        }
+        return 0.2126 * linearize(r) + 0.7152 * linearize(g) + 0.0722 * linearize(b)
+    }
+
+    function parseRgb (value: string): { r: number; g: number; b: number } | null {
+        const m = value.match(/rgba?\(([^)]+)\)/)
+        if (!m) return null
+        const [r, g, b] = m[1].split(',').map(s => parseFloat(s.trim()))
+        return { r, g, b }
+    }
+
+    function contrastRatio (fg: string, bg: string): number | null {
+        const fgRgb = parseRgb(fg)
+        const bgRgb = parseRgb(bg)
+        if (!fgRgb || !bgRgb) return null
+        const l1 = relativeLuminance(fgRgb)
+        const l2 = relativeLuminance(bgRgb)
+        const [lighter, darker] = l1 > l2 ? [l1, l2] : [l2, l1]
+        return (lighter + 0.05) / (darker + 0.05)
+    }
+
+    for (const { theme, mode } of COMBOS) {
+        test(`selected "${theme}" chip text meets 4.5:1 against its fill — ${mode}`, async ({ page }) => {
+            await page.context().addCookies([
+                { name: 'origam-theme', value: theme, url: 'http://localhost:3000' },
+                { name: 'origam-mode', value: mode, url: 'http://localhost:3000' }
+            ])
+            await page.goto('/', { waitUntil: 'networkidle' })
+
+            const chip = page.locator(`[data-cy="themes-chip-${theme}"]`)
+            await expect(chip).toBeVisible()
+            await expect(chip).toHaveAttribute('data-active', 'true')
+
+            const styles = await chip.evaluate((el) => {
+                const cs = getComputedStyle(el)
+                return { color: cs.color, backgroundColor: cs.backgroundColor }
+            })
+
+            const ratio = contrastRatio(styles.color, styles.backgroundColor)
+            expect(ratio, `could not parse computed colours: ${JSON.stringify(styles)}`).not.toBeNull()
+            expect(
+                ratio!,
+                `selected chip text/fill contrast is ${ratio} under ${theme}/${mode} ` +
+                `(color=${styles.color}, background=${styles.backgroundColor}) — WCAG AA needs >= 4.5`
+            ).toBeGreaterThanOrEqual(4.5)
+        })
+    }
+})
