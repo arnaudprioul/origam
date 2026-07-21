@@ -301,7 +301,99 @@ export const materialLightTheme: IOrigamTheme = {
         '--origam-alert---box-shadow-elevated': '0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)',
         '--origam-table---border-radius': '28px',
         '--origam-appbar---bg': 'color-mix(in srgb, #fef7ff 72%, transparent)',
-        '--origam-menu---box-shadow': '0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(208, 188, 255, 0.15), 0 0 0 1px var(--origam-color__border---default)'
+        '--origam-menu---box-shadow': '0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(208, 188, 255, 0.15), 0 0 0 1px var(--origam-color__border---default)',
+
+        // ── Tokens d'aide `--origam-material---*` (LIGHT) ───────────────────────
+        // Valeurs M3 sans slot existant dans IThemeVars.color — référencées depuis
+        // le bloc `components` ci-dessus (mode-agnostic) via `var(--origam-material---…)`.
+        '--origam-material---switch-track-off': '#e6e0e9',
+        '--origam-material---tooltip-surface': '#322f35',
+        '--origam-material---tooltip-on-surface': '#ffffff',
+        '--origam-material---dialog-surface': '#f3edf7',
+        '--origam-material---outline-variant': '#cac4d0',
+        '--origam-material---field-border': '#79747e',
+        '--origam-material---table-header-tint': '#f2e9fb',
+
+        // ── Champs OUTLINED (Refs #37) — hooks vérifiés OrigamField.vue (grep
+        // `var(--origam-field`) : `---background-color` (fond, défaut transparent déjà),
+        // `---border-color` (couleur unique consommée aussi bien au repos qu'en erreur
+        // via `--origam-field--error---border-color`, laissé à son défaut = déjà
+        // #b3261e/feedback.danger.border), `---border-width-outlined` /
+        // `---border-opacity-outlined` (le variant `-outlined` applique une OPACITY sur
+        // toute la bordure, défaut .38 → wash-out, mis à 1 pour un trait plein M3),
+        // `---focus-ring-*` (anneau de focus, PAS un changement de border-width — mis à
+        // 2px + offset -1px pour se superposer exactement au 1px de bordure et lire
+        // comme "bordure 2px" au focus, sans halo qui déborderait).
+        '--origam-field---background-color': 'transparent',
+        '--origam-field---border-color': 'var(--origam-material---field-border)',
+        '--origam-field---border-width-outlined': '1px',
+        '--origam-field---border-opacity-outlined': '1',
+        '--origam-field---focus-ring-width': '2px',
+        '--origam-field---focus-ring-color': 'var(--origam-color__action--primary---bg)',
+        '--origam-field---focus-ring-offset': '-1px',
+
+        // ── Scrim dialog (Refs #37) — ⚠️ PIÈGE vérifié OrigamOverlay.vue:437-441 :
+        // `opacity: var(--origam-overlay__scrim---opacity, 0.32)` est un MULTIPLICATEUR
+        // appliqué EN PLUS de `background-color`. Poser une rgba(…,0.32) sans neutraliser
+        // ce multiplicateur donnerait 0.32×0.32≈10% au lieu de 32%. Fix : couleur pleine
+        // + `---opacity: 1` pour annuler le multiplicateur. Dialog consomme le préfixe
+        // BEM `__scrim` (composant `OrigamOverlay`, pas le composant standalone
+        // `OrigamOverlayScrim` — vérifié, aucun composant du DS n'instancie ce dernier) ;
+        // les deux familles sont réglées par prudence. Pas de backdrop-filter par défaut
+        // sur `__scrim` (aucune déclaration dans le SCSS, donc déjà "sans blur" nativement).
+        '--origam-overlay__scrim---background-color': 'rgba(0, 0, 0, 0.32)',
+        '--origam-overlay__scrim---opacity': '1',
+        '--origam-overlay-scrim---background-color': 'rgba(0, 0, 0, 0.32)',
+        '--origam-overlay-scrim---opacity': '1',
+        '--origam-overlay-scrim---backdrop-filter': 'none',
+
+        // ── Sheet grabber (Refs #37) — hook vérifié OrigamSheet.vue:407
+        // (--origam-sheet__handle---color, défaut border.subtle).
+        '--origam-sheet__handle---color': 'var(--origam-material---outline-variant)',
+
+        // ── Tabs underline 3px (Refs #37) — hooks vérifiés OrigamTabs (grep) :
+        // --origam-tabs__indicator---height/---color, défauts 2px/currentColor.
+        '--origam-tabs__indicator---color': 'var(--origam-color__action--primary---bg)',
+        '--origam-tabs__indicator---height': '3px',
+
+        // ── Divider (Refs #37) — pas de hook direct dédié pour la couleur de trait ;
+        // le composant peint via `color`/`bgColor` (useBothColor), réglé côté prop dans
+        // `components` ci-dessus. Rien à ajouter ici.
+
+        // ── Pagination (Refs #37) — IPaginationProps n'a PAS de prop `rounded` (vérifié) :
+        // forme pilotée par cssVar directe. Hooks vérifiés OrigamPagination.vue:766-801 :
+        // items actifs déjà scopés indépendamment du `--origam-btn---background-color-active`
+        // global (voir commentaire bottom-nav dans `components`). Cible tactile ~44px via
+        // padding-block/inline (défauts 0/0 pour le container ; la taille réelle des items
+        // vient de `origam-btn` — density/size non touchés ici pour rester props-first,
+        // seul le rounded-pill et les couleurs actives sont des escape-hatches légitimes).
+        '--origam-pagination---border-radius': '9999px',
+        '--origam-pagination---border-radius-rounded': '9999px',
+        '--origam-pagination---background-color-hover': 'rgba(103, 80, 164, 0.08)',
+        '--origam-pagination__item--is-active---background-color': 'var(--origam-color__action--primary---bg)',
+        '--origam-pagination__item--is-active---color': 'var(--origam-color__action--primary---fg)',
+
+        // ── List / Menu state layer (Refs #37) — hook vérifié OrigamListItem.vue:497-522 :
+        // `__overlay---background-color` défaut `currentColor`, opacités 0.08 (hover) /
+        // 0.12 (active) / 0.16 (active+hover) déjà câblées en dur dans le composant (pas
+        // de var pour ces %, seul le TEINT est réglable). Menu réutilise EXACTEMENT ce
+        // même hook (items = <origam-list-item> internes, vérifié OrigamMenu.vue:32-65)
+        // → un seul override sert les deux (menu hover ≈ rgba(103,80,164,.08) demandé).
+        '--origam-list-item__overlay---background-color': 'var(--origam-color__action--primary---bg)',
+
+        // ── Table header tint (Refs #37) — hook vérifié OrigamTable.vue:223
+        // (--origam-table__header-cell---background-color, défaut surface.overlay).
+        '--origam-table__header-cell---background-color': 'var(--origam-material---table-header-tint)',
+
+        // ── Code (Refs #37) — highlight de ligne. Hook vérifié OrigamCode.vue (grep
+        // --origam-code__line-highlight---*). ⚠️ Coloration SYNTAXIQUE (kw/str/fn) NON
+        // themable via IOrigamTheme : Shiki pré-calcule ses propres couleurs light/dark
+        // par token (`--shiki-light`/`--shiki-dark` inline sur chaque span, cf.
+        // OrigamCode.vue:611-648) — aucune cssVar `--origam-*` n'intercepte cette
+        // coloration. BLOQUÉ pour le thème seul : nécessiterait un thème Shiki dédié
+        // (hors périmètre `material.theme.ts`).
+        '--origam-code__line-highlight---background-color': 'rgba(103, 80, 164, 0.09)',
+        '--origam-code__line-highlight---accent-color': 'var(--origam-color__action--primary---bg)'
     }
 }
 
