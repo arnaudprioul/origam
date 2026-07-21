@@ -542,7 +542,53 @@ export const materialDarkTheme: IOrigamTheme = {
         '--origam-alert---box-shadow-elevated': '0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)',
         '--origam-table---border-radius': '28px',
         '--origam-appbar---bg': 'color-mix(in srgb, #1c1b1f 72%, transparent)',
-        '--origam-menu---box-shadow': '0 4px 24px -4px rgba(0, 0, 0, 0.50), 0 1px 2px rgba(0, 0, 0, 0.30), 0 0 0 1px var(--origam-color__border---default)'
+        '--origam-menu---box-shadow': '0 4px 24px -4px rgba(0, 0, 0, 0.50), 0 1px 2px rgba(0, 0, 0, 0.30), 0 0 0 1px var(--origam-color__border---default)',
+
+        // ── Tokens d'aide `--origam-material---*` (DARK) — miroir du bloc light,
+        // voir commentaires détaillés dans materialLightTheme.cssVars.
+        '--origam-material---switch-track-off': '#36343b',
+        '--origam-material---tooltip-surface': '#e6e1e5',
+        '--origam-material---tooltip-on-surface': '#322f35',
+        '--origam-material---dialog-surface': '#2b2930',
+        '--origam-material---outline-variant': '#49454f',
+        '--origam-material---field-border': '#938f99',
+        '--origam-material---table-header-tint': '#3a3546',
+
+        // ── Champs OUTLINED (dark) — mêmes hooks que light, voir commentaires détaillés
+        // dans materialLightTheme.cssVars.
+        '--origam-field---background-color': 'transparent',
+        '--origam-field---border-color': 'var(--origam-material---field-border)',
+        '--origam-field---border-width-outlined': '1px',
+        '--origam-field---border-opacity-outlined': '1',
+        '--origam-field---focus-ring-width': '2px',
+        '--origam-field---focus-ring-color': 'var(--origam-color__action--primary---bg)',
+        '--origam-field---focus-ring-offset': '-1px',
+
+        // ── Scrim dialog (dark) — même piège opacity que light (cf. commentaire
+        // materialLightTheme.cssVars).
+        '--origam-overlay__scrim---background-color': 'rgba(0, 0, 0, 0.32)',
+        '--origam-overlay__scrim---opacity': '1',
+        '--origam-overlay-scrim---background-color': 'rgba(0, 0, 0, 0.32)',
+        '--origam-overlay-scrim---opacity': '1',
+        '--origam-overlay-scrim---backdrop-filter': 'none',
+
+        '--origam-sheet__handle---color': 'var(--origam-material---outline-variant)',
+
+        '--origam-tabs__indicator---color': 'var(--origam-color__action--primary---bg)',
+        '--origam-tabs__indicator---height': '3px',
+
+        '--origam-pagination---border-radius': '9999px',
+        '--origam-pagination---border-radius-rounded': '9999px',
+        '--origam-pagination---background-color-hover': 'rgba(208, 188, 255, 0.08)',
+        '--origam-pagination__item--is-active---background-color': 'var(--origam-color__action--primary---bg)',
+        '--origam-pagination__item--is-active---color': 'var(--origam-color__action--primary---fg)',
+
+        '--origam-list-item__overlay---background-color': 'var(--origam-color__action--primary---bg)',
+
+        '--origam-table__header-cell---background-color': 'var(--origam-material---table-header-tint)',
+
+        '--origam-code__line-highlight---background-color': 'rgba(208, 188, 255, 0.09)',
+        '--origam-code__line-highlight---accent-color': 'var(--origam-color__action--primary---bg)'
     }
 }
 
