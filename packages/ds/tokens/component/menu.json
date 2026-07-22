@@ -1,11 +1,12 @@
 {
   "menu": {
-    "background":    { "$type": "color",     "$value": "{color.surface.raised}" },
-    "color":         { "$type": "color",     "$value": "{color.text.primary}" },
-    "border-radius": { "$type": "dimension", "$value": "{radius.md}" },
-    "box-shadow":    { "$type": "shadow",    "$value": "{shadow.lg}" },
-    "max-height":    { "$type": "dimension", "$value": "calc(100vh - 32px)" },
-    "z-index":       { "$type": "number",    "$value": "{zIndex.dropdown}" },
+    "background":       { "$type": "color",     "$value": "{color.surface.raised}" },
+    "color":            { "$type": "color",     "$value": "{color.text.primary}" },
+    "backdrop-filter":  { "$type": "other",     "$value": "none" },
+    "border-radius":    { "$type": "dimension", "$value": "{radius.md}" },
+    "box-shadow":       { "$type": "shadow",    "$value": "{shadow.lg}" },
+    "max-height":       { "$type": "other",     "$value": "calc(100vh - 32px)" },
+    "z-index":          { "$type": "number",    "$value": "{zIndex.dropdown}" },
 
     "transition-duration":        { "$type": "duration",    "$value": "{motion.duration.fast}" },
     "transition-timing-function": { "$type": "cubicBezier", "$value": "{motion.easing.decelerate}" },

@@ -73,6 +73,7 @@ const modeLabel = (mode: TEditMode): string =>
                 :model-value="activeMode"
                 mandatory
                 divided
+                variant="outlined"
                 color="primary"
                 size="small"
                 class="tb-preview__mode-toggle"
@@ -170,9 +171,8 @@ const modeLabel = (mode: TEditMode): string =>
 .tb-preview {
     display: flex;
     flex-direction: column;
-    min-height: 0;
-    height: 100%;
-    overflow: hidden;
+    min-height: 20rem;
+    overflow: visible;
     border-width: 1px;
     border-style: solid;
     border-color: var(--origam-color-border-default);

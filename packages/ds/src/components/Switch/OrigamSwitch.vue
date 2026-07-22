@@ -39,6 +39,7 @@
 			>
 				<template #default="{bgColor: scBgColor}">
 					<origam-switch-track
+							ref="origamSwitchTrackRef"
 							:bg-color="scBgColor"
 							:disabled="isDisabled"
 							:error="isValid === false"
@@ -46,6 +47,7 @@
 							:is-valid="isValid"
 							:model-value="model"
 							:readonly="isReadonly"
+							v-bind="{ ...trackProps }"
 							@click="handleTrackClick"
 					>
 						<template
@@ -97,6 +99,7 @@
 					/>
 					<div
 							:class="getSwitchThumbClasses(icon)"
+							:style="switchThumbStyles"
 					>
 						<origam-translate-scale>
 							<div
@@ -144,10 +147,12 @@
 	} from '../../components'
 
 	import {
+		useDefaults,
 		useFocus,
 		useHover,
 		useLoader,
 		useProps,
+		useRounded,
 		useStateEffect,
 		useStyle,
 		useVModel
@@ -159,7 +164,7 @@
 
 	import type { ISwitchEmits } from '../../interfaces/Switch/switch.interface'
 
-	import type { TOrigamInput, TOrigamSelectionControl } from "../../types"
+	import type { TOrigamInput, TOrigamSelectionControl, TOrigamSwitchTrack } from "../../types"
 
 	import { filterInputAttrs, getUid } from '../../utils'
 
@@ -170,10 +175,19 @@
 	 * Props, emits and composables.
 	 ********************************************************/
 
-	const props = withDefaults(defineProps<ISwitchProps>(), {
+	const _props = withDefaults(defineProps<ISwitchProps>(), {
 		density: DENSITY.DEFAULT,
 		centerAffix: true
 	})
+
+	// `useDefaults` resolves each prop against the closest
+	// `provideDefaults({ 'origam-switch': … })` (e.g. a marketing theme's
+	// `components` block). Without this hook a theme's `border`/`rounded`/
+	// `elevation` config for Switch is silently dropped — `OrigamSwitchTrack`
+	// already consumes these props correctly once they arrive (see its own
+	// `useBorder`/`useRounded`/`useElevation` wiring), this was the missing
+	// link one level up. Mirrors `OrigamBtn.vue`'s exact pattern.
+	const props = useDefaults(_props)
 
 	defineEmits<ISwitchEmits>()
 
@@ -184,6 +198,7 @@
 
 	const origamSelectionControlRef = ref<TOrigamSelectionControl>()
 	const origamInputRef = ref<TOrigamInput>()
+	const origamSwitchTrackRef = ref<TOrigamSwitchTrack>()
 
 	/*********************************************************
 	 * Value
@@ -256,6 +271,18 @@
 		return origamSelectionControlRef.value?.filterProps(props, ['modelValue', 'type', 'disabled', 'readonly', 'class', 'style', 'id'])
 	})
 
+	// Props-first (lot 4 theming fix) — `border`/`rounded`/`elevation` are
+	// declared on `ISwitchProps` (Commons interfaces) AND now on
+	// `ISwitchTrackProps`; `filterProps` auto-forwards only the prop names
+	// the track actually declares, so this stays in sync automatically as
+	// the track's surface grows. Everything already bound explicitly above
+	// (`bgColor`, `disabled`, `readonly`, `error`, `inset`, `isValid`,
+	// `modelValue`) is excluded here so this generic forward can never
+	// clobber those computed (`isDisabled`/`isReadonly`) values.
+	const trackProps = computed(() => {
+		return origamSwitchTrackRef.value?.filterProps(props, ['modelValue', 'disabled', 'readonly', 'error', 'inset', 'isValid', 'bgColor', 'color', 'class', 'style', 'id'])
+	})
+
 	/*********************************************************
 	 * Loader
 	 *
@@ -302,6 +329,29 @@
 	const switchStyles = computed(() => {
 		return [
 			props.style
+		] as StyleValue
+	})
+
+	// The thumb follows the SAME `rounded` config as the track (lot 4
+	// fix) — a themed switch with a low-rounded track (e.g. geek's
+	// `rounded: 'sm'`) previously kept a perfect circle thumb regardless,
+	// reading as visually inconsistent ("track is square-ish, thumb is
+	// still a dot"). Reuses `useRounded` directly against `props` (the
+	// exact same source value forwarded to the track via `trackProps`),
+	// so track and thumb can never drift out of sync. Emits an inline
+	// `border-radius` declaration only when `rounded` is actually set —
+	// unset/default falls through to the existing CSS fallback
+	// (`var(--origam-switch__thumb---border-radius, 50%)`, a full
+	// circle), so this is additive and changes nothing for switches that
+	// don't configure `rounded`. Bound on the thumb's OWN `:style`, not
+	// the wrapper's — the documented Switch-thumb v2.0→v2.1 regression
+	// was about `[style*="color:"]` on `.origam-selection-control__wrapper`
+	// specifically, unaffected by an unrelated attribute on a different
+	// element.
+	const { roundedStyles: thumbRoundedStyles } = useRounded(props, 'origam-switch__thumb')
+	const switchThumbStyles = computed(() => {
+		return [
+			thumbRoundedStyles.value
 		] as StyleValue
 	})
 	const getSwitchThumbClasses = (icon: unknown) => {
@@ -463,6 +513,31 @@
 
 		.origam-selection-control {
 			min-height: calc(var(--origam-switch__selection-control---min-height, 56px) + var(--origam-input---density, 0px));
+
+			/*
+			 * The base SelectionControl wrapper reserves a fixed
+			 * `calc(40px + 1.5 * density)` box sized for a checkbox/radio
+			 * input glyph. Switch instead renders a variable-width track
+			 * (36–52px depending on `--origam-switch__track---width` /
+			 * the `inset` variant, plus its own horizontal padding) as
+			 * the wrapper's only in-flow child — `__input` is forced
+			 * `position: absolute` below so it no longer participates in
+			 * the flex layout. That fixed formula was never track-aware:
+			 * under `density="compact"` (-8px) the wrapper shrinks to
+			 * 28px while the standard track needs ~46px, so the track
+			 * visually overflows into the neighbouring label ("Flat"
+			 * rendering as "lat"). Let the wrapper size to its actual
+			 * content (`max-content`) instead, keeping the original
+			 * density formula only as a floor via `min-width`/`min-height`
+			 * so the checkbox-sized footprint is preserved whenever the
+			 * track is smaller than it (never smaller than before).
+			 */
+			:deep(.origam-selection-control__wrapper) {
+				width: max-content;
+				height: max-content;
+				min-width: calc(40px + 1.5 * var(--origam-selection-control--density, 0px));
+				min-height: calc(40px + 1.5 * var(--origam-selection-control--density, 0px));
+			}
 
 			:deep(.origam-selection-control__input) {
 				border-radius: 50%;

@@ -211,8 +211,8 @@ const navLabel = computed(() => t('theming.nav.label', 'Components'))
 
     &__scroll {
         flex: 1 1 auto;
-        min-height: 0;
-        overflow-y: auto;
+        min-height: 14rem;
+        overflow-y: visible;
         padding-block: var(--origam-spacing-1, 0.25rem) var(--origam-spacing-3, 0.75rem);
     }
 

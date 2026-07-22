@@ -52,6 +52,9 @@ const features = computed(() => FEATURES)
                 <origam-card
                     tag="article"
                     flat
+                    rounded="none"
+                    :elevation="undefined"
+                    :border="false"
                     :style="FEATURE_CARD_VARS"
                     class="home-features__card"
                 >
@@ -146,6 +149,26 @@ const features = computed(() => FEATURES)
         display: flex;
         flex-direction: column;
         gap: var(--origam-space---2, 0.5rem);
+
+        // The wrapper (&__grid) already draws the frame border/radius and
+        // each cell (&__item) already draws its own separator lines — that
+        // is the ONLY chrome this layout wants. Themes that give origam-card
+        // its own border/rounded/elevation by default (e.g. cartoon: border
+        // + rounded-lg + elevation) would otherwise paint a second, almost
+        // coincident rounded border a few pixels inside the wrapper's,
+        // visible as a faint double line at every corner (issue #264, bug 2).
+        // `rounded="none"` forces the radius off via useRounded (props-first).
+        // `:elevation="undefined"` explicitly overrides whatever elevation
+        // the active theme sets on origam-card, so `flat` (above) reliably
+        // suppresses the shadow through its normal code path for every
+        // theme — `useElevation` only lets `flat` win when `elevation` is
+        // null, and cartoon's theme sets elevation:4 by default.
+        // `border="false"` alone resolves to "component default wins" (same
+        // documented semantics as `rounded={false}`), not "off" — this rule
+        // is the one thing still needed to fully suppress the border.
+        &.origam-card {
+            border: none;
+        }
     }
 
     &__icon-tile {

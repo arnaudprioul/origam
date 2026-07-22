@@ -54,6 +54,8 @@ const onSelectCustom = (hex: unknown): void => {
 }
 
 const radioGroupName = computed(() => `${props.dataCy}-intent`)
+
+const selectedIntent = computed(() => state.value.mode === 'intent' ? state.value.intent : undefined)
 </script>
 
 <template>
@@ -75,27 +77,34 @@ const radioGroupName = computed(() => `${props.dataCy}-intent`)
                     role="radiogroup"
                     :aria-label="t('theming.control.color.intent_group', 'Colour intent')"
                 >
-                    <label
+                    <origam-radio-btn
                         v-for="opt in THEME_BUILDER_INTENT_OPTIONS"
                         :key="opt.value"
+                        :name="radioGroupName"
+                        :value="opt.value"
+                        :model-value="selectedIntent"
+                        density="compact"
                         class="tbc-color__option"
+                        :data-cy="`${dataCy}-intent-${opt.value}`"
+                        @update:model-value="onSelectIntent(opt.value)"
+                        @click="onSelectIntent(opt.value)"
                     >
-                        <input
-                            type="radio"
-                            class="tbc-color__radio"
-                            :name="radioGroupName"
-                            :value="opt.value"
-                            :checked="state.mode === 'intent' && state.intent === opt.value"
-                            :data-cy="`${dataCy}-intent-${opt.value}`"
-                            @change="onSelectIntent(opt.value)"
-                        >
-                        <span
-                            class="tbc-color__swatch"
-                            :class="opt.value === 'ghost' ? 'tbc-color__swatch--ghost' : `origam--bg-${opt.value}`"
-                            aria-hidden="true"
-                        />
-                        <span class="tbc-color__option-label">{{ t(opt.labelKey, opt.labelFallback) }}</span>
-                    </label>
+                        <template #input="{ props: inputProps }">
+                            <input
+                                v-bind="inputProps"
+                                class="tbc-color__radio"
+                            >
+                            <span
+                                class="tbc-color__swatch"
+                                :class="opt.value === 'ghost' ? 'tbc-color__swatch--ghost' : `origam--bg-${opt.value}`"
+                                aria-hidden="true"
+                            />
+                        </template>
+
+                        <template #label>
+                            <span class="tbc-color__option-label">{{ t(opt.labelKey, opt.labelFallback) }}</span>
+                        </template>
+                    </origam-radio-btn>
                 </div>
             </fieldset>
 
@@ -188,6 +197,22 @@ const radioGroupName = computed(() => `${props.dataCy}-intent`)
         border-radius: var(--origam-radius-sm, 0.25rem);
         padding: var(--origam-spacing-1, 0.25rem);
 
+        /*
+         * `OrigamSelectionControl` (the base of `OrigamRadioBtn`) sets
+         * `grid-area: control` on its own root unconditionally, assuming
+         * it always sits inside `OrigamField`/`OrigamInput`'s named-area
+         * grid template. This grid has no such area, so every option
+         * collapses onto the same unresolved "control" line — all 8
+         * swatches stack at identical coordinates. Override with a
+         * doubled-class selector (`.tbc-color__option.origam-selection-control`,
+         * specificity 0,2,0) so it wins over the DS's single-class rule
+         * regardless of stylesheet source order, and let normal grid
+         * auto-placement take over.
+         */
+        &.origam-selection-control {
+            grid-area: unset;
+        }
+
         &:hover {
             background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
         }
@@ -195,6 +220,25 @@ const radioGroupName = computed(() => `${props.dataCy}-intent`)
         &:has(.tbc-color__radio:focus-visible) {
             outline: 2px solid var(--origam-color__action--primary---bg, #7c3aed);
             outline-offset: 1px;
+        }
+
+        /*
+         * `OrigamRadioBtn` reserves a fixed circular touch target
+         * (`.origam-selection-control__wrapper`/`__input`, ~28px at
+         * `density="compact"`) sized for its default radio-dot glyph.
+         * This grid renders a compact 24×24 colour swatch instead — let
+         * the wrapper/input shrink to the swatch's own footprint so the
+         * grid stays tight, matching the reference density used
+         * elsewhere in the panel.
+         */
+        :deep(.origam-selection-control__wrapper),
+        :deep(.origam-selection-control__input) {
+            inline-size: auto;
+            block-size: auto;
+        }
+
+        :deep(.origam-selection-control__label) {
+            margin-inline-start: 0;
         }
     }
 
@@ -215,6 +259,18 @@ const radioGroupName = computed(() => `${props.dataCy}-intent`)
         block-size: 1.5rem;
         border-radius: var(--origam-radius-sm, 0.25rem);
         border: 1px solid var(--origam-color-border-default);
+
+        /*
+         * `aria-hidden="true"` decorative swatch (see template) paints
+         * directly over `OrigamSelectionControl`'s own native input hit
+         * box (positioned/sized to match by that component). Without
+         * this, a real pointer click on the swatch never reaches the
+         * input underneath — `elementFromPoint` at the swatch's centre
+         * resolves to the swatch, not the input, so the radio never
+         * gets checked. `pointer-events: none` lets clicks fall through
+         * to the actual control.
+         */
+        pointer-events: none;
 
         &--ghost {
             background: repeating-linear-gradient(

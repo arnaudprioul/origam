@@ -72,6 +72,10 @@ const OrigamSwitchTrackStub = defineComponent({
         readonly: Boolean
     },
     emits: ['click'],
+    setup (_, { expose }) {
+        expose({ filterProps: (_p: any, _e?: string[]) => ({}) })
+        return {}
+    },
     template: `<div class="origam-switch-track" @click="$emit('click', $event)"/>`
 })
 

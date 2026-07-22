@@ -15,6 +15,111 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [2.9.0] — 2026-07-22
+
+Theming-enablement release. This ships the design-token **hooks** and the
+`useDefaults` **wiring** that let a consumer configure a component's
+appearance entirely from an `IOrigamTheme` object (props-first), plus the
+CSS hooks brand themes need for translucency and separation. No breaking
+changes — every addition is opt-in via a new component token with an inert
+(`none`) fallback, so existing renders are byte-identical until a theme
+sets a value.
+
+### Added
+
+- **`useDefaults()` now resolves per-component theme defaults on 11 more
+  components** that declared theme-configurable props but never read
+  `theme.components['origam-<name>']` — their theme config was silently
+  inert before this. This is the mechanism that makes props-first theming
+  actually apply. (#242)
+- **Translucency & focus hooks on 7 components.** New component tokens,
+  each consumed with an inert fallback (`var(--…, none)`):
+  `--origam-chip---backdrop-filter`, `--origam-snackbar-item---backdrop-filter`,
+  `--origam-field---backdrop-filter` (+ `--origam-field---focus-ring-*`),
+  `--origam-switch__track---backdrop-filter`,
+  `--origam-selection-control__input---backdrop-filter`,
+  `--origam-tooltip---backdrop-filter`, `--origam-overlay-scrim---backdrop-filter`.
+  These give brand themes real `backdrop-filter` translucency (glass, frosted
+  surfaces) without per-instance `:style` overrides. (#253)
+- **`OrigamAvatarGroup` separation ring.** Overlapping avatars now get a
+  legible seam via a dedicated `outline` — a CSS property distinct from
+  `box-shadow`, so it coexists with each theme's own avatar shadow with no
+  specificity or ordering tricks. Driven by new
+  `--origam-avatar-group__item---outline-{color,width,style}` tokens
+  (defaults `color.surface.default` / `2px` / `solid`). Only avatars rendered
+  inside an `<origam-avatar-group>` get it; a standalone `<origam-avatar>`
+  never does. (#263)
+- **`usePassedProps()` composable helper.** Reports which props a consumer
+  actually passed by reading `vnode.props`, distinguishing a real value from
+  Vue 3 coercing an unpassed boolean prop to `false`. Used so a
+  theme-provided value is no longer overwritten by an `undefined → false`
+  default. (#263)
+
+### Fixed
+
+- **Live theme switching now updates component default *props*, not just CSS
+  variables.** The Nuxt module's theme singleton could be duplicated when the
+  host app resolved `origam/nuxt` (source) and `origam/composables` (compiled
+  `dist`) to two physical module files — two independent `_theme` singletons,
+  so the plugin's watcher (which reassigns the resolved per-component
+  defaults) listened to a different instance than the one `setTheme()`
+  mutated. Props stayed frozen on a live switch while cssVars followed (pure
+  CSS cascade). The singleton is now anchored on `globalThis` on the client
+  (server stays module-level to avoid leaking state across concurrent SSR
+  requests). (#275)
+- **`OrigamRadio`, `OrigamTabs` and `OrigamSliderField` now call
+  `useDefaults()`.** They declared theme-configurable props (`activeBgColor`,
+  `variant`, `color`/`bgColor`) but never resolved
+  `theme.components['origam-<name>']`, so that theme config was silently inert.
+  (#279)
+- **`OrigamDialog` `scrim` now renders.** `scrim` was missing from the
+  component's `withDefaults(...)`, so Vue 3 coerced the unpassed boolean to
+  `false` and forwarded it to `OrigamOverlay`, overriding the overlay's own
+  `scrim: true` default — the backdrop never showed. Anchored `scrim: true` in
+  `withDefaults` (same pattern as the existing `openOnClick` default). (#279)
+- **`useDefaults` wiring no longer collapses `<origam-code>`'s header zone.**
+  The origam base theme carried a `compact: true` default (authored in a bulk
+  pass before `useDefaults` was wired, never visually validated); once the
+  wiring landed it forced every code block without an explicit `compact` prop
+  into the condensed single-line pill layout, dropping the
+  header/filename/line-numbers/lang-badge. Removed from the base theme. (#249)
+- **`OrigamBtnGroup` renders as a single rounded surface.** The group applies
+  its `rounded`/`elevation` on the outer wrapper with `overflow: hidden`
+  clipping children to the inner curvature — no forced child heights, no
+  inner-radius tokens; group height derives from `OrigamBtn`'s own border-box
+  height calc. (#239)
+- **`OrigamSwitchTrack.error` widened from `boolean` to `string | boolean`**
+  to match the canonical Commons `IValidationProps`, so the parent's
+  validation surface is type-assignable again (was `vue-tsc` TS2345, CI red).
+  Consumed by truthiness only — behaviour unchanged. (#239)
+- **`OrigamLayout` / `OrigamApp` `full-height` no longer clamps content
+  taller than one screen.** The full-height wrapper was `height: 100vh`
+  (a hard clamp) instead of `min-height: 100vh` ("occupy at least the
+  viewport"). Content overflowing past one screen still rendered (nothing
+  was clipped — no `overflow: hidden` on that element), but the wrapper's
+  own box never grew to match, so any ancestor sizing itself off that box
+  (e.g. a themed page background) stopped short of the actual page height.
+  `full-height` pages now grow naturally past one screen and the
+  background/box always matches the true content height.
+- Fixed a handful of pre-existing `$type: "dimension"` component tokens
+  with non-numeric values (`auto`, `calc(...)`) that crashed the
+  `size/rem` Style Dictionary transform and silently blocked
+  `tokens:build` / the full package build (`btn.width`, `dialog.max-width`,
+  `dialog.max-height`, `contextual-menu.max-height`, `menu.max-height`,
+  `expansion-panel.header.append.margin-inline-start`,
+  `expansion-panel.popout.max-width(-active)`,
+  `expansion-panel.inset.max-width-active`) — retyped to `"other"`,
+  matching the established pattern already used for equivalent tokens
+  elsewhere in the same files. No visual/behavioural change; this only
+  unblocks the build pipeline.
+
+> The 8 marketing brand themes (glass · cartoon · geek · apple · editorial ·
+> material · ecom) that these hooks enable live in the private
+> `@origam/marketing` package and are **not** part of the npm `origam`
+> release — this changelog tracks the published library only.
+
+---
+
 ## [2.8.1] — 2026-07-15
 
 ### Fixed

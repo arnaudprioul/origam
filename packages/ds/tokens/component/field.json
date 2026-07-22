@@ -19,6 +19,7 @@
 
     "background-color":       { "$type": "color",        "$value": "transparent",                  "$description": "Field background (transparent by default; solo/filled variants override)" },
     "color":                  { "$type": "color",        "$value": "{color.text.primary}",         "$description": "Field text color inherited by children" },
+    "backdrop-filter":        { "$type": "other",        "$value": "none",                         "$description": "#253 — matière hook for the field root surface (glass et al.)" },
 
     "opacity-disabled":       { "$type": "number",       "$value": "{opacity.50}",                 "$description": "Opacity when the field is disabled" },
 
@@ -29,6 +30,13 @@
       "_comment": "State tokens applied when --origam-field--error is active (and not disabled).",
       "border-color":         { "$type": "color",        "$value": "{color.feedback.danger.border}","$description": "Border color in error state" },
       "color":                { "$type": "color",        "$value": "{color.feedback.danger.fgSubtle}","$description": "Text/icon color in error state (label, icons)" }
+    },
+
+    "focus-ring": {
+      "_comment": "#253 — themeable focus ring drawn via native `outline` (doesn't affect layout) when --origam-field--focused is active. Baseline width 0px keeps today's behaviour (no visible ring) unchanged for themes that don't configure it.",
+      "color":                { "$type": "color",        "$value": "transparent",                  "$description": "Outline color of the focus ring" },
+      "width":                { "$type": "dimension",    "$value": "0px",                          "$description": "Outline width of the focus ring — 0px baseline = invisible" },
+      "offset":               { "$type": "dimension",    "$value": "0px",                          "$description": "Outline offset of the focus ring" }
     },
 
     "variant-solo": {

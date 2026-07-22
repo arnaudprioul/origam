@@ -61,9 +61,8 @@ const onOffsetY = (value: unknown): void => { if (typeof value === 'number') set
 const onBlur = (value: unknown): void => { if (typeof value === 'number') setLayer({ blur: value }) }
 const onSpread = (value: unknown): void => { if (typeof value === 'number') setLayer({ spread: value }) }
 const onColor = (value: unknown): void => { if (typeof value === 'string') setLayer({ color: value }) }
-const onOpacity = (event: Event): void => {
-    const target = event.target as HTMLInputElement
-    setLayer({ opacity: Number(target.value) })
+const onOpacity = (value: unknown): void => {
+    if (typeof value === 'number') setLayer({ opacity: value })
 }
 </script>
 
@@ -179,22 +178,20 @@ const onOpacity = (event: Event): void => {
                     @update:model-value="onColor"
                 />
 
-                <div class="tbc-elevation__opacity">
-                    <label
-                        class="tbc-elevation__opacity-label"
-                        :for="`${dataCy}-opacity`"
-                    >{{ t('theming.control.elevation.opacity', 'Opacity') }}</label>
-                    <input
-                        :id="`${dataCy}-opacity`"
-                        type="range"
-                        min="0"
-                        max="100"
-                        :value="layer.opacity"
-                        :data-cy="`${dataCy}-opacity`"
-                        @input="onOpacity"
-                    >
-                    <span class="tbc-elevation__opacity-value">{{ layer.opacity }}%</span>
-                </div>
+                <origam-slider-field
+                    :model-value="layer.opacity"
+                    :label="t('theming.control.elevation.opacity', 'Opacity')"
+                    :min="0"
+                    :max="100"
+                    density="compact"
+                    hide-details
+                    :data-cy="`${dataCy}-opacity`"
+                    @update:model-value="onOpacity"
+                >
+                    <template #append>
+                        <span class="tbc-elevation__opacity-value">{{ layer.opacity }}%</span>
+                    </template>
+                </origam-slider-field>
             </template>
         </template>
     </theme-builder-control-trigger>
@@ -211,17 +208,6 @@ const onOpacity = (event: Event): void => {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: var(--origam-spacing-2, 0.5rem);
-    }
-
-    &__opacity {
-        display: flex;
-        align-items: center;
-        gap: var(--origam-spacing-2, 0.5rem);
-    }
-
-    &__opacity-label {
-        font-size: 0.6875rem;
-        color: var(--origam-color-text-subtle);
     }
 
     &__opacity-value {

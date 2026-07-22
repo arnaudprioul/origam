@@ -67,5 +67,10 @@
       "fg":                    { "$type": "color",      "$value": "{color.feedback.info.fg}" },
       "border":                { "$type": "color",      "$value": "{color.feedback.info.border}" }
     }
+  },
+
+  "snackbar-item": {
+    "_comment": "OrigamSnackbarItem owns the visible painted surface consumed via --origam-snackbar-item---* (background-color/border/box-shadow already read by the SCSS with raw fallbacks, undeclared here — out of #253 scope). Only backdrop-filter is declared as a baseline token (#253, pattern #238).",
+    "backdrop-filter":         { "$type": "other",      "$value": "none" }
   }
 }

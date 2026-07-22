@@ -37,6 +37,7 @@
     downloadJson,
     importTheme,
     seedPreset,
+    clearPreset,
     loadStorage,
     startAutoPersist
   } = useThemeBuilder()
@@ -79,8 +80,6 @@
     }
   })
 
-  const selectedPreset = ref<string>('')
-
   const presetItems = computed(() => [
     { title: t('theming.preset.none', '— none —'), value: '' },
     ...presets.map(p => ({ title: t(p.labelKey, p.labelFallback), value: p.key }))
@@ -95,7 +94,11 @@
   const onResetComponent = (slug: string): void => resetComponent(slug)
 
   const onSeedPreset = (key: unknown): void => {
-    if (typeof key !== 'string' || !key) return
+    if (typeof key !== 'string') return
+    if (!key) {
+      clearPreset()
+      return
+    }
     seedPreset(key)
   }
 
@@ -190,7 +193,7 @@
       />
 
       <origam-select
-        v-model="selectedPreset"
+        v-model="state.preset"
         :label="t('theming.preset.label', 'Preset')"
         :items="presetItems"
         variant="outlined"
@@ -381,8 +384,7 @@
   .theming {
     display: flex;
     flex-direction: column;
-    min-height: 0;
-    height: calc(100vh - var(--origam-app-bar---height, 4rem));
+    min-height: calc(100vh - var(--origam-app-bar---height, 4rem));
 
     &__dev-banner {
       flex: none;
@@ -525,8 +527,11 @@
     &__body {
       display: grid;
       grid-template-columns: 14rem 1fr 20rem;
+      grid-auto-rows: min-content;
+      align-items: start;
       flex: 1 1 auto;
       min-height: 0;
+      height: auto;
 
       @media (max-width: 64rem) {
         grid-template-columns: 12rem 1fr 17rem;
@@ -534,18 +539,12 @@
 
       @media (max-width: 48rem) {
         grid-template-columns: 1fr;
-        grid-auto-rows: min-content;
-        height: auto;
         overflow-y: auto;
       }
     }
 
     &__col {
-      min-height: 0;
-
-      @media (max-width: 48rem) {
-        min-height: auto;
-      }
+      min-height: auto;
     }
 
     &__col--center {
@@ -553,27 +552,33 @@
       flex-direction: column;
       min-width: 0;
       min-height: 0;
-      overflow: hidden;
+      overflow: visible;
       padding: var(--origam-spacing-4, 1rem);
       background-color: var(--origam-color-surface-sunken, var(--origam-color-surface-subtle));
       border-inline: 1px solid var(--origam-color-border-default);
+      position: sticky;
+      top: var(--origam-app-bar---height, 4rem);
+      max-height: calc(100vh - var(--origam-app-bar---height, 4rem));
+      overflow-y: auto;
 
       @media (max-width: 48rem) {
         border-inline: none;
         border-block: 1px solid var(--origam-color-border-default);
+        position: static;
+        max-height: none;
+        overflow-y: visible;
       }
     }
 
     &__output {
       flex: 0 0 auto;
-      max-height: 38%;
       display: flex;
       flex-direction: column;
       gap: var(--origam-spacing-2, 0.5rem);
       padding: var(--origam-spacing-4, 1rem);
       background-color: var(--origam-color-surface-default);
       border-block-start: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
-      overflow: hidden;
+      overflow: visible;
     }
 
     &__output-head {
@@ -597,8 +602,8 @@
     &__output-code {
       display: flex;
       flex: 1 1 auto;
-      min-height: 0;
-      overflow: hidden;
+      min-height: 12rem;
+      overflow: visible;
 
       :deep(.origam-code) {
         flex: 1 1 auto;

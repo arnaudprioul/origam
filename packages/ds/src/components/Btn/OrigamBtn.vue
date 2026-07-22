@@ -716,10 +716,19 @@
 			// tokens, so it follows color/intent and theme), while the resting
 			// siblings stay outlined. This is what makes a btn-toggle read as
 			// a row of real buttons rather than a flat segmented strip.
+			//
+			// `-background-color-active` is a DEDICATED token, separate from
+			// the plain `-background-color` one: a theme is free to keep
+			// outlined buttons unfilled at rest (background-color:
+			// transparent, e.g. a print/minimalist identity) without also
+			// erasing the active/selected indicator — the two states are
+			// no longer forced to share one token. Themes that don't
+			// declare it fall straight through to the existing behaviour
+			// (their own `-background-color`), so this is additive only.
 			&#{$this}--active {
-				background-color: var(--origam-btn---background-color) !important;
+				background-color: var(--origam-btn---background-color-active, var(--origam-btn---background-color)) !important;
 				color: var(--origam-btn---color);
-				border-color: var(--origam-btn---background-color);
+				border-color: var(--origam-btn---background-color-active, var(--origam-btn---background-color));
 			}
 		}
 

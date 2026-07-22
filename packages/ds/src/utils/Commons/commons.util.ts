@@ -404,6 +404,35 @@ export function omit<
 }
 
 /**
+ * Omit undefined.
+ *
+ * @description
+ * Strips every own key whose value is `undefined` (a key that is merely
+ * *present but unset* is NOT the same as an *absent* key for `mergeDeep` —
+ * `for...in` still enumerates it, so `mergeDeep(theme, {border: undefined})`
+ * silently overwrites a theme default with `undefined`). Components that
+ * build a `slotDefaults` map to forward down via `<OrigamDefaultsProvider>`
+ * (e.g. `OrigamAvatarGroup`, `OrigamBtnGroup`) must run their per-component
+ * defaults object through this before handing it to the provider, so an
+ * unset prop is simply absent rather than an explicit `undefined` that
+ * clobbers an ancestor/theme default.
+ *
+ * @param obj …
+ * @returns …
+ */
+export function omitUndefined<T extends object> (obj: T): Partial<T> {
+    const out = {} as Partial<T>
+
+    for (const key in obj) {
+        if (obj[key] !== undefined) {
+            out[key] = obj[key]
+        }
+    }
+
+    return out
+}
+
+/**
  * Only.
  *
  * @param obj     …

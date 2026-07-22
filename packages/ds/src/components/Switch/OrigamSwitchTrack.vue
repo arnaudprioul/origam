@@ -47,7 +47,10 @@
 
 	import {
 	useBackgroundColor,
+	useBorder,
+	useElevation,
 	useProps,
+	useRounded,
 	useStyle
 } from '../../composables'
 
@@ -97,6 +100,14 @@
 
 	const {backgroundColorStyles} = useBackgroundColor(trackBgColor)
 
+	// Props-first (lot 4 theming fix) — the track owns the visual surface,
+	// so `border`/`rounded`/`elevation` (declared on `ISwitchTrackProps`,
+	// forwarded from `OrigamSwitch` via `filterProps`) are consumed here,
+	// not on the outer `OrigamSwitch`/`OrigamSelectionControl` wrapper.
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {elevationClasses, elevationStyles} = useElevation(props)
+
 	const slotProps = computed(() => ({
 		model: props.modelValue,
 		isValid: props.isValid
@@ -134,6 +145,9 @@
 	const switchTrackStyles = computed(() => {
 		return [
 			backgroundColorStyles.value,
+			borderStyles.value,
+			roundedStyles.value,
+			elevationStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -147,6 +161,9 @@
 				'origam-switch-track--error': props.error,
 				'origam-switch-track--inset': props.inset
 			},
+			borderClasses.value,
+			roundedClasses.value,
+			elevationClasses.value,
 			props.class
 		]
 	})
@@ -186,6 +203,8 @@
 		border-radius: var(--origam-switch__track---border-radius, 9999px);
 		height: var(--origam-switch__track---height, 14px);
 		min-width: var(--origam-switch__track---width, 36px);
+		backdrop-filter: var(--origam-switch__track---backdrop-filter, none);
+		-webkit-backdrop-filter: var(--origam-switch__track---backdrop-filter, none);
 		cursor: pointer;
 		transition: 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
 		overflow: hidden;

@@ -20,7 +20,7 @@ import type {
  * cascades to descendants through normal CSS inheritance.
  */
 export interface IAppProps extends ICommonsComponentProps, IColorProps, IBgColorProps {
-    /** Stretch the layout to the full viewport (`100vw` / `100vh`). Default `true`. */
+    /** Occupy at least the full viewport (`100vw` / `min-height: 100vh`) — content taller than one screen grows past it rather than clipping. Default `true`. */
     fullHeight?: boolean
     /** IDs of layout items allowed to overlap each other (forwarded to the layout). */
     overlaps?: Array<string>

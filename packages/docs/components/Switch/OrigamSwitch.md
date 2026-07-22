@@ -45,6 +45,29 @@ const enabled = ref(false)
 </template>
 ```
 
+## Border, rounded & elevation (visual surface)
+
+`border` / `rounded` / `elevation` target the track — the visible rail —
+so a themed switch can match the same border thickness / corner radius /
+shadow rung as the rest of a theme's form fields (`origam-text-field`,
+`origam-select`, …), matching the reference `props.components['origam-switch']`
+block set on a marketing theme.
+
+```vue
+<template>
+  <OrigamSwitch border rounded="lg" elevation="2" label="Themed track" />
+</template>
+```
+
+- `border` accepts the same shapes as every other Commons `IBorderProps`
+  consumer (`true` for the default thin border, a width, or a full
+  `"2px dashed red"` string).
+- `rounded` accepts a utility rung (`'xs'|'sm'|'md'|'lg'|'xl'|'full'|'none'`)
+  or a legacy named variant — overrides the track's default fully-round
+  pill shape.
+- `elevation` accepts an origam shadow rung (`'xs'|'sm'|'md'|'lg'|'xl'`) or
+  a Material-style `0..24` number, same as `OrigamBtn`/`OrigamCard`.
+
 ## Indeterminate
 
 ```vue

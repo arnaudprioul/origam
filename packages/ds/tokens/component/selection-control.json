@@ -19,7 +19,8 @@
       "border-radius":              { "$type": "dimension", "$value": "{radius.full}", "$description": "Ripple zone — cercle complet" },
       "overlay-opacity-hover":      { "$type": "number",    "$value": "{opacity.12}", "$description": "Opacité du ::before au survol" },
       "overlay-opacity-focus":      { "$type": "number",    "$value": "{opacity.12}", "$description": "Opacité du ::before en focus-visible" },
-      "overlay-background-color":   { "$type": "color",     "$value": "currentColor", "$description": "Fond de la zone ripple/overlay (currentColor = couleur de l'icône active)" }
+      "overlay-background-color":   { "$type": "color",     "$value": "currentColor", "$description": "Fond de la zone ripple/overlay (currentColor = couleur de l'icône active)" },
+      "backdrop-filter":            { "$type": "other",     "$value": "none", "$description": "#253 — matière hook du puits Checkbox/Radio (composant partagé SelectionControl). Le rendu du glyphe (#241, boîte non dessinée en CSS) peut rendre l'effet peu marqué sur un fond majoritairement transparent — vérifié au cas par cas par thème." }
     },
 
     "icon": {

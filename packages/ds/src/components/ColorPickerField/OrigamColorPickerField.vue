@@ -132,7 +132,7 @@
 >
 	import { OrigamColorPicker, OrigamMenu, OrigamSheet, OrigamTextField, OrigamTranslateScale } from "../../components"
 
-	import { useLocale, useProps, useVModel , useStyle} from "../../composables"
+	import { useDefaults, useLocale, useProps, useVModel , useStyle} from "../../composables"
 
 	import { COLOR_NULL, ORIGAM_FORM_KEY } from "../../consts"
 
@@ -153,7 +153,7 @@
 	 * Props, emits, composables and top-level refs.
 	 ********************************************************/
 
-	const props = withDefaults(defineProps<IColorPickerFieldProps>(), {
+	const _props = withDefaults(defineProps<IColorPickerFieldProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,
 		centerAffix: true,
 		direction: DIRECTION.HORIZONTAL,
@@ -166,6 +166,11 @@
 		openText: 'origam.open',
 		closeOnSelect: false
 	})
+
+	// `useDefaults` resolves each prop against theme.components['origam-color-picker-field']
+	// (OrigamBtn pattern). Pre-fix, the legacy `rounded: true` / `border: true`
+	// booleans always won, same forwarding-parity gap already fixed on Select.
+	const props = useDefaults(_props)
 
 	const {filterProps} = useProps<IColorPickerFieldProps>(props)
 
@@ -411,6 +416,22 @@
 			font-family: var(--origam-font__family---mono);
 			font-size: 0.875em;
 			letter-spacing: 0.03em;
+		}
+
+		// `.origam-field__input` is `display: flex; flex-wrap: wrap` by
+		// default (`OrigamField`'s base rule, meant for multi-chip inputs).
+		// This field renders BOTH the hex `colorSelection` span AND the
+		// underlying native `<input>` in that same row — in a narrow
+		// container (e.g. a dense side panel) the two don't fit on one
+		// line and wrap onto two, DOUBLING the field's height versus a
+		// plain text-field of the same density (confirmed: 55px vs 26px
+		// at compact density, identical width). The native input's own
+		// text is not meant to be visible here (the formatted
+		// `colorSelection` span is the real display value) — forcing
+		// `nowrap` lets the invisible native input shrink instead of
+		// pushing a wrap, with zero visual loss.
+		:deep(.origam-field__input) {
+			flex-wrap: nowrap;
 		}
 	}
 </style>

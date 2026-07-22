@@ -83,3 +83,25 @@
 /* OrigamCode component-level default (dark) */
 
 }
+
+:root:root[data-theme="apple"] .origam-dialog {
+    --origam-overlay-scrim---background-color: rgba(0, 0, 0, 0.40);
+    --origam-overlay-scrim---opacity: 1;
+}
+
+:root:root[data-theme="apple"][data-mode="dark"] .origam-dialog {
+    --origam-overlay-scrim---background-color: rgba(0, 0, 0, 0.55);
+}
+
+/*
+ * Theme-switcher chip, selected state (dark) — #28. White text on the
+ * brand blue (#0a84ff, action--primary---bg) measures 3.65:1, short of
+ * WCAG AA (4.5:1) for normal text. Darkening the chip's own fill
+ * (not the shared action-primary-bg token, which paints buttons/links
+ * site-wide) to #0970d9 keeps the brand hue while reaching ~4.8:1.
+ */
+:root:root[data-theme="apple"][data-mode="dark"] .home-themes__chip[data-active="true"],
+:root:root[data-theme="apple"][data-mode="dark"] .home-themes__chip[aria-pressed="true"] {
+    background-color: #0970d9;
+    border-color: #0970d9;
+}

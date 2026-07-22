@@ -212,3 +212,58 @@ describe('OrigamCode — typography props', () => {
         wrapper.unmount()
     })
 })
+
+// ---------------------------------------------------------------------------
+// useDefaults wiring (issue #242) — a theme's `components['origam-code']`
+// config must resolve on an un-passed prop, mirroring OrigamBtn/OrigamAlert.
+// ---------------------------------------------------------------------------
+
+describe('OrigamCode — useDefaults (theme components wiring)', () => {
+    async function mountCodeThemed(componentDefaults: Record<string, unknown>, props: Record<string, unknown> = {}) {
+        const theme = { name: 'brandx', mode: 'light' as const, components: { 'origam-code': componentDefaults }, vars: {} }
+        const origam = createOrigam({ themes: [theme] })
+        origam._defaultsRef.value = origam._activeDefaultsFor('brandx', 'light')
+        const wrapper = mount(OrigamCode, { props: props as never, global: { plugins: [origam] } })
+        await nextTick()
+        return wrapper
+    }
+
+    it('resolves rounded="lg" from theme.components[\'origam-code\'] when not passed', async () => {
+        const wrapper = await mountCodeThemed({ rounded: 'lg' })
+        expect(wrapper.find('.origam-code').classes()).toContain('origam--rounded-lg')
+        wrapper.unmount()
+    })
+
+    it('resolves tag="figure" from theme.components[\'origam-code\'] when not passed', async () => {
+        const wrapper = await mountCodeThemed({ tag: 'figure' })
+        expect(wrapper.find('.origam-code').element.tagName).toBe('FIGURE')
+        wrapper.unmount()
+    })
+
+    // Regression guard: 'figure' above matches the component's OWN
+    // withDefaults() default, so it can't tell a resolved theme value
+    // apart from the unresolved fallback. Use a DIFFERING tag to prove
+    // the theme value actually reaches the root — the root
+    // `<component :is="…">` reads a bare `tag` in `<script setup>`,
+    // which resolves against Vue's raw $props, NOT this useDefaults()
+    // Proxy, unless written as `props.tag` explicitly. See
+    // OrigamTable.vue for the full writeup of this footgun.
+    it('resolves tag="section" (differing from the component\'s own "figure" default) from theme.components[\'origam-code\']', async () => {
+        const wrapper = await mountCodeThemed({ tag: 'section' })
+        expect(wrapper.find('.origam-code').element.tagName).toBe('SECTION')
+        wrapper.unmount()
+    })
+
+    it('resolves compact=true from theme.components[\'origam-code\'] when not passed', async () => {
+        const wrapper = await mountCodeThemed({ compact: true })
+        expect(wrapper.find('.origam-code').classes()).toContain('origam-code--compact')
+        wrapper.unmount()
+    })
+
+    it('an explicitly passed rounded prop overrides the theme default', async () => {
+        const wrapper = await mountCodeThemed({ rounded: 'lg' }, { rounded: 'sm' })
+        expect(wrapper.find('.origam-code').classes()).toContain('origam--rounded-sm')
+        expect(wrapper.find('.origam-code').classes()).not.toContain('origam--rounded-lg')
+        wrapper.unmount()
+    })
+})
