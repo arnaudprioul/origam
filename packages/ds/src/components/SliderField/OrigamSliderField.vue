@@ -44,6 +44,7 @@
 							:is-vertical="isVertical"
 							:max="resolvedMax"
 							:min="resolvedMin"
+							:rounded="resolvedRounded"
 							:show-ticks="showTicks"
 							:start="isRange ? trackRangeStart : 0"
 							:stop="isRange ? trackRangeStop : trackStop"
@@ -273,6 +274,7 @@
 					:is-vertical="isVertical"
 					:max="resolvedMax"
 					:min="resolvedMin"
+					:rounded="resolvedRounded"
 					:show-ticks="showTicks"
 					:start="isRange ? trackRangeStart : 0"
 					:stop="isRange ? trackRangeStop : trackStop"
@@ -430,6 +432,7 @@
 		useDefaults,
 		useFocus,
 		useProps,
+		useRounded,
 		useRtl,
 		useSteps,
 		useStyle,
@@ -578,12 +581,13 @@
 
 	const bufferedStyles = computed<StyleValue>(() => {
 		const pct = bufferedPercentage.value
-		if (isVertical.value) {
-			return { height: `${pct}%`, bottom: '0' }
-		}
-		return indexFromEnd.value
-				? { width: `${pct}%`, insetInlineEnd: '0' }
-				: { width: `${pct}%`, insetInlineStart: '0' }
+		const position = isVertical.value
+				? { height: `${pct}%`, bottom: '0' }
+				: indexFromEnd.value
+						? { width: `${pct}%`, insetInlineEnd: '0' }
+						: { width: `${pct}%`, insetInlineStart: '0' }
+
+		return [position, roundedStyles.value] as StyleValue
 	})
 
 	/*********************************************************
@@ -865,6 +869,32 @@
 	const {textColorClasses: thumbTextClasses, textColorStyles: thumbTextStyles} = useTextColor(color)
 
 	/*********************************************************
+	 * Rounded
+	 *
+	 * @description
+	 * `ISliderFieldProps extends IRoundedProps`, but until #283 the
+	 * `rounded` prop was declared and never consumed anywhere in this
+	 * component — no `useRounded()` call, no forwarding to the track,
+	 * every radius in the SCSS was hardcoded (`999px`/`9999px`).
+	 *
+	 * `resolvedRounded` lets an explicit `trackProps.rounded` win (the
+	 * dedicated track-level override channel), falling back to the
+	 * slider's own top-level `rounded` prop otherwise. The SAME resolved
+	 * value both (1) gets forwarded to `<OrigamSliderFieldTrack>` — which
+	 * already wires `useRounded()` correctly, so the rail picks it up for
+	 * free (no duplicated logic) — and (2) drives `roundedStyles` here,
+	 * applied to the `__buffered` fill so it always matches the rail's
+	 * shape. The default (unset) case is untouched: `roundedStyles` stays
+	 * empty and every hardcoded radius falls back to the new
+	 * `--origam-slider-field---border-radius` token (themeable without
+	 * ever touching the `rounded` prop).
+	 ********************************************************/
+	const resolvedRounded = computed(() => {
+		return props.trackProps?.rounded ?? props.rounded
+	})
+	const {roundedClasses, roundedStyles} = useRounded(resolvedRounded)
+
+	/*********************************************************
 	 * Native input styling
 	 *
 	 * @description
@@ -974,6 +1004,7 @@
 			variantClass.value,
 			sharedStateClasses.value,
 			rtlClasses.value,
+			roundedClasses.value,
 			props.class
 		]
 	})
@@ -985,6 +1016,7 @@
 			variantClass.value,
 			sharedStateClasses.value,
 			rtlClasses.value,
+			roundedClasses.value,
 			props.class
 		]
 	})
@@ -1105,7 +1137,7 @@
 			pointer-events: none;
 			background: var(--origam-slider-field__buffered---background-color, color-mix(in srgb, currentColor 40%, transparent));
 			opacity: var(--origam-slider-field__buffered---opacity, 0.5);
-			border-radius: 999px;
+			border-radius: var(--origam-slider-field---border-radius, 999px);
 			top: 50%;
 			transform: translateY(-50%);
 			height: var(--origam-slider-field--variant--field---track-thickness, var(--origam-slider-field---track-size, 4px));
@@ -1328,15 +1360,15 @@
 
 			:deep(.origam-slider-field-track) {
 				background: transparent;
-				border-radius: 999px;
+				border-radius: var(--origam-slider-field---border-radius, 999px);
 			}
 
 			:deep(.origam-slider-field-track__background) {
-				border-radius: 999px;
+				border-radius: var(--origam-slider-field---border-radius, 999px);
 			}
 
 			:deep(.origam-slider-field-track__fill) {
-				border-radius: 999px;
+				border-radius: var(--origam-slider-field---border-radius, 999px);
 			}
 
 			&.origam-slider-field--horizontal {
@@ -1404,7 +1436,7 @@
 
 		:deep(.origam-slider-field-track) {
 			background-color: var(--origam-slider-field--bare---track-background-color, color-mix(in srgb, currentColor 25%, transparent));
-			border-radius: 999px;
+			border-radius: var(--origam-slider-field---border-radius, 999px);
 			height: var(--origam-slider-field--variant--field---track-thickness);
 			width: 100%;
 			transition: height 140ms ease;
@@ -1417,14 +1449,14 @@
 			.origam-slider-field-track__fill {
 				background: currentColor;
 				height: 100%;
-				border-radius: 999px;
+				border-radius: var(--origam-slider-field---border-radius, 999px);
 			}
 		}
 
 		.origam-slider-field__buffered {
 			background: var(--origam-slider-field__buffered--bare---background-color, color-mix(in srgb, currentColor 40%, transparent));
 			opacity: 1;
-			border-radius: 999px;
+			border-radius: var(--origam-slider-field---border-radius, 999px);
 			height: var(--origam-slider-field--variant--field---track-thickness);
 			z-index: 1;
 		}
