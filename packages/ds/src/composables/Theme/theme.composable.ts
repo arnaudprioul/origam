@@ -16,18 +16,74 @@ import type { TMode, TModeResolved, TTheme, TThemeResolved } from '../../types/T
  * SSR doesn't touch `window`/`document` until mount.
  *
  * Two orthogonal axes:
- * - `_theme` → brand identity, applied as `data-theme`.
- * - `_mode`  → light/dark, applied as `data-mode`.
+ * - `theme` → brand identity, applied as `data-theme`.
+ * - `mode`  → light/dark, applied as `data-mode`.
  *
- * `_systemPrefersDark` is also a singleton, initialised once in the browser
+ * `systemPrefersDark` is also a singleton, initialised once in the browser
  * (NOT tied to a component's `onMounted`) so `resolvedMode` is correct even
  * when `useTheme()` is first called from a Nuxt plugin — where no component
  * lifecycle exists to drive `onMounted`.
+ *
+ * ### Why `globalThis` on the client (#275)
+ *
+ * A plain module-level `let` is only a TRUE singleton if every consumer
+ * resolves this file to the same physical module instance. That's not
+ * guaranteed: a consuming app can alias the DS's Nuxt module to *source*
+ * (for dev-mode convenience/HMR) while every other import of the DS resolves
+ * to the *compiled* package export — two different files on disk, hence two
+ * independent module instances, each with its OWN `_theme`/`_mode` ref.
+ *
+ * Symptom: `setTheme()` called from the instance the app's UI uses (e.g. the
+ * header's theme switcher) never notifies the OTHER instance's watchers —
+ * concretely, the Nuxt plugin's `[themeApi.theme, themeApi.resolvedMode]`
+ * watcher that reassigns `_defaultsRef` (component default PROPS driven by
+ * `theme.components`). Result: cssVars (plain CSS cascade, `data-theme`
+ * attribute, nothing to do with this module) keep updating live, but any
+ * prop resolved through `useDefaults()` freezes on the theme active at
+ * initial load until a full page reload re-seeds both instances from the
+ * same cookie.
+ *
+ * `globalThis` is the one true global object every module instance shares
+ * within the same JS realm (the browser tab), so anchoring the singleton
+ * there survives the duplication regardless of its exact cause.
+ *
+ * The SERVER intentionally keeps a plain module-level singleton instead:
+ * anchoring per-request theme state on `globalThis` would leak it across
+ * concurrent requests handled by the same Node process — the opposite of
+ * SSR-safe. SSR has no live theme-switch UI to desync in the first place
+ * (each request re-seeds from its own cookie), so the failure mode this fix
+ * targets doesn't apply there.
  */
-let _theme: Ref<TTheme> | null = null
-let _mode: Ref<TMode> | null = null
-let _systemPrefersDark: Ref<boolean> | null = null
-let _mediaInitDone = false
+interface IOrigamThemeSingletonState {
+    theme: Ref<TTheme> | null
+    mode: Ref<TMode> | null
+    systemPrefersDark: Ref<boolean> | null
+    mediaInitDone: boolean
+}
+
+const ORIGAM_THEME_SINGLETON_KEY = '__origamThemeSingleton__'
+
+const _serverSingleton: IOrigamThemeSingletonState = {
+    theme: null,
+    mode: null,
+    systemPrefersDark: null,
+    mediaInitDone: false
+}
+
+function themeSingleton (): IOrigamThemeSingletonState {
+    if (typeof window === 'undefined') return _serverSingleton
+
+    const globalScope = globalThis as unknown as Record<string, IOrigamThemeSingletonState | undefined>
+    if (!globalScope[ORIGAM_THEME_SINGLETON_KEY]) {
+        globalScope[ORIGAM_THEME_SINGLETON_KEY] = {
+            theme: null,
+            mode: null,
+            systemPrefersDark: null,
+            mediaInitDone: false
+        }
+    }
+    return globalScope[ORIGAM_THEME_SINGLETON_KEY]
+}
 
 /**
  * One-time, lifecycle-independent init of the `prefers-color-scheme` watcher.
@@ -35,19 +91,20 @@ let _mediaInitDone = false
  * access is guarded and only runs once in the browser.
  */
 function ensureSystemPreference (): Ref<boolean> {
-    if (_systemPrefersDark === null) {
-        _systemPrefersDark = ref(false)
+    const state = themeSingleton()
+    if (state.systemPrefersDark === null) {
+        state.systemPrefersDark = ref(false)
     }
-    if (_mediaInitDone || typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
-        return _systemPrefersDark
+    if (state.mediaInitDone || typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+        return state.systemPrefersDark
     }
-    _mediaInitDone = true
+    state.mediaInitDone = true
     const mq = window.matchMedia('(prefers-color-scheme: dark)')
-    _systemPrefersDark.value = mq.matches
+    state.systemPrefersDark.value = mq.matches
     mq.addEventListener?.('change', (e) => {
-        if (_systemPrefersDark) _systemPrefersDark.value = e.matches
+        if (state.systemPrefersDark) state.systemPrefersDark.value = e.matches
     })
-    return _systemPrefersDark
+    return state.systemPrefersDark
 }
 
 /*********************************************************
@@ -140,14 +197,15 @@ function applyModeToDocument (resolvedMode: TModeResolved) {
  * useTheme
  ********************************************************/
 export function useTheme () {
-    if (_theme === null) {
-        _theme = ref<TTheme>(readPersisted())
+    const state = themeSingleton()
+    if (state.theme === null) {
+        state.theme = ref<TTheme>(readPersisted())
     }
-    if (_mode === null) {
-        _mode = ref<TMode>(readPersistedModeValue())
+    if (state.mode === null) {
+        state.mode = ref<TMode>(readPersistedModeValue())
     }
-    const theme = _theme
-    const mode = _mode
+    const theme = state.theme
+    const mode = state.mode
 
     const systemPrefersDark = ensureSystemPreference()
 
@@ -275,8 +333,9 @@ export function readPersistedMode (): TMode {
  * _resetThemeForTesting
  ********************************************************/
 export function _resetThemeForTesting () {
-    _theme = null
-    _mode = null
-    _systemPrefersDark = null
-    _mediaInitDone = false
+    const state = themeSingleton()
+    state.theme = null
+    state.mode = null
+    state.systemPrefersDark = null
+    state.mediaInitDone = false
 }
