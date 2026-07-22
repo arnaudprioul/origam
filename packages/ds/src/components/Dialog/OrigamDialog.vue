@@ -153,9 +153,10 @@
 	 *
 	 * @description
 	 * Props, emits, and top-level composable bootstrapping.
-	 * openOnClick defaults to `true` here because Vue 3's Boolean prop
-	 * coercion would otherwise resolve it to `false`, breaking the
-	 * activator click chain from Dialog → Overlay → useActivator.
+	 * openOnClick and scrim default to `true` here because Vue 3's
+	 * Boolean prop coercion would otherwise resolve them to `false`,
+	 * breaking the activator click chain (openOnClick) and hiding the
+	 * scrim entirely (scrim) — see the comments on each below.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IDialogProps>(), {
 		retainFocus: true,
@@ -171,7 +172,17 @@
 		// activator merge, the consumer's button receives no click
 		// handler, and the dialog never opens. Anchoring the default
 		// here lines up the resolved prop with the parent's intent.
-		openOnClick: true
+		openOnClick: true,
+		// Same coercion class as `openOnClick` above: `scrim?: boolean |
+		// string` (IOverlayScrimProps) includes a boolean in its type,
+		// so an unset `scrim` on Dialog resolves to the concrete value
+		// `false` — never `undefined`. Dialog explicitly forwards its
+		// OWN resolved `props.scrim` into `overlayProps` (filterProps),
+		// so that `false` WINS over OrigamOverlay's own `withDefaults({
+		// scrim: true })` default and the backdrop never renders,
+		// regardless of theme/consumer intent. Anchoring the default
+		// here lines up the resolved prop with OrigamOverlay's (see #279).
+		scrim: true
 	})
 
 	const emits = defineEmits<IDialogEmits>()
