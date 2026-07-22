@@ -15,7 +15,7 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
-## [2.9.0] — 2026-07-21
+## [2.9.0] — 2026-07-22
 
 Theming-enablement release. This ships the design-token **hooks** and the
 `useDefaults` **wiring** that let a consumer configure a component's
@@ -57,6 +57,26 @@ sets a value.
 
 ### Fixed
 
+- **Live theme switching now updates component default *props*, not just CSS
+  variables.** The Nuxt module's theme singleton could be duplicated when the
+  host app resolved `origam/nuxt` (source) and `origam/composables` (compiled
+  `dist`) to two physical module files — two independent `_theme` singletons,
+  so the plugin's watcher (which reassigns the resolved per-component
+  defaults) listened to a different instance than the one `setTheme()`
+  mutated. Props stayed frozen on a live switch while cssVars followed (pure
+  CSS cascade). The singleton is now anchored on `globalThis` on the client
+  (server stays module-level to avoid leaking state across concurrent SSR
+  requests). (#275)
+- **`OrigamRadio`, `OrigamTabs` and `OrigamSliderField` now call
+  `useDefaults()`.** They declared theme-configurable props (`activeBgColor`,
+  `variant`, `color`/`bgColor`) but never resolved
+  `theme.components['origam-<name>']`, so that theme config was silently inert.
+  (#279)
+- **`OrigamDialog` `scrim` now renders.** `scrim` was missing from the
+  component's `withDefaults(...)`, so Vue 3 coerced the unpassed boolean to
+  `false` and forwarded it to `OrigamOverlay`, overriding the overlay's own
+  `scrim: true` default — the backdrop never showed. Anchored `scrim: true` in
+  `withDefaults` (same pattern as the existing `openOnClick` default). (#279)
 - **`useDefaults` wiring no longer collapses `<origam-code>`'s header zone.**
   The origam base theme carried a `compact: true` default (authored in a bulk
   pass before `useDefaults` was wired, never visually validated); once the
