@@ -739,6 +739,16 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
         display: flex;
         align-items: center;
         gap: var(--origam-spacing-1, 0.25rem);
+
+        // Every control field (select trigger, color-picker-field, …) resolves
+        // --origam-field---padding-start to ~0, so the field's start outline leg
+        // collapses to ~1px and cannot round the left corner: the active field
+        // renders square-left / round-right — a rectangle around the swatch.
+        // Inset the content to the corner radius so the leg widens and both
+        // corners round symmetrically.
+        :deep(.origam-field) {
+            --origam-field---padding-start: 14px;
+        }
     }
 
     &__select {
