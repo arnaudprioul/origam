@@ -107,6 +107,16 @@ const handleMousedownControl = (): void => {
 .tbc-trigger {
     inline-size: 100%;
 
+    // The field's start outline leg is sized by --origam-field---padding-start,
+    // which resolves to ~0 on these controls, so the leg collapses to ~1px and
+    // cannot round the left corner: the active (accent-bordered) field renders
+    // square-left / round-right and reads as a rectangle around the swatch.
+    // Inset the content to the corner radius so the leg widens, the left corner
+    // rounds like the right, and the swatch sits clear of the curve.
+    :deep(.origam-field) {
+        --origam-field---padding-start: 14px;
+    }
+
     :deep(input) {
         cursor: pointer;
         caret-color: transparent;
