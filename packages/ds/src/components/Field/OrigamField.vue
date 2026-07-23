@@ -887,6 +887,14 @@
 
 		&--prepended {
 			--origam-field---padding-start: 6px;
+
+			// A prepend-inner (icon / swatch) already fills the left corner, so
+			// the start leg must NOT be widened to the radius here — doing so
+			// draws the rounded outline leg over the prepend content and reads as
+			// a box around it. Keep the leg at the raw padding-start.
+			#{$this}__outline--start {
+				flex-basis: var(--origam-field---padding-start);
+			}
 		}
 
 		&--appended {
