@@ -613,19 +613,7 @@
 		flex: 1 0;
 		grid-area: control;
 		position: relative;
-		// Corner-clearing floor: when the configured inline padding is smaller
-		// than the field's corner radius, the text / floating label collide with
-		// the rounded outline (e.g. Material `rounded="lg"` = 28px radius vs an
-		// 8px padding-start). Floor the inline padding at the effective radius so
-		// content always clears the curve. `--origam-field---border-radius` tracks
-		// the `rounded` prop (synced in the script) and per-theme overrides, so
-		// this stays correct across themes without a dedicated variable. The
-		// radius is capped at the control height so an intentional pill
-		// (`rounded="9999px"`) floors the padding at the visual corner instead of
-		// exploding it to 9999px.
-		padding-inline:
-			max(var(--origam-field---padding-start), min(var(--origam-field---border-radius, 8px), var(--origam-input__control---height, 36px)))
-			max(var(--origam-field---padding-end), min(var(--origam-field---border-radius, 8px), var(--origam-input__control---height, 36px)));
+		padding-inline: var(--origam-field---padding-start) var(--origam-field---padding-end);
 		backdrop-filter: var(--origam-field---backdrop-filter, none);
 		-webkit-backdrop-filter: var(--origam-field---backdrop-filter, none);
 
@@ -810,13 +798,7 @@
 
 			#{$this}__outline {
 				&--start {
-					// The start leg draws the LEFT corners. Its width must be at
-					// least the corner radius, otherwise a radius larger than the
-					// raw padding-start (e.g. 22px radius vs 8px padding) is clamped
-					// to the leg width and the left corner renders flatter than the
-					// right (flex:1) leg. Match the field root's corner-clearing
-					// floor so both sides round identically.
-					flex: 0 0 max(var(--origam-field---padding-start), min(var(--origam-field---border-radius, 8px), var(--origam-input__control---height, 36px)));
+					flex: 0 0 var(--origam-field---padding-start);
 				}
 
 				&--end {
@@ -887,14 +869,6 @@
 
 		&--prepended {
 			--origam-field---padding-start: 6px;
-
-			// A prepend-inner (icon / swatch) already fills the left corner, so
-			// the start leg must NOT be widened to the radius here — doing so
-			// draws the rounded outline leg over the prepend content and reads as
-			// a box around it. Keep the leg at the raw padding-start.
-			#{$this}__outline--start {
-				flex-basis: var(--origam-field---padding-start);
-			}
 		}
 
 		&--appended {
