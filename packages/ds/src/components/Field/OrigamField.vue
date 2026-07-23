@@ -810,7 +810,13 @@
 
 			#{$this}__outline {
 				&--start {
-					flex: 0 0 var(--origam-field---padding-start);
+					// The start leg draws the LEFT corners. Its width must be at
+					// least the corner radius, otherwise a radius larger than the
+					// raw padding-start (e.g. 22px radius vs 8px padding) is clamped
+					// to the leg width and the left corner renders flatter than the
+					// right (flex:1) leg. Match the field root's corner-clearing
+					// floor so both sides round identically.
+					flex: 0 0 max(var(--origam-field---padding-start), min(var(--origam-field---border-radius, 8px), var(--origam-input__control---height, 36px)));
 				}
 
 				&--end {
