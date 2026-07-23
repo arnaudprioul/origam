@@ -121,6 +121,37 @@ test.describe('OrigamField', () => {
         expect(mdRadius).not.toBe('0px')
     })
 
+    test('Corner-clearing — inline padding floors at the corner radius (no text/label collision)', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Prop — rounded', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const field = sandbox.locator('[data-cy="field-rounded-prop"]')
+        await expect(field).toBeVisible({ timeout: 5000 })
+
+        const padStartAtRadius = (radius: string) => field.evaluate((el, r) => {
+            el.style.setProperty('--origam-field---border-radius', r)
+            return getComputedStyle(el).paddingInlineStart
+        }, radius)
+
+        // A radius larger than the base padding lifts the inline padding to match,
+        // so the text / floating label clear the rounded outline instead of
+        // colliding with it (the Material lg = 28px regression).
+        expect(await padStartAtRadius('28px')).toBe('28px')
+
+        // A tiny radius leaves the configured base padding untouched — the floor
+        // never over-pads a square-ish field.
+        expect(parseFloat(await padStartAtRadius('2px'))).toBeGreaterThanOrEqual(2)
+
+        // An intentional pill radius is capped at the control height, not exploded
+        // to 9999px, so the field stays laid out.
+        const pillPad = parseFloat(await padStartAtRadius('9999px'))
+        expect(pillPad).toBeGreaterThan(0)
+        expect(pillPad).toBeLessThanOrEqual(48)
+    })
+
     test('Playground — renders without errors', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
