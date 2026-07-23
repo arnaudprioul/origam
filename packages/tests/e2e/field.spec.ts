@@ -176,6 +176,31 @@ test.describe('OrigamField', () => {
         expect(await startLegWidth('28px')).toBeGreaterThanOrEqual(28)
     })
 
+    test('Corner symmetry — prepended field keeps the raw start leg (prepend fills the corner)', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Slot — prependInner / appendInner', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const field = sandbox.locator('[data-cy="field-slot-inner"]')
+        await expect(field).toBeVisible({ timeout: 5000 })
+
+        // A prepend-inner already fills the left corner. Widening the start leg to
+        // the radius would draw the rounded outline leg over the prepend content
+        // (reads as a box around it), so a prepended field must keep the leg at the
+        // raw padding-start even when the radius is large.
+        const { legW, pad } = await field.evaluate(el => {
+            el.style.setProperty('--origam-field---border-radius', '40px')
+            const leg = el.querySelector('.origam-field__outline--start') as HTMLElement
+            return {
+                legW: leg ? parseFloat(getComputedStyle(leg).width) : -1,
+                pad: parseFloat(getComputedStyle(el).getPropertyValue('--origam-field---padding-start')) || 0,
+            }
+        })
+        expect(Math.abs(legW - pad)).toBeLessThanOrEqual(1)
+    })
+
     test('Playground — renders without errors', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
