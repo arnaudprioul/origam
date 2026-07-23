@@ -152,6 +152,30 @@ test.describe('OrigamField', () => {
         expect(pillPad).toBeLessThanOrEqual(48)
     })
 
+    test('Corner symmetry — start outline leg is wide enough to round like the end leg', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Prop — rounded', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const field = sandbox.locator('[data-cy="field-rounded-prop"]')
+        await expect(field).toBeVisible({ timeout: 5000 })
+
+        // A radius larger than the raw padding-start must widen the start leg to
+        // match, otherwise the left corner is clamped to the leg width and renders
+        // flatter than the flex:1 end leg (the asymmetric-rounding regression).
+        const startLegWidth = (radius: string) => field.evaluate((el, r) => {
+            el.style.setProperty('--origam-field---border-radius', r)
+            const leg = el.querySelector('.origam-field__outline--start') as HTMLElement
+            return leg ? parseFloat(getComputedStyle(leg).width) : -1
+        }, radius)
+
+        // radius 28px (< control-height cap) → leg must be at least 28px, not the
+        // 8px raw padding-start.
+        expect(await startLegWidth('28px')).toBeGreaterThanOrEqual(28)
+    })
+
     test('Playground — renders without errors', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
