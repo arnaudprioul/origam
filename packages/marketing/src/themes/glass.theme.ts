@@ -283,9 +283,9 @@ export const glassLightTheme: IOrigamTheme = {
         '--origam-appbar---backdrop-filter': 'saturate(2) brightness(1.1) blur(26px)',
         // Hook vérifié (OrigamMenu.vue) ; valeur FORT unique donnée pour les 2
         // modes (contrairement à card/sheet qui ont des recettes séparées).
-        '--origam-menu---backdrop-filter': 'blur(30px) saturate(2.6) brightness(1.1)',
+        '--origam-menu---backdrop-filter': 'blur(30px) saturate(2.6) brightness(1.08)',
         '--origam-appbar---bg': 'rgba(255, 255, 255, 0.30)',
-        '--origam-menu---background': 'rgba(210, 200, 246, 0.66)',
+        '--origam-menu---background': 'rgba(224, 215, 250, 0.42)',
         '--origam-menu---color': 'var(--origam-color__text---primary)',
         '--origam-menu---border-radius': '16px',
         '--origam-menu---box-shadow': '0 8px 32px -8px rgba(124, 58, 237, 0.18), 0 1px 4px -1px rgba(124, 58, 237, 0.10), 0 0 0 1px var(--origam-color__border---default), inset 0 1px 0 rgba(255, 255, 255, 0.60)',
@@ -619,7 +619,7 @@ export const glassDarkTheme: IOrigamTheme = {
         '--origam-appbar---backdrop-filter': 'saturate(2) brightness(1.1) blur(26px)',
         '--origam-menu---backdrop-filter': 'blur(30px) saturate(2.3) brightness(1.05)',
         '--origam-appbar---bg': 'rgba(255, 255, 255, 0.06)',
-        '--origam-menu---background': 'rgba(34, 28, 66, 0.66)',
+        '--origam-menu---background': 'rgba(30, 25, 58, 0.50)',
         '--origam-menu---color': 'var(--origam-color__text---primary)',
         '--origam-menu---border-radius': '22px',
         '--origam-menu---box-shadow': '0 8px 32px -8px rgba(0, 0, 0, 0.60), 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.10)',
