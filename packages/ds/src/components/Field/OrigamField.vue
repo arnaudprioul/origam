@@ -620,7 +620,7 @@
 		// already fills the corner.
 		padding-inline:
 			max(var(--origam-field---padding-start), min(var(--origam-field---border-radius, 8px), var(--origam-input__control---height, 36px)))
-			max(var(--origam-field---padding-end), min(var(--origam-field---border-radius, 8px), var(--origam-input__control---height, 36px)));
+			var(--origam-field---padding-end);
 		backdrop-filter: var(--origam-field---backdrop-filter, none);
 		-webkit-backdrop-filter: var(--origam-field---backdrop-filter, none);
 
