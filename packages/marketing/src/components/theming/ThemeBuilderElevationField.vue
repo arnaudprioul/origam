@@ -198,12 +198,13 @@ const onOpacity = (value: unknown): void => {
 
     &__modes {
         display: flex;
+        flex-wrap: wrap;
         gap: var(--origam-spacing-2, 0.5rem);
     }
 
     &__shadow-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
         gap: var(--origam-spacing-2, 0.5rem);
     }
 

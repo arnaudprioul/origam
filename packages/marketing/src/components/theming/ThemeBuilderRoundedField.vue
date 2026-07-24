@@ -130,13 +130,12 @@ const onCorner = (corner: TThemeBuilderCorner, value: unknown): void => {
 
     &__grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
         gap: var(--origam-spacing-2, 0.5rem);
         align-items: end;
     }
 
     &__link {
-        grid-column: span 2;
         justify-self: center;
     }
 }
