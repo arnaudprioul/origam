@@ -751,6 +751,19 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
         :deep(.origam-field--prepended) {
             --origam-field---padding-start: 14px;
         }
+
+        // Plain select controls (no swatch) are narrow and center-aligned, so
+        // they don't collide with the corner and must NOT inherit the DS
+        // corner-clearing floor — it would push/truncate the value text
+        // ("elevated" → "ele…"). Keep them at their raw compact inline padding
+        // and start-leg width.
+        :deep(.origam-field:not(.origam-field--prepended)) {
+            padding-inline: var(--origam-field---padding-start) var(--origam-field---padding-end);
+
+            .origam-field__outline--start {
+                flex-basis: var(--origam-field---padding-start);
+            }
+        }
     }
 
     &__select {
