@@ -3,14 +3,14 @@ import { computed, ref, watchEffect } from 'vue'
 import { MDI_ICONS } from 'origam/enums'
 
 import { useT } from '~/composables/useT'
+import { THEME_BUILDER_RICH_CONTROL_KINDS } from '~/consts/theme-builder-controls.const'
 import type {
     IThemeBuilderComponentEntry,
     IThemeBuilderPropControl,
     IThemeBuilderToken,
     TEditMode
 } from '~/interfaces/theme-builder.interface'
-
-type TTab = 'props' | 'tokens'
+import type { TThemeBuilderTab } from '~/types/theme-builder-controls.type'
 
 const props = defineProps<{
     entry: IThemeBuilderComponentEntry
@@ -32,7 +32,7 @@ const emit = defineEmits<{
 
 const { t } = useT()
 
-const tab = ref<TTab>('props')
+const tab = ref<TThemeBuilderTab>('props')
 
 const propsCount = computed(() => props.entry.controls.length)
 const tokensCount = computed(() => props.entry.tokens.length)
@@ -119,8 +119,7 @@ const onResetControl = (ctrl: IThemeBuilderPropControl): void => {
     }
 }
 
-const RICH_CONTROL_KINDS = new Set(['color-intent', 'rounded', 'elevation', 'border', 'box-model'])
-const isRichControl = (ctrl: IThemeBuilderPropControl): boolean => RICH_CONTROL_KINDS.has(ctrl.kind)
+const isRichControl = (ctrl: IThemeBuilderPropControl): boolean => THEME_BUILDER_RICH_CONTROL_KINDS.has(ctrl.kind)
 
 const onToken = (cssVar: string, value: string): void => {
     emit('set-token', props.activeMode, cssVar, value)

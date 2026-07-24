@@ -132,3 +132,66 @@ export const THEME_BUILDER_SPACING_SCALE_PX: Record<string, number> = {
 
 /** Box-model link mode: one value for all 4 edges / 2 axis values / 4 independent values. */
 export const THEME_BUILDER_BOX_MODEL_MODES = ['linked', 'axis', 'unlinked'] as const
+
+/** Named `rounded` rungs (excluding the "Autre" sentinel) — the Set a raw value is tested against. */
+export const THEME_BUILDER_ROUNDED_NAMED_RUNGS = new Set(
+    THEME_BUILDER_ROUNDED_OPTIONS.map(o => o.value).filter(v => v !== THEME_BUILDER_CUSTOM_VALUE)
+)
+
+/** Named `elevation` rungs (excluding the "Autre" sentinel) — the Set a raw value is tested against. */
+export const THEME_BUILDER_ELEVATION_NAMED_RUNGS = new Set(
+    THEME_BUILDER_ELEVATION_OPTIONS.map(o => o.value).filter(v => v !== THEME_BUILDER_CUSTOM_VALUE)
+)
+
+/** Named `border` widths (excluding the "Autre" sentinel) — the Set a raw value is tested against. */
+export const THEME_BUILDER_BORDER_NAMED_WIDTHS = new Set(
+    THEME_BUILDER_BORDER_WIDTH_OPTIONS.map(o => o.value).filter(v => v !== THEME_BUILDER_CUSTOM_VALUE)
+)
+
+/** The 8 real `TIntent` values as a Set, for O(1) membership checks. */
+export const THEME_BUILDER_INTENT_VALUES = new Set(THEME_BUILDER_INTENT_OPTIONS.map(o => o.value))
+
+/**
+ * Session-scoped "recent custom colors" list max length — matches the
+ * wireframe's open question ("persistance par session ou globale") resolved
+ * as IN-MEMORY/session only, reset on reload.
+ */
+export const THEME_BUILDER_COLOR_MAX_RECENT = 4
+
+/**
+ * Prop names that resolve to the rich `color-intent` control when a control
+ * for them exists — `color` / `accentColor` (both, see #212) always; a
+ * standalone `borderColor` too, but ONLY when there's no `border` control to
+ * fold it into (see `composePropGroups` in `useThemeBuilderCatalog.ts`).
+ */
+export const THEME_BUILDER_INTENT_COLOR_PROPS = new Set(['color', 'accentColor'])
+
+/**
+ * Every prop the `border` composite can fold in, beyond `border` itself —
+ * global `borderStyle`/`borderColor` (round 2) plus the 8 per-side props
+ * wired by DS issue #215 (PR #227): `borderTop`/`Right`/`Bottom`/`Left`
+ * (width, `boolean | number | string`) and `borderTopColor`/`RightColor`/
+ * `BottomColor`/`LeftColor` (`TColor`). Order matters for tab order in the
+ * popover — width facets first, colours last, matching the wireframe.
+ */
+export const THEME_BUILDER_BORDER_FOLD_PROPS = [
+    'borderStyle', 'borderColor',
+    'borderTop', 'borderRight', 'borderBottom', 'borderLeft',
+    'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor'
+] as const
+
+/**
+ * Orphan border-family props — a component that exposes one of them without
+ * a `border` prop at all (unlikely, but never silently dropped) still gets
+ * relabelled `color-intent` (see `composePropGroups`).
+ */
+export const THEME_BUILDER_ORPHAN_COLOR_PROPS = new Set([
+    'borderColor', 'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor'
+])
+
+/**
+ * Rich control kinds rendered via a dedicated `theme-builder-*-field`
+ * component instead of a generic `origam-select`/`origam-text-field` input
+ * (`ThemeBuilderControls.vue`).
+ */
+export const THEME_BUILDER_RICH_CONTROL_KINDS = new Set(['color-intent', 'rounded', 'elevation', 'border', 'box-model'])

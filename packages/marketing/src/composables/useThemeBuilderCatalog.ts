@@ -13,11 +13,17 @@ import {
     classifyPropGroup
 } from '~/consts/theme-builder-groups.const'
 import { THEME_BUILDER_TOKENS } from '~/consts/theme-builder-tokens.const'
+import {
+    THEME_BUILDER_BORDER_FOLD_PROPS,
+    THEME_BUILDER_INTENT_COLOR_PROPS,
+    THEME_BUILDER_ORPHAN_COLOR_PROPS
+} from '~/consts/theme-builder-controls.const'
 import type {
     IComponentPlaygroundControl,
     IComponentPropRow
 } from '~/interfaces/components-catalog.interface'
 import type {
+    IComponentThemeSurface,
     IThemeBuilderComponentEntry,
     IThemeBuilderNavCategory,
     IThemeBuilderPropControl,
@@ -41,25 +47,6 @@ import type {
  * The static COMPONENTS_CATALOG const files and the import.meta.glob pattern
  * have been removed; all component data now comes from the DB via the API.
  */
-
-/** Minimal prop surface shape returned by ?includePropSurface=1. */
-interface IComponentThemeSurface {
-    slug: string
-    name: string
-    icon: string
-    category: string
-    parentSlug?: string | null
-    playground?: {
-        controls: IComponentPlaygroundControl[]
-        defaultSlotContent?: string
-    } | null
-    props: Array<{
-        name: string
-        type: { label: string | null; slug: string | null; kind: string | null }
-        required?: boolean | null
-        defaultValue?: string | null
-    }>
-}
 
 /** A prop type label that references data / callbacks / objects is non-themable. */
 function isSkippableType (label: string): boolean {
@@ -209,28 +196,6 @@ function buildControl (
 }
 
 /**
- * Prop names that resolve to the rich `color-intent` control when a control
- * for them exists — `color` / `accentColor` (both, see #212) always; a
- * standalone `borderColor` too, but ONLY when there's no `border` control to
- * fold it into (see `composePropGroups`).
- */
-const INTENT_COLOR_PROPS = new Set(['color', 'accentColor'])
-
-/**
- * Every prop the `border` composite can fold in, beyond `border` itself —
- * global `borderStyle`/`borderColor` (round 2) plus the 8 per-side props
- * wired by DS issue #215 (PR #227): `borderTop`/`Right`/`Bottom`/`Left`
- * (width, `boolean | number | string`) and `borderTopColor`/`RightColor`/
- * `BottomColor`/`LeftColor` (`TColor`). Order matters for tab order in the
- * popover — width facets first, colours last, matching the wireframe.
- */
-const BORDER_FOLD_PROPS = [
-    'borderStyle', 'borderColor',
-    'borderTop', 'borderRight', 'borderBottom', 'borderLeft',
-    'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor'
-] as const
-
-/**
  * Compose the FLAT per-prop control list into the grouped, RICH-CONTROL
  * sections rendered by the panel (`IThemeBuilderComponentEntry.propGroups`).
  *
@@ -257,7 +222,7 @@ function composePropGroups (flatControls: IThemeBuilderPropControl[]): IThemeBui
     for (const ctrl of flatControls) {
         if (consumed.has(ctrl.prop)) continue
 
-        if (INTENT_COLOR_PROPS.has(ctrl.prop)) {
+        if (THEME_BUILDER_INTENT_COLOR_PROPS.has(ctrl.prop)) {
             composed.push({ ...ctrl, kind: 'color-intent', props: [ctrl.prop] })
             continue
         }
@@ -285,7 +250,7 @@ function composePropGroups (flatControls: IThemeBuilderPropControl[]): IThemeBui
         if (ctrl.prop === 'border') {
             const props = ['border']
             const defaultValues: Record<string, string | number | boolean> = { border: ctrl.defaultValue }
-            for (const foldProp of BORDER_FOLD_PROPS) {
+            for (const foldProp of THEME_BUILDER_BORDER_FOLD_PROPS) {
                 const foldCtrl = byProp.get(foldProp)
                 if (!foldCtrl) continue
                 props.push(foldProp)
@@ -296,7 +261,7 @@ function composePropGroups (flatControls: IThemeBuilderPropControl[]): IThemeBui
             continue
         }
 
-        if ((BORDER_FOLD_PROPS as readonly string[]).includes(ctrl.prop)) {
+        if ((THEME_BUILDER_BORDER_FOLD_PROPS as readonly string[]).includes(ctrl.prop)) {
             // Folded into the `border` composite above when a `border`
             // control exists for this component (handled by that branch,
             // regardless of iteration order — `consumed` is populated from
@@ -310,10 +275,9 @@ function composePropGroups (flatControls: IThemeBuilderPropControl[]): IThemeBui
 
     // Orphan border-family props — a component that exposes one of them
     // without a `border` prop at all (unlikely, but never silently dropped).
-    const ORPHAN_COLOR_PROPS = new Set(['borderColor', 'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor'])
     for (const ctrl of flatControls) {
-        if ((BORDER_FOLD_PROPS as readonly string[]).includes(ctrl.prop) && !consumed.has(ctrl.prop) && !byProp.has('border')) {
-            composed.push(ORPHAN_COLOR_PROPS.has(ctrl.prop) ? { ...ctrl, kind: 'color-intent', props: [ctrl.prop] } : ctrl)
+        if ((THEME_BUILDER_BORDER_FOLD_PROPS as readonly string[]).includes(ctrl.prop) && !consumed.has(ctrl.prop) && !byProp.has('border')) {
+            composed.push(THEME_BUILDER_ORPHAN_COLOR_PROPS.has(ctrl.prop) ? { ...ctrl, kind: 'color-intent', props: [ctrl.prop] } : ctrl)
         }
     }
 
