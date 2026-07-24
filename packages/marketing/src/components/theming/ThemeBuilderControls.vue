@@ -734,47 +734,56 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
     }
 
     &__control {
-        flex: 0 0 auto;
+        flex: 0 0 9rem;
+        inline-size: 9rem;
+        min-inline-size: 0;
         display: flex;
         align-items: center;
         gap: var(--origam-spacing-1, 0.25rem);
+
+        // Uniform control width: every control type (select trigger,
+        // color-picker, input, rich control) fills this fixed cell so all rows
+        // line up and none overflows the panel. Previously each kind had its
+        // own inline-size (select 8.5rem / input 6rem / rich 9rem), so widths
+        // were mismatched and the widest were clipped on the right.
+        > * {
+            inline-size: 100%;
+            min-inline-size: 0;
+        }
+
+        :deep(.origam-field),
+        :deep(.origam-input) {
+            min-inline-size: 0;
+        }
 
         // Control fields with a prepend swatch (color / bgColor) resolve
         // --origam-field---padding-start to ~0, so the field's start outline leg
         // collapses to ~1px and cannot round the left corner: the active field
         // renders square-left / round-right — a rectangle around the swatch.
         // Inset the content to the corner radius so the leg widens and both
-        // corners round symmetrically. Scoped to prepended fields only —
-        // plain selects (no swatch) must keep padding-start:0, otherwise the
-        // value text is pushed in and truncates ("elevated" → "elevat…").
+        // corners round symmetrically.
         :deep(.origam-field--prepended) {
             --origam-field---padding-start: 14px;
         }
-    }
 
-    &__select {
-        inline-size: 8.5rem;
-    }
+        // Plain select controls (no swatch) are narrow and center-aligned, so
+        // they don't collide with the corner and must NOT inherit the DS
+        // corner-clearing floor — it would push the value text in. Keep them at
+        // their raw compact inline padding and start-leg width.
+        :deep(.origam-field:not(.origam-field--prepended)) {
+            padding-inline: var(--origam-field---padding-start) var(--origam-field---padding-end);
 
-    &__input {
-        inline-size: 6rem;
-
-        /*
-         * The `color-intent`/`accentColor` rich control renders through
-         * `OrigamColorPickerField` (readonly `origam-text-field` root,
-         * `.tbc-trigger` nested inside), which carries the generic
-         * `tb-row__input` sizing (6rem) instead of `tb-row__rich` (9rem)
-         * — too narrow for common intent values ("Primary", "Secondary")
-         * once the swatch + chevron take their share, truncating to "Pr".
-         * Widen it specifically when it's hosting the rich trigger. #251
-         */
-        &:has(.tbc-trigger) {
-            inline-size: 9rem;
+            .origam-field__outline--start {
+                flex-basis: var(--origam-field---padding-start);
+            }
         }
     }
 
+    &__select,
+    &__input,
     &__rich {
-        inline-size: 9rem;
+        inline-size: 100%;
+        min-inline-size: 0;
     }
 
     &__reset {
