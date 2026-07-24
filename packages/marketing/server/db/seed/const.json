@@ -1,8 +1,8 @@
 {
   "kind": "const",
-  "exportedAt": "2026-07-09T20:01:09.662Z",
-  "sourceCommit": "a15aa8a1",
-  "entryCount": 250,
+  "exportedAt": "2026-07-24T15:43:22.159Z",
+  "sourceCommit": "ab782a42",
+  "entryCount": 252,
   "entries": [
     {
       "entry": {
@@ -1471,6 +1471,66 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "const",
+        "slug": "border-position-map",
+        "name": "BORDER_POSITION_MAP",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export const BORDER_POSITION_MAP = [\n    {side: BLOCK.TOP, widthProp: 'borderTop', colorProp: 'borderTopColor'},\n    {side: INLINE.RIGHT, widthProp: 'borderRight', colorProp: 'borderRightColor'},\n    {side: BLOCK.BOTTOM, widthProp: 'borderBottom', colorProp: 'borderBottomColor'},\n    {side: INLINE.LEFT, widthProp: 'borderLeft', colorProp: 'borderLeftColor'},\n] as const",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/consts/Commons/border.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "{side: BLOCK.TOP, widthProp: 'borderTop', colorProp: 'borderTopColor'}",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "{side: INLINE.RIGHT, widthProp: 'borderRight', colorProp: 'borderRightColor'}",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "{side: BLOCK.BOTTOM, widthProp: 'borderBottom', colorProp: 'borderBottomColor'}",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "{side: INLINE.LEFT, widthProp: 'borderLeft', colorProp: 'borderLeftColor'}",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -4982,6 +5042,41 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "const",
+        "slug": "custom-box-shadow-regex",
+        "name": "CUSTOM_BOX_SHADOW_REGEX",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export const CUSTOM_BOX_SHADOW_REGEX = /(?:var|calc|clamp|min|max|env|rgb|rgba|hsl|hsla|hwb|lab|lch|oklab|oklch|color-mix)\\(|#[0-9a-f]{3,8}\\b|[\\d.]+(?:px|pt|pc|in|cm|mm|q|em|rem|ex|ch|cap|ic|lh|rlh|vw|vh|vi|vb|vmin|vmax|%)|\\binset\\b/i",
+        "signature": null,
+        "tag": null,
+        "value": "/(?:var|calc|clamp|min|max|env|rgb|rgba|hsl|hsla|hwb|lab|lch|oklab|oklch|color-mix)\\(|#[0-9a-f]{3,8}\\b|[\\d.]+(?:px|pt|pc|in|cm|mm|q|em|rem|ex|ch|cap|ic|lh|rlh|vw|vh|vi|vb|vmin|vmax|%)|\\binset\\b/i",
+        "source_file": "packages/ds/src/consts/Commons/elevation.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
