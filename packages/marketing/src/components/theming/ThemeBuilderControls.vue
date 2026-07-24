@@ -740,13 +740,15 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
         align-items: center;
         gap: var(--origam-spacing-1, 0.25rem);
 
-        // Every control field (select trigger, color-picker-field, …) resolves
+        // Control fields with a prepend swatch (color / bgColor) resolve
         // --origam-field---padding-start to ~0, so the field's start outline leg
         // collapses to ~1px and cannot round the left corner: the active field
         // renders square-left / round-right — a rectangle around the swatch.
         // Inset the content to the corner radius so the leg widens and both
-        // corners round symmetrically.
-        :deep(.origam-field) {
+        // corners round symmetrically. Scoped to prepended fields only —
+        // plain selects (no swatch) must keep padding-start:0, otherwise the
+        // value text is pushed in and truncates ("elevated" → "elevat…").
+        :deep(.origam-field--prepended) {
             --origam-field---padding-start: 14px;
         }
     }
