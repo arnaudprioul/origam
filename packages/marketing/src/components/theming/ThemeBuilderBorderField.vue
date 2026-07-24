@@ -4,16 +4,15 @@ import { computed, ref, watch } from 'vue'
 import { useT } from '~/composables/useT'
 import { useThemeBuilderBorderControl } from '~/composables/useThemeBuilderBorderControl'
 import { THEME_BUILDER_BORDER_STYLE_OPTIONS, THEME_BUILDER_BORDER_WIDTH_OPTIONS } from '~/consts/theme-builder-controls.const'
-import { isThemeBuilderIntentValue } from '~/utils/theme-builder-color.util'
 import { MDI_ICONS } from 'origam/enums'
 import type { TThemeBuilderBorderSide } from '~/types/theme-builder-controls.type'
 
 /**
  * ThemeBuilderBorderField — Contrôle 5 (`border-field.html`, round 2):
- * ONE trigger summarising width · style · colour, popover with 3 fieldsets.
- * Drives the global `border` / `borderStyle` / `borderColor` props, plus
- * the 4 per-side width props (`borderTop`/`Right`/`Bottom`/`Left`) and the
- * 4 per-side colour props (`borderTopColor`/…) — live since DS issue #215
+ * width · style · colour, rendered as 3 fieldsets stacked inline (no popover,
+ * #294). Drives the global `border` / `borderStyle` / `borderColor` props,
+ * plus the 4 per-side width props (`borderTop`/`Right`/`Bottom`/`Left`) and
+ * the 4 per-side colour props (`borderTopColor`/…) — live since DS issue #215
  * (PR #227, `useBorder`'s `BORDER_POSITION_MAP`). Every per-side prop is
  * `undefined` when the DS component doesn't expose it (older components
  * not yet re-synced) — that facet's link toggle is simply omitted then,
@@ -44,7 +43,6 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useT()
-const open = ref(false)
 
 const widthValueRef = computed(() => props.widthValue)
 const sideWidthValuesRef = computed(() => ({
@@ -88,39 +86,6 @@ watch(
     },
     { immediate: true }
 )
-
-const widthLabel = (value: string): string => {
-    const opt = THEME_BUILDER_BORDER_WIDTH_OPTIONS.find(o => o.value === value)
-    return opt ? t(opt.labelKey, opt.labelFallback) : value
-}
-
-const styleLabel = computed<string | null>(() => {
-    if (props.styleValue === undefined) return null
-    const opt = THEME_BUILDER_BORDER_STYLE_OPTIONS.find(o => o.value === props.styleValue)
-    return opt ? t(opt.labelKey, opt.labelFallback) : String(props.styleValue)
-})
-
-const colorLabel = computed<string | null>(() => {
-    if (props.colorValue === undefined) return null
-    if (props.colorValue === null || props.colorValue === '') {
-        return t('theming.control.color.inherited', 'Inherited from theme')
-    }
-    if (isThemeBuilderIntentValue(props.colorValue)) return String(props.colorValue)
-    return t('theming.control.color.custom_value', '{value} (custom)', { value: String(props.colorValue) })
-})
-
-const valueLabel = computed<string>(() => {
-    const parts = [isCustom.value
-        ? (widthLinked.value
-            ? t('theming.control.border.custom_width_value', '{width}px', { width: customWidth.value })
-            : t('theming.control.border.custom_sides_value', '{tl}/{tr}/{bl}/{br}px', {
-                tl: sideWidths.value.top, tr: sideWidths.value.right, bl: sideWidths.value.bottom, br: sideWidths.value.left
-            }))
-        : widthLabel(selectValue.value)]
-    if (styleLabel.value) parts.push(styleLabel.value)
-    if (colorLabel.value && colorLinked.value) parts.push(colorLabel.value)
-    return parts.join(' · ')
-})
 
 const widthSelectItems = computed(() =>
     THEME_BUILDER_BORDER_WIDTH_OPTIONS.map(o => ({ title: t(o.labelKey, o.labelFallback), value: o.value }))
@@ -167,12 +132,7 @@ const sideColorValue = (side: TThemeBuilderBorderSide): unknown => {
 </script>
 
 <template>
-    <theme-builder-control-trigger
-        v-model:open="open"
-        :label="label"
-        :value-label="valueLabel"
-        :data-cy="dataCy"
-    >
+    <div class="tbc-border tb-reveal">
         <fieldset class="tbc-border__fieldset">
             <legend class="tbc-border__legend">{{ t('theming.control.border.width_legend', 'Border — Width') }}</legend>
 
@@ -315,11 +275,16 @@ const sideColorValue = (side: TThemeBuilderBorderSide): unknown => {
                 </div>
             </div>
         </fieldset>
-    </theme-builder-control-trigger>
+    </div>
 </template>
 
 <style scoped lang="scss">
 .tbc-border {
+    display: flex;
+    flex-direction: column;
+    gap: var(--origam-spacing-2, 0.5rem);
+    inline-size: 100%;
+
     &__fieldset {
         display: flex;
         flex-direction: column;

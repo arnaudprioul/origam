@@ -713,6 +713,7 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
 
 .tb-row {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--origam-spacing-2, 0.5rem);
     padding-block: var(--origam-spacing-1, 0.25rem);
@@ -755,6 +756,20 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
         > * {
             inline-size: 100%;
             min-inline-size: 0;
+        }
+
+        // The Color / Rounded / Elevation / Border rich controls (#294)
+        // dropped their popover — the "Autre…" custom editor now reveals
+        // INLINE, stacked below the select, and needs more room than the
+        // uniform 9rem cell (the 4-corner grid, the shadow composer, the
+        // border side grids were all sized for the old 16rem popover). A
+        // descendant carrying `.tb-reveal` flips this cell to the row's
+        // FULL width (`.tb-row` wraps it onto its own line via
+        // `flex-wrap`), so the reveal never gets clipped on the right —
+        // the row simply grows taller instead, by design.
+        &:has(.tb-reveal) {
+            flex: 1 1 100%;
+            inline-size: 100%;
         }
 
         :deep(.origam-field),

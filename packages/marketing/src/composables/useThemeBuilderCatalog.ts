@@ -1,5 +1,6 @@
 import { computed } from 'vue'
 
+import { useT } from '~/composables/useT'
 import {
     THEME_BUILDER_PREVIEW_ADAPTERS,
     THEME_BUILDER_PREVIEWABLE_SLUGS
@@ -15,6 +16,7 @@ import {
 import { THEME_BUILDER_TOKENS } from '~/consts/theme-builder-tokens.const'
 import {
     THEME_BUILDER_BORDER_FOLD_PROPS,
+    THEME_BUILDER_DENSITY_OPTIONS,
     THEME_BUILDER_INTENT_COLOR_PROPS,
     THEME_BUILDER_ORPHAN_COLOR_PROPS
 } from '~/consts/theme-builder-controls.const'
@@ -107,6 +109,7 @@ function humanise (name: string): string {
  */
 function buildControl (
     row: IComponentPropRow,
+    t: (key: string, fallback?: string) => string,
     playground?: IComponentPlaygroundControl
 ): IThemeBuilderPropControl | null {
     if (isSkippableProp(row.name)) return null
@@ -123,6 +126,26 @@ function buildControl (
             label: humanise(row.name),
             options: playground.options,
             defaultValue: playground.defaultValue
+        }
+    }
+
+    /**
+     * `density` (`TDensity`) is a template-literal type (`${DENSITY}`), not an
+     * inlined string-literal union, so `parseUnionOptions` below never sees a
+     * `'compact' | 'default' | 'comfortable'` label to parse — it fell through
+     * to a free-text input (#294). The 3 real `DENSITY` enum values are known
+     * and finite, so they get the same treatment as any other themable enum:
+     * a `kind: 'select'` control.
+     */
+    if (row.name === 'density') {
+        return {
+            prop: row.name,
+            props: [row.name],
+            kind: 'select',
+            group,
+            label: humanise(row.name),
+            options: THEME_BUILDER_DENSITY_OPTIONS.map(o => ({ label: t(o.labelKey, o.labelFallback), value: o.value })),
+            defaultValue: parseDefault(row.defaultValue)
         }
     }
 
@@ -334,7 +357,7 @@ function groupTokens (tokens: IThemeBuilderToken[]): IThemeBuilderTokenGroup[] {
 }
 
 /** Build the full builder entry for one component from its API surface. */
-function buildEntry (component: IComponentThemeSurface): IThemeBuilderComponentEntry {
+function buildEntry (component: IComponentThemeSurface, t: (key: string, fallback?: string) => string): IThemeBuilderComponentEntry {
     const playgroundControls = component.playground?.controls ?? []
     const playgroundByProp = new Map(playgroundControls.map(c => [c.prop, c]))
 
@@ -352,7 +375,7 @@ function buildEntry (component: IComponentThemeSurface): IThemeBuilderComponentE
             descriptionFallback: '',
             required: raw.required ?? false,
         }
-        const ctrl = buildControl(row, playgroundByProp.get(raw.name))
+        const ctrl = buildControl(row, t, playgroundByProp.get(raw.name))
         if (ctrl) controls.push(ctrl)
     }
 
@@ -375,6 +398,8 @@ function buildEntry (component: IComponentThemeSurface): IThemeBuilderComponentE
 }
 
 export function useThemeBuilderCatalog () {
+    const { t } = useT()
+
     const { data } = useFetch<IComponentThemeSurface[]>('/api/reference/component', {
         key: 'catalog:component:theme-surface',
         query: { includePropSurface: '1' },
@@ -410,7 +435,7 @@ export function useThemeBuilderCatalog () {
      * being configurable does not require a live render.
      */
     const entries = computed<IThemeBuilderComponentEntry[]>(() => {
-        return (data.value ?? []).map(c => buildEntry(c))
+        return (data.value ?? []).map(c => buildEntry(c, t))
     })
 
     const nav = computed<IThemeBuilderNavCategory[]>(() => {

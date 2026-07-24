@@ -23,7 +23,7 @@
  * The sentinel `THEME_BUILDER_CUSTOM_VALUE` ('__custom__') never reaches a DS
  * prop — it only selects the "Autre…" branch of a control's local UI state.
  */
-import { BORDER_STYLE, ROUNDED } from 'origam/enums'
+import { BORDER_STYLE, DENSITY, ROUNDED } from 'origam/enums'
 
 /** Sentinel select value that reveals a control's custom/"Autre…" editor. */
 export const THEME_BUILDER_CUSTOM_VALUE = '__custom__' as const
@@ -80,6 +80,18 @@ export const THEME_BUILDER_ELEVATION_OPTIONS: Array<{ value: string; labelKey: s
 
 /** Elevation "Autre" sub-mode: quick depth slider vs full shadow composer. */
 export const THEME_BUILDER_ELEVATION_CUSTOM_MODES = ['depth', 'shadow'] as const
+
+/**
+ * The 3 real `TDensity` values (`packages/ds/src/types/Commons/density.type.ts`,
+ * backed by the `DENSITY` enum), in the order shown for the `density` prop's
+ * inline select (#294 — `density` used to fall through to a free-text input
+ * since `TDensity` is a template-literal type, not an inlined string union).
+ */
+export const THEME_BUILDER_DENSITY_OPTIONS: Array<{ value: string; labelKey: string; labelFallback: string }> = [
+    { value: DENSITY.COMPACT, labelKey: 'theming.control.density.compact', labelFallback: 'Compact' },
+    { value: DENSITY.DEFAULT, labelKey: 'theming.control.density.default', labelFallback: 'Default' },
+    { value: DENSITY.COMFORTABLE, labelKey: 'theming.control.density.comfortable', labelFallback: 'Comfortable' }
+]
 
 /**
  * Named `border` widths, in the order validated in `border-field.html`
@@ -160,11 +172,13 @@ export const THEME_BUILDER_COLOR_MAX_RECENT = 4
 
 /**
  * Prop names that resolve to the rich `color-intent` control when a control
- * for them exists — `color` / `accentColor` (both, see #212) always; a
- * standalone `borderColor` too, but ONLY when there's no `border` control to
+ * for them exists — `color` / `accentColor` (both, see #212) always; `bgColor`
+ * too (#294 — `bgColor` accepts a real `TIntent` string, same as `color`, so it
+ * now renders the EXACT same select+reveal control, see `ThemeBuilderColorField`);
+ * a standalone `borderColor` too, but ONLY when there's no `border` control to
  * fold it into (see `composePropGroups` in `useThemeBuilderCatalog.ts`).
  */
-export const THEME_BUILDER_INTENT_COLOR_PROPS = new Set(['color', 'accentColor'])
+export const THEME_BUILDER_INTENT_COLOR_PROPS = new Set(['color', 'accentColor', 'bgColor'])
 
 /**
  * Every prop the `border` composite can fold in, beyond `border` itself —

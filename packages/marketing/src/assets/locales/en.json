@@ -682,6 +682,11 @@
           "ghost": "Ghost"
         }
       },
+      "density": {
+        "compact": "Compact",
+        "default": "Default",
+        "comfortable": "Comfortable"
+      },
       "rounded": {
         "none": "None",
         "x_small": "X-Small",
