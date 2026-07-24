@@ -355,8 +355,14 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
                                     v-else-if="ctrl.kind === 'switch'"
                                     :model-value="propValueBool(ctrl.prop)"
                                     :label="ctrl.label"
+                                    color="primary"
+                                    rounded="lg"
+                                    :border="true"
+                                    :elevation="3"
+                                    :inset="true"
                                     density="compact"
                                     hide-details
+                                    class="tb-row__switch"
                                     @update:model-value="onSwitch(ctrl.prop, $event)"
                                 />
 
@@ -766,16 +772,37 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
             --origam-field---padding-start: 14px;
         }
 
-        // Plain select controls (no swatch) are narrow and center-aligned, so
-        // they don't collide with the corner and must NOT inherit the DS
-        // corner-clearing floor — it would push the value text in. Keep them at
-        // their raw compact inline padding and start-leg width.
-        :deep(.origam-field:not(.origam-field--prepended)) {
-            padding-inline: var(--origam-field---padding-start) var(--origam-field---padding-end);
+        // Agreed glass Switch treatment (design-mission #26, glass.theme.ts) —
+        // the controls panel sits outside the theme provider, so the toggle
+        // never inherits the theme's `origam-switch` config. Apply the glass
+        // track/thumb cssVars here, scoped to the control cell so the rest of
+        // the editor chrome stays neutral. ON identity (accent rail + pearl
+        // thumb) comes for free from `color="primary"`.
+        --origam-switch__track---background-color: rgba(255, 255, 255, 0.35);
+        --origam-switch__track---backdrop-filter: blur(20px) saturate(2.6);
+        --origam-switch__thumb---background-color: #ffffff;
+        --origam-switch__thumb---border-color: rgba(124, 58, 237, 0.35);
+    }
 
-            .origam-field__outline--start {
-                flex-basis: var(--origam-field---padding-start);
-            }
+    &__switch {
+        // Don't stretch the toggle to the full cell — pin it to the trailing
+        // edge like the value controls sit.
+        inline-size: auto;
+        margin-inline-start: auto;
+
+        // Visually hide the switch's own label (the prop-name <code> on the
+        // left already labels the row) while keeping it for a11y.
+        :deep(.origam-selection-control__label),
+        :deep(.origam-label) {
+            position: absolute;
+            inline-size: 1px;
+            block-size: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip-path: inset(50%);
+            white-space: nowrap;
+            border: 0;
         }
     }
 
