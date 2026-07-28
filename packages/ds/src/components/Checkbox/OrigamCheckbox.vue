@@ -95,10 +95,13 @@
 	})
 
 	// `useDefaults` resolves each prop against theme.components['origam-checkbox']
-	// (OrigamBtn pattern). Note (issue #241): `rounded` now correctly forwards
-	// to the underlying control box, but the CHECK GLYPH itself is a separate,
-	// pre-existing rendering concern tracked in #241 — this fix only restores
-	// the theme-config wiring, not the glyph surface.
+	// (OrigamBtn pattern). `border`/`rounded`/`elevation` forward down to
+	// `OrigamSelectionControl`, which consumes them on its own `__input` box
+	// (issue #241 fix). Remaining caveat: the check GLYPH itself is a font
+	// icon, not a CSS-drawn box — `rounded` alone (no border, no elevation)
+	// changes the box's radius but paints no visible pixels, since the box
+	// has no background fill by default. `border`/`elevation` paint visible
+	// pixels on their own. See OrigamSelectionControl's own doc comment.
 	const props = useDefaults(_props)
 
 	const emits = defineEmits<ICheckboxEmits>()

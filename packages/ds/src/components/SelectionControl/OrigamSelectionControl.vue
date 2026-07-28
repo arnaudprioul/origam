@@ -15,7 +15,8 @@
 
       <div
         v-ripple="rippleProp"
-        class="origam-selection-control__input"
+        :class="selectionControlInputClasses"
+        :style="selectionControlInputStyles"
       >
         <slot
           name="input"
@@ -73,10 +74,13 @@
   import { OrigamIcon, OrigamLabel } from '../../components'
 
   import {
+		useBorder,
 		useDefaults,
 		useDensity,
+		useElevation,
 		useHover,
 		useProps,
+		useRounded,
 		useStateEffect,
 		useStyle,
 		useTextColor,
@@ -276,6 +280,17 @@
 
   const {textColorClasses: wrapperColorClasses, textColorStyles: wrapperColorStyles} = useTextColor(color)
 
+  // Props-first (issue #241) — `border` / `rounded` / `elevation` are
+  // declared on `ISelectionControlProps` (forwarded from OrigamCheckbox /
+  // OrigamRadio through their respective *Btn relay) but were never
+  // consumed anywhere downstream: the circular `__input` box hardcodes
+  // `border-radius: 50%` in SCSS and has no border/shadow surface at all.
+  // Consumed HERE, on `__input`, since that's the element that owns the
+  // control's visual box — same relay point as `OrigamSwitchTrack`.
+  const {borderClasses, borderStyles} = useBorder(props)
+  const {roundedClasses, roundedStyles} = useRounded(props)
+  const {elevationClasses, elevationStyles} = useElevation(props)
+
   const rippleProp = computed(() => {
     if (props.ripple) {
       return [ !props.disabled && !props.readonly, null, [ 'center', 'circle' ] ]
@@ -301,6 +316,21 @@
       'origam-selection-control__wrapper',
       wrapperColorClasses.value
     ]
+  })
+  const selectionControlInputClasses = computed(() => {
+    return [
+      'origam-selection-control__input',
+      borderClasses.value,
+      roundedClasses.value,
+      elevationClasses.value
+    ]
+  })
+  const selectionControlInputStyles = computed(() => {
+    return [
+      borderStyles.value,
+      roundedStyles.value,
+      elevationStyles.value
+    ] as StyleValue
   })
   const selectionControlClasses = computed(() => {
     return [
@@ -348,7 +378,6 @@
     contain: layout;
     display: flex;
     flex: 1 0;
-    grid-area: control;
     position: relative;
     user-select: none;
 

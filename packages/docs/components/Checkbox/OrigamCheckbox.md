@@ -37,15 +37,44 @@ const accepted = ref(false)
 </template>
 ```
 
-## Rounded
+## Border, rounded & elevation (visual surface)
+
+`border` / `rounded` / `elevation` target the control's own box —
+`.origam-selection-control__input`, the element wrapping the check glyph —
+so a themed checkbox can match the same border thickness / corner radius /
+shadow rung as the rest of a theme's form fields, matching a marketing
+theme's `components['origam-checkbox']` block.
 
 ```vue
 <template>
   <OrigamCheckbox rounded="sm" label="Small radius" />
   <OrigamCheckbox rounded="lg" label="Large radius" />
-  <OrigamCheckbox :rounded="true" label="Full round" />
+  <OrigamCheckbox border elevation="md" label="Bordered + elevated" />
 </template>
 ```
+
+- `border` accepts the same shapes as every other Commons `IBorderProps`
+  consumer (`true` for the default thin border, a width, or a full
+  `"2px dashed red"` string).
+- `rounded` accepts a utility rung (`'xs'|'sm'|'md'|'lg'|'xl'|'full'|'none'`)
+  or a legacy named variant — overrides the box's default circular shape.
+- `elevation` accepts an origam shadow rung (`'xs'|'sm'|'md'|'lg'|'xl'`) or
+  a Material-style `0..24` number, same as `OrigamBtn`/`OrigamCard`.
+
+**Glyph caveat** — the check mark itself is rendered by an icon-font glyph
+(`mdi-checkbox-marked-outline` / `mdi-checkbox-blank-outline`), not a
+CSS-drawn box, and the box has no background fill by default. In practice
+this means:
+- `border` and `elevation` paint real, visible pixels on their own (a
+  border / shadow renders even around a transparent box).
+- `rounded` alone (no border, no elevation, no `backdrop-filter` theme)
+  changes the box's `border-radius` but produces **no visible pixel
+  difference**, because there is nothing painted on the box to round.
+  It becomes visible as soon as it's combined with `border` and/or
+  `elevation` (both of which follow the box's corner radius).
+
+This is a known limitation tracked as a follow-up design decision — see
+issue #241 for the full write-up and glyph-vs-box design discussion.
 
 ## States (disabled / readonly / indeterminate)
 

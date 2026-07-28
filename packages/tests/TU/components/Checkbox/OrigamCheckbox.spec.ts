@@ -224,16 +224,15 @@ describe('OrigamCheckbox — reactive modelValue', () => {
 // an inline `color: var(--origam-color__action--primary---fgSubtle)` on
 // `.origam-selection-control__wrapper`.
 //
-// `rounded` is NOT used as the probe prop: `ICheckboxProps` extends
-// `IRoundedProps` (declared on the interface) but NOTHING downstream
-// (OrigamCheckboxBtn -> OrigamSelectionControl) ever calls `useRounded`
-// on it — the control's `border-radius: 50%` circles are hardcoded SCSS.
-// Confirmed via the same runtime probe: `rounded: 'lg'` produces NO class
-// and NO style anywhere in the rendered tree, with or without this fix.
-// This is the checkbox/radio glyph-rendering gap tracked in issue #241 —
-// out of scope here. useDefaults wiring alone cannot fix a prop nothing
-// downstream consumes; #241 is the ticket to wire useRounded into
-// OrigamSelectionControl.
+// `rounded` — issue #241 fix: `OrigamSelectionControl` now calls
+// `useRounded` on its own `__input` box (the element that owns the
+// control's visual surface), so `theme.components['origam-checkbox'] =
+// { rounded: 'lg' }` resolves through `useDefaults` down to a real class +
+// inline `border-radius` on `.origam-selection-control__input`. Note: the
+// CHECK GLYPH itself (the mdi icon) is unaffected — `rounded` reshapes the
+// (mostly invisible, background-less) box around it, not the glyph. See
+// `OrigamSelectionControl.spec.ts` for the direct-consumption assertions
+// and the runtime measurement notes on the glyph-rendering gap.
 // ---------------------------------------------------------------------------
 
 async function mountCheckboxThemed(componentDefaults: Record<string, unknown>, props: Record<string, unknown> = {}) {
@@ -264,10 +263,10 @@ describe('OrigamCheckbox — useDefaults (theme components wiring)', () => {
         expect(wrapperEl.classes()).not.toContain('origam--color-primary')
     })
 
-    it('DIAGNOSTIC (documents issue #241, not a regression of this fix): rounded resolves via useDefaults but produces no visible effect — nothing downstream consumes it', async () => {
+    it('resolves rounded="lg" from theme.components[\'origam-checkbox\'] onto the selection-control __input box (issue #241)', async () => {
         const wrapper = await mountCheckboxThemed({ rounded: 'lg' })
-        const html = wrapper.html()
-        expect(html).not.toContain('origam--rounded-lg')
-        expect(html).not.toContain('border-radius')
+        const inputBox = wrapper.find('.origam-selection-control__input')
+        expect(inputBox.classes()).toContain('origam--rounded-lg')
+        expect(inputBox.attributes('style') || '').toContain('border-radius')
     })
 })
